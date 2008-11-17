@@ -225,7 +225,7 @@ public class Filter extends CarddavFilter {
       }
     }*/
 
-      Collection<Vcard> cards = wdnode.getSysi().getCards(wdnode.getWdCollection().getPath(),
+      Collection<Vcard> cards = wdnode.getSysi().getCards(wdnode.getWdCollection(),
                                           this);
 
       if (debug) {

@@ -244,12 +244,12 @@ public interface SysIntf {
   /** Return the cards for the current user in the given collection using the
    * supplied filter.
    *
-   * @param path       to collection
+   * @param col       collection
    * @param filter - if non-null defines a search filter
    * @return Collection  populated card objects
    * @throws WebdavException
    */
-  public Collection<Vcard> getCards(String path,
+  public Collection<Vcard> getCards(CarddavCollection col,
                                     Filter filter)
           throws WebdavException;
 

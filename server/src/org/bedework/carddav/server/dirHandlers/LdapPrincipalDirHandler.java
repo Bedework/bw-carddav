@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -78,11 +79,13 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      if (!getObject(path, false)) {
+      Attributes attrs = getObject(path, false);
+
+      if (attrs == null) {
         return null;
       }
 
-      return nextCard(path, true);
+      return makeVcard(path, true, attrs);
     } finally {
       closeContext();
     }
@@ -193,11 +196,13 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      if (!getObject(path, true)) {
+      Attributes attrs = getObject(path, true);
+
+      if (attrs == null) {
         return null;
       }
 
-      return nextCdCollection();
+      return makeCdCollection(path, true, attrs);
     } finally {
       closeContext();
     }
@@ -210,27 +215,32 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     throw new WebdavException("unimplemented");
   }
 
-  public Collection<CarddavCollection> getCollections(CarddavCollection val)
+  public Collection<CarddavCollection> getCollections(String path)
          throws WebdavException {
-    String path = val.getPath();
     verifyPath(path);
 
-    if (!searchChildren(path, true, ldapConfig.getFolderObjectClass())) {
-      return null;
-    }
+    try {
+      openContext();
 
-    Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
-
-    for (;;) {
-      CarddavCollection cdc = nextCdCollection();
-
-      if (cdc == null) {
-        break;
+      if (!searchChildren(path, true, ldapConfig.getFolderObjectClass())) {
+        return null;
       }
 
-      res.add(cdc);
-    }
+      Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
 
-    return res;
+      for (;;) {
+        CarddavCollection cdc = nextCdCollection(path, false);
+
+        if (cdc == null) {
+          break;
+        }
+
+        res.add(cdc);
+      }
+
+      return res;
+    } finally {
+      closeContext();
+    }
   }
 }

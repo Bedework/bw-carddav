@@ -204,6 +204,10 @@ public class CarddavURI {
    * @return true if this represents a user
    */
   public boolean isUser() {
+    if (principal == null) {
+      return false;
+    }
+
     return principal.whoType == Ace.whoTypeUser;
   }
 
@@ -211,6 +215,10 @@ public class CarddavURI {
    * @return true if this represents a group
    */
   public boolean isGroup() {
+    if (principal == null) {
+      return false;
+    }
+
     return principal.whoType == Ace.whoTypeGroup;
   }
 

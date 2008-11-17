@@ -22,6 +22,18 @@
             <providerUrl>ldap://localhost:10389/</providerUrl>
             <baseDn>dc=bedework, dc=org</baseDn>
 
+            <!-- We need to get operational attributes from the directory. This requires us
+               to explicitly name all attributes on fetch.
+              -->
+            <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
+                     homePhone,mail,mobile,modifyTimestamp,o,org
+                     ou,
+                     pager,
+                     sn,
+                     telephoneNumber,
+                     uid,
+                     uniqueMember</attrIds>
+
             <!-- Map the kind of object onto an object class. We have to handle
                  some or all of the below. A handler does not need to handle all
                  of these.
@@ -63,6 +75,15 @@
             <providerUrl>ldap://localhost:10389/</providerUrl>
             <baseDn>dc=bedework, dc=org</baseDn>
 
+            <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
+                     homePhone,mail,mobile,modifyTimestamp,o,org
+                     ou,
+                     pager,
+                     sn,
+                     telephoneNumber,
+                     uid,
+                     uniqueMember</attrIds>
+
             <folderObjectClass>orgnizationalUnit</folderObjectClass>
             <addressbookObjectClass>orgnizationalUnit</addressbookObjectClass>
             <addressbookEntryObjectClass>orgnizationalUnit</addressbookEntryObjectClass>
@@ -86,6 +107,15 @@
             <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
             <providerUrl>ldap://localhost:10389/</providerUrl>
             <baseDn>dc=bedework, dc=org</baseDn>
+
+            <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
+                     homePhone,mail,mobile,modifyTimestamp,o,org
+                     ou,
+                     pager,
+                     sn,
+                     telephoneNumber,
+                     uid,
+                     uniqueMember</attrIds>
 
             <folderObjectClass>orgnizationalUnit</folderObjectClass>
             <addressbookObjectClass>orgnizationalUnit</addressbookObjectClass>
@@ -112,7 +142,7 @@
           </webaddrServiceURI>
           -->
 
-          <directoryBrowsingDisallowed>true</directoryBrowsingDisallowed>
+          <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
 
           <defaultAddressbook>address-book</defaultAddressbook>
         </usercarddav>
@@ -124,7 +154,7 @@
           </webaddrServiceURI>
           -->
 
-          <directoryBrowsingDisallowed>true</directoryBrowsingDisallowed>
+          <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
 
           <defaultAddressbook>address-book</defaultAddressbook>
 

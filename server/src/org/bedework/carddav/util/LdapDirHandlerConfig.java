@@ -42,6 +42,10 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
 
   private String baseDn;
 
+  private String attrIds;
+
+  private String[] attrIdList;
+
   private String userObjectClass = "posixAccount";
 
   private String groupObjectClass = "groupOfUniqueNames";
@@ -163,6 +167,36 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    */
   public String getBaseDn()  {
     return baseDn;
+  }
+
+  /* *
+   *
+   * @param val
+   */
+  public void setAttrIds(String val)  {
+    attrIds = val;
+
+    attrIdList = attrIds.split(",");
+
+    for (int i = 0; i < attrIdList.length; i++) {
+      attrIdList[i] = attrIdList[i].trim();
+    }
+  }
+
+  /* *
+   *
+   * @return String val
+   */
+  public String getAttrIds()  {
+    return attrIds;
+  }
+
+  /* *
+   *
+   * @return String[] val
+   */
+  public String[] getAttrIdList()  {
+    return attrIdList;
   }
 
   /** An object class which identifies an entry as a user

@@ -173,7 +173,7 @@ public class CarddavColNode extends CarddavNode {
         }
       }
 
-      Collection<Vcard> cards = getSysi().getCards(getPath(), null);
+      Collection<Vcard> cards = getSysi().getCards(c, null);
 
       if (cards != null) {
         for (Vcard card: cards) {
@@ -183,6 +183,8 @@ public class CarddavColNode extends CarddavNode {
       }
 
       return res;
+    } catch (WebdavException we) {
+      throw we;
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -242,7 +244,7 @@ public class CarddavColNode extends CarddavNode {
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
    */
   public String getCreDate() throws WebdavException {
-    return null;
+    return col.getCreated();
   }
 
   /* (non-Javadoc)
@@ -266,7 +268,8 @@ public class CarddavColNode extends CarddavNode {
     }
 
     try {
-      return DateTimeUtil.fromISODateTimeUTCtoRfc822(col.getLastmod());
+      //return DateTimeUtil.fromISODateTimeUTCtoRfc822(col.getLastmod());
+      return col.getLastmod();
     } catch (Throwable t) {
       throw new WebdavException(t);
     }

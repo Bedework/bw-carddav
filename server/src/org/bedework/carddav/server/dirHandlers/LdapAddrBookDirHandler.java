@@ -40,6 +40,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -105,11 +106,13 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
 
       String fullPath = path + "/" + name;
 
-      if (!getObject(fullPath, false)) {
+      Attributes attrs = getObject(fullPath, false);
+
+      if (attrs == null) {
         return null;
       }
 
-      return nextCard(fullPath, true);
+      return makeVcard(fullPath, true, attrs);
     } finally {
       closeContext();
     }
@@ -119,23 +122,29 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
                                     Filter filter) throws WebdavException {
     verifyPath(path);
 
-    if (!searchChildren(path, true, ldapConfig.getAddressbookEntryObjectClass())) {
-      return null;
-    }
+    try {
+      openContext();
 
-    Collection<Vcard> res = new ArrayList<Vcard>();
-
-    for (;;) {
-      Vcard card = nextCard(path, false);
-
-      if (card == null) {
-        break;
+      if (!searchChildren(path, true, ldapConfig.getAddressbookEntryObjectClass())) {
+        return null;
       }
 
-      res.add(card);
-    }
+      Collection<Vcard> res = new ArrayList<Vcard>();
 
-    return res;
+      for (;;) {
+        Vcard card = nextCard(path, false);
+
+        if (card == null) {
+          break;
+        }
+
+        res.add(card);
+      }
+
+      return res;
+    } finally {
+      closeContext();
+    }
   }
 
   /* (non-Javadoc)
@@ -191,11 +200,13 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      if (!getObject(path, true)) {
+      Attributes attrs = getObject(path, true);
+
+      if (attrs == null) {
         return null;
       }
 
-      return nextCdCollection();
+      return makeCdCollection(path, true, attrs);
     } finally {
       closeContext();
     }
@@ -208,27 +219,32 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     throw new WebdavException("unimplemented");
   }
 
-  public Collection<CarddavCollection> getCollections(CarddavCollection val)
+  public Collection<CarddavCollection> getCollections(String path)
          throws WebdavException {
-    String path = val.getPath();
     verifyPath(path);
 
-    if (!searchChildren(path, true, ldapConfig.getFolderObjectClass())) {
-      return null;
-    }
+    try {
+      openContext();
 
-    Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
-
-    for (;;) {
-      CarddavCollection cdc = nextCdCollection();
-
-      if (cdc == null) {
-        break;
+      if (!searchChildren(path, true, ldapConfig.getFolderObjectClass())) {
+        return null;
       }
 
-      res.add(cdc);
-    }
+      Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
 
-    return res;
+      for (;;) {
+        CarddavCollection cdc = nextCdCollection(path, false);
+
+        if (cdc == null) {
+          break;
+        }
+
+        res.add(cdc);
+      }
+
+      return res;
+    } finally {
+      closeContext();
+    }
   }
 }

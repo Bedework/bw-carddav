@@ -423,10 +423,11 @@ public class BwSysIntfImpl implements SysIntf {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.SysIntf#getCards(CarddavColNode, BwFilter)
    */
-  public Collection<Vcard> getCards(String path, Filter filter)
+  public Collection<Vcard> getCards(CarddavCollection col, Filter filter)
           throws WebdavException {
     try {
-      return getHandler(path).getCards(path, filter);
+      return getHandler(col.getPath()).getCards(col.getPath() + "/" + col.getName(),
+                                                filter);
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -616,7 +617,7 @@ public class BwSysIntfImpl implements SysIntf {
    */
   public Collection<CarddavCollection> getCollections(CarddavCollection val) throws WebdavException {
     try {
-      return getHandler(val.getPath()).getCollections(val);
+      return getHandler(val.getPath()).getCollections(val.getPath() + "/" + val.getName());
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {

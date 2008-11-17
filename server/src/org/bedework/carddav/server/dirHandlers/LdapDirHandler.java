@@ -60,7 +60,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected LdapDirHandlerConfig ldapConfig;
 
   private DirContext ctx;
-  private String searchBase; // searchBase which resulted in sresult;
 
   private SearchControls constraints;
   private NamingEnumeration<SearchResult> sresult;
@@ -91,6 +90,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       constraints.setSearchScope(scope);
       constraints.setCountLimit(1000);
+      constraints.setReturningAttributes(ldapConfig.getAttrIdList());
 
       boolean entriesFound = false;
 
@@ -112,12 +112,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         sresult = null;
       }
 
-      if (entriesFound) {
-        searchBase = null;
-      } else {
-        searchBase = base;
-      }
-
       return entriesFound;
     } catch (Throwable t) {
       throw new WebdavException(t);
@@ -136,17 +130,56 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return card;
   }
 
-  protected CarddavCollection nextCdCollection() throws WebdavException {
+  protected CarddavCollection nextCdCollection(String path,
+                                               boolean fullPath) throws WebdavException {
     LdapObject ldo = nextObject();
 
     if (ldo == null) {
       return null;
     }
 
+    return makeCdCollection(path, fullPath, ldo.attrs);
+  }
+
+  protected CarddavCollection makeCdCollection(String path,
+                                               boolean fullPath,
+                                               Attributes attrs) throws WebdavException {
     CarddavCollection cdc = new CarddavCollection();
 
-    cdc.setName(ldo.name);
-    cdc.setDisplayName(stringAttr(ldo.attrs, "cn"));
+    cdc.setCreated(stringAttr(attrs, "createTimestamp"));
+    cdc.setLastmod(stringAttr(attrs, "modifyTimestamp"));
+
+    if (cdc.getLastmod() == null) {
+      cdc.setLastmod(cdc.getCreated());
+    }
+
+    /* The name of this card comes from the attribute specified in the
+     * config - addressbookEntryIdAttr
+     */
+
+    if (fullPath) {
+//      simpleProp(card, "SOURCE", path);
+      if (!path.equals("/")) {
+        int pos = path.length() - 1;
+        if (path.charAt(pos) == '/') {
+          pos --;
+        }
+        while (path.charAt(pos) != '/') {
+          pos --;
+        }
+
+        cdc.setPath(path.substring(0, pos));
+      }
+    } else {
+//      String cardName = stringAttr(attrs,
+//                                   ldapConfig.getAddressbookEntryIdAttr());
+//      simpleProp(card, "SOURCE",
+//                 urlHandler.prefix(path + cardName + ".vcf"));
+      cdc.setPath(path);
+    }
+
+    cdc.setName(stringAttr(attrs, ldapConfig.getFolderIdAttr()));
+    cdc.setDisplayName(stringAttr(attrs, ldapConfig.getFolderIdAttr()));
 
     //private String path;
 
@@ -162,7 +195,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
      */
     //private int sequence;
 
-    cdc.setDescription(stringAttr(ldo.attrs, "description"));
+    cdc.setDescription(stringAttr(attrs, "description"));
 
     // parent          CarddavCollection
     // addressBook     boolean
@@ -401,7 +434,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   /* Do the search for a single object in the directory
 \   */
-  protected boolean getObject(String path,
+  protected Attributes getObject(String path,
                              boolean isCollection) throws WebdavException {
     try {
       if (!path.startsWith(dhConfig.getPathPrefix() + "/")) {
@@ -434,7 +467,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         dn = makeAddrbookDn(path, isCollection);
       }
 
-      return search(dn, null, SearchControls.OBJECT_SCOPE);
+      return ctx.getAttributes(dn, ldapConfig.getAttrIdList());
+    } catch (NameNotFoundException nnfe) {
+      return null;
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -499,15 +534,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       sb.append(ldapConfig.getAddressbookEntryIdAttr());
     }
 
+    sb.append("=");
+    sb.append(elements[0]);
+
     for (int i = 1; i < elements.length; i++) {
-      sb.append(elements[i]);
-
-      if (i + 1 == elements.length) {
-        break;
-      }
-
       sb.append(",");
       sb.append(ldapConfig.getFolderIdAttr());
+      sb.append(elements[i]);
     }
 
     sb.append(",");

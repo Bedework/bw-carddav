@@ -283,10 +283,10 @@ public interface DirHandler {
   /** Returns children of the given collection to which the current user has
    * some access.
    *
-   * @param  val          parent collection
+   * @param  path          parent collection path
    * @return Collection   of CarddavCollection
    * @throws WebdavException
    */
-  public Collection<CarddavCollection> getCollections(CarddavCollection val)
+  public Collection<CarddavCollection> getCollections(String path)
           throws WebdavException;
 }
