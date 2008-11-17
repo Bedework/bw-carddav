@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file builds a runnable application wrapped up as a zip file.
+     Unpacking the zip should result in a directory containing a shell
+     script, a set of jars and any other resources needed.
+
+     Properties we need:
+       app.core.env.pname     core properties source
+       app.run.shellscr       location of the skeleton shell script.
+       app.run.jar.file       application jar file
+       app.run.main.class     main class for application.
+
+     Authors: Mike Douglass   douglm@rpi.edu
+     =================================================================== -->
+
+<project name="bw.buildsh" default="build">
+  <import file="${build.dir}/buildfilters.xml" />
+
+  <target name="init">
+    <!-- Destinations - where we build stuff -->
+    <property name="app.dest.home"
+              location="${org.bedework.temp.shellscr.home}/${propval.app.zip.name}" />
+    <property name="app.dest.lib"
+              location="${app.dest.home}/lib" />
+    <property name="app.dest.classes"
+              location="${app.dest.home}/classes" />
+    <property name="app.dest.properties"
+              location="${app.dest.classes}/properties/calendar" />
+    <property name="app.dest.resources"
+              location="${app.dest.home}/resources" />
+    <property name="app.dest.data"
+              location="${app.dest.home}/data" />
+
+    <property name="app.zip.file"
+              location="${dist.home}/${propval.app.zip.name}.zip" />
+  </target>
+
+  <!-- ================================================================
+       build target
+       ================================================================ -->
+
+  <target name="build" depends="init">
+    <delete dir="${app.dest.home}" />
+
+    <!-- Library stuff -->
+
+    <mkdir dir="${app.dest.lib}" />
+
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-collections}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-logging}"/>
+
+    <!-- core files -->
+
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.rpiaccess}" />
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.rpiutil}" />
+
+    <!-- any extra files-->
+   <copy todir="${app.dest.lib}" >
+     <fileset dir="${org.bedework.temp.extrajars.dir}" />
+   </copy>
+
+    <!-- Some more standard libs -->
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.log4j}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-codec}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-digester}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-collections}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-httpclient}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-lang}"/>
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-ssl}"/>
+
+    <!-- jdbc stuff -->
+
+    <if>
+      <available file="${org.bedework.global.ext.lib}/jdbc" type="dir" />
+      <then>
+        <!-- jdbc drivers -->
+        <copy todir="${app.dest.lib}" flatten="yes" >
+          <!-- local jdbc drivers -->
+          <fileset dir="${org.bedework.global.ext.lib}/jdbc">
+            <include name="*.jar"/>
+          </fileset>
+        </copy>
+      </then>
+      <else>
+        <!-- Include the quickstart jdbc driver -->
+        <copy todir="${app.dest.lib}" file="${org.bedework.appjar.hsqldb}"/>
+      </else>
+    </if>
+
+    <copy todir="${app.dest.classes}">
+      <fileset dir="${org.bedework.project.calendarapi}/calCore/resources/properties" />
+      <filterset refid="property.filters" />
+    </copy>
+
+    <copy todir="${app.dest.classes}">
+      <fileset dir="${org.bedework.project.calendarapi}/calCore/resources/hbms" />
+      <filterset refid="property.filters" />
+    </copy>
+
+    <copy todir="${app.dest.classes}" overwrite="yes" >
+      <fileset refid="org.bedework.extra.resources" />
+      <filterset refid="property.filters" />
+    </copy>
+
+    <!-- Create the env.properties file -->
+    <mkdir dir="${app.dest.properties}" />
+
+    <copy tofile="${app.dest.properties}/options.xml"
+          file="${org.bedework.config.options}" />
+
+    <!-- ===============================================================
+                       Add any resource files
+         =============================================================== -->
+
+    <copy tofile="${app.dest.resources}/log4j.xml"
+          file="${org.bedework.runsh.log4j.xml}"
+          failonerror="false" />
+
+    <!-- ===============================================================
+                       Add any data files
+         =============================================================== -->
+
+    <mkdir dir="${app.dest.data}" />
+
+    <copy todir="${app.dest.data}" overwrite="yes" >
+      <fileset refid="org.bedework.shellscr.data" />
+      <filterset refid="property.filters" />
+    </copy>
+
+    <!-- ===============================================================
+                       Build the classpath
+         =============================================================== -->
+
+    <path id="app.run.path">
+      <fileset dir="${app.dest.lib}">
+        <include name="*.jar"/>
+      </fileset>
+      <pathelement location="${app.dest.resources}" />
+    </path>
+    <pathconvert property="app.run.cp" refid="app.run.path"
+                 targetos="unix" >
+      <map from="${app.dest.lib}" to="./lib"/>
+      <map from="${app.dest.resources}" to="./resources"/>
+    </pathconvert>
+    <pathconvert property="app.run.wincp" refid="app.run.path"
+                 targetos="windows" >
+      <map from="${app.dest.lib}" to="./lib"/>
+      <map from="${app.dest.resources}" to="./resources"/>
+    </pathconvert>
+
+    <!-- ===============================================================
+                       Copy and modify the shell script
+         =============================================================== -->
+
+    <copy tofile="${app.dest.home}/${propval.app.shellscr.name}"
+          file="${app.run.shellscr}" >
+      <filterset>
+        <filter token="CP"
+                value=".:./classes:${app.run.cp}"/>
+      </filterset>
+      <filterset refid="property.filters" />
+    </copy>
+
+    <copy tofile="${app.dest.home}/${propval.app.batscr.name}"
+          file="${app.run.batscr}" >
+      <filterset>
+        <filter token="CP"
+                value=".;./classes;${app.run.wincp}"/>
+      </filterset>
+      <filterset refid="property.filters" />
+    </copy>
+
+    <!-- build the zip file -->
+    <mkdir dir="${dist.home}" />
+    <delete file="${app.zip.file}" />
+
+    <zip destfile="${app.zip.file}" >
+      <zipfileset prefix="${propval.app.zip.name}" dir="${app.dest.home}" />
+    </zip>
+  </target>
+</project>
+

@@ -1,0 +1,66 @@
+#! /bin/sh
+
+#
+# This file is included by the quickstart script file "addgroup" so that it can live
+# within the svn repository.
+#
+
+ANT_HOME=`dirname "$PRG"`/apache-ant-1.7.0
+ANT_HOME=`cd "$ANT_HOME" && pwd`
+
+usage() {
+  echo "  $PRG help | ? | group groupmember"
+  echo ""
+  echo "   Invokes ant to build the Bedework tools then uses that tool to add"
+  echo "   a group to the directory."
+  echo ""
+  echo "   The first group member is required."
+  echo ""
+}
+
+errorUsage() {
+  echo "*******************************************************"
+  echo "Error: $1"
+  echo "*******************************************************"
+  usage
+  exit 1
+}
+
+saveddir=`pwd`
+
+export QUICKSTART_HOME=$saveddir
+
+# Default some parameters
+
+group=$1
+groupmember=$2
+
+if [ "$group" = "help" -o "$group" = "?" ] ; then
+  usage
+  exit
+fi
+
+if [ "$group" = "" -o "$groupmember" = "" ] ; then
+  errorUsage "Must supply group name and group member"
+fi
+
+if [ -z "$JAVA_HOME" -o ! -d "$JAVA_HOME" ] ; then
+  echo "*******************************************************"
+  echo "Error: JAVA_HOME is not defined correctly for Bedework."
+  echo "*******************************************************"
+  exit 1
+fi
+
+CLASSPATH=$ANT_HOME/lib/ant-launcher.jar
+
+ant_home_def="-Dant.home=$ANT_HOME"
+ant_class_def="org.apache.tools.ant.launch.Launcher"
+
+addgroup_defs="-Dorg.bedework.directory.group=$group"
+addgroup_defs="$addgroup_defs -Dorg.bedework.directory.group.member=$groupmember"
+
+$JAVA_HOME/bin/java -classpath $CLASSPATH $ant_home_def $addgroup_defs $ant_class_def addGroup
+
+
+
+

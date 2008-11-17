@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file is imported by buildwar.xml and adds a target
+        doPortal
+     which will be invoked by the buildwar targets.
+     =================================================================== -->
+
+<project name="bedework.platformWar" default="doPlatform" >
+  <target name="doPlatform" >
+    <property name="propval.app.tomcat.context.xml"
+              location="${app.sou.dir}/war/META-INF/context.xml" />
+    <resolveFile name="app.tomcat.context.xml"
+                 file="${propval.app.tomcat.context.xml}"
+                 base="${app.sou.dir}"/>
+
+    <copy tofile="${app.dest.metainf}/context.xml"
+          file="${app.tomcat.context.xml}"
+          overwrite="yes" >
+      <filterset refid="property.filters" />
+    </copy>
+
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.log4j}"/>
+  </target>
+</project>

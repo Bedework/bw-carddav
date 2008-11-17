@@ -1,0 +1,142 @@
+<!-- This provides run time options for each of the configured applications.
+  -->
+<bedework-options>
+  <org>
+    <bedework>
+      <global>
+        <version>3.5</version>
+        <dirhandlers>
+          <!-- handle the principal hierarchy.
+               This could be a read-only interface if we don't intend to allow
+               modification of the enterprise directory.
+
+               However, we may need to merge in subsidiary information to handle
+               principal properties. That may mean maintaining a shadow
+               principal hierarchy in the local server.
+            -->
+          <principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals</pathPrefix>
+            <className>org.bedework.carddav.server.dirHandlers.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>dc=bedework, dc=org</baseDn>
+
+            <!-- Map the kind of object onto an object class. We have to handle
+                 some or all of the below. A handler does not need to handle all
+                 of these.
+
+                Principal component above the user e.g. /principal/users is probably
+                matched onto a specific baseDn
+
+                User principal, e.g. /principals/users/fred - inetOrgPerson
+\               Group principal, e.g. /principals/groups/freds - groupOfUniqueNames
+                Resource principal
+
+                user home e.g. /users/douglm
+                folder e.g. /users/douglm/mystuff
+                address book e.g. /users/douglm/mystuff/addressbook
+                card e.g /users/douglm/mystuff/addressbook/arlen.vcf
+             -->
+            <userObjectClass>inetOrgPerson</userObjectClass>
+            <groupObjectClass>groupOfUniqueNames</groupObjectClass>
+
+            <userIdAttr>uid</userIdAttr>
+            <groupIdAttr>ou</groupIdAttr>
+            <groupMemberAttr>uniqueMember</groupMemberAttr>
+
+            <userBaseDn>ou=accounts, dc=bedework, dc=org</userBaseDn>
+            <groupBaseDn>ou=groups, dc=bedework, dc=org</groupBaseDn>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </principal-dirHandler>
+
+          <!-- handle the user address book hierarchy -->
+          <user-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/user</pathPrefix>
+            <className>org.bedework.carddav.server.dirHandlers.LdapAddrBookDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>dc=bedework, dc=org</baseDn>
+
+            <folderObjectClass>orgnizationalUnit</folderObjectClass>
+            <addressbookObjectClass>orgnizationalUnit</addressbookObjectClass>
+            <addressbookEntryObjectClass>orgnizationalUnit</addressbookEntryObjectClass>
+
+            <folderIdAttr>ou</folderIdAttr>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <homeDn>ou=users,ou=addrbooks, dc=bedework, dc=org</homeDn>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+            <debug>true</debug>
+          </user-dirHandler>
+
+          <!-- handle the public (enterprise) address book hierarchy -->
+          <public-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/public</pathPrefix>
+            <className>org.bedework.carddav.server.dirHandlers.LdapAddrBookDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>dc=bedework, dc=org</baseDn>
+
+            <folderObjectClass>orgnizationalUnit</folderObjectClass>
+            <addressbookObjectClass>orgnizationalUnit</addressbookObjectClass>
+            <addressbookEntryObjectClass>orgnizationalUnit</addressbookEntryObjectClass>
+
+            <folderIdAttr>ou</folderIdAttr>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <homeDn>ou=public,ou=addrbooks, dc=bedework, dc=org</homeDn>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+            <debug>true</debug>
+          </public-dirHandler>
+        </dirhandlers>
+      </global>
+
+      <app>
+        <usercarddav classname="org.bedework.carddav.util.CardDAVConfig" >
+          <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
+          <!--
+          <webaddrServiceURI>
+          </webaddrServiceURI>
+          -->
+
+          <directoryBrowsingDisallowed>true</directoryBrowsingDisallowed>
+
+          <defaultAddressbook>address-book</defaultAddressbook>
+        </usercarddav>
+
+        <pubcarddav>
+          <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
+          <!--
+          <webaddrServiceURI>
+          </webaddrServiceURI>
+          -->
+
+          <directoryBrowsingDisallowed>true</directoryBrowsingDisallowed>
+
+          <defaultAddressbook>address-book</defaultAddressbook>
+
+          <principalRoot>/principals</principalRoot>
+          <userPrincipalRoot>/principals/users</userPrincipalRoot>
+          <groupPrincipalRoot>/principals/groups</groupPrincipalRoot>
+          <resourcePrincipalRoot>/principals/resources</resourcePrincipalRoot>
+          <venuePrincipalRoot>/principals/locations</venuePrincipalRoot>
+          <ticketPrincipalRoot>/principals/tickets</ticketPrincipalRoot>
+          <hostPrincipalRoot>/principals/hosts</hostPrincipalRoot>
+        </pubcarddav>
+      </app>
+    </bedework>
+  </org>
+</bedework-options>

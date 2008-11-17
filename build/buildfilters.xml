@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file is called by other build files to define filters.
+     Authors: Mike Douglass
+     =================================================================== -->
+
+<project name="bedework.buildfilters" default="dummy" >
+  <filterset id="property.filters" >
+    <!--      Global settings            -->
+    <filter token="QUICKSTART_DIR"
+            value="${quickstart.dir}"/>
+
+    <filter token="BW-APP-NAME"
+            value="${org.bedework.deploy.name}"/>
+
+    <filter token="HIBERNATE-DIALECT"
+            value="${org.bedework.global.hibernate.dialect}" />
+
+    <filter token="SECOND-LEVEL-CACHING"
+            value="${org.bedework.global.hibernate.cache.use_second_level_cache}" />
+
+    <filter token="CACHE-PROVIDER"
+            value="${org.bedework.global.hibernate.cache.provider_class}" />
+
+    <filter token="DIRECTORY-BROWSING-DISALLOWED"
+            value="${org.bedework.global.directory.browsing.disallowed}" />
+
+    <filter token="SERVLET-CLASS"
+            value="${org.bedework.global.servlet.class}"/>
+
+    <filter token="PORTLET-SERVLET-CLASS"
+            value="${org.bedework.global.portlet-servlet.class}"/>
+
+    <filter token="PORTAL-SERVLET-CONTEXT-PROVIDER"
+            value="${org.bedework.global.portal-servlet.context.provider}"/>
+
+    <filter token="PORTAL-SERVLET-CONTEXT-LISTENER"
+            value="${org.bedework.global.portal-servlet.context.listener}"/>
+
+    <filter token="PORTLET-CLASS"
+            value="${org.bedework.global.portlet.class}"/>
+
+    <filter token="IGNORE-CONTENT-TYPE"
+            value="${org.bedework.global.ignoreContentType}" />
+
+    <filter token="GENURL-TAGLIB-TLD"
+            value="${org.bedework.global.genurl.taglib.tld}"/>
+
+    <filter token="LIFERAY-COMPANY-ID"
+            value="${org.bedework.global.liferay.company-id}"/>
+
+    <!--      Application settings            -->
+
+    <filter token="APP-DESCRIPTION"
+            value="${propval.app.description}" />
+
+    <filter token="PORTLET-NAME"
+            value="${propval.app.portlet.name}"/>
+
+    <filter token="CAL-SUITE"
+            value="${propval.app.cal.suite}"/>
+
+    <filter token="SECURITY-DOMAIN"
+            value="${propval.app.security.domain}"/>
+    <filter token="SECURITY-PREFIX"
+            value="${propval.app.security.prefix}"/>
+    <filter token="TRANSPORT-GUARANTEE"
+            value="${propval.app.transport.guarantee}"/>
+
+    <filter token="DISPLAY-NAME"
+            value="${propval.app.display.name}"/>
+    <filter token="CONTEXT-ROOT"
+            value="${propval.app.context.root}" />
+    <filter token="APP-NAME"
+            value="${propval.app.name}"/>
+    <filter token="APP-DESCRIPTION"
+            value="${propval.app.description}"/>
+    <filter token="APP-VERSION"
+            value="${org.bedework.global.version}"/>
+    <filter token="WAR-NAME"
+            value="${propval.app.war.name}"/>
+    <filter token="TOMCAT-DOC-BASE"
+            value="${org.bedework.appserver.dir}${propval.app.deploy.dir}/${propval.app.war.name}"/>
+
+    <filter token="DEFAULT-CONTENTTYPE"
+            value="${propval.app.default.contenttype}" />
+    <filter token="NOXSLT"
+            value="${propval.app.noxslt}" />
+
+    <!-- Change this to be an app par -->
+    <filter token="RUN-AS-USER"
+            value="${org.bedework.syspar.public.user}" />
+
+            <!-- ???????
+    <filter token="CALFILE-NAME"
+            value="${propval.app.calfile.name}" /> -->
+    <filter token="ADMIN-URI"
+            value="${org.bedework.global.public.admin.uri}" />
+    <filter token="PUBEVENTS-URI"
+            value="${org.bedework.global.public.calendar.uri}" />
+    <filter token="PERSONAL-URI"
+            value="${org.bedework.global.personal.calendar.uri}" />
+
+    <!--      Shell script settings            -->
+
+    <filter token="SCHEMA-DELIMITER"
+            value="${propval.app.schema.delimiter}" />
+
+      <filter token="CALDAVTEST-CLASS"
+              value="org.bedework.caldav.test.TestCalDav"/>
+
+      <filter token="DUMP-CLASS"
+              value="org.bedework.dumprestore.dump.Dump"/>
+      <filter token="RESTORE-CLASS"
+              value="org.bedework.dumprestore.restore.Restore"/>
+  </filterset>
+
+  <target name="dummy">
+  </target>
+</project>
+

@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+
+<!-- Run hsqldb for the bedework Calendar quickstart.
+
+     This is imported by the quickstart build.xml ensuring all changes to this file
+     appear in the repository.
+
+     Authors: Mike Douglass   douglm - rpi.edu
+-->
+
+<project name="quickstart-run-hsqldb" default="hsqldb" basedir=".">
+  <!-- This target normally overriden by the importing build.xml -->
+  <target name="run.init">
+    <property name="org.bedework.project.bedework"
+              location="${basedir}/bedework" />
+
+    <property name="org.bedework.hsqldb.dir"
+              location="${org.bedework.project.bedework}/../hsqldb-1.7.3.3" />
+  </target>
+
+  <target name="hsql.init" depends="run.init">
+    <!--  Set this property in the configuration if you want to overrride the
+         quickstart hsql defs. -->
+    <property name="org.bedework.quickstart.hsql.defs"
+              location="${org.bedework.project.bedework}/build/quickstart/hsqldb.properties" />
+
+    <echo message="load hsql properties from ${org.bedework.quickstart.hsql.defs}"/>
+
+    <property file="${org.bedework.quickstart.hsql.defs}" />
+  </target>
+
+  <!-- =================================================================
+       The "hsqldb" target starts the hsqldb server
+       ================================================================= -->
+
+  <target name="hsqldb" depends="hsql.init"
+          description="starts the hsqldb server">
+    <echo message="Starting hsqldb on port ${org.bedework.hsqldb.port}"/>
+
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/${org.bedework.hsqldb.dbname}"/>
+      <arg value="-port"/>
+      <arg value="${org.bedework.hsqldb.port}"/>
+    </java>
+  </target>
+
+  <target name="hsqldb-trace" depends="hsql.init"
+          description="starts the hsqldb server">
+    <echo message="Starting hsqldb on port ${org.bedework.hsqldb.port}"/>
+
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-trace"/>
+      <arg value="true"/>
+      <arg value="-silent"/>
+      <arg value="false"/>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/${org.bedework.hsqldb.dbname}"/>
+      <arg value="-port"/>
+      <arg value="${org.bedework.hsqldb.port}"/>
+    </java>
+  </target>
+
+  <target name="hsqldb-trace-9887" depends="hsql.init"
+          description="starts the hsqldb server">
+    <echo message="Starting hsqldb"/>
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-trace"/>
+      <arg value="true"/>
+      <arg value="-silent"/>
+      <arg value="false"/>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/${org.bedework.hsqldb.dbname}"/>
+      <arg value="-port"/>
+      <arg value="9887"/>
+    </java>
+  </target>
+
+  <target name="uportaldb" depends="hsql.init"
+          description="starts the hsqldb server">
+    <echo message="Starting hsqldb"/>
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/${org.bedework.hsqldb.uportal2.dbname}"/>
+      <arg value="-port"/>
+      <arg value="9887"/>
+    </java>
+  </target>
+
+  <target name="liferaydb" depends="hsql.init"
+          description="starts the hsqldb server for likferay">
+    <echo message="Starting hsqldb"/>
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/lportal"/>
+      <arg value="-port"/>
+      <arg value="9887"/>
+    </java>
+  </target>
+
+  <!-- =================================================================
+       The "hsqldb-test" target starts the hsqldb server for testing
+       ================================================================= -->
+
+  <target name="hsqldb-test" depends="hsql.init"
+          description="starts the hsqldb server for testing">
+    <echo message="Starting hsqldb on port ${org.bedework.hsqldb.port}"/>
+
+    <delete dir="${org.bedework.hsqldb.dbdir}" />
+
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/${org.bedework.hsqldb.test.dbdir}/events"/>
+      <arg value="-port"/>
+      <arg value="${org.bedework.hsqldb.port}"/>
+    </java>
+  </target>
+
+  <target name="hsqldb-test-trace" depends="hsql.init"
+          description="starts the hsqldb server for testing">
+    <echo message="Starting hsqldb on port ${org.bedework.hsqldb.port}"/>
+
+    <delete dir="${org.bedework.hsqldb.dbdir}" />
+
+    <java fork="true" dir="${basedir}" classname="org.hsqldb.Server">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+      <arg value="-trace"/>
+      <arg value="true"/>
+      <arg value="-silent"/>
+      <arg value="false"/>
+      <arg value="-database"/>
+      <arg value="${org.bedework.hsqldb.dir}/${org.bedework.hsqldb.test.dbdir}/events"/>
+      <arg value="-port"/>
+      <arg value="${org.bedework.hsqldb.port}"/>
+    </java>
+  </target>
+
+  <!-- =================================================================
+       The "hsqldb-mngr" target runs the DatabaseManager class which
+       provides a gui interface to the running hsqldb database.
+       ================================================================= -->
+
+  <target name="hsqldb-mngr" depends="hsql.init"
+          description="Runs the DatabaseManager class which provides a
+                       gui interface to the running hsqldb database">
+    <echo message="Starting hsqldb DatabaseManager"/>
+    <echo message="Select type: HSQL Database Engine Server"/>
+    <echo message="Set the URL to jdbc:hsqldb:hsql://localhost:${org.bedework.hsqldb.port}"/>
+    <java fork="true" dir="${basedir}"
+          classname="org.hsqldb.util.DatabaseManager">
+      <classpath>
+        <pathelement path="${org.bedework.hsqldb.dir}/lib/hsqldb.jar"/>
+      </classpath>
+    </java>
+  </target>
+</project>

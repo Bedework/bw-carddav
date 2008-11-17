@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+
+<!-- This is the ant build file for the bedework Calendar quickstart.
+
+     It is imported by the quickstart build.xml ensuring all changes to this file
+     appear in the repository.
+
+     Authors: Mike Douglass   douglm@rpi.edu
+-->
+
+<project name="quickstart-build-file" default="usage" basedir=".">
+  <property environment="env"/>
+
+  <dirname property="bedework.quickstart.basedir" file="${ant.file.quickstart-build-file}"/>
+
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+  <import file="${bedework.quickstart.basedir}/run-hsqldb.xml" />
+  <import file="${bedework.quickstart.basedir}/run-tomcat.xml" />
+  <import file="${bedework.quickstart.basedir}/run-dir.xml" />
+  <import file="${bedework.quickstart.basedir}/install.xml" />
+
+  <target name="README" depends="init"
+          description="Describe targets and their usage">
+    <loadfile property="org.bedework.README" srcFile="${org.bedework.calendar.dir}/docs/README"/>
+    <echo message="${org.bedework.README}" />
+  </target>
+
+  <echo message="Load user properties from ${org.bedework.user.build.properties}" />
+
+  <!-- Load user property definition overrides -->
+  <property file="${org.bedework.user.build.properties}" />
+
+  <!-- This may have defined the config properties location. Load that now to get overrides
+  <property file="${org.bedework.config.properties}" />-->
+
+  <import file="${bedework.quickstart.basedir}/../loadDeployConfig.xml"/>
+
+  <target name="usage" depends="init"
+          description="Describe targets and their usage">
+    <echo message="As distributed the package should be ready to go."/>
+    <echo message="Ensure ant is on your path, (a version is in the" />
+    <echo message="package)"/>
+    <echo message=""/>
+    <echo message="First in one window do"/>
+    <echo message="    ant hsqldb"/>
+    <echo message="This will start the hsqldb server ready for the "/>
+    <echo message="application."/>
+    <echo message=""/>
+    <echo message="In another window do"/>
+    <echo message="    ant tomcatstart"/>
+    <echo message=""/>
+    <echo message="Once tomcat is running you should be able to go to a"/>
+    <echo message="browser and connect to"/>
+    <echo message="    http://localhost:8080/bedework"/>
+    <echo message="and follow the instructions."/>
+    <echo message=""/>
+    <echo message="To build the calendar do"/>
+    <echo message="    ant deploy    or "/>
+    <echo message="    ant deploy.debug "/>
+    <echo message="which does a build and deploy of all components"/>
+    <echo message=""/>
+    <echo message="To rebuild the calendar do"/>
+    <echo message="    ant clean.deploy    or "/>
+    <echo message="    ant clean.deploy.debug "/>
+    <echo message="which does a clean, build and deploy of all components"/>
+    <echo message=""/>
+    <echo message="See documentation in the docs directory or on bedework.org"/>
+    <echo message="for instructions on creating a locally configured calendar application"/>
+    <echo message=""/>
+  </target>
+
+   <!-- The only properties set below should be those directly used to
+        invoke the targets below, in this file.
+        Do not set properties here for tasks invoked in other build
+        files.  Instead, make sure the targets work in calendar/build.xml,
+        then invoke ant on the task in calendar/build.xml.
+
+        For an example, of invoking ant on another build file,
+        see the deploy target, below.
+     -->
+  <target name="init" >
+    <dirname property="quickstart.dir" file="${ant.file}"/>
+
+    <property name="org.bedework.project.bedework"
+              location="${basedir}/bedework" />
+
+    <property name="org.bedework.config.base"
+              location="${org.bedework.project.bedework}/config" />
+
+    <property name="bedework.build.file"
+              location="${basedir}/bedework/build.xml" />
+    <property name="org.bedework.user.build.properties"
+              location="${user.home}/bedework.build.properties" />
+    <dirname property="org.bedework.configuration.location"
+             file="${org.bedework.user.build.properties}" />
+
+    <!-- Unfortunately it sits on top of everything
+    <splash imageurl="file://${org.bedework.project.bedework}/docs/icons/bedeworkLogo.gif"/>
+    -->
+  </target>
+
+  <target name="run.init" depends="init" >
+    <property name="org.bedework.user.build.properties"
+              location="${user.home}/bedework.build.properties" />
+
+    <property name="org.bedework.appserver.dir"
+              location="${org.bedework.project.bedework}/../apache-tomcat-5.5.17" />
+
+    <property name="org.bedework.hsqldb.dir"
+              location="${org.bedework.project.bedework}/../hsqldb-1.7.3.3" />
+
+    <property name="org.bedework.directory.dir"
+              location="${org.bedework.project.bedework}/../apacheds-1.5.3-fixed" />
+  </target>
+
+  <!-- =================================================================
+       The "build" target builds the jar files
+       ================================================================= -->
+
+  <target name="build" depends="init"
+          description="builds the jars">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="build" />
+    <tstamp prefix="endbuild" />
+    <echo message="=================> Build finished at ${endbuild.TODAY}" />
+  </target>
+
+  <target name="clean.build" depends="clean"
+          description="cleans then builds the jars">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="clean.build" />
+  </target>
+
+  <!-- =================================================================
+       The "deploy" target builds and deploys the applications
+       ================================================================= -->
+
+  <target name="deploy" depends="init"
+          description="builds and deploys the applications">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="deploy" />
+  </target>
+
+  <target name="deploy.debug" depends="init"
+          description="builds and deploys the applications">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="deploy.debug" />
+    <tstamp>
+      <format property="deploydebug.time" pattern="MM/dd/yyyy HH:mm:ss"/>
+    </tstamp>
+
+    <echo message="=================> deploy.debug finished at ${deploydebug.time}" />
+  </target>
+
+  <!-- =================================================================
+       The "clean.deploy" target cleans, builds and deploys the applications
+       ================================================================= -->
+
+  <target name="clean" depends="init"
+          description="Remove all generated files.">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="clean" />
+  </target>
+
+  <target name="quickstart-clean" depends="init"
+          description="partial clean up for quickstart.">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="quickstart-clean" />
+  </target>
+
+  <target name="clean.deploy" depends="init"
+          description="builds and deploys the applications">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="clean.deploy" />
+  </target>
+
+  <target name="clean.deploy.debug" depends="init"
+          description="builds and deploys the applications">
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="clean.deploy.debug" />
+  </target>
+
+  <!-- =================================================================
+       The "build.configured" target builds configured applications
+       ================================================================= -->
+
+  <target name="build.configured" depends="init"
+          description="Build configured applications" >
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="build.configured" />
+  </target>
+
+  <target name="build.configured.debug" depends="init"
+          description="Build configured applications" >
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="build.configured.debug" />
+  </target>
+
+  <target name="clean.build.configured" depends="init"
+          description="Build configured applications" >
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="clean.build.configured" />
+  </target>
+
+  <target name="clean.build.configured.debug" depends="init"
+          description="Build configured applications" >
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+           target="clean.build.configured.debug" />
+  </target>
+
+  <!-- =================================================================
+       The "javadoc" target builds javadocs for all projects
+       ================================================================= -->
+
+  <target name="javadoc" depends="init"
+          description="Build javadocs" >
+    <ant antfile="${bedework.build.file}" inheritrefs="true"
+         target="javadoc" />
+  </target>
+
+  <!-- =================================================================
+       The "start" target starts all quickstart components
+       ================================================================= -->
+
+  <target name="start" depends="run.init"
+          description="Start quickstart system" >
+    <parallel>
+      <antcall target="dirstart" inheritrefs="true" />
+      <antcall target="hsqldb" inheritrefs="true" />
+      <antcall target="tomcatstart" inheritrefs="true" />
+    </parallel>
+  </target>
+</project>

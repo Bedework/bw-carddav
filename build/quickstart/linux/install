@@ -1,0 +1,109 @@
+#! /bin/sh
+
+#
+# This file is included by the quickstart script file "bwinstall" so that it can live
+# within the svn repository.
+#
+
+ANT_HOME=`dirname "$PRG"`/apache-ant-1.7.0
+ANT_HOME=`cd "$ANT_HOME" && pwd`
+saveddir=`pwd`
+
+export QUICKSTART_HOME=$saveddir
+
+export BEDEWORK_HOME=$QUICKSTART_HOME/bedework
+
+libcache=$BEDEWORK_HOME/libcache
+
+export DS_HOME=$QUICKSTART_HOME/apacheds-1.5.3-fixed
+
+shutdownServer() {
+  echo "Stopping directory server"
+  $JAVA_HOME/bin/java -jar $DS_HOME/bin/apacheds-tools.jar graceful --install-path $DS_HOME --configuration
+}
+
+echo "========================================================"
+echo "This script will create a set of configurations in your "
+echo "home directory ($HOME) for you to customize"
+echo "In addition we create an initial set of users and groups"
+echo "which allow an initial system to run"
+echo ""
+echo "Further changes can then be made to the running quickstart"
+echo "using the tools provided"
+echo ""
+echo "The following information will be requested:"
+echo "  One or more administrative group names"
+echo "  One or more administrative users"
+echo "  One or more non-administrative users"
+echo ""
+echo "The ldap directory will be initialised with this information"
+echo "then you will provide the account which will be made superuser"
+echo "which must be one of those supplied above."
+echo "========================================================"
+
+if [ -d "$HOME/bwbuild" ] ; then
+  echo "========================================================"
+  echo "You already have a bwbuild in user home $HOME"
+  echo "Enter 'yes' to continue with the directory unchanged"
+  echo "(you may need to update it afterwards)"
+  echo "Enter anything else to terminate the install allowing "
+  echo "you to rename or destroy it."
+  echo "========================================================"
+
+  echo "Continue? yes/no"
+  read reply
+
+  if [ "$reply" != "yes" ] ; then
+    exit 1
+  fi
+else
+  cp $BEDEWORK_HOME/config/bwbuild $USER_HOME
+fi
+
+# Ensure we shut down the directory server at program termination
+# or after we received a signal:
+trap 'shutdownServer' 0
+trap "exit 2" 1 2 3 15
+
+  echo "========================================================"
+  echo "We need to create a new ldap directory for the quickstart"
+  #  <!-- This after 3.5
+  #  <echo message="or copy a previous quickstart ldap directory into the new quickstart" />
+  #  -->
+  echo "========================================================"
+
+  echo "Starting directory server"
+
+  export DS_OPTS="-Dapacheds.log.dir=$DS_HOME/logs"
+  cd $DS_HOME && ./apacheds.sh &
+
+  echo "Pausing while the server starts"
+
+#  sleep 10
+
+  echo "Getting directory information and creating entries"
+
+  DIRTOOL_HOME=$BEDEWORK_HOME/projects/bwtools
+  DIRTOOL_CP=$libcache/commons-codec-1.3.jar:$libcache/log4j-1.2.8.jar
+  DIRTOOL_CP=$DIRTOOL_CP:$BEDEWORK_HOME/dist/bw-tools-3.5.jar
+  dirtool="$JAVA_HOME/bin/java -classpath $DIRTOOL_CP org.bedework.tools.directory.DirTool"
+
+#  $dirtool -initSystem
+
+  superuser=
+  until [ "$superuser" != "" ] ; do
+    echo "Enter superuser account"
+    read superuser
+
+    if [ "$superuser" != "" ] ; then
+      $dirtool -userExists $superuser
+      dirstat=$?
+      echo "status is $dirstat"
+      if [ "$dirstat" != "0" ] ; then
+        echo "user $superuser does not exist"
+        superuser=
+      fi
+    fi
+  done
+
+  echo "create data"

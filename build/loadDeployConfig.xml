@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     Load the deployment configuration from the properties file. We also load
+     the run time options and define some properties based on some of the
+     values found there
+     =================================================================== -->
+<project name="loadDeployConfig" basedir="." default="">
+  <macrodef name="loadDeployConfig">
+    <sequential>
+      <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+      <property environment="env"/>
+
+      <echo message="Load user properties from ${org.bedework.user.build.properties}" />
+
+      <!-- Load user property definition overrides -->
+      <property file="${org.bedework.user.build.properties}" />
+
+      <property name="org.bedework.config.properties"
+                location="${org.bedework.config.base}/configs/democal.properties" />
+      <property name="org.bedework.config.options"
+                location="${org.bedework.config.base}/configs/democal.options.xml" />
+
+      <echo message="==========================================================" />
+      <echo message="Use config properties ${org.bedework.config.properties}" />
+      <property file="${org.bedework.config.properties}" />
+
+      <!-- Load the run time options and define some properties based on some
+           of the values -->
+
+      <xmlproperty file="${org.bedework.config.options}"/>
+
+      <if>
+        <isset property="bedework-options.org.bedework.global.portal.platform"/>
+        <then>
+          <property name="org.bedework.global.portal.platform"
+                    value="${bedework-options.org.bedework.global.portal.platform}" />
+
+          <property name="org.bedework.config.portal.home"
+                    value="${org.bedework.configurations.home}/.portal/${org.bedework.global.portal.platform}" />
+
+          <property name="org.bedework.config.portal.common.home"
+                    value="${org.bedework.configurations.home}/.portal/common-resources" />
+
+          <echo message="******************* load from ${org.bedework.config.portal.home}/portal.properties" />
+          <property file="${org.bedework.config.portal.home}/portal.properties" />
+        </then>
+        <else>
+          <echo message="******************* load from ${org.bedework.configurations.home}/.standalone/standalone.properties" />
+          <property file="${org.bedework.configurations.home}/.platform/standalone.properties" />
+        </else>
+      </if>
+
+      <if>
+        <isset property="org.bedework.global.build.ear"/>
+        <then>
+          <property file="${org.bedework.configurations.home}/.platform/ear.properties" />
+        </then>
+      </if>
+
+      <property name="org.bedework.global.version"
+                value="${bedework-options.org.bedework.global.version}" />
+
+      <property name="org.bedework.global.directory.browsing.disallowed"
+                value="${bedework-options.org.bedework.syspars.directoryBrowsingDisallowed}" />
+    </sequential>
+  </macrodef>
+</project>

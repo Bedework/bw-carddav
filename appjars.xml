@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     Fetch or define extra jars for this application
+     =================================================================== -->
+<project name="extraJars" basedir="." default="">
+  <macrodef name="getExtraJars">
+    <sequential>
+      <delete dir="${org.bedework.temp.extrajars.dir}" />
+      <mkdir dir="${org.bedework.temp.extrajars.dir}" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="bw-carddavsvr" version="3.5"
+              projecthome="${project.home}" />
+    </sequential>
+ </macrodef>
+</project>

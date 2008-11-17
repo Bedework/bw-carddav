@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file is imported by buildwar.xml and adds a target
+        doPortal
+     which will be invoked by the buildwar targets.
+     =================================================================== -->
+
+<project name="bedework.portalWar" default="doPortal" >
+  <target name="doPortal" >
+    <!-- Add common portlet files -->
+
+    <copy todir="${app.dest.lib}"
+          file="${org.bedework.appjar.portals-bridges-common}"/>
+    <copy todir="${app.dest.lib}"
+          file="${org.bedework.appjar.portals-bridges-struts-1.2.7}"/>
+
+    <!-- Use generic bedework portlet tld -->
+    <copy todir="${app.dest.webinf}/tlds"
+          overwrite="yes"
+          failonerror="no" >
+      <fileset dir="${app.root.dir}/resources/portlet" >
+        <include name="*.tld"/>
+      </fileset>
+    </copy>
+
+    <copy todir="${app.dest.webinf}"
+          file="${org.bedework.deploy.type.dir}/portlet/struts-portlet-config.xml"
+          overwrite="yes"
+          failonerror="no" />
+
+    <copy todir="${app.dest.webinf}"
+          file="${org.bedework.deploy.type.dir}/portlet/portlet.xml"
+          overwrite="yes"
+          failonerror="no" >
+      <filterset refid="property.filters" />
+    </copy>
+
+    <!-- Add the portal bridge controller def -->
+    <replace file="${app.dest.webinf}/struts-config.xml">
+      <replacetoken><![CDATA[<!-- portlet controller def here -->]]></replacetoken>
+      <replacevalue><![CDATA[<controller pagePattern="$M$P" inputForward="true"
+              processorClass="org.apache.portals.bridges.struts.PortletRequestProcessor"/>]]>
+      </replacevalue>
+    </replace>
+
+    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.uportal}"/>
+
+    <!-- Add the portlet servlet mapping -->
+    <replace file="${app.temp.web.xml}">
+      <replacetoken><![CDATA[<!-- portlet servlet mapping here -->]]></replacetoken>
+      <replacevalue><![CDATA[<servlet-mapping>
+    <servlet-name>@PORTLET-NAME@</servlet-name>
+    <url-pattern>/@PORTLET-NAME@/*</url-pattern>
+  </servlet-mapping>]]>
+      </replacevalue>
+    </replace>
+
+  </target>
+</project>

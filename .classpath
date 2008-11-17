@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="server/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libcache/commons-httpclient-3.0.jar"/>
+	<classpathentry kind="lib" path="libcache/gdata-calendar-1.0.jar"/>
+	<classpathentry kind="lib" path="libcache/gdata-client-1.0.jar"/>
+	<classpathentry kind="lib" path="libcache/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="libcache/servletapi-2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/bedework"/>
+	<classpathentry kind="output" path="bin/bw-carddav"/>
+</classpath>

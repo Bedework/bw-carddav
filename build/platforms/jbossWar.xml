@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file is imported by buildwar.xml and adds a target
+        doPortal
+     which will be invoked by the buildwar targets.
+     =================================================================== -->
+
+<project name="bedework.platformWar" default="doPlatform" >
+  <target name="doPlatform" >
+    <!-- ===============================================================
+         We create an updated jboss-web.xml file (for jboss) and a ear
+         =============================================================== -->
+
+    <copy todir="${app.dest.webinf}"
+          file="${app.sou.dir}/war/WEB-INF/jboss-web.xml">
+      <filterset refid="property.filters" />
+    </copy>
+
+    <if>
+      <isset property="propval.app.virtual.host" />
+      <then>
+        <replace file="${app.dest.webinf}/jboss-web.xml">
+          <replacetoken><![CDATA[<!-- Virtual host -->]]></replacetoken>
+          <replacevalue><![CDATA[<virtual-host>@VIRTUAL-HOST@</virtual-host>
+          ]]>
+          </replacevalue>
+        </replace>
+        <replace file="${app.dest.webinf}/jboss-web.xml">
+          <replacefilter token="@VIRTUAL-HOST@" value="${propval.app.virtual.host}"/>
+        </replace>
+      </then>
+    </if>
+  </target>
+</project>
