@@ -39,6 +39,7 @@ public class WdCollection implements Comparable<WdCollection> {
 
   private String displayName;
 
+  /* The path up to and including this object */
   private String path;
 
   private AccessPrincipal owner;

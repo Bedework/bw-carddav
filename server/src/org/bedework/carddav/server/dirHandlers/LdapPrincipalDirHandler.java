@@ -222,7 +222,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      if (!searchChildren(path, true, ldapConfig.getFolderObjectClass())) {
+      if (!searchChildren(path, ldapConfig.getFolderObjectClass())) {
         return null;
       }
 

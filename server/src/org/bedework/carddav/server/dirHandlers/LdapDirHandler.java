@@ -157,29 +157,19 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
      * config - addressbookEntryIdAttr
      */
 
-    if (fullPath) {
-//      simpleProp(card, "SOURCE", path);
-      if (!path.equals("/")) {
-        int pos = path.length() - 1;
-        if (path.charAt(pos) == '/') {
-          pos --;
-        }
-        while (path.charAt(pos) != '/') {
-          pos --;
-        }
+    cdc.setName(stringAttr(attrs, ldapConfig.getFolderIdAttr()));
+    cdc.setDisplayName(stringAttr(attrs, ldapConfig.getFolderIdAttr()));
 
-        cdc.setPath(path.substring(0, pos));
-      }
+    if (fullPath) {
+      cdc.setPath(path);
+//      simpleProp(card, "SOURCE", path);
     } else {
 //      String cardName = stringAttr(attrs,
 //                                   ldapConfig.getAddressbookEntryIdAttr());
 //      simpleProp(card, "SOURCE",
 //                 urlHandler.prefix(path + cardName + ".vcf"));
-      cdc.setPath(path);
+      cdc.setPath(path + "/" + cdc.getName());
     }
-
-    cdc.setName(stringAttr(attrs, ldapConfig.getFolderIdAttr()));
-    cdc.setDisplayName(stringAttr(attrs, ldapConfig.getFolderIdAttr()));
 
     //private String path;
 
@@ -480,8 +470,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* Search for children of the given path.
    */
   protected boolean searchChildren(String path,
-                                 boolean isCollection,
-                                 String childClass) throws WebdavException {
+                                   String childClass) throws WebdavException {
     try {
       StringBuilder sb = new StringBuilder();
 
@@ -502,7 +491,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         throw new WebdavException("unimplemented");  // browse principals
       }
 
-      return search(makeAddrbookDn(path, isCollection),
+      return search(makeAddrbookDn(path, true),
                     ldapFilter, SearchControls.ONELEVEL_SCOPE);
     } catch (WebdavException wde) {
       throw wde;
@@ -527,6 +516,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     String[] elements = remPath.split("/");
 
     StringBuilder sb = new StringBuilder();
+    int i = elements.length - 1;
 
     if (isCollection) {
       sb.append(ldapConfig.getFolderIdAttr());
@@ -535,12 +525,15 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
 
     sb.append("=");
-    sb.append(elements[0]);
+    sb.append(elements[i]);
+    i--;
 
-    for (int i = 1; i < elements.length; i++) {
+    while (i >= 0) {
       sb.append(",");
       sb.append(ldapConfig.getFolderIdAttr());
+      sb.append("=");
       sb.append(elements[i]);
+      i--;
     }
 
     sb.append(",");

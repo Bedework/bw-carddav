@@ -57,8 +57,8 @@
             <groupIdAttr>ou</groupIdAttr>
             <groupMemberAttr>uniqueMember</groupMemberAttr>
 
-            <userBaseDn>ou=accounts, dc=bedework, dc=org</userBaseDn>
-            <groupBaseDn>ou=groups, dc=bedework, dc=org</groupBaseDn>
+            <userBaseDn>ou=accounts,dc=bedework,dc=org</userBaseDn>
+            <groupBaseDn>ou=groups,dc=bedework,dc=org</groupBaseDn>
 
             <authDn>uid=admin,ou=system</authDn>
             <authPw>secret</authPw>
@@ -84,15 +84,15 @@
                      uid,
                      uniqueMember</attrIds>
 
-            <folderObjectClass>orgnizationalUnit</folderObjectClass>
-            <addressbookObjectClass>orgnizationalUnit</addressbookObjectClass>
-            <addressbookEntryObjectClass>orgnizationalUnit</addressbookEntryObjectClass>
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
 
             <folderIdAttr>ou</folderIdAttr>
             <addressbookIdAttr>ou</addressbookIdAttr>
             <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
 
-            <homeDn>ou=users,ou=addrbooks, dc=bedework, dc=org</homeDn>
+            <homeDn>ou=users,ou=addrbooks,dc=bedework,dc=org</homeDn>
 
             <authDn>uid=admin,ou=system</authDn>
             <authPw>secret</authPw>
@@ -117,15 +117,15 @@
                      uid,
                      uniqueMember</attrIds>
 
-            <folderObjectClass>orgnizationalUnit</folderObjectClass>
-            <addressbookObjectClass>orgnizationalUnit</addressbookObjectClass>
-            <addressbookEntryObjectClass>orgnizationalUnit</addressbookEntryObjectClass>
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
 
             <folderIdAttr>ou</folderIdAttr>
             <addressbookIdAttr>ou</addressbookIdAttr>
             <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
 
-            <homeDn>ou=public,ou=addrbooks, dc=bedework, dc=org</homeDn>
+            <homeDn>ou=public,ou=addrbooks,dc=bedework,dc=org</homeDn>
 
             <authDn>uid=admin,ou=system</authDn>
             <authPw>secret</authPw>

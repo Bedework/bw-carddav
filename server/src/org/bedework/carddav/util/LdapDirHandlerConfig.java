@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.util;
 
+import java.util.ArrayList;
+
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information via ldap.
  *
@@ -176,11 +178,19 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   public void setAttrIds(String val)  {
     attrIds = val;
 
-    attrIdList = attrIds.split(",");
+    String[] alist = attrIds.split("[,\\s]");
 
-    for (int i = 0; i < attrIdList.length; i++) {
-      attrIdList[i] = attrIdList[i].trim();
+    ArrayList<String> al = new ArrayList<String>();
+
+    for (int i = 0; i < alist.length; i++) {
+      String a = alist[i].trim();
+
+      if (a.length() > 0) {
+        al.add(a);
+      }
     }
+
+    attrIdList = al.toArray(new String[0]);
   }
 
   /* *
