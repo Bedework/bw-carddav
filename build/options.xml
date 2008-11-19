@@ -26,7 +26,9 @@
                to explicitly name all attributes on fetch.
               -->
             <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
-                     homePhone,mail,mobile,modifyTimestamp,o,org
+                     homePhone,mail,mobile,modifyTimestamp,o,
+                     objectClass,
+                     org
                      ou,
                      pager,
                      sn,
@@ -76,7 +78,9 @@
             <baseDn>dc=bedework, dc=org</baseDn>
 
             <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
-                     homePhone,mail,mobile,modifyTimestamp,o,org
+                     homePhone,mail,mobile,modifyTimestamp,o,
+                     objectClass,
+                     org
                      ou,
                      pager,
                      sn,
@@ -85,7 +89,7 @@
                      uniqueMember</attrIds>
 
             <folderObjectClass>organizationalUnit</folderObjectClass>
-            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookObjectClass>addressBook</addressbookObjectClass>
             <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
 
             <folderIdAttr>ou</folderIdAttr>
@@ -118,7 +122,7 @@
                      uniqueMember</attrIds>
 
             <folderObjectClass>organizationalUnit</folderObjectClass>
-            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookObjectClass>addressBook</addressbookObjectClass>
             <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
 
             <folderIdAttr>ou</folderIdAttr>

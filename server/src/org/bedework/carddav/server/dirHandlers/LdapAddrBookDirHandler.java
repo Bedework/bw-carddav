@@ -125,7 +125,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      if (!searchChildren(path, ldapConfig.getAddressbookEntryObjectClass())) {
+      if (!searchChildren(path, true)) {
         return null;
       }
 
@@ -226,7 +226,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      if (!searchChildren(path, ldapConfig.getFolderObjectClass())) {
+      if (!searchChildren(path, false)) {
         return null;
       }
 

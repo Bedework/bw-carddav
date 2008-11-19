@@ -43,6 +43,7 @@ import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -145,6 +146,24 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                                                boolean fullPath,
                                                Attributes attrs) throws WebdavException {
     CarddavCollection cdc = new CarddavCollection();
+
+    Attribute oc = attrs.get("objectClass");
+    if (oc == null) {
+      throw new WebdavException("Need object class attribute");
+    }
+
+    try {
+      NamingEnumeration<? extends Object> ocs = oc.getAll();
+      while (ocs.hasMore()) {
+        String soc = (String)ocs.next();
+        if (soc.equals(ldapConfig.getAddressbookObjectClass())) {
+          cdc.setAddressBook(true);
+          break;
+        }
+      }
+    } catch (NamingException ne) {
+      throw new WebdavException(ne);
+    }
 
     cdc.setCreated(stringAttr(attrs, "createTimestamp"));
     cdc.setLastmod(stringAttr(attrs, "modifyTimestamp"));
@@ -320,8 +339,19 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     Vcard card = new Vcard();
 
-    //card.setCreated(stringAttr(attrs, "createTimestamp"));
+    card.setCreated(stringAttr(attrs, "createTimestamp"));
     card.setLastmod(stringAttr(attrs, "modifyTimestamp"));
+
+    if (card.getLastmod() == null) {
+      card.setLastmod(card.getCreated());
+    }
+
+    /* The name of this card comes from the attribute specified in the
+     * config - addressbookEntryIdAttr
+     */
+
+    card.setName(stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr()) + ".vcf");
+    //card.setDisplayName(stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr()));
 
     /* The name of this card comes from the attribute specified in the
      * config - addressbookEntryIdAttr
@@ -330,10 +360,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     if (fullPath) {
       simpleProp(card, "SOURCE", path);
     } else {
-      String cardName = stringAttr(attrs,
-                                   ldapConfig.getAddressbookEntryIdAttr());
       simpleProp(card, "SOURCE",
-                 urlHandler.prefix(path + cardName + ".vcf"));
+                 urlHandler.prefix(card.getName()));
     }
 
     simpleProp(card, "FN", attrs, "cn");
@@ -470,13 +498,21 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* Search for children of the given path.
    */
   protected boolean searchChildren(String path,
-                                   String childClass) throws WebdavException {
+                                   boolean cards) throws WebdavException {
     try {
       StringBuilder sb = new StringBuilder();
 
-      sb.append("(objectClass=");
-      sb.append(childClass);
-      sb.append(")");
+      if (cards) {
+        sb.append("(objectClass=");
+        sb.append(ldapConfig.getAddressbookEntryObjectClass());
+        sb.append(")");
+      } else {
+        sb.append("(|(objectClass=");
+        sb.append(ldapConfig.getFolderObjectClass());
+        sb.append(")(objectClass=");
+        sb.append(ldapConfig.getAddressbookObjectClass());
+        sb.append("))");
+      }
 
       String ldapFilter = sb.toString();
 
@@ -513,6 +549,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected String makeAddrbookDn(String path,
                                  boolean isCollection) throws WebdavException {
     String remPath = path.substring(dhConfig.getPathPrefix().length() + 1);
+    if (remPath.endsWith(".vcf")) {
+      remPath = remPath.substring(0, remPath.length() - 4);
+    }
+
     String[] elements = remPath.split("/");
 
     StringBuilder sb = new StringBuilder();

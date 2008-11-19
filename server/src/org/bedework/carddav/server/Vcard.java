@@ -89,6 +89,14 @@ public class Vcard {
 
       return this;
     }
+
+    public String toString() {
+      StringBuilder sb = new StringBuilder();
+
+      output(sb);
+
+      return sb.toString();
+    }
   }
 
   public static class Property {
@@ -199,6 +207,14 @@ public class Vcard {
       sb.append(value);
       sb.append("/n");
     }
+
+    public String toString() {
+      StringBuilder sb = new StringBuilder();
+
+      output(sb);
+
+      return sb.toString();
+    }
   }
 
   private WebdavUserNode owner;
@@ -206,6 +222,8 @@ public class Vcard {
   private String name;
 
   private CarddavCollection parent;
+
+  private String created;
 
   private Collection<Property> props;
 
@@ -241,6 +259,20 @@ public class Vcard {
    */
   public WebdavUserNode getOwner() {
     return owner;
+  }
+
+  /**
+   * @param val
+   */
+  public void setCreated(String val) {
+    created = val;
+  }
+
+  /**
+   * @return String created
+   */
+  public String getCreated() {
+    return created;
   }
 
   /**
@@ -399,8 +431,8 @@ public class Vcard {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("BEGIN: VCARD");
-    sb.append("VERSION:4.0");
+    sb.append("BEGIN: VCARD\n");
+    sb.append("VERSION:4.0\n");
 
     if (props != null) {
       for (Property p: props) {
@@ -412,10 +444,14 @@ public class Vcard {
       }
     }
 
-    sb.append("END: VCARD");
+    sb.append("END: VCARD\n\n");
 
     strForm = sb.toString();
 
     return strForm;
+  }
+
+  public String toString() {
+    return output();
   }
 }

@@ -173,6 +173,10 @@ public class CarddavURI {
       return principal.prefix;
     }
 
+    if (entity != null) {
+      return col.getPath() + "/" + entity.getName();
+    }
+
     return col.getPath();
   }
 
@@ -180,10 +184,11 @@ public class CarddavURI {
    * @return String
    */
   public String getUri() {
-    if (entityName == null) {
-      return getPath();
-    }
-    return getPath() + "/" + entityName;
+//    if (entityName == null) {
+//      return getPath();
+//    }
+//    return getPath() + "/" + entityName;
+    return getPath();
   }
 
   /**
