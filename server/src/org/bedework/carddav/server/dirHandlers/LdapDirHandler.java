@@ -29,15 +29,17 @@ import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.Vcard;
 import org.bedework.carddav.server.Vcard.Param;
 import org.bedework.carddav.server.Vcard.Property;
+import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
-import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.PrincipalInfo;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -74,6 +76,61 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     super.init(cdConfig, dhConfig, urlHandler);
 
     ldapConfig = (LdapDirHandlerConfig)dhConfig;
+  }
+
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#getCard(java.lang.String, java.lang.String)
+   */
+  public Vcard getCard(String path, String name) throws WebdavException {
+    verifyPath(path);
+
+    try {
+      openContext();
+
+      String fullPath = path + "/" + name;
+
+      Attributes attrs = getObject(fullPath, false);
+
+      if (attrs == null) {
+        return null;
+      }
+
+      return makeVcard(fullPath, true, attrs);
+    } finally {
+      closeContext();
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#getCards(java.lang.String, org.bedework.carddav.server.filter.Filter)
+   */
+  public Collection<Vcard> getCards(String path,
+                                    Filter filter) throws WebdavException {
+    verifyPath(path);
+
+    try {
+      openContext();
+
+      if (!searchChildren(path, true)) {
+        return null;
+      }
+
+      Collection<Vcard> res = new ArrayList<Vcard>();
+
+      for (;;) {
+        Vcard card = nextCard(path, false);
+
+        if (card == null) {
+          break;
+        }
+
+        res.add(card);
+      }
+
+      return res;
+    } finally {
+      closeContext();
+    }
   }
 
   /* ====================================================================
@@ -147,22 +204,28 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                                                Attributes attrs) throws WebdavException {
     CarddavCollection cdc = new CarddavCollection();
 
-    Attribute oc = attrs.get("objectClass");
-    if (oc == null) {
-      throw new WebdavException("Need object class attribute");
-    }
-
-    try {
-      NamingEnumeration<? extends Object> ocs = oc.getAll();
-      while (ocs.hasMore()) {
-        String soc = (String)ocs.next();
-        if (soc.equals(ldapConfig.getAddressbookObjectClass())) {
-          cdc.setAddressBook(true);
-          break;
-        }
+    if (ldapConfig.getAddressBook()) {
+      /* This prefix is flagged as an address book. */
+      cdc.setAddressBook(true);
+    } else {
+      /* Look for our special object class */
+      Attribute oc = attrs.get("objectClass");
+      if (oc == null) {
+        throw new WebdavException("Need object class attribute");
       }
-    } catch (NamingException ne) {
-      throw new WebdavException(ne);
+
+      try {
+        NamingEnumeration<? extends Object> ocs = oc.getAll();
+        while (ocs.hasMore()) {
+          String soc = (String)ocs.next();
+          if (soc.equals(ldapConfig.getAddressbookObjectClass())) {
+            cdc.setAddressBook(true);
+            break;
+          }
+        }
+      } catch (NamingException ne) {
+        throw new WebdavException(ne);
+      }
     }
 
     cdc.setCreated(stringAttr(attrs, "createTimestamp"));
@@ -319,7 +382,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
              LOGO
              ORG                            organization name;
                                             one or more levels of org unit names
-             MEMBER
+             MEMBER                         urls of group members
              RELATED
              CATEGORIES
              NOTE                           description
@@ -327,7 +390,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
              REV
              SORT-STRING
              SOUND
-             UID
+             UID                            Use the source for the moment.
              URL
              VERSION                        Value="4.0"
              CLASS
@@ -337,63 +400,100 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
              CALURI
      */
 
-    Vcard card = new Vcard();
+    Vcard card;
+    try {
+      card = new Vcard();
 
-    card.setCreated(stringAttr(attrs, "createTimestamp"));
-    card.setLastmod(stringAttr(attrs, "modifyTimestamp"));
+      card.setCreated(stringAttr(attrs, "createTimestamp"));
+      card.setLastmod(stringAttr(attrs, "modifyTimestamp"));
 
-    if (card.getLastmod() == null) {
-      card.setLastmod(card.getCreated());
+      if (card.getLastmod() == null) {
+        card.setLastmod(card.getCreated());
+      }
+
+      /* The name of this card comes from the attribute specified in the
+       * config - addressbookEntryIdAttr
+       */
+
+      card.setName(stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr()) + ".vcf");
+      //card.setDisplayName(stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr()));
+
+      /* The name of this card comes from the attribute specified in the
+       * config - addressbookEntryIdAttr
+       */
+
+      String source;
+      if (fullPath) {
+        source = path;
+      } else {
+        source = urlHandler.prefix(card.getName());
+      }
+
+      simpleProp(card, "SOURCE", source);
+      // XXX Use the source as th euid as well.
+      simpleProp(card, "UID", source);
+
+      /* The kind for the card either comes from a custom attribute in the
+       * directory or from an explicitly defined kind in the configuration.
+       *
+       * We probably need some sort of objectClass to kind mapper.
+       */
+
+      if (ldapConfig.getCardKind() != null) {
+        simpleProp(card, "KIND", ldapConfig.getCardKind());
+      } else {
+        //simpleProp(card, "KIND", attrs, "cardkind");
+      }
+
+      simpleProp(card, "FN", attrs, "cn");
+      //N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
+      simpleProp(card, "NICKNAME", attrs, "displayName");
+
+      //ADR                            po box; apartment or suite; street;
+      //                               locality (e.g., city);
+      //                               region (e.g., state or province);
+      //                               postal code; country
+
+      paramProp(card, "HOME", "TEL", "TYPE", "voice", attrs, "homePhone");
+      //HOME  TEL         TYPE=msg
+      //HOME  TEL         TYPE=fax
+      paramProp(card, "HOME", "TEL", "TYPE", "cell", attrs, "mobile");
+      //HOME  TEL         TYPE=video
+      //HOME  TEL         TYPE=pager
+      paramProp(card, "WORK", "TEL", "TYPE", "voice", attrs, "telephoneNumber");
+      //WORK  TEL         TYPE=msg
+      paramProp(card, "WORK", "TEL", "TYPE", "fax", attrs, "facsimileTelephoneNumber");
+      //WORK  TEL         TYPE=cell
+      //WORK  TEL         TYPE=video
+      paramProp(card, "WORK", "TEL", "TYPE", "pager", attrs, "pager");
+
+      simpleProp(card, "EMAIL", attrs, "mail");
+
+      //ORG                            organization name;
+      //                               one or more levels of org unit names
+
+      simpleProp(card, "NOTE", attrs, "description");
+
+      /* If the groupMemberAttr is defined in the config try to fetch it.
+       * If we succeed add the values to the member property converted into
+       * carddav uris if possible.
+       */
+
+      if (ldapConfig.getGroupMemberAttr() != null) {
+        Attribute mbrAttr = attrs.get(ldapConfig.getGroupMemberAttr());
+
+        if (mbrAttr != null) {
+          NamingEnumeration<? extends Object> mbrs = mbrAttr.getAll();
+          while (mbrs.hasMore()) {
+            String mbr = (String)mbrs.next();
+          }
+        }
+      }
+
+      return card;
+    } catch (NamingException ne) {
+      throw new WebdavException(ne);
     }
-
-    /* The name of this card comes from the attribute specified in the
-     * config - addressbookEntryIdAttr
-     */
-
-    card.setName(stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr()) + ".vcf");
-    //card.setDisplayName(stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr()));
-
-    /* The name of this card comes from the attribute specified in the
-     * config - addressbookEntryIdAttr
-     */
-
-    if (fullPath) {
-      simpleProp(card, "SOURCE", path);
-    } else {
-      simpleProp(card, "SOURCE",
-                 urlHandler.prefix(card.getName()));
-    }
-
-    simpleProp(card, "FN", attrs, "cn");
-    //N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
-    simpleProp(card, "NICKNAME", attrs, "displayName");
-
-    //ADR                            po box; apartment or suite; street;
-    //                               locality (e.g., city);
-    //                               region (e.g., state or province);
-    //                               postal code; country
-
-    paramProp(card, "HOME", "TEL", "TYPE", "voice", attrs, "homePhone");
-    //HOME  TEL         TYPE=msg
-    //HOME  TEL         TYPE=fax
-    paramProp(card, "HOME", "TEL", "TYPE", "cell", attrs, "mobile");
-    //HOME  TEL         TYPE=video
-    //HOME  TEL         TYPE=pager
-    paramProp(card, "WORK", "TEL", "TYPE", "voice", attrs, "telephoneNumber");
-    //WORK  TEL         TYPE=msg
-    paramProp(card, "WORK", "TEL", "TYPE", "fax", attrs, "facsimileTelephoneNumber");
-    //WORK  TEL         TYPE=cell
-    //WORK  TEL         TYPE=video
-    paramProp(card, "WORK", "TEL", "TYPE", "pager", attrs, "pager");
-
-    simpleProp(card, "EMAIL", attrs, "mail");
-
-    //ORG                            organization name;
-    //                               one or more levels of org unit names
-
-    simpleProp(card, "NOTE", attrs, "description");
-
-    return card;
   }
 
   private void simpleProp(Vcard card, String propname,
@@ -455,11 +555,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected Attributes getObject(String path,
                              boolean isCollection) throws WebdavException {
     try {
-      if (!path.startsWith(dhConfig.getPathPrefix() + "/")) {
-        // Not ours
-        throw new WebdavException("Invalid href for this handler");
-      }
-
       PrincipalInfo pi = null;
       try {
         pi = getPrincipalInfo(path);
@@ -471,13 +566,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       if (pi != null) {
         // Do principals
 
-        if (pi.whoType == Ace.whoTypeUser) {
-          dn = makeUserDn(pi.who);
-        } else if (pi.whoType == Ace.whoTypeGroup) {
-          dn = makeGroupDn(pi.who);
-        } else {
-          throw new WebdavException("unimplemented");
-        }
+        dn = makePrincipalDn(pi.who);
       } else {
         // Not principals - split the path after the suffix and turn into a series
         // of folders
@@ -505,6 +594,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       if (cards) {
         sb.append("(objectClass=");
         sb.append(ldapConfig.getAddressbookEntryObjectClass());
+        sb.append(")");
+      } else if (ldapConfig.getFolderObjectClass() == null) {
+        sb.append("(objectClass=");
+        sb.append(ldapConfig.getAddressbookObjectClass());
         sb.append(")");
       } else {
         sb.append("(|(objectClass=");
@@ -536,18 +629,17 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  protected String makeUserDn(String account) {
-    return ldapConfig.getUserIdAttr() + account + "," +
-                       ldapConfig.getUserBaseDn();
-  }
-
-  protected String makeGroupDn(String account) {
-    return ldapConfig.getGroupIdAttr() + account + "," +
-                       ldapConfig.getGroupBaseDn();
+  protected String makePrincipalDn(String account) {
+    return ldapConfig.getPrincipalIdAttr() + account + "," +
+                       ldapConfig.getBaseDn();
   }
 
   protected String makeAddrbookDn(String path,
                                  boolean isCollection) throws WebdavException {
+    if (dhConfig.getPathPrefix().equals(path)) {
+      return ldapConfig.getBaseDn();
+    }
+
     String remPath = path.substring(dhConfig.getPathPrefix().length() + 1);
     if (remPath.endsWith(".vcf")) {
       remPath = remPath.substring(0, remPath.length() - 4);
@@ -577,7 +669,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
 
     sb.append(",");
-    sb.append(ldapConfig.getHomeDn());
+    sb.append(ldapConfig.getBaseDn());
 
     return sb.toString();
   }

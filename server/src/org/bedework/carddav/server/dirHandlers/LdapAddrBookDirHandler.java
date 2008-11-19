@@ -28,10 +28,8 @@ package org.bedework.carddav.server.dirHandlers;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.Vcard;
-import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
-import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.webdav.WdCollection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -46,8 +44,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 public class LdapAddrBookDirHandler extends LdapDirHandler {
-  private LdapDirHandlerConfig ldapConfig;
-
   DirContext ctx;
   String searchBase; // searchBase which resulted in sresult;
 
@@ -61,8 +57,6 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
                    DirHandlerConfig dhConfig,
                    UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
-
-    ldapConfig = (LdapDirHandlerConfig)dhConfig;
   }
 
   /* ====================================================================
@@ -96,55 +90,6 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   public void updateCard(String path,
                          Vcard card) throws WebdavException {
     throw new WebdavException("unimplemented");
-  }
-
-  public Vcard getCard(String path, String name) throws WebdavException {
-    verifyPath(path);
-
-    try {
-      openContext();
-
-      String fullPath = path + "/" + name;
-
-      Attributes attrs = getObject(fullPath, false);
-
-      if (attrs == null) {
-        return null;
-      }
-
-      return makeVcard(fullPath, true, attrs);
-    } finally {
-      closeContext();
-    }
-  }
-
-  public Collection<Vcard> getCards(String path,
-                                    Filter filter) throws WebdavException {
-    verifyPath(path);
-
-    try {
-      openContext();
-
-      if (!searchChildren(path, true)) {
-        return null;
-      }
-
-      Collection<Vcard> res = new ArrayList<Vcard>();
-
-      for (;;) {
-        Vcard card = nextCard(path, false);
-
-        if (card == null) {
-          break;
-        }
-
-        res.add(card);
-      }
-
-      return res;
-    } finally {
-      closeContext();
-    }
   }
 
   /* (non-Javadoc)

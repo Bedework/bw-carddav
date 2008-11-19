@@ -22,51 +22,78 @@
             <providerUrl>ldap://localhost:10389/</providerUrl>
             <baseDn>dc=bedework, dc=org</baseDn>
 
-            <!-- We need to get operational attributes from the directory. This requires us
-               to explicitly name all attributes on fetch.
+            <!-- We need to get operational attributes from the directory.
+               This requires us to explicitly name all attributes on fetch.
+               This element allows us to name EXTRA attributes from the default
+               list provided by the impleemntation.
               -->
-            <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
-                     homePhone,mail,mobile,modifyTimestamp,o,
-                     objectClass,
-                     org
-                     ou,
-                     pager,
-                     sn,
-                     telephoneNumber,
-                     uid,
-                     uniqueMember</attrIds>
+            <attrIds></attrIds>
 
-            <!-- Map the kind of object onto an object class. We have to handle
-                 some or all of the below. A handler does not need to handle all
-                 of these.
-
-                Principal component above the user e.g. /principal/users is probably
-                matched onto a specific baseDn
-
-                User principal, e.g. /principals/users/fred - inetOrgPerson
-\               Group principal, e.g. /principals/groups/freds - groupOfUniqueNames
-                Resource principal
-
-                user home e.g. /users/douglm
-                folder e.g. /users/douglm/mystuff
-                address book e.g. /users/douglm/mystuff/addressbook
-                card e.g /users/douglm/mystuff/addressbook/arlen.vcf
-             -->
-            <userObjectClass>inetOrgPerson</userObjectClass>
-            <groupObjectClass>groupOfUniqueNames</groupObjectClass>
-
-            <userIdAttr>uid</userIdAttr>
-            <groupIdAttr>ou</groupIdAttr>
-            <groupMemberAttr>uniqueMember</groupMemberAttr>
-
-            <userBaseDn>ou=accounts,dc=bedework,dc=org</userBaseDn>
-            <groupBaseDn>ou=groups,dc=bedework,dc=org</groupBaseDn>
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
 
             <authDn>uid=admin,ou=system</authDn>
             <authPw>secret</authPw>
 
             <debug>true</debug>
           </principal-dirHandler>
+
+          <user-principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals/accounts</pathPrefix>
+            <addressBook>true</addressBook>
+
+            <className>org.bedework.carddav.server.dirHandlers.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>ou=accounts,dc=bedework,dc=org</baseDn>
+
+            <attrIds></attrIds>
+
+            <cardKind>individual</cardKind>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>uid</addressbookEntryIdAttr>
+
+            <principalIdAttr>uid</principalIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </user-principal-dirHandler>
+
+          <group-principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals/groups</pathPrefix>
+            <addressBook>true</addressBook>
+
+            <className>org.bedework.carddav.server.dirHandlers.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+
+            <baseDn>ou=groups,dc=bedework,dc=org</baseDn>
+
+            <attrIds></attrIds>
+
+            <cardKind>group</cardKind>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>groupOfUniqueNames</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <principalIdAttr>cn</principalIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </group-principal-dirHandler>
 
           <!-- handle the user address book hierarchy -->
           <user-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
@@ -75,28 +102,19 @@
 
             <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
             <providerUrl>ldap://localhost:10389/</providerUrl>
-            <baseDn>dc=bedework, dc=org</baseDn>
 
-            <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
-                     homePhone,mail,mobile,modifyTimestamp,o,
-                     objectClass,
-                     org
-                     ou,
-                     pager,
-                     sn,
-                     telephoneNumber,
-                     uid,
-                     uniqueMember</attrIds>
+            <baseDn>ou=users,ou=addrbooks,dc=bedework,dc=org</baseDn>
+
+            <attrIds></attrIds>
 
             <folderObjectClass>organizationalUnit</folderObjectClass>
-            <addressbookObjectClass>addressBook</addressbookObjectClass>
-            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
-
             <folderIdAttr>ou</folderIdAttr>
-            <addressbookIdAttr>ou</addressbookIdAttr>
-            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
 
-            <homeDn>ou=users,ou=addrbooks,dc=bedework,dc=org</homeDn>
+            <addressbookObjectClass>addressBook</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
 
             <authDn>uid=admin,ou=system</authDn>
             <authPw>secret</authPw>
@@ -110,16 +128,10 @@
 
             <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
             <providerUrl>ldap://localhost:10389/</providerUrl>
-            <baseDn>dc=bedework, dc=org</baseDn>
 
-            <attrIds>cn,createTimestamp,description,displayName,facsimileTelephoneNumber,
-                     homePhone,mail,mobile,modifyTimestamp,o,org
-                     ou,
-                     pager,
-                     sn,
-                     telephoneNumber,
-                     uid,
-                     uniqueMember</attrIds>
+            <baseDn>ou=public,ou=addrbooks,dc=bedework,dc=org</baseDn>
+
+            <attrIds></attrIds>
 
             <folderObjectClass>organizationalUnit</folderObjectClass>
             <addressbookObjectClass>addressBook</addressbookObjectClass>
@@ -128,8 +140,6 @@
             <folderIdAttr>ou</folderIdAttr>
             <addressbookIdAttr>ou</addressbookIdAttr>
             <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
-
-            <homeDn>ou=public,ou=addrbooks,dc=bedework,dc=org</homeDn>
 
             <authDn>uid=admin,ou=system</authDn>
             <authPw>secret</authPw>

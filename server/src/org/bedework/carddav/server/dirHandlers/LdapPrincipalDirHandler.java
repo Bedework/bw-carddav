@@ -28,7 +28,6 @@ package org.bedework.carddav.server.dirHandlers;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.Vcard;
-import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
@@ -114,31 +113,6 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   public void updateCard(String path,
                          Vcard card) throws WebdavException {
     throw new WebdavException("unimplemented");
-  }
-
-  public Vcard getCard(String path, String name) throws WebdavException {
-    verifyPath(path);
-    return null;
-  }
-
-  public Collection<Vcard> getCards(String path,
-                                    Filter filter) throws WebdavException {
-    verifyPath(path);
-
-    throw new WebdavException("unimplemented");
-    /*
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("(&(");
-    sb.append(ldapConfig.getSearchAttr());
-    sb.append("=");
-    sb.append(val);
-    sb.append("))(objectClass=");
-    sb.append(ldapConfig.getSearchClass());
-    sb.append(")");
-
-    String ldapFilter = sb.toString();
-*/
   }
 
   /* (non-Javadoc)

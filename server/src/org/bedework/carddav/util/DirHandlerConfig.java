@@ -32,6 +32,8 @@ package org.bedework.carddav.util;
 public class DirHandlerConfig {
   private String pathPrefix;
 
+  private boolean addressBook;
+
   private String className;
 
   private boolean debug;
@@ -61,6 +63,23 @@ public class DirHandlerConfig {
    */
   public String getPathPrefix() {
     return pathPrefix;
+  }
+
+  /** True if this prefix represents an addressbook. Only required if we have no
+   * way of adding objectClasses or attributes to the directory itself.
+   *
+   * @param val
+   */
+  public void setAddressBook(boolean val)  {
+    addressBook = val;
+  }
+
+  /** Is debugging on?
+   *
+   * @return boolean val
+   */
+  public boolean getAddressBook()  {
+    return addressBook;
   }
 
   /** Set the interface implementation

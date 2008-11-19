@@ -173,6 +173,10 @@ public class CarddavColNode extends CarddavNode {
         }
       }
 
+      if (!c.getAddressBook()) {
+        return res;
+      }
+
       Collection<Vcard> cards = getSysi().getCards(c, null);
 
       if (cards != null) {

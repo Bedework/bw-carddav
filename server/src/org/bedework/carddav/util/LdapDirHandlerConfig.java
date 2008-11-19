@@ -26,6 +26,7 @@
 package org.bedework.carddav.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information via ldap.
@@ -46,11 +47,29 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
 
   private String attrIds;
 
-  private String[] attrIdList;
+  private String[] defaultAttrIdList = {
+        "cn",
+        "createTimestamp",
+        "description",
+        "displayName",
+        "facsimileTelephoneNumber",
+        "homePhone",
+        "mail",
+        "mobile",
+        "modifyTimestamp",
+        "o",
+        "objectClass",
+        "org",
+        "ou",
+        "pager",
+        "sn",
+        "telephoneNumber",
+        "uid",
+        "uniqueMember"};
 
-  private String userObjectClass = "posixAccount";
+  private String[] attrIdList = defaultAttrIdList;
 
-  private String groupObjectClass = "groupOfUniqueNames";
+  private String cardKind;
 
   private String folderObjectClass;
 
@@ -58,9 +77,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
 
   private String addressbookEntryObjectClass;
 
-  private String userIdAttr = "cn";
-
-  private String groupIdAttr = "cn";
+  private String principalIdAttr;
 
   private String folderIdAttr = "ou";
 
@@ -69,12 +86,6 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   private String addressbookEntryIdAttr = "cn";
 
   private String groupMemberAttr;
-
-  private String userBaseDn;
-
-  private String groupBaseDn;
-
-  private String homeDn;
 
   private String authDn;
 
@@ -180,7 +191,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
 
     String[] alist = attrIds.split("[,\\s]");
 
-    ArrayList<String> al = new ArrayList<String>();
+    ArrayList<String> al = new ArrayList<String>(Arrays.asList(defaultAttrIdList));
 
     for (int i = 0; i < alist.length; i++) {
       String a = alist[i].trim();
@@ -209,36 +220,20 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     return attrIdList;
   }
 
-  /** An object class which identifies an entry as a user
+  /** The 'kind' property value
    *
    * @param val
    */
-  public void setUserObjectClass(String val)  {
-    userObjectClass = val;
+  public void setCardKind(String val)  {
+    cardKind = val;
   }
 
   /** An object class which identifies an entry as a user
    *
    * @return String val
    */
-  public String getUserObjectClass()  {
-    return userObjectClass;
-  }
-
-  /** An object class which identifies an entry as a group
-   *
-   * @param val
-   */
-  public void setGroupObjectClass(String val)  {
-    groupObjectClass = val;
-  }
-
-  /** An object class which identifies an entry as a user
-   *
-   * @return String val
-   */
-  public String getGroupObjectClass()  {
-    return groupObjectClass;
+  public String getCardKind()  {
+    return cardKind;
   }
 
   /**
@@ -289,36 +284,20 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     return addressbookEntryObjectClass;
   }
 
-  /** Attribute we search for to get a user
+  /** Attribute we search for to get a principal
    *
    * @param val
    */
-  public void setUserIdAttr(String val)  {
-    userIdAttr = val;
-  }
-
-  /** Attribute we search for to get a user
-   *
-   * @return String val
-   */
-  public String getUserIdAttr()  {
-    return userIdAttr;
-  }
-
-  /** Attribute we search for to get a group
-   *
-   * @param val
-   */
-  public void setGroupIdAttr(String val)  {
-    groupIdAttr = val;
+  public void setPrincipalIdAttr(String val)  {
+    principalIdAttr = val;
   }
 
   /** Attribute we search for to get a group
    *
    * @return String val
    */
-  public String getGroupIdAttr()  {
-    return groupIdAttr;
+  public String getPrincipalIdAttr()  {
+    return principalIdAttr;
   }
 
   /**
@@ -383,54 +362,6 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    */
   public String getGroupMemberAttr()  {
     return groupMemberAttr;
-  }
-
-  /** Base dn for user principals
-   *
-   * @param val
-   */
-  public void setUserBaseDn(String val)  {
-    userBaseDn = val;
-  }
-
-  /** Base dn for user principals
-   *
-   * @return String val
-   */
-  public String getUserBaseDn()  {
-    return userBaseDn;
-  }
-
-  /** Base dn for group principals
-   *
-   * @param val
-   */
-  public void setGroupBaseDn(String val)  {
-    groupBaseDn = val;
-  }
-
-  /**
-   *
-   * @return String val
-   */
-  public String getGroupBaseDn()  {
-    return groupBaseDn;
-  }
-
-  /** Base dn for address book collections
-   *
-   * @param val
-   */
-  public void setHomeDn(String val)  {
-    homeDn = val;
-  }
-
-  /**
-   *
-   * @return String val
-   */
-  public String getHomeDn()  {
-    return homeDn;
   }
 
   /** If we need an id to authenticate this is it.
