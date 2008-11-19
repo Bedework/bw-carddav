@@ -205,7 +205,7 @@ public class Vcard {
 
       sb.append(":");
       sb.append(value);
-      sb.append("/n");
+      sb.append("\n");
     }
 
     public String toString() {
@@ -431,7 +431,7 @@ public class Vcard {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("BEGIN: VCARD\n");
+    sb.append("BEGIN:VCARD\n");
     sb.append("VERSION:4.0\n");
 
     if (props != null) {
@@ -444,7 +444,7 @@ public class Vcard {
       }
     }
 
-    sb.append("END: VCARD\n\n");
+    sb.append("END:VCARD\n\n");
 
     strForm = sb.toString();
 

@@ -316,7 +316,7 @@ public boolean generatePropertyValue(QName tag,
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
    */
   public String getContentType() throws WebdavException {
-    return "text/calendar; charset=UTF-8";
+    return "text/directory; charset=UTF-8";
   }
 
   /* (non-Javadoc)
