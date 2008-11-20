@@ -30,6 +30,28 @@ import org.apache.log4j.Logger;
 /**
  */
 public class TextMatch {
+  /** "equals" - an exact match to the target string */
+  public static final int matchTypeEquals = 0;
+
+  /** "contains" - a substring match, matching anywhere within the target string */
+  public static final int matchTypeContains = 1;
+
+  /** "starts-with" - a substring match, matching only at the start of the target string */
+  public static final int matchTypeStartsWith = 2;
+
+  /** "ends-with"  private Boolean */
+  public static final int matchTypeEndsWith = 3;
+
+  /** valid match types */
+  public final static String[] matchTypes = {
+    "equals",
+    "contains",
+    "starts-with",
+    "ends-with"
+  };
+
+  private int matchType = matchTypeContains;
+
   private Boolean caseless; // null for defaulted
   private boolean negated;
   private String val;
@@ -42,8 +64,9 @@ public class TextMatch {
    * @param negated
    * @param val
    */
-  public TextMatch(Boolean caseless, boolean negated, String val) {
+  public TextMatch(Boolean caseless, int matchType, boolean negated, String val) {
     setCaseless(caseless);
+    setMatchType(matchType);
     setNegated(negated);
     setVal(val);
   }
@@ -86,6 +109,22 @@ public class TextMatch {
    */
   public Boolean getCaseless() {
     return caseless;
+  }
+
+  /**
+   *
+   * @param val int
+   */
+  public void setMatchType(int val) {
+    matchType = val;
+  }
+
+  /**
+   *
+   * @return int
+   */
+  public int getMatchType() {
+    return matchType;
   }
 
   /** Set negated state
@@ -132,6 +171,10 @@ public class TextMatch {
       sb.append(" caseless=");
       sb.append(caseless);
     }
+
+    sb.append(" match-type=");
+    sb.append(matchTypes[getMatchType()]);
+
     sb.append(">");
     log.debug(sb.toString());
 

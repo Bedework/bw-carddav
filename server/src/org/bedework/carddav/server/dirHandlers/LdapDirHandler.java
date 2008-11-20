@@ -30,6 +30,8 @@ import org.bedework.carddav.server.Vcard;
 import org.bedework.carddav.server.Vcard.Param;
 import org.bedework.carddav.server.Vcard.Property;
 import org.bedework.carddav.server.filter.Filter;
+import org.bedework.carddav.server.filter.PropFilter;
+import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
@@ -37,9 +39,12 @@ import org.bedework.carddav.util.LdapDirHandlerConfig;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.PrincipalInfo;
+import edu.rpi.sss.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -66,6 +71,139 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   private SearchControls constraints;
   private NamingEnumeration<SearchResult> sresult;
+
+  /* The data for this should probably come from the dirhandler config */
+
+  /* These mappers provide the mapping for simple one atttribute per property
+   * More complex mappings have to be dealt with in another manner.
+   */
+
+  protected static class VcardProperty {
+    String group;
+    String name;
+    String type;
+
+    VcardProperty(String name) {
+      this(null, name, null);
+    }
+
+    VcardProperty(String group, String name, String type) {
+      this.group = group;
+      this.name = name;
+      this.type = type;
+    }
+
+    public int hashCode() {
+      int hc = 0;
+
+      if (group != null) {
+        hc = group.hashCode();
+      }
+
+      if (type != null) {
+        hc*= type.hashCode();
+      }
+
+      return hc * name.hashCode();
+    }
+
+    public boolean equals(Object o) {
+      if (!(o instanceof VcardProperty)) {
+        return false;
+      }
+
+      VcardProperty that = (VcardProperty)o;
+
+      return (Util.compareStrings(group, that.group) == 0) &&
+             (Util.compareStrings(type, that.type) == 0) &&
+             (Util.compareStrings(name, that.name) == 0);
+    }
+  }
+
+  protected static final Map<VcardProperty, String> toLdapAttr =
+    new HashMap<VcardProperty, String>();
+  protected static final Map<String, VcardProperty> toVcardProperty =
+    new HashMap<String, VcardProperty>();
+
+  static {
+    //      SOURCE                         ldap url
+    //      NAME                           some sort of name
+    //      KIND                           "individual" for a single person,
+    //                                     "group" for a group of people,
+    //                                     "org" for an organization,
+    //                                     "location" */
+    addPropertyAttrMapping("FN", "cn");
+    //        N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
+    addPropertyAttrMapping("NICKNAME", "displayName");
+    //      PHOTO
+    //      BDAY
+    //      DDAY
+    //      BIRTH
+    //      DEATH
+    //      GENDER
+    //      ADR                            po box; apartment or suite; street;
+    //                                     locality (e.g., city);
+    //                                     region (e.g., state or province);
+    //                                     postal code; country
+    //      LABEL
+    addPropertyAttrMapping("HOME", "TEL", "voice", "homePhone");
+    //HOME  TEL         TYPE=msg
+    //HOME  TEL         TYPE=fax
+    addPropertyAttrMapping("HOME", "TEL", "cell", "mobile");
+    //HOME  TEL         TYPE=video
+    //HOME  TEL         TYPE=pager
+    addPropertyAttrMapping("WORK", "TEL", "voice", "telephoneNumber");
+    //WORK  TEL         TYPE=msg
+    addPropertyAttrMapping("WORK", "TEL", "fax", "facsimileTelephoneNumber");
+    //WORK  TEL         TYPE=cell
+    //WORK  TEL         TYPE=video
+    addPropertyAttrMapping("WORK", "TEL", "pager", "pager");
+    addPropertyAttrMapping("EMAIL", "mail");
+    addPropertyAttrMapping("IMPP", "IM");
+    //      LANG
+    //      TZ
+    //      GEO
+    addPropertyAttrMapping("TITLE", "title");
+    //      ROLE
+    //      LOGO
+    //      ORG                            organization name;
+    //                                     one or more levels of org unit names
+    //      MEMBER                         urls of group members
+    //      RELATED
+    //      CATEGORIES
+    addPropertyAttrMapping("NOTE", "description");
+    //      PRODID
+    //      REV
+    //      SORT-STRING
+    //      SOUND
+    //      UID                            Use the source for the moment.
+    //      URL
+    //      VERSION                        Value="4.0"
+    //      CLASS
+    //      KEY
+    //      FBURL
+    //      CALADRURI
+    //      CALURI
+  }
+
+  private static void addPropertyAttrMapping(String pname, String aname) {
+    addPropertyAttrMapping(null, pname, null, aname);
+  }
+
+  //private static void addPropertyAttrMapping(String group,
+  //                                           String pname,
+  //                                           String aname) {
+  //  addPropertyAttrMapping(group, pname, null, aname);
+  //}
+
+  private static void addPropertyAttrMapping(String group,
+                                             String pname,
+                                             String type,
+                                             String aname) {
+    VcardProperty vcp = new VcardProperty(group, pname, type);
+    toLdapAttr.put(vcp, aname);
+    toVcardProperty.put(aname, vcp);
+  }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
@@ -109,9 +247,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     verifyPath(path);
 
     try {
+      String ldapFilter = makeFilter(filter);
+
       openContext();
 
-      if (!searchChildren(path, true)) {
+      if (!searchChildren(path, ldapFilter, true)) {
         return null;
       }
 
@@ -125,6 +265,35 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         }
 
         res.add(card);
+      }
+
+      return res;
+    } finally {
+      closeContext();
+    }
+  }
+
+  public Collection<CarddavCollection> getCollections(String path)
+         throws WebdavException {
+    verifyPath(path);
+
+    try {
+      openContext();
+
+      if (!searchChildren(path, null, false)) {
+        return null;
+      }
+
+      Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
+
+      for (;;) {
+        CarddavCollection cdc = nextCdCollection(path, false);
+
+        if (cdc == null) {
+          break;
+        }
+
+        res.add(cdc);
       }
 
       return res;
@@ -496,6 +665,89 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
+  private String makeFilter(Filter filter) {
+    if (filter == null) {
+      return null;
+    }
+
+    Collection<PropFilter> pfilters = filter.getPropFilters();
+
+    if ((pfilters == null) || pfilters.isEmpty()) {
+      return null;
+    }
+
+    int testAllAnyProps = filter.getTestAllAny();
+
+    StringBuilder sb = new StringBuilder();
+
+    boolean first = true;
+
+    for (PropFilter pfltr: pfilters) {
+      String ptest = makePropFilterExpr(pfltr);
+
+      if (ptest == null) {
+        continue;
+      }
+
+      sb.append(ptest);
+
+      if (first) {
+        first = false;
+        continue;
+      }
+
+      sb.append(")");
+
+      if (testAllAnyProps == Filter.testAllOf) {
+        sb.insert(0, "(&");
+      } else {
+        sb.insert(0, "(|");
+      }
+    }
+
+    return sb.toString();
+  }
+
+
+  private String makePropFilterExpr(PropFilter filter) {
+    TextMatch tm = filter.getMatch();
+
+    if (tm == null) {
+      return null;
+    }
+
+    String name = filter.getName();
+
+    String attrId = toLdapAttr.get(new VcardProperty(name));
+
+    if (attrId == null) {
+      return null;
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("(");
+    sb.append(attrId);
+    sb.append("=\"");
+
+    int mt = tm.getMatchType();
+    if ((mt == TextMatch.matchTypeContains) ||
+        (mt == TextMatch.matchTypeEndsWith)) {
+      sb.append("*");
+    }
+
+    sb.append(tm.getVal());
+
+    if ((mt == TextMatch.matchTypeContains) ||
+        (mt == TextMatch.matchTypeStartsWith)) {
+      sb.append("*");
+    }
+
+    sb.append("\")");
+
+    return sb.toString();
+  }
+
   private void simpleProp(Vcard card, String propname,
                           String value) throws WebdavException {
     Property p = new Property(propname, value);
@@ -587,6 +839,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* Search for children of the given path.
    */
   protected boolean searchChildren(String path,
+                                   String filter,
                                    boolean cards) throws WebdavException {
     try {
       StringBuilder sb = new StringBuilder();
@@ -608,6 +861,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       String ldapFilter = sb.toString();
+
+      if (filter != null) {
+        ldapFilter = "(&" + ldapFilter + filter + ")";
+      }
 
       PrincipalInfo pi = null;
       try {

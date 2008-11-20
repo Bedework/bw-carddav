@@ -201,7 +201,7 @@ public class CarddavReportMethod extends ReportMethod {
         }
 
         filter = new Filter(debug);
-        filter.caldavParse(filterNode);
+        filter.carddavParse(filterNode);
 
         if (debug) {
           trace("REPORT: query");

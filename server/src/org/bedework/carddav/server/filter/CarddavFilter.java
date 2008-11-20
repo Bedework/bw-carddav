@@ -187,6 +187,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *   @author Mike Douglass   douglm @ rpi.edu
  */
 public class CarddavFilter {
+  public static int testAnyOf = 0;
+
+  public static int testAllOf = 1;
+
+  protected static int testAllAny;
+
   protected boolean debug;
 
   protected transient Logger log;
@@ -228,7 +234,7 @@ public class CarddavFilter {
    * @throws WebdavException
    */
   public void parse(Node nd) throws WebdavException {
-    /* We expect exactly one comp-filter child. */
+    /* We expect 0 or more prop-filter children. */
 
     Element[] children = getChildren(nd);
 
@@ -244,7 +250,7 @@ public class CarddavFilter {
         Node curnode = children[i];
 
         if (debug) {
-          trace("compFilter element: " +
+          trace("filter element: " +
               curnode.getNamespaceURI() + ":" +
               curnode.getLocalName());
         }
@@ -378,6 +384,22 @@ public class CarddavFilter {
       negated = tempBool;
     }
 
+    int matchType = TextMatch.matchTypeContains;
+    String mtype = getAttrVal(nd, "match-type");
+
+    if (mtype != null) {
+      matchType = -1;
+      for (int i = 1; i < TextMatch.matchTypes.length; i++) {
+        if (TextMatch.matchTypes[i].equals(mtype)) {
+          matchType = i;
+          break;
+        }
+      }
+
+      if (matchType < 0) {
+        throw new WebdavBadRequest("Bad match-type attribute " + mtype);
+      }
+    }
     /*
     if (numAttrs != numValid) {
       throw new WebdavBadRequest();
@@ -385,10 +407,15 @@ public class CarddavFilter {
     */
 
     try {
-      return new TextMatch(caseless, negated, XmlUtil.getReqOneNodeVal(nd));
+      return new TextMatch(caseless, matchType, negated,
+                           XmlUtil.getReqOneNodeVal(nd));
     } catch (Throwable t) {
       throw new WebdavBadRequest();
     }
+  }
+
+  public int getTestAllAny() {
+    return testAllAny;
   }
 
   /**
@@ -440,16 +467,26 @@ public class CarddavFilter {
     }
   }
 
+  private String getAttrVal(Node nd, String name) throws WebdavException {
+    NamedNodeMap nnm = nd.getAttributes();
+
+    if (nnm == null) {
+      return null;
+    }
+
+    return XmlUtil.getAttrVal(nnm, name);
+  }
+
   private String getOnlyAttrVal(Node nd, String name) throws WebdavException {
     NamedNodeMap nnm = nd.getAttributes();
 
     if ((nnm == null) || (nnm.getLength() != 1)) {
-      throw new WebdavBadRequest("Missing comp-filter name");
+      throw new WebdavBadRequest("Missing or multiple attribute " + name);
     }
 
     String res = XmlUtil.getAttrVal(nnm, name);
     if (res == null) {
-      throw new WebdavBadRequest("Missing comp-filter name");
+      throw new WebdavBadRequest("Missing or multiple attribute " + name);
     }
 
     return res;
@@ -474,19 +511,15 @@ public class CarddavFilter {
    *  =================================================================== */
 
   public void dump() {
-    trace("  <filter>");
-
-    String indent = "";
+    trace("<filter>");
 
     if (propFilters != null) {
       for (PropFilter pf: propFilters) {
-        pf.dump(log, indent + "  ");
+        pf.dump(log, "  ");
       }
     }
 
-    log.debug(indent + "</comp-filter>");
-
-    trace("  </filter>");
+    trace("</filter>");
   }
 
   /** ===================================================================

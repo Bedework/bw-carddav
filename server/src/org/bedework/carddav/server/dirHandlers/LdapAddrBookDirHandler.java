@@ -35,7 +35,6 @@ import org.bedework.webdav.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attributes;
@@ -162,34 +161,5 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
    */
   public void updateCollection(WdCollection val) throws WebdavException {
     throw new WebdavException("unimplemented");
-  }
-
-  public Collection<CarddavCollection> getCollections(String path)
-         throws WebdavException {
-    verifyPath(path);
-
-    try {
-      openContext();
-
-      if (!searchChildren(path, false)) {
-        return null;
-      }
-
-      Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
-
-      for (;;) {
-        CarddavCollection cdc = nextCdCollection(path, false);
-
-        if (cdc == null) {
-          break;
-        }
-
-        res.add(cdc);
-      }
-
-      return res;
-    } finally {
-      closeContext();
-    }
   }
 }
