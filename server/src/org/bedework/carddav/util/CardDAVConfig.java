@@ -40,6 +40,9 @@ public class CardDAVConfig /*extends ConfigCommon */{
   /* Web address service uri - null for no web address service */
   private String webaddrServiceURI;
 
+  /* Path prefix for public searches */
+  private String webaddrPublicAddrbook;
+
   private boolean directoryBrowsingDisallowed;
 
   private String defaultAddressbook;
@@ -87,10 +90,32 @@ public class CardDAVConfig /*extends ConfigCommon */{
     return webaddrServiceURI;
   }
 
+  /**
+   *
+   * @param val    String
+   */
+  public void setWebaddrPublicAddrbook(String val) {
+    webaddrPublicAddrbook = val;
+  }
+
+  /**
+   *
+   * @return String
+   */
+  public String getWebaddrPublicAddrbook() {
+    return webaddrPublicAddrbook;
+  }
+
+  /**
+   * @param val
+   */
   public void setDirectoryBrowsingDisallowed(boolean val) {
     directoryBrowsingDisallowed = val;
   }
 
+  /**
+   * @return boolean
+   */
   public boolean getDirectoryBrowsingDisallowed() {
     return directoryBrowsingDisallowed;
   }
@@ -223,6 +248,9 @@ public class CardDAVConfig /*extends ConfigCommon */{
     return hostPrincipalRoot;
   }
 
+  /**
+   * @param dhc
+   */
   public void addDirhandler(DirHandlerConfig dhc) {
     if (handlerConfigs == null) {
       handlerConfigs = new ArrayList<DirHandlerConfig>();

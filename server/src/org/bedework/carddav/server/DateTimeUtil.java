@@ -82,6 +82,10 @@ public class DateTimeUtil {
     rfc822GMTFormat.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
   }
 
+  /**
+   * @author douglm
+   *
+   */
   public static class WebdavBadDateException extends WebdavException {
     WebdavBadDateException() {
       super("Bad date");
@@ -256,7 +260,7 @@ public class DateTimeUtil {
    *
    * @param val String "yyyy-MM-dd"
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromRfcDate(String val) throws WebdavException {
     try {
@@ -272,7 +276,7 @@ public class DateTimeUtil {
    *
    * @param val String "yyyyMMddThhmmss"
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromISODateTime(String val) throws WebdavException {
     try {
@@ -288,7 +292,7 @@ public class DateTimeUtil {
    *
    * @param val String "yyyy-MM-ddThh:mm:ss"
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromRfcDateTime(String val) throws WebdavException {
     try {
@@ -305,7 +309,7 @@ public class DateTimeUtil {
    * @param val String "yyyyMMddThhmmss"
    * @param tz TimeZone
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromISODateTime(String val,
                                      TimeZone tz) throws WebdavException {
@@ -324,7 +328,7 @@ public class DateTimeUtil {
    * @param val String "yyyy-ddThh:mm:ss"
    * @param tz TimeZone
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromRfcDateTime(String val,
                                      TimeZone tz) throws WebdavException {
@@ -343,7 +347,7 @@ public class DateTimeUtil {
    * @param val String "yyyyMMddThhmmssZ"
    * @param tz TimeZone
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromISODateTimeUTC(String val,
                                         TimeZone tz) throws WebdavException {
@@ -361,7 +365,7 @@ public class DateTimeUtil {
    *
    * @param val String "yyyyMMddThhmmssZ"
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromISODateTimeUTC(String val) throws WebdavException {
     try {
@@ -377,7 +381,7 @@ public class DateTimeUtil {
    *
    * @param val String "yyyy-MM-ddThh:mm:ssZ"
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static Date fromRfcDateTimeUTC(String val) throws WebdavException {
     try {
@@ -393,7 +397,7 @@ public class DateTimeUtil {
    *
    * @param val String "yyyyMMddThhmmssZ"
    * @return Date
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static String fromISODateTimeUTCtoRfc822(String val) throws WebdavException {
     try {
@@ -409,7 +413,7 @@ public class DateTimeUtil {
    *
    * @param val String to check
    * @return boolean
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public static boolean isISODate(String val) throws WebdavException {
     try {

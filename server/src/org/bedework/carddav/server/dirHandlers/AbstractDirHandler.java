@@ -55,15 +55,21 @@ import java.util.TreeSet;
 * @version 1.0
 */
 public abstract class AbstractDirHandler implements DirHandler {
+  /** */
   protected CardDAVConfig cdConfig;
+  /** */
   protected DirHandlerConfig dhConfig;
 
+  /** */
   protected UrlHandler urlHandler;
 
+  /** */
   protected boolean open;
 
+  /** */
   protected boolean debug;
 
+  /** */
   protected String account;
 
   /** */
@@ -83,10 +89,16 @@ public abstract class AbstractDirHandler implements DirHandler {
   private long lastFlush;
   private static long flushTime = 60 * 1000;  // 1 minute
 
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
+   */
   public void open(String account) throws WebdavException {
     this.account = account;
   }
 
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#close()
+   */
   public void close() {
   }
 
@@ -257,6 +269,11 @@ public abstract class AbstractDirHandler implements DirHandler {
    *  Protected methods.
    * ==================================================================== */
 
+  /** Ensure path matches our prefix.
+   *
+   * @param path
+   * @throws WebdavException
+   */
   protected void verifyPath(String path) throws WebdavException {
     if (!path.startsWith(dhConfig.getPathPrefix())) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
@@ -268,6 +285,11 @@ public abstract class AbstractDirHandler implements DirHandler {
     }
   }
 
+  /** See if we already cehcked this user
+   *
+   * @param account
+   * @return boolean
+   */
   protected synchronized boolean lookupUser(String account) {
     if ((lastFlush != 0) &&
         (System.currentTimeMillis() - lastFlush > flushTime)) {
@@ -277,11 +299,15 @@ public abstract class AbstractDirHandler implements DirHandler {
     return validUsers.containsKey(account);
   }
 
+  /** Add a checked user to the table
+   * @param account
+   */
   protected void addValidUser(String account) {
     validUsers.put(account, account);
   }
 
-  /* Get a logger for messages
+  /**
+   * @return Logger
    */
   protected Logger getLogger() {
     if (log == null) {
@@ -291,10 +317,16 @@ public abstract class AbstractDirHandler implements DirHandler {
     return log;
   }
 
+  /**
+   * @param t
+   */
   protected void error(Throwable t) {
     getLogger().error(this, t);
   }
 
+  /**
+   * @param msg
+   */
   protected void trace(String msg) {
     getLogger().debug(msg);
   }

@@ -95,28 +95,28 @@ public interface DirHandler {
    */
   public boolean isOpen();
 
-  /* No problem */
+  /** No problem */
   public final int statusOK = 0;
 
-  /* Created ok */
+  /** Created ok */
   public final int statusCreated = 1;
 
-  /* Cannot have duplicate uid */
+  /** Cannot have duplicate uid */
   public final int statusDuplicateUid = 2;
 
-  /* Duplicate object */
+  /** Duplicate object */
   public final int statusDuplicate = 3;
 
-  /* Just can't do that */
+  /** Just can't do that */
   public final int statusIllegal = 4;
 
-  /* No access */
+  /** No access */
   public final int statusNoAccess = 5;
 
-  /* Cannot change uid on entity */
+  /** Cannot change uid on entity */
   public final int statusChangeUid = 6;
 
-  /* destination already exists */
+  /** destination already exists */
   public final int statusDestinationExists = 7;
 
   /* ====================================================================
@@ -134,7 +134,7 @@ public interface DirHandler {
   /** Return principal information for the given path. Also tests for a valid
    * principal. Return null or set PrincipalInfo.valid = false for no principal.
    *
-   * @param href
+   * @param path
    * @return PrincipalInfo
    * @throws WebdavException
    */
@@ -143,7 +143,7 @@ public interface DirHandler {
   /** Return a card for the principal with the given path. Also tests for a valid
    * principal. Return null for no principal.
    *
-   * @param href
+   * @param path
    * @return Vcard
    * @throws WebdavException
    */
@@ -196,7 +196,7 @@ public interface DirHandler {
   /** Get card given the collection and String name.
    *
    * @param path       to collection
-   * @param val        String possible name
+   * @param name        String possible name
    * @return Vcard or null
    * @throws WebdavException
    */
@@ -215,7 +215,7 @@ public interface DirHandler {
                                     Filter filter) throws WebdavException;
 
   /**
-   * @param card
+   * @param val
    * @throws WebdavException
    */
   public void deleteCard(CarddavCardNode val) throws WebdavException;
@@ -234,7 +234,7 @@ public interface DirHandler {
                             String parentPath) throws WebdavException;
 
   /**
-   * @param cal
+   * @param col
    * @throws WebdavException
    */
   public void deleteCollection(WdCollection col) throws WebdavException;

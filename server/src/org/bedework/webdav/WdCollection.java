@@ -32,6 +32,10 @@ import org.bedework.carddav.server.DateTimeUtil;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.sss.util.Util;
 
+/**
+ * @author douglm
+ *
+ */
 public class WdCollection implements Comparable<WdCollection> {
   /** The internal name of the collection
    */

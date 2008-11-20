@@ -187,8 +187,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *   @author Mike Douglass   douglm @ rpi.edu
  */
 public class CarddavFilter {
+  /** */
   public static int testAnyOf = 0;
 
+  /** */
   public static int testAllOf = 1;
 
   protected static int testAllAny;
@@ -210,8 +212,7 @@ public class CarddavFilter {
   /** Given a caldav like xml filter parse it
    *
    * @param xmlStr
-   * @param tz timezone from request - may be null
-   * @throws CalFacadeException
+   * @throws WebdavException
    */
   public void parse(String xmlStr) throws WebdavException {
     try {
@@ -414,6 +415,16 @@ public class CarddavFilter {
     }
   }
 
+  /**
+   * @param val
+   */
+  public void setTestAllAny(int val) {
+    testAllAny = val;
+  }
+
+  /**
+   * @return int
+   */
   public int getTestAllAny() {
     return testAllAny;
   }

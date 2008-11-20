@@ -9,9 +9,16 @@ import org.bedework.carddav.server.Debug;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 
+/**
+ * @author douglm
+ *
+ */
 public class Tokenizer extends StreamTokenizer {
   private transient Logger log;
 
+  /**
+   * @param rdr
+   */
   public Tokenizer(Reader rdr) {
     super(new UnfoldingReader(rdr));
   }
@@ -37,6 +44,9 @@ public class Tokenizer extends StreamTokenizer {
     }
   }
 
+  /**
+   * @throws WebdavException
+   */
   public void assertWord()  throws WebdavException {
     assertToken(StreamTokenizer.TT_WORD);
   }
@@ -56,6 +66,7 @@ public class Tokenizer extends StreamTokenizer {
    * Asserts that the next token in the stream matches the specified token.
    *
    * @param token expected token
+   * @param ignoreCase
    * @throws WebdavException
    */
   public void assertToken(String token, boolean ignoreCase) throws WebdavException {
@@ -105,6 +116,7 @@ public class Tokenizer extends StreamTokenizer {
    * Tests if the next token in the stream matches the specified token.
    *
    * @param token expected token
+   * @return int
    * @throws WebdavException
    */
   public boolean testToken(String token) throws WebdavException {
@@ -115,6 +127,8 @@ public class Tokenizer extends StreamTokenizer {
    * Tests if the next token in the stream matches the specified token.
    *
    * @param token expected token
+   * @param ignoreCase
+   * @return boolean
    * @throws WebdavException
    */
   public boolean testToken(String token, boolean ignoreCase) throws WebdavException {
@@ -139,7 +153,7 @@ public class Tokenizer extends StreamTokenizer {
   /**
    * Absorbs extraneous newlines.
    * @param tokeniser
-   * @throws IOException
+   * @throws WebdavException
    */
   public void skipWhitespace() throws WebdavException {
     while (true) {

@@ -60,7 +60,17 @@ public class TextMatch {
 
   /** Constructor
    *
+   * @param val
+   */
+  public TextMatch(String val) {
+    setMatchType(matchTypeContains);
+    setVal(val);
+  }
+
+  /** Constructor
+   *
    * @param caseless
+   * @param matchType
    * @param negated
    * @param val
    */

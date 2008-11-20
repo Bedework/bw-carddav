@@ -27,6 +27,10 @@ package org.bedework.carddav.server;
 
 import org.bedework.webdav.WdCollection;
 
+/**
+ * @author douglm
+ *
+ */
 public class CarddavCollection extends WdCollection {
   private CarddavCollection parent;
 

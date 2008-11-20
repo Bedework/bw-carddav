@@ -160,28 +160,6 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCollection(java.lang.String)
-   */
-  public CarddavCollection getCollection(String path) throws WebdavException {
-    verifyPath(path);
-
-    /* We're fetching a collection entity with a fully specified path */
-    try {
-      openContext();
-
-      Attributes attrs = getObject(path, true);
-
-      if (attrs == null) {
-        return null;
-      }
-
-      return makeCdCollection(path, true, attrs);
-    } finally {
-      closeContext();
-    }
-  }
-
-  /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#updateCollection(org.bedework.webdav.WdCollection)
    */
   public void updateCollection(WdCollection val) throws WebdavException {

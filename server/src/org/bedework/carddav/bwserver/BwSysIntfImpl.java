@@ -41,6 +41,7 @@ import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.User;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
+import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
@@ -764,7 +765,7 @@ public class BwSysIntfImpl implements SysIntf {
       DirHandlerConfig dhc = conf.findDirhandler(path);
 
       if (dhc == null) {
-        return null;
+        throw new WebdavBadRequest("Bad path " + path);
       }
 
       DirHandler dh = null;
@@ -789,10 +790,11 @@ public class BwSysIntfImpl implements SysIntf {
         handlers.put(hk, dh);
       }
 
-      if (dh != null) {
-        dh.open(account);
-        openHandlers.add(dh);
+      if (dh == null) {
+        throw new WebdavBadRequest("Bad path " + path);
       }
+      dh.open(account);
+      openHandlers.add(dh);
 
       return dh;
     } catch (Throwable t) {

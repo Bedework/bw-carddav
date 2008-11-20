@@ -173,7 +173,7 @@ public interface SysIntf {
      * @param account
      * @param principalPathPrefix
      * @param userHomePath
-     * @param defaultCalendarPath
+     * @param defaultAddressbookPath
      * @param directoryInfo
      */
     public UserInfo(String account, String principalPathPrefix,
@@ -292,7 +292,7 @@ public interface SysIntf {
           throws WebdavException;
 
   /**
-   * @param cal
+   * @param col
    * @param acl
    * @throws WebdavException
    */

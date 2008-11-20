@@ -44,19 +44,30 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavUserNode;
  *
  */
 public class Vcard {
+  /**
+   * @author douglm
+   *
+   */
   public static class Param {
     String name;
     String value;
 
+    /**
+     *
+     */
     public Param() {
     }
 
+    /**
+     * @param name
+     * @param value
+     */
     public Param(String name, String value) {
       this.name = name;
       this.value = value;
     }
 
-    /* Crude vcard parameter output method
+    /** Crude vcard parameter output method
      *
      * @param sb
      */
@@ -70,6 +81,11 @@ public class Vcard {
       sb.append(value);
     }
 
+    /**
+     * @param tokeniser
+     * @return
+     * @throws WebdavException
+     */
     public Param parse(Tokenizer tokeniser) throws WebdavException {
       try {
         tokeniser.assertWord();
@@ -99,6 +115,10 @@ public class Vcard {
     }
   }
 
+  /**
+   * @author douglm
+   *
+   */
   public static class Property {
     String group;
     String name;
@@ -107,23 +127,46 @@ public class Vcard {
 
     String value;
 
+    /**
+     *
+     */
     public Property() {
     }
 
+    /**
+     * @param name
+     * @param value
+     */
     public Property(String name, String value) {
       this(null, name, (Collection<Param>)null, value);
     }
 
+    /**
+     * @param group
+     * @param name
+     * @param value
+     */
     public Property(String group, String name, String value) {
       this(group, name, (Collection<Param>)null, value);
     }
 
+    /**
+     * @param name
+     * @param params
+     * @param value
+     */
     public Property(String name,
                     Collection<Param> params,
                     String value) {
       this(null, name, params, value);
     }
 
+    /**
+     * @param group
+     * @param name
+     * @param params
+     * @param value
+     */
     public Property(String group,
                     String name,
                     Collection<Param> params,
@@ -148,6 +191,9 @@ public class Vcard {
       return value;
     }
 
+    /**
+     * @param val
+     */
     public void addParam(Param val) {
       if (params == null) {
         params = new ArrayList<Param>();
@@ -156,6 +202,11 @@ public class Vcard {
       params.add(val);
     }
 
+    /**
+     * @param tokeniser
+     * @return Property
+     * @throws WebdavException
+     */
     public Property parse(Tokenizer tokeniser) throws WebdavException {
       try {
         tokeniser.assertWord();
@@ -185,7 +236,7 @@ public class Vcard {
       return this;
     }
 
-    /* Crude vcard property output method
+    /** Crude vcard property output method
      *
      * @param sb
      */
@@ -310,6 +361,9 @@ public class Vcard {
     return prevLastmod;
   }
 
+  /**
+   * @param val
+   */
   public void setUid(String val) {
     Property uid = findProperty("UID");
 
@@ -321,6 +375,9 @@ public class Vcard {
     uid.value = val;
   }
 
+  /**
+   * @return String
+   */
   public String getUid() {
     Property uid = findProperty("UID");
 
@@ -346,6 +403,9 @@ public class Vcard {
     return parent;
   }
 
+  /**
+   * @param val
+   */
   public void addProperty(Property val) {
     if (props == null) {
       props = new ArrayList<Property>();
@@ -354,6 +414,10 @@ public class Vcard {
     props.add(val);
   }
 
+  /**
+   * @param name
+   * @return property or null
+   */
   public Property findProperty(String name) {
     if (props == null) {
       return null;
@@ -376,6 +440,11 @@ public class Vcard {
 
   private static final int WHITESPACE_CHAR_END = 20;
 
+  /**
+   * @param rdr
+   * @return Vcard
+   * @throws WebdavException
+   */
   public Vcard parse(Reader rdr) throws WebdavException {
     Tokenizer tokeniser = new Tokenizer(rdr);
 

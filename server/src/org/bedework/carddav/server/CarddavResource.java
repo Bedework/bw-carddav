@@ -37,7 +37,7 @@ import java.util.Date;
  *
  *  @author Mike Douglass   douglm - rpi.edu
  */
-public class CarddavResource implements Serializable {
+public class CarddavResource implements Comparable<CarddavResource>, Serializable {
   private WebdavUserNode owner;
 
   private CarddavCollection parent;

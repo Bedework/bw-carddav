@@ -35,7 +35,7 @@ import edu.rpi.sss.util.Util;
  *
  *  @author Mike Douglass   douglm - rpi.edu
  */
-public class CarddavResourceContent implements Serializable {
+public class CarddavResourceContent implements Comparable<CarddavResourceContent>, Serializable {
   /* The collection this belongs to
    */
   private CarddavColNode collection;

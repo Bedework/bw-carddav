@@ -39,7 +39,7 @@
           </principal-dirHandler>
 
           <user-principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
-            <pathPrefix>/principals/accounts</pathPrefix>
+            <pathPrefix>/principals/users</pathPrefix>
             <addressBook>true</addressBook>
 
             <className>org.bedework.carddav.server.dirHandlers.LdapPrincipalDirHandler</className>
@@ -151,10 +151,8 @@
       <app>
         <usercarddav classname="org.bedework.carddav.util.CardDAVConfig" >
           <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
-          <!--
-          <webaddrServiceURI>
-          </webaddrServiceURI>
-          -->
+          <webaddrServiceURI>/find</webaddrServiceURI>
+          <webaddrPublicAddrbook>/principals/users</webaddrPublicAddrbook>
 
           <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
 
@@ -163,10 +161,8 @@
 
         <pubcarddav>
           <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
-          <!--
-          <webaddrServiceURI>
-          </webaddrServiceURI>
-          -->
+          <webaddrServiceURI>/find</webaddrServiceURI>
+          <webaddrPublicAddrbook>/principals/users</webaddrPublicAddrbook>
 
           <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
 

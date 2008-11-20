@@ -166,7 +166,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     return providerUrl;
   }
 
-  /* *
+  /**
    *
    * @param val
    */
@@ -174,7 +174,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     baseDn = val;
   }
 
-  /* *
+  /**
    *
    * @return String val
    */
@@ -182,7 +182,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     return baseDn;
   }
 
-  /* *
+  /**
    *
    * @param val
    */
@@ -204,7 +204,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     attrIdList = al.toArray(new String[0]);
   }
 
-  /* *
+  /**
    *
    * @return String val
    */
@@ -212,7 +212,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     return attrIds;
   }
 
-  /* *
+  /**
    *
    * @return String[] val
    */

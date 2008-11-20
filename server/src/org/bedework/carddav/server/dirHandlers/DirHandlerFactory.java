@@ -34,6 +34,11 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavException;
  * @author douglm
  */
 public class DirHandlerFactory {
+  /**
+   * @param name
+   * @return DirHandler
+   * @throws WebdavException
+   */
   public static DirHandler getHandler(String name) throws WebdavException  {
     try {
       Object o = Class.forName(name).newInstance();

@@ -28,6 +28,8 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.server.SysIntf.UserInfo;
 import org.bedework.carddav.server.calquery.AddressData;
 import org.bedework.carddav.server.filter.Filter;
+import org.bedework.carddav.server.filter.PropFilter;
+import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.Group;
@@ -67,9 +69,11 @@ import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -953,7 +957,93 @@ public class CarddavBWIntf extends WebdavNsIntf {
   public boolean specialUri(HttpServletRequest req,
                             HttpServletResponse resp,
                             String resourceUri) throws WebdavException {
-    return false;
+    if (config.getWebaddrServiceURI() == null) {
+      return false;
+    }
+
+    if (!config.getWebaddrServiceURI().equals(resourceUri)) {
+      return false;
+    }
+
+    String addrbook = req.getParameter("addrbook");
+
+    if (addrbook == null) {
+      addrbook = config.getWebaddrPublicAddrbook();
+    }
+
+    CarddavCollection col = getSysi().getCollection(addrbook);
+
+    if (col == null) {
+      resp.setStatus(HttpServletResponse.SC_NOT_FOUND,
+                     "Unknown addrbook" + addrbook);
+      return true;
+    }
+
+    String user = req.getParameter("user");
+    String mail = req.getParameter("mail");
+    String org = req.getParameter("org");
+    String text = req.getParameter("text");
+
+    if ((user == null) && (mail == null) &&
+        (org == null) && (text == null)) {
+      throw new WebdavBadRequest();
+    }
+
+    boolean orThem = true;
+
+    if (text != null) {
+      if ((user != null) && (mail != null)) {
+        // Conflict
+        throw new WebdavBadRequest("Conflicting request parameters");
+      }
+
+      if (user == null) {
+        user = text;
+      }
+      if (mail == null) {
+        mail = text;
+      }
+    }
+
+    Filter fltr = new Filter(debug);
+
+    if (orThem) {
+      fltr.setTestAllAny(Filter.testAnyOf);
+    } else {
+      fltr.setTestAllAny(Filter.testAllOf);
+    }
+
+    if (user != null) {
+      fltr.addPropFilter(new PropFilter("FN", new TextMatch(user)));
+    }
+
+    if (mail != null) {
+      fltr.addPropFilter(new PropFilter("EMAIL", new TextMatch(mail)));
+    }
+
+    if (org != null) {
+      fltr.addPropFilter(new PropFilter("ORG", new TextMatch(org)));
+    }
+
+    Collection<Vcard> cards = getSysi().getCards(col, fltr);
+
+    if ((cards == null) || (cards.size() == 0)) {
+      resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      return true;
+    }
+
+    try {
+      Writer wtr = resp.getWriter();
+
+      for (Vcard card: cards) {
+        wtr.write(card.output());
+      }
+      resp.setStatus(HttpServletResponse.SC_OK);
+    } catch (IOException ie) {
+      throw new WebdavException(ie);
+    }
+
+    return true;
   }
 
   /* ====================================================================

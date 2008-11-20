@@ -273,6 +273,31 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#getCollection(java.lang.String)
+   */
+  public CarddavCollection getCollection(String path) throws WebdavException {
+    verifyPath(path);
+
+    /* We're fetching a collection entity with a fully specified path */
+    try {
+      openContext();
+
+      Attributes attrs = getObject(path, true);
+
+      if (attrs == null) {
+        return null;
+      }
+
+      return makeCdCollection(path, true, attrs);
+    } finally {
+      closeContext();
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#getCollections(java.lang.String)
+   */
   public Collection<CarddavCollection> getCollections(String path)
          throws WebdavException {
     verifyPath(path);

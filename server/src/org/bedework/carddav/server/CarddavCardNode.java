@@ -358,6 +358,10 @@ public boolean generatePropertyValue(QName tag,
     }
   }
 
+  /**
+   * @param val
+   * @throws WebdavException
+   */
   public void setCard(Vcard val) throws WebdavException {
     card = val;
   }
