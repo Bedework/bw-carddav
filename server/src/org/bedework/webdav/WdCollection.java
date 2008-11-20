@@ -25,12 +25,11 @@
 */
 package org.bedework.webdav;
 
-import java.util.Date;
-
-import org.bedework.carddav.server.DateTimeUtil;
-
 import edu.rpi.cmt.access.AccessPrincipal;
+import edu.rpi.sss.util.DateTimeUtil;
 import edu.rpi.sss.util.Util;
+
+import java.util.Date;
 
 /**
  * @author douglm

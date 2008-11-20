@@ -37,7 +37,6 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 
 import java.util.Collection;
 import javax.naming.NamingEnumeration;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
