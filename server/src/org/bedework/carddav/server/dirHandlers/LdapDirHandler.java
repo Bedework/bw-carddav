@@ -251,11 +251,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       openContext();
 
-      if (!searchChildren(path, ldapFilter, true)) {
-        return null;
-      }
-
       Collection<Vcard> res = new ArrayList<Vcard>();
+
+      if (!searchChildren(path, ldapFilter, true)) {
+        return res;
+      }
 
       for (;;) {
         Vcard card = nextCard(path, false);
@@ -280,11 +280,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       openContext();
 
-      if (!searchChildren(path, null, false)) {
-        return null;
-      }
-
       Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
+
+      if (!searchChildren(path, null, false)) {
+        return res;
+      }
 
       for (;;) {
         CarddavCollection cdc = nextCdCollection(path, false);
@@ -728,7 +728,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     sb.append("(");
     sb.append(attrId);
-    sb.append("=\"");
+    sb.append("=");
 
     int mt = tm.getMatchType();
     if ((mt == TextMatch.matchTypeContains) ||
@@ -743,7 +743,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       sb.append("*");
     }
 
-    sb.append("\")");
+    sb.append(")");
 
     return sb.toString();
   }

@@ -1232,8 +1232,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
     cards = fltr.query(node);
 
-    /* We now need to build a node for each of the events in the collection.
-       For each event we first determine what collection it's in. We then take the
+    /* We now need to build a node for each of the cards in the collection.
+       For each card we must determine what collection it's in. We then take the
        incoming uri, strip any collection names off it and append the collection
        name and card name to create the new uri.
 
@@ -1244,7 +1244,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
     try {
       for (Vcard card: cards) {
-        CarddavCollection col = card.getParent();
+
+        CarddavCollection col = node.getWdCollection();
+        card.setParent(col);
+
+        /* Was this - this code assumed a multi-depth search
+        CarddavCollection col = card.getParent();*/
         String uri = col.getPath();
 
         /* If no name was assigned use the guid */
