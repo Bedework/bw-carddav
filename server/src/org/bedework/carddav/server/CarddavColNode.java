@@ -79,7 +79,7 @@ public class CarddavColNode extends CarddavNode {
    * @param debug
    */
   public CarddavColNode(SysIntf sysi, int status, String uri, boolean debug) {
-    super(true, sysi, debug);
+    super(true, sysi, uri, debug);
     setStatus(status);
     this.uri = uri;
   }

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavUserNode;
+import edu.rpi.cmt.access.AccessPrincipal;
 
 /** Temp def of vcard to get us going
  *
@@ -268,7 +268,7 @@ public class Vcard {
     }
   }
 
-  private WebdavUserNode owner;
+  private AccessPrincipal owner;
 
   private String name;
 
@@ -285,8 +285,15 @@ public class Vcard {
   /**
    * @param val
    */
-  public void setOwner(WebdavUserNode val) {
+  public void setOwner(AccessPrincipal val) {
     owner = val;
+  }
+
+  /**
+   * @return AccessPrincipal
+   */
+  public AccessPrincipal getOwner() {
+    return owner;
   }
 
   /** Set the name
@@ -304,13 +311,6 @@ public class Vcard {
  public String getName() {
    return name;
  }
-
-  /**
-   * @return WebdavUserNode
-   */
-  public WebdavUserNode getOwner() {
-    return owner;
-  }
 
   /**
    * @param val

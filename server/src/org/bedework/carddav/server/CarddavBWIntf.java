@@ -45,15 +45,14 @@ import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
-import edu.rpi.cct.webdav.servlet.shared.WebdavGroupNode;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
+import edu.rpi.cct.webdav.servlet.shared.WebdavPrincipalNode;
 import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.cct.webdav.servlet.shared.WebdavServerError;
 import edu.rpi.cct.webdav.servlet.shared.WebdavUnauthorized;
 import edu.rpi.cct.webdav.servlet.shared.WebdavUnsupportedMediaType;
-import edu.rpi.cct.webdav.servlet.shared.WebdavUserNode;
 import edu.rpi.cmt.access.AccessException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
@@ -430,14 +429,18 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       WebdavNsNode nd = null;
 
-      if (wi.isUser()) {
-        nd = new WebdavUserNode(sysi.getUrlHandler(), wi.getPath(),
-                                new User(wi.getEntityName()),
-                                wi.isCollection(), debug);
-      } else if (wi.isGroup()) {
-        nd = new WebdavGroupNode(sysi.getUrlHandler(), wi.getPath(),
-                                 new Group(wi.getEntityName()),
-                                 wi.isCollection(), debug);
+      if (wi.isUser() || wi.isGroup()) {
+        AccessPrincipal ap;
+
+        if (wi.isUser()) {
+          ap = new User(wi.getEntityName());
+        } else {
+          ap = new Group(wi.getEntityName());
+        }
+
+        nd = new WebdavPrincipalNode(sysi.getUrlHandler(), wi.getPath(),
+                                     ap, wi.isCollection(),
+                                     wi.getUri(), debug);
       } else if (wi.isCollection()) {
         nd = new CarddavColNode(wi, sysi, debug);
       } else if (wi.isResource()) {
@@ -1065,13 +1068,18 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
       PrincipalInfo pi = getSysi().getPrincipalInfo(href);
 
+      AccessPrincipal ap;
+
       if (pi.whoType == Ace.whoTypeUser) {
-        res.add(new WebdavUserNode(getSysi().getUrlHandler(), pi.prefix,
-                                   new User(pi.who), false, debug));
+        ap = new User(pi.who);
       } else {
-        res.add(new WebdavGroupNode(getSysi().getUrlHandler(), pi.prefix,
-                                    new Group(pi.who), true, debug));
+        ap = new Group(pi.who);
       }
+
+      res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(), pi.prefix,
+                                      ap, false,
+                                      pi.prefix + "/" + pi.who + "/",
+                                      debug));
     }
 
     return res;
@@ -1100,10 +1108,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
     ArrayList<WebdavNsNode> pnodes = new ArrayList<WebdavNsNode>();
 
     for (UserInfo cui: sysi.getPrincipals(resourceUri, pps)) {
-      pnodes.add(new WebdavUserNode(sysi.getUrlHandler(),
-                                    cui.principalPathPrefix,
-                                    new User(cui.account),
-                                    true, debug));
+      pnodes.add(new WebdavPrincipalNode(sysi.getUrlHandler(),
+                                         cui.principalPathPrefix,
+                                         new User(cui.account), true,
+                                         cui.principalPathPrefix + "/" +
+                                           cui.account + "/",
+                                         debug));
     }
 
     return pnodes;

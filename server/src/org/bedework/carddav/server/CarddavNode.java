@@ -60,7 +60,8 @@ public abstract class CarddavNode extends WebdavNsNode {
   private SysIntf sysi;
 
   CarddavNode(CarddavURI cdURI, SysIntf sysi, boolean debug) {
-    super(sysi.getUrlHandler(), cdURI.getPath(), cdURI.isCollection(), debug);
+    super(sysi.getUrlHandler(), cdURI.getPath(), cdURI.isCollection(),
+          cdURI.getUri(), debug);
 
     //this.cdURI = cdURI;
     this.sysi = sysi;
@@ -70,8 +71,8 @@ public abstract class CarddavNode extends WebdavNsNode {
     }
   }
 
-  CarddavNode(boolean collection, SysIntf sysi, boolean debug) {
-    super(sysi.getUrlHandler(), null, collection, debug);
+  CarddavNode(boolean collection, SysIntf sysi, String uri,boolean debug) {
+    super(sysi.getUrlHandler(), null, collection, uri, debug);
 
     //this.cdURI = cdURI;
     this.sysi = sysi;

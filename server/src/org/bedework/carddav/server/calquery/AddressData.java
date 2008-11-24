@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-/** Class to represent a calendar-query calendar-data element
+/** Class to represent a address-query address-data element
  *
  *   @author Mike Douglass   douglm@rpi.edu
  */
@@ -58,7 +58,7 @@ public class AddressData extends WebdavProperty {
          pcdata is for response
 
       <!ATTLIST address-data content-type CDATA "text/vcard"
-                             version CDATA "3.0">
+                             version CDATA "4.0">
 
       <!ELEMENT allprop EMPTY>
 

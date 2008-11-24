@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.util;
 
+import edu.rpi.cmt.access.WhoDefs;
+
 import java.util.Collection;
 import java.util.TreeSet;
 
@@ -57,7 +59,7 @@ public class Group extends Principal {
   }
 
   public int getKind() {
-    return principalGroup;
+    return WhoDefs.whoTypeGroup;
   }
 
   /** Set the members of the group.

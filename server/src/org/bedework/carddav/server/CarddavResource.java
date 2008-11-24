@@ -25,7 +25,7 @@
 */
 package org.bedework.carddav.server;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavUserNode;
+import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.sss.util.DateTimeUtil;
 import edu.rpi.sss.util.Util;
 
@@ -39,7 +39,7 @@ import java.util.Date;
  *  @author Mike Douglass   douglm - rpi.edu
  */
 public class CarddavResource implements Comparable<CarddavResource>, Serializable {
-  private WebdavUserNode owner;
+  private AccessPrincipal owner;
 
   private CarddavCollection parent;
 
@@ -89,14 +89,14 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   /**
    * @param val
    */
-  public void setOwner(WebdavUserNode val) {
+  public void setOwner(AccessPrincipal val) {
     owner = val;
   }
 
   /**
-   * @return WebdavUserNode
+   * @return AccessPrincipal
    */
-  public WebdavUserNode getOwner() {
+  public AccessPrincipal getOwner() {
     return owner;
   }
 

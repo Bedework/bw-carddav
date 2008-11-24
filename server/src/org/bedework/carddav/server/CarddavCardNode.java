@@ -71,7 +71,7 @@ public class CarddavCardNode extends CarddavNode {
    * @param debug
    */
   public CarddavCardNode(SysIntf sysi, int status, String uri, boolean debug) {
-    super(true, sysi, debug);
+    super(true, sysi, uri, debug);
     setStatus(status);
     this.uri = uri;
   }

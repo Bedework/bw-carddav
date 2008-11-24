@@ -27,7 +27,6 @@
 package org.bedework.carddav.server;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavUserNode;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
@@ -44,7 +43,7 @@ import javax.xml.namespace.QName;
 public class CarddavResourceNode extends CarddavNode {
   private CarddavResource resource;
 
-  private WebdavUserNode owner;
+  private AccessPrincipal owner;
 
   private String entityName;
 
@@ -60,7 +59,7 @@ public class CarddavResourceNode extends CarddavNode {
    * @param debug
    */
   public CarddavResourceNode(SysIntf sysi, int status, String uri, boolean debug) {
-    super(true, sysi, debug);
+    super(true, sysi, uri, debug);
     setStatus(status);
     this.uri = uri;
   }
@@ -125,11 +124,7 @@ public class CarddavResourceNode extends CarddavNode {
       owner = resource.getOwner();
     }
 
-    if (owner != null) {
-      return owner.getOwner();
-    }
-
-    return null;
+    return owner;
   }
 
   /* (non-Javadoc)
