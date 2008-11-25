@@ -44,6 +44,8 @@ public class PropFilter {
 
   private boolean isNotDefined;
 
+  protected int testAllAny = Filter.testAnyOf;
+
   private TextMatch match;
 
   private ArrayList<ParamFilter> paramFilters;
@@ -102,6 +104,20 @@ public class PropFilter {
    */
   public boolean getIsNotDefined() {
     return isNotDefined;
+  }
+
+  /**
+   * @param val
+   */
+  public void setTestAllAny(int val) {
+    testAllAny = val;
+  }
+
+  /**
+   * @return int
+   */
+  public int getTestAllAny() {
+    return testAllAny;
   }
 
   /**

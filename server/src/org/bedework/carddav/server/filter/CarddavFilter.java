@@ -193,7 +193,7 @@ public class CarddavFilter {
   /** */
   public static int testAllOf = 1;
 
-  protected static int testAllAny;
+  protected int testAllAny;
 
   protected boolean debug;
 
@@ -235,6 +235,12 @@ public class CarddavFilter {
    * @throws WebdavException
    */
   public void parse(Node nd) throws WebdavException {
+    if (!XmlUtil.nodeMatches(nd, CarddavTags.filter)) {
+      throw new WebdavBadRequest();
+    }
+
+    setTestAllAny(getTestAllAnyAttr(nd));
+
     /* We expect 0 or more prop-filter children. */
 
     Element[] children = getChildren(nd);
@@ -272,7 +278,7 @@ public class CarddavFilter {
   }
 
   /* The given node must be a prop-filter element
-   *    <!ELEMENT prop-filter (is-not-defined | time-range | text-match)?
+   *    <!ELEMENT prop-filter (is-not-defined | text-match)?
    *                            param-filter*>
    *
    *    <!ATTLIST prop-filter name CDATA #REQUIRED>
@@ -287,6 +293,8 @@ public class CarddavFilter {
         // Presence filter
         return pf;
       }
+
+      pf.setTestAllAny(getTestAllAnyAttr(nd));
 
       int i = 0;
       Node curnode = children[i];
@@ -414,6 +422,25 @@ public class CarddavFilter {
       throw new WebdavBadRequest();
     }
   }
+
+  private int getTestAllAnyAttr(Node nd) throws WebdavException {
+    String testType = getAttrVal(nd, "test");
+
+    if (testType == null) {
+      return testAnyOf;
+    }
+
+    if (testType.equals("anyof")) {
+      return testAnyOf;
+    }
+
+    if (testType.equals("allof")) {
+      return testAllOf;
+    }
+
+    throw new WebdavBadRequest("Bad test attribute " + testType);
+  }
+
 
   /**
    * @param val

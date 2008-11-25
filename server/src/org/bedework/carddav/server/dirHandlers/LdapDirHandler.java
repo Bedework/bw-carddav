@@ -122,6 +122,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   protected static final Map<VcardProperty, String> toLdapAttr =
     new HashMap<VcardProperty, String>();
+
+  protected static final Map<String, Collection<String>> toLdapAttrNoGroup =
+    new HashMap<String, Collection<String>>();
+
   protected static final Map<String, VcardProperty> toVcardProperty =
     new HashMap<String, VcardProperty>();
 
@@ -202,6 +206,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                                              String aname) {
     VcardProperty vcp = new VcardProperty(group, pname, type);
     toLdapAttr.put(vcp, aname);
+
+    Collection<String> anames = toLdapAttrNoGroup.get(pname);
+    if (anames == null) {
+      anames = new ArrayList<String>();
+      toLdapAttrNoGroup.put(pname, anames);
+    }
+    anames.add(aname);
+
     toVcardProperty.put(aname, vcp);
   }
 
@@ -733,7 +745,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-
   private String makePropFilterExpr(PropFilter filter) {
     TextMatch tm = filter.getMatch();
 
@@ -743,12 +754,66 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     String name = filter.getName();
 
-    String attrId = toLdapAttr.get(new VcardProperty(name));
+    int cpos = name.indexOf(',');
 
-    if (attrId == null) {
+    if ((cpos < 0) && (Util.isEmpty(filter.getParamFilters()))) {
+      // No group - no params - single attribute
+      String attrId = toLdapAttr.get(new VcardProperty(name));
+
+      if (attrId == null) {
+        return null;
+      }
+
+      return makePropFilterExpr(attrId, tm);
+    }
+
+    if (cpos > 0) {
+      if (name.endsWith(",")) {
+        // Don't do that
+        return null;
+      }
+
+      name = name.substring(cpos + 1);
+    }
+
+    Collection<String> anames = toLdapAttrNoGroup.get(name);
+    if (Util.isEmpty(anames)) {
       return null;
     }
 
+    int testAllAnyProps = filter.getTestAllAny();
+
+    StringBuilder sb = new StringBuilder();
+
+    boolean first = true;
+
+    for (String attrId: anames) {
+      String ptest = makePropFilterExpr(attrId, tm);
+
+      if (ptest == null) {
+        continue;
+      }
+
+      sb.append(ptest);
+
+      if (first) {
+        first = false;
+        continue;
+      }
+
+      sb.append(")");
+
+      if (testAllAnyProps == Filter.testAllOf) {
+        sb.insert(0, "(&");
+      } else {
+        sb.insert(0, "(|");
+      }
+    }
+
+    return sb.toString();
+  }
+
+  private String makePropFilterExpr(String attrId, TextMatch tm) {
     StringBuilder sb = new StringBuilder();
 
     sb.append("(");
