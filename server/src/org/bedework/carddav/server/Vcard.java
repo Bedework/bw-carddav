@@ -37,6 +37,7 @@ import java.util.Collection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
+import edu.rpi.sss.util.Util;
 
 /** Temp def of vcard to get us going
  *
@@ -80,6 +81,29 @@ public class Vcard {
       sb.append("=");
       sb.append(value);
     }
+
+    /**
+     * @param indent
+     * @param sb
+     */
+    public void outputJson(String indent, StringBuilder sb) {
+      /* "email" : [
+      {"type" : ["pref"], "value" : "foo at example.com"},
+      {"value" : "bar at example.com"}
+    ]
+   */
+      if (value == null) {
+        return;
+      }
+
+      sb.append(indent);
+      sb.append("{\"");
+      sb.append(Util.jsonName(name));
+      sb.append("\", \"value\" : ");
+      sb.append(Util.jsonEncode(value));
+      sb.append("}");
+    }
+
 
     /**
      * @param tokeniser
@@ -259,6 +283,46 @@ public class Vcard {
       sb.append("\n");
     }
 
+    /**
+     * @param indent
+     * @param sb
+     */
+    public void outputJson(String indent, StringBuilder sb) {
+      /* "email" : [
+      {"type" : ["pref"], "value" : "foo at example.com"},
+      {"value" : "bar at example.com"}
+    ]
+   */
+
+      if (value == null) {
+        return;
+      }
+
+      sb.append(indent);
+      sb.append("\"");
+      sb.append(Util.jsonName(name));
+      sb.append("\" : [\n");
+
+      String saveIndent = indent;
+      indent +="  ";
+
+      if (params != null) {
+        for (Param par: params) {
+          par.outputJson(indent, sb);
+          sb.append(",\n");
+        }
+      }
+
+      sb.append(indent);
+      sb.append("{\"value\" : ");
+      sb.append(Util.jsonEncode(value));
+      sb.append("}\n");
+
+      indent = saveIndent;
+      sb.append(indent);
+      sb.append("]\n");
+    }
+
     public String toString() {
       StringBuilder sb = new StringBuilder();
 
@@ -279,6 +343,8 @@ public class Vcard {
   private Collection<Property> props;
 
   private String strForm;
+
+  private String jsonStrForm;
 
   private String prevLastmod;
 
@@ -519,6 +585,58 @@ public class Vcard {
 
     return strForm;
   }
+
+  /**
+   * @param indent
+   * @return String
+   */
+  public String outputJson(String indent) {
+    if (jsonStrForm != null) {
+      return jsonStrForm;
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append(indent);
+    sb.append("{\n");
+
+    indent += "";
+
+    new Property("VERSION", "4.0").outputJson(indent, sb);
+
+    if (props != null) {
+      for (Property p: props) {
+        if ("VERSION".equals(p.name)) {
+          continue;
+        }
+
+        p.outputJson(indent, sb);
+      }
+    }
+
+    sb.append(indent);
+    sb.append("}");
+
+    jsonStrForm = sb.toString();
+
+    return jsonStrForm;
+  }
+  /*
+  {
+    "microformats": {
+        "vcard": []
+    },
+    "parser-information": {
+        "name": "UfXtract",
+        "version": "0.1",
+        "page-http-status": "404",
+        "page-title": "hcard1";
+        "page-url": "http:\/\/ufxtract.com\/testsuite\/hcard\/1.0\/nofilehere.htm";
+        "time": "T000001.0002"
+    },
+    "errors": [ "URL not found" ]
+}
+  */
 
   public String toString() {
     return output();
