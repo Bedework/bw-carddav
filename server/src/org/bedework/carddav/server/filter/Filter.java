@@ -26,7 +26,7 @@
 package org.bedework.carddav.server.filter;
 
 import org.bedework.carddav.server.CarddavNode;
-import org.bedework.carddav.server.Vcard;
+import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;

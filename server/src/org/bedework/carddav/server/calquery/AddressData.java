@@ -26,8 +26,8 @@
 package org.bedework.carddav.server.calquery;
 
 import org.bedework.carddav.server.CarddavCardNode;
-import org.bedework.carddav.server.Vcard;
-import org.bedework.carddav.server.Vcard.Property;
+import org.bedework.carddav.vcard.Property;
+import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;

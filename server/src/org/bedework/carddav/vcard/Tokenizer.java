@@ -1,4 +1,4 @@
-package org.bedework.carddav.util;
+package org.bedework.carddav.vcard;
 
 import java.io.IOException;
 import java.io.Reader;

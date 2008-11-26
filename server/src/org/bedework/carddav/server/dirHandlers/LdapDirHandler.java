@@ -26,15 +26,15 @@
 package org.bedework.carddav.server.dirHandlers;
 
 import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.server.Vcard;
-import org.bedework.carddav.server.Vcard.Param;
-import org.bedework.carddav.server.Vcard.Property;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
+import org.bedework.carddav.vcard.Param;
+import org.bedework.carddav.vcard.Property;
+import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;

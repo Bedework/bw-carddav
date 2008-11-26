@@ -26,6 +26,8 @@
 
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.vcard.Vcard;
+
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.PrincipalInfo;
 

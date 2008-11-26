@@ -32,13 +32,13 @@ import org.bedework.carddav.server.PropertyHandler;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavColNode;
 import org.bedework.carddav.server.SysIntf;
-import org.bedework.carddav.server.Vcard;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.User;
+import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;

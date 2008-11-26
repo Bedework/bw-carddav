@@ -25,6 +25,7 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.vcard.Vcard;
 import org.bedework.webdav.WdCollection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;

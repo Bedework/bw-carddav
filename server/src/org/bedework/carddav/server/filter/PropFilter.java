@@ -29,8 +29,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.bedework.carddav.server.Vcard;
-import org.bedework.carddav.server.Vcard.Property;
+
+import org.bedework.carddav.vcard.Property;
+import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 

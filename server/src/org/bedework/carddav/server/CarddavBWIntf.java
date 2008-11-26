@@ -32,6 +32,7 @@ import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
+import org.bedework.carddav.vcard.Vcard;
 import org.bedework.webdav.WdCollection;
 
 import edu.rpi.cct.webdav.servlet.common.AccessUtil;
