@@ -210,6 +210,26 @@ public class Vcard {
     return null;
   }
 
+  /**
+   * @param name
+   * @return property or null
+   */
+  public Collection<Property> findProperties(String name) {
+    Collection<Property> props = new ArrayList<Property>();
+
+    if (props == null) {
+      return props;
+    }
+
+    for (Property p: props) {
+      if (name.equals(p.name)) {
+        props.add(p);
+      }
+    }
+
+    return props;
+  }
+
   private static final int WORD_CHAR_START = 32;
 
   private static final int WORD_CHAR_END = 255;
@@ -314,14 +334,35 @@ public class Vcard {
 
     indent += "";
 
-    new Property("VERSION", "4.0").outputJson(indent, sb);
+    Property version = new Property(VcardDefs.getPropertyDef("VERSION"), "4.0");
 
+    version.outputJson(indent, sb);
+
+    for (String pname: VcardDefs.getPropertyNames()) {
+      if ("VERSION".equals(pname)) {
+        continue;
+      }
+
+      Collection<Property> props = findProperties(pname);
+
+      if (!props.isEmpty()) {
+        int ct = 0;
+        for (Property pr: props) {
+          if (ct == 0) {
+            pr.outputJsonStart(indent, sb);
+          }
+
+          pr.outputJsonValue(indent, sb);
+
+          ct++;
+          if (ct == props.size()) {
+            pr.outputJsonEnd(indent, sb);
+          }
+        }
+      }
+    }
     if (props != null) {
       for (Property p: props) {
-        if ("VERSION".equals(p.name)) {
-          continue;
-        }
-
         p.outputJson(indent, sb);
       }
     }

@@ -202,7 +202,7 @@ public class SpecialUri {
       wtr.write("    \"vcard\": [");
       wtr.write("\n");
 
-      boolean first = false;
+      boolean first = true;
 
       for (Vcard card: cards) {
         if (first) {

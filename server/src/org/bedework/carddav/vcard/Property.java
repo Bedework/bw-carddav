@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.vcard;
 
+import org.bedework.carddav.vcard.VcardDefs.PropertyDef;
+
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.sss.util.Util;
 
@@ -49,6 +51,8 @@ public class Property {
 
   String value;
 
+  private PropertyDef def;
+
   /**
    *
    */
@@ -60,7 +64,7 @@ public class Property {
    * @param value
    */
   public Property(String name, String value) {
-    this(null, name, (Collection<Param>)null, value);
+    this(null, null, name, (Collection<Param>)null, value);
   }
 
   /**
@@ -69,30 +73,56 @@ public class Property {
    * @param value
    */
   public Property(String group, String name, String value) {
-    this(group, name, (Collection<Param>)null, value);
+    this(null, group, name, (Collection<Param>)null, value);
   }
 
   /**
+   * @param group
+   * @param def
+   * @param value
+   */
+  public Property(PropertyDef def, String value) {
+    this(def, null, def.getName(), (Collection<Param>)null, value);
+  }
+
+  /**
+   * @param group
+   * @param def
+   * @param value
+   */
+  public Property(String group, PropertyDef def, String value) {
+    this(def, group, def.getName(), (Collection<Param>)null, value);
+  }
+
+  /**
+   * @param def
    * @param name
    * @param params
    * @param value
    */
-  public Property(String name,
+  public Property(PropertyDef def,
+                  String name,
                   Collection<Param> params,
                   String value) {
-    this(null, name, params, value);
+    this(def, null, name, params, value);
   }
 
   /**
+   * @param def
    * @param group
    * @param name
    * @param params
    * @param value
    */
-  public Property(String group,
+  public Property(PropertyDef def,
+                  String group,
                   String name,
                   Collection<Param> params,
                   String value) {
+    if (def == null) {
+      def = VcardDefs.getPropertyDef(name);
+    }
+    this.def = def;
     this.group = group;
     this.name = name;
     this.params = params;
@@ -145,6 +175,7 @@ public class Property {
       }
 
       name = temp;
+      def = VcardDefs.getPropertyDef(name);
 
       while (tokeniser.nextToken() == ';') {
         addParam(new Param().parse(tokeniser));
@@ -186,39 +217,90 @@ public class Property {
    * @param sb
    */
   public void outputJson(String indent, StringBuilder sb) {
+    outputJsonStart(indent, sb);
+    outputJsonValue(indent, sb);
+    outputJsonEnd(indent, sb);
+  }
+
+  /**
+   * @param indent
+   * @param sb
+   */
+  public void outputJsonStart(String indent, StringBuilder sb) {
+    boolean cardinalityZeroOrMore = (def == null) ||
+               (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
+
+    sb.append(indent);
+    sb.append("\"");
+    sb.append(Util.jsonName(name));
+
+    if (cardinalityZeroOrMore) {
+      sb.append("\" : [");
+    } else {
+      sb.append("\" : ");
+    }
+  }
+
+  /**
+   * @param indent
+   * @param sb
+   * @param def
+   */
+  public void outputJsonValue(String indent, StringBuilder sb) {
+    boolean cardinalityZeroOrMore = (def == null) ||
+                (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
+
     /* "email" : [
     {"type" : ["pref"], "value" : "foo at example.com"},
     {"value" : "bar at example.com"}
   ]
  */
 
-    if (value == null) {
-      return;
+    if (cardinalityZeroOrMore) {
+      sb.append(indent);
     }
 
-    sb.append(indent);
-    sb.append("\"");
-    sb.append(Util.jsonName(name));
-    sb.append("\" : [\n");
+    sb.append("{");
 
     String saveIndent = indent;
     indent +="  ";
 
-    if (params != null) {
+    if (!Util.isEmpty(params)) {
       for (Param par: params) {
         par.outputJson(indent, sb);
         sb.append(",\n");
       }
+
+      sb.append(indent);
     }
 
-    sb.append(indent);
-    sb.append("{\"value\" : ");
-    sb.append(Util.jsonEncode(value));
+    sb.append("\"value\" : ");
+
+    if (value == null) {
+      sb.append(Util.jsonEncode(""));
+    } else {
+      sb.append(Util.jsonEncode(value));
+    }
     sb.append("}\n");
 
     indent = saveIndent;
+  }
+
+  /**
+   * @param indent
+   * @param sb
+   * @param def
+   */
+  public void outputJsonEnd(String indent, StringBuilder sb) {
+    boolean cardinalityZeroOrMore = (def == null) ||
+               (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
     sb.append(indent);
-    sb.append("]\n");
+
+    if (cardinalityZeroOrMore) {
+      sb.append("]");
+    }
+
+    sb.append("\n");
   }
 
   public String toString() {
