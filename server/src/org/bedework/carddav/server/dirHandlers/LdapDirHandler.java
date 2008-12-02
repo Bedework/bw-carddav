@@ -26,6 +26,8 @@
 package org.bedework.carddav.server.dirHandlers;
 
 import org.bedework.carddav.server.CarddavCollection;
+import org.bedework.carddav.server.SysIntf.GetLimits;
+import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
@@ -51,6 +53,7 @@ import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.SizeLimitExceededException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -69,7 +72,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   private DirContext ctx;
 
-  private SearchControls constraints;
   private NamingEnumeration<SearchResult> sresult;
 
   /* The data for this should probably come from the dirhandler config */
@@ -252,10 +254,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCards(java.lang.String, org.bedework.carddav.server.filter.Filter)
+   * @see org.bedework.carddav.bwserver.DirHandler#getCards(java.lang.String, org.bedework.carddav.server.filter.Filter, org.bedework.carddav.server.SysIntf.GetLimits)
    */
-  public Collection<Vcard> getCards(String path,
-                                    Filter filter) throws WebdavException {
+  public GetResult getCards(String path,
+                            Filter filter,
+                            GetLimits limits) throws WebdavException {
     verifyPath(path);
 
     try {
@@ -263,20 +266,27 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       openContext();
 
-      Collection<Vcard> res = new ArrayList<Vcard>();
+      GetResult res = searchChildren(path, ldapFilter, limits, true);
 
-      if (!searchChildren(path, ldapFilter, true)) {
+      if (!res.entriesFound) {
         return res;
       }
 
-      for (;;) {
-        Vcard card = nextCard(path, false);
+      res.cards = new ArrayList<Vcard>();
 
-        if (card == null) {
+      for (;;) {
+        CardObject co = nextCard(path, false);
+
+        if (co == null) {
           break;
         }
 
-        res.add(card);
+        if (co.limitExceeded) {
+          res.overLimit = true;
+          break;
+        }
+
+        res.cards.add(co.card);
       }
 
       return res;
@@ -308,29 +318,36 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCollections(java.lang.String)
+   * @see org.bedework.carddav.bwserver.DirHandler#getCollections(java.lang.String, org.bedework.carddav.server.SysIntf.GetLimits)
    */
-  public Collection<CarddavCollection> getCollections(String path)
+  public GetResult getCollections(String path,
+                                  GetLimits limits)
          throws WebdavException {
     verifyPath(path);
 
     try {
       openContext();
 
-      Collection<CarddavCollection> res = new ArrayList<CarddavCollection>();
+      GetResult res = searchChildren(path, null, limits, false);
 
-      if (!searchChildren(path, null, false)) {
+      if (!res.entriesFound) {
         return res;
       }
 
+      res.collections = new ArrayList<CarddavCollection>();
       for (;;) {
-        CarddavCollection cdc = nextCdCollection(path, false);
+        CollectionObject co = nextCdCollection(path, false);
 
-        if (cdc == null) {
+        if (co == null) {
           break;
         }
 
-        res.add(cdc);
+        if (co.limitExceeded) {
+          res.overLimit = true;
+          break;
+        }
+
+        res.collections.add(co.col);
       }
 
       return res;
@@ -343,30 +360,50 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
    *  Protected methods.
    * ==================================================================== */
 
-  protected boolean search(String base,
-                           String filter,
-                           int scope) throws WebdavException {
+  protected GetResult search(String base,
+                             String filter,
+                             GetLimits limits,
+                             int scope) throws WebdavException {
+    GetResult res = new GetResult();
+
     try {
       if (debug) {
         trace("About to search: base=" + base + " filter=" + filter +
               " scope=" + scope);
       }
 
-      constraints.setSearchScope(scope);
-      constraints.setCountLimit(1000);
-      constraints.setReturningAttributes(ldapConfig.getAttrIdList());
+      SearchControls constraints = new SearchControls();
 
-      boolean entriesFound = false;
+      constraints.setSearchScope(scope);
+
+      int limit = 0;
+      if ((limits != null) && (limits.limit != 0)) {
+
+        if (limits.curCount == limits.limit) {
+          // Called in error
+          res.overLimit = true;
+          return res;
+        }
+        limit = limits.limit - limits.curCount;
+      } else {
+        limit = ldapConfig.getQueryLimit();
+      }
+
+      if (limit != 0) {
+        constraints.setCountLimit(limit);
+      }
+
+      constraints.setReturningAttributes(ldapConfig.getAttrIdList());
 
       try {
         sresult = ctx.search(base, filter, constraints);
 
         if ((sresult != null) && sresult.hasMore()) {
-          entriesFound = true;
+          res.entriesFound = true;
         }
 
         if (debug) {
-          trace("About to return from search with " + entriesFound);
+          trace("About to return from search with " + res.entriesFound);
         }
       } catch (NameNotFoundException e) {
         // Allow that one.
@@ -376,33 +413,59 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         sresult = null;
       }
 
-      return entriesFound;
+      return res;
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  protected Vcard nextCard(String path, boolean fullPath) throws WebdavException {
-    LdapObject ldo = nextObject();
+  private static class CardObject {
+    boolean limitExceeded;
 
-    if (ldo == null) {
-      return null;
-    }
-
-    Vcard card = makeVcard(path, fullPath, ldo.attrs);
-
-    return card;
+    Vcard card;
   }
 
-  protected CarddavCollection nextCdCollection(String path,
-                                               boolean fullPath) throws WebdavException {
+  protected CardObject nextCard(String path, boolean fullPath) throws WebdavException {
     LdapObject ldo = nextObject();
 
     if (ldo == null) {
       return null;
     }
 
-    return makeCdCollection(path, fullPath, ldo.attrs);
+    CardObject co = new CardObject();
+    if (ldo.limitExceeded) {
+      co.limitExceeded = true;
+      return co;
+    }
+
+    co.card = makeVcard(path, fullPath, ldo.attrs);
+
+    return co;
+  }
+
+  private static class CollectionObject {
+    boolean limitExceeded;
+
+    CarddavCollection col;
+  }
+
+  protected CollectionObject nextCdCollection(String path,
+                                              boolean fullPath) throws WebdavException {
+    LdapObject ldo = nextObject();
+
+    if (ldo == null) {
+      return null;
+    }
+
+    CollectionObject co = new CollectionObject();
+    if (ldo.limitExceeded) {
+      co.limitExceeded = true;
+      return co;
+    }
+
+    co.col = makeCdCollection(path, fullPath, ldo.attrs);
+
+    return co;
   }
 
   protected CarddavCollection makeCdCollection(String path,
@@ -482,8 +545,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   }
 
   private static class LdapObject {
+    boolean limitExceeded;
+
     Attributes attrs;
     String name;
+
+    LdapObject() {
+    }
 
     LdapObject(Attributes attrs, String name) {
       this.attrs = attrs;
@@ -528,6 +596,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       return new LdapObject(s.getAttributes(), s.getName());
+    } catch (SizeLimitExceededException slee) {
+      LdapObject le = new LdapObject();
+
+      le.limitExceeded = true;
+      return le;
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -928,9 +1001,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   /* Search for children of the given path.
    */
-  protected boolean searchChildren(String path,
-                                   String filter,
-                                   boolean cards) throws WebdavException {
+  protected GetResult searchChildren(String path,
+                                     String filter,
+                                     GetLimits limits,
+                                     boolean cards) throws WebdavException {
     try {
       StringBuilder sb = new StringBuilder();
 
@@ -968,7 +1042,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       return search(makeAddrbookDn(path, true),
-                    ldapFilter, SearchControls.ONELEVEL_SCOPE);
+                    ldapFilter, limits, SearchControls.ONELEVEL_SCOPE);
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -1042,7 +1116,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
               pr.get(Context.PROVIDER_URL));
       }
       ctx = new InitialDirContext(pr);
-      constraints = new SearchControls();
     } catch (Throwable t) {
       throw new WebdavException(t);
     }

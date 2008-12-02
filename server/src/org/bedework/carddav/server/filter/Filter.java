@@ -26,7 +26,8 @@
 package org.bedework.carddav.server.filter;
 
 import org.bedework.carddav.server.CarddavNode;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.server.SysIntf.GetLimits;
+import org.bedework.carddav.server.SysIntf.GetResult;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
@@ -209,11 +210,12 @@ public class Filter extends CarddavFilter {
    * empty collection will be returned if no objects match.
    *
    * @param wdnode    WebdavNsNode defining root of search
-   * @param retrieveRecur  How we retrieve recurring events
-   * @return Collection of result nodes (empty for no result)
+   * @param limits    to limit result size
+   * @return GetResult with collection of result nodes (empty for no result)
    * @throws WebdavException
    */
-  public Collection<Vcard> query(CarddavNode wdnode) throws WebdavException {
+  public GetResult query(CarddavNode wdnode,
+                         GetLimits limits) throws WebdavException {
     try {
       /*if (debug) {
       if (eventq.trange == null) {
@@ -225,14 +227,14 @@ public class Filter extends CarddavFilter {
       }
     }*/
 
-      Collection<Vcard> cards = wdnode.getSysi().getCards(wdnode.getWdCollection(),
-                                          this);
+      GetResult  res = wdnode.getSysi().getCards(wdnode.getWdCollection(),
+                                                 this, limits);
 
       if (debug) {
-        trace("Query returned " + cards.size());
+        trace("Query returned " + res.cards.size());
       }
 
-      return cards;
+      return res;
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {

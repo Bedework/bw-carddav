@@ -26,7 +26,7 @@
 
 package org.bedework.carddav.server;
 
-import org.bedework.carddav.server.calquery.AddressData;
+import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.vcard.Vcard;
 
 import org.w3c.dom.Element;

@@ -25,12 +25,14 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
+import org.bedework.carddav.server.SysIntf.GetLimits;
+import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.vcard.Vcard;
 import org.bedework.webdav.WdCollection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
@@ -154,23 +156,26 @@ public class CarddavColNode extends CarddavNode {
   public void setDefaults(QName methodTag) throws WebdavException {
   }
 
-  public Collection<WebdavNsNode> getChildren() throws WebdavException {
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.server.CarddavNode#getChildren(org.bedework.carddav.server.SysIntf.GetLimits)
+   */
+  public QueryResult getChildren(GetLimits limits) throws WebdavException {
     /* For the moment we're going to do this the inefficient way.
        We really need to have calendar defs that can be expressed as a search
        allowing us to retrieve all the ids of objects within a calendar.
        */
 
     try {
-      Collection<WebdavNsNode> res = new ArrayList<WebdavNsNode>();
+      QueryResult res = new QueryResult();
 
       CarddavCollection c = getWdCollection(); // Unalias
 
-      Collection<CarddavCollection> cols = getSysi().getCollections(c);
+      GetResult gr = getSysi().getCollections(c, limits);
 
-      if (cols != null) {
-        for (CarddavCollection wdc: cols) {
-          res.add(new CarddavColNode(new CarddavURI(wdc, true),
-                                     getSysi(), debug));
+      if (gr.collections != null) {
+        for (CarddavCollection wdc: gr.collections) {
+          res.nodes.add(new CarddavColNode(new CarddavURI(wdc, true),
+                                           getSysi(), debug));
         }
       }
 
@@ -178,12 +183,12 @@ public class CarddavColNode extends CarddavNode {
         return res;
       }
 
-      Collection<Vcard> cards = getSysi().getCards(c, null);
+      gr = getSysi().getCards(c, null, limits);
 
-      if (cards != null) {
-        for (Vcard card: cards) {
-          res.add(new CarddavCardNode(new CarddavURI(c, card, true),
-                                      getSysi(), debug));
+      if (gr.cards != null) {
+        for (Vcard card: gr.cards) {
+          res.nodes.add(new CarddavCardNode(new CarddavURI(c, card, true),
+                                            getSysi(), debug));
         }
       }
 

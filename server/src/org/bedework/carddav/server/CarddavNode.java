@@ -25,6 +25,9 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
+import org.bedework.carddav.server.SysIntf.GetLimits;
+
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
@@ -92,10 +95,11 @@ public abstract class CarddavNode extends WebdavNsNode {
    *
    * <p>Default is to return null
    *
+   * @param limits
    * @return Collection
    * @throws WebdavException
    */
-  public Collection<WebdavNsNode> getChildren() throws WebdavException {
+  public QueryResult getChildren(GetLimits limits) throws WebdavException {
     return null;
   }
 

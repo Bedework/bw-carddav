@@ -242,17 +242,45 @@ public interface SysIntf {
   public void updateCard(String path,
                          Vcard card) throws WebdavException;
 
+  /** limits for getCards and getCollections */
+  public static class GetLimits {
+    /** 0 for no limits applied */
+    public int limit;
+
+    /** Number of results received already */
+    public int curCount;
+  }
+
+  /** Result from getCards and getCollections */
+  public static class GetResult {
+    /** Server truncted the query result */
+    public boolean serverTruncated;
+
+    /** Exceeded user limit */
+    public boolean overLimit;
+
+    /** The possibly truncated result from getCards */
+    public Collection<Vcard> cards;
+
+    /** The possibly truncated result from getCollections */
+    public Collection<CarddavCollection> collections;
+
+    /** Something found with last search */
+    public boolean entriesFound;
+  }
+
   /** Return the cards for the current user in the given collection using the
    * supplied filter.
    *
    * @param col       collection
    * @param filter - if non-null defines a search filter
+   * @param limits - applied to this query
    * @return Collection  populated card objects
    * @throws WebdavException
    */
-  public Collection<Vcard> getCards(CarddavCollection col,
-                                    Filter filter)
-          throws WebdavException;
+  public GetResult getCards(CarddavCollection col,
+                            Filter filter,
+                            GetLimits limits) throws WebdavException;
 
   /** Get card given the collection and String name.
    *
@@ -366,10 +394,12 @@ public interface SysIntf {
    * some access.
    *
    * @param  col          parent collection
-   * @return Collection   of WdCollection
+   * @param limits
+   * @return GetResult    with collection of WdCollection
    * @throws WebdavException
    */
-  public Collection<CarddavCollection> getCollections(CarddavCollection col)
+  public GetResult getCollections(CarddavCollection col,
+                                  GetLimits limits)
           throws WebdavException;
 
   /* ====================================================================

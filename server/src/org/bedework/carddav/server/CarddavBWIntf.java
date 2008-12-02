@@ -25,9 +25,11 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.server.SysIntf.GetLimits;
+import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.SysIntf.UserInfo;
-import org.bedework.carddav.server.calquery.AddressData;
 import org.bedework.carddav.server.filter.Filter;
+import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.Group;
@@ -503,7 +505,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
         debugMsg("About to get children for " + wdnode.getUri());
       }
 
-      return wdnode.getChildren();
+      // XXX We'd like to be applying limits here as well I guess
+      return wdnode.getChildren(null).nodes;
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {
@@ -1226,6 +1229,18 @@ public class CarddavBWIntf extends WebdavNsIntf {
    *                         Carddav methods
    * ==================================================================== */
 
+  /** Result from query */
+  public static class QueryResult {
+    /** Server truncted the query result */
+    public boolean serverTruncated;
+
+    /** Exceeded user limit */
+    public boolean overLimit;
+
+    /** The possibly truncated result */
+    public Collection<WebdavNsNode> nodes = new ArrayList<WebdavNsNode>();;
+  }
+
   /** Use the given query to return a collection of nodes. An exception will
    * be raised if the entire query fails for some reason (access, etc). An
    * empty collection will be returned if no objects match.
@@ -1233,15 +1248,20 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param wdnode    WebdavNsNode defining root of search
    * @param retrieveRecur  How we retrieve recurring events
    * @param fltr      Filter object defining search
+   * @param limits    to limit resutl size
    * @return Collection of result nodes (empty for no result)
    * @throws WebdavException
    */
-  public Collection<WebdavNsNode> query(WebdavNsNode wdnode,
-                                        Filter fltr) throws WebdavException {
+  public QueryResult query(WebdavNsNode wdnode,
+                                        Filter fltr,
+                                        GetLimits limits) throws WebdavException {
+    QueryResult qr = new QueryResult();
     CarddavNode node = getBwnode(wdnode);
-    Collection<Vcard> cards;
 
-    cards = fltr.query(node);
+    GetResult res = fltr.query(node, limits);
+
+    qr.overLimit = res.overLimit;
+    qr.serverTruncated = res.serverTruncated;
 
     /* We now need to build a node for each of the cards in the collection.
        For each card we must determine what collection it's in. We then take the
@@ -1251,10 +1271,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
        If there is no name for the card we just give it the default.
      */
 
-    Collection<WebdavNsNode> cnodes = new ArrayList<WebdavNsNode>();
+    qr.nodes = new ArrayList<WebdavNsNode>();
 
     try {
-      for (Vcard card: cards) {
+      for (Vcard card: res.cards) {
 
         CarddavCollection col = node.getWdCollection();
         card.setParent(col);
@@ -1276,10 +1296,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                                    WebdavNsIntf.nodeTypeEntity,
                                                    col, card, null);
 
-        cnodes.add(cnode);
+        qr.nodes.add(cnode);
       }
 
-      return fltr.postFilter(cnodes);
+      qr.nodes = fltr.postFilter(qr.nodes);
+
+      return qr;
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {

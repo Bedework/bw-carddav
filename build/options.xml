@@ -22,6 +22,8 @@
             <providerUrl>ldap://localhost:10389/</providerUrl>
             <baseDn>dc=bedework, dc=org</baseDn>
 
+            <queryLimit>1000</queryLimit>
+
             <!-- We need to get operational attributes from the directory.
                This requires us to explicitly name all attributes on fetch.
                This element allows us to name EXTRA attributes from the default
@@ -47,6 +49,8 @@
             <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
             <providerUrl>ldap://localhost:10389/</providerUrl>
             <baseDn>ou=accounts,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
 
             <attrIds></attrIds>
 
@@ -77,6 +81,8 @@
 
             <baseDn>ou=groups,dc=bedework,dc=org</baseDn>
 
+            <queryLimit>1000</queryLimit>
+
             <attrIds></attrIds>
 
             <cardKind>group</cardKind>
@@ -105,6 +111,8 @@
 
             <baseDn>ou=users,ou=addrbooks,dc=bedework,dc=org</baseDn>
 
+            <queryLimit>1000</queryLimit>
+
             <attrIds></attrIds>
 
             <folderObjectClass>organizationalUnit</folderObjectClass>
@@ -130,6 +138,8 @@
             <providerUrl>ldap://localhost:10389/</providerUrl>
 
             <baseDn>ou=public,ou=addrbooks,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
 
             <attrIds></attrIds>
 

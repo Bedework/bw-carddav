@@ -23,7 +23,7 @@
     special, consequential, or incidental damages related to the software,
     to the maximum extent the law permits.
 */
-package org.bedework.carddav.server.calquery;
+package org.bedework.carddav.server.query;
 
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.vcard.Property;

@@ -422,13 +422,14 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getCards(CarddavColNode, BwFilter)
+   * @see org.bedework.carddav.server.SysIntf#getCards(org.bedework.carddav.server.CarddavCollection, org.bedework.carddav.server.filter.Filter, org.bedework.carddav.server.SysIntf.GetLimits)
    */
-  public Collection<Vcard> getCards(CarddavCollection col, Filter filter)
-          throws WebdavException {
+  public GetResult getCards(CarddavCollection col,
+                                 Filter filter,
+                                 GetLimits limits) throws WebdavException {
     try {
       return getHandler(col.getPath()).getCards(col.getPath(),
-                                                filter);
+                                                filter, limits);
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -614,11 +615,12 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getCollections(org.bedework.webdav.WdCollection)
+   * @see org.bedework.carddav.server.SysIntf#getCollections(org.bedework.carddav.server.CarddavCollection, org.bedework.carddav.server.SysIntf.GetLimits)
    */
-  public Collection<CarddavCollection> getCollections(CarddavCollection val) throws WebdavException {
+  public GetResult getCollections(CarddavCollection val,
+                                  GetLimits limits) throws WebdavException {
     try {
-      return getHandler(val.getPath()).getCollections(val.getPath());
+      return getHandler(val.getPath()).getCollections(val.getPath(), limits);
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {

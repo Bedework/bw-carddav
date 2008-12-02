@@ -45,6 +45,8 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
 
   private String baseDn;
 
+  private int queryLimit;
+
   private String attrIds;
 
   private String[] defaultAttrIdList = {
@@ -180,6 +182,22 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    */
   public String getBaseDn()  {
     return baseDn;
+  }
+
+  /** Set the query limit - 0 for no limit
+   *
+   * @param val
+   */
+  public void setQueryLimit(int val)  {
+    queryLimit = val;
+  }
+
+  /**
+   *
+   * @return int val
+   */
+  public int getQueryLimit()  {
+    return queryLimit;
   }
 
   /**

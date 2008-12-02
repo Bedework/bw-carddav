@@ -52,7 +52,7 @@
     to the maximum extent the law permits.
 */
 
-package org.bedework.carddav.server.calquery;
+package org.bedework.carddav.server.query;
 
 import org.apache.log4j.Logger;
 

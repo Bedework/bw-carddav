@@ -26,8 +26,10 @@
 
 package org.bedework.carddav.server;
 
-import org.bedework.carddav.server.calquery.AddressData;
+import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
+import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.filter.Filter;
+import org.bedework.carddav.server.query.AddressData;
 
 import edu.rpi.cct.webdav.servlet.common.ReportMethod;
 import edu.rpi.cct.webdav.servlet.common.PropFindMethod.PropRequest;
@@ -65,6 +67,7 @@ public class CarddavReportMethod extends ReportMethod {
    */
 
   private Filter filter;
+  private GetLimits limit;
   private ArrayList<String> hrefs;
 
   AddressData caldata;
@@ -152,8 +155,8 @@ public class CarddavReportMethod extends ReportMethod {
                                       DAV:prop)?, DAV:href+)>
 
                <!ELEMENT addressbook-query ((DAV:allprop |
-                                    DAV:propname |
-                                    DAV:prop)?, filter)>
+                                     DAV:propname |
+                                     DAV:prop)?, filter, limit?)>
        */
 
       if (children.isEmpty()) {
@@ -188,24 +191,47 @@ public class CarddavReportMethod extends ReportMethod {
 
       if (reportType == reportTypeQuery) {
         // Filter required next
-
         if (!XmlUtil.nodeMatches(curnode, CarddavTags.filter)) {
           throw new WebdavBadRequest("Expected filter");
         }
 
-        // Delay parsing until we see if we have a timezone
-        Element filterNode = curnode;
+        filter = new Filter(debug);
+        filter.carddavParse(curnode);
+
+        if (debug) {
+          trace("REPORT: query");
+          filter.dump();
+        }
+
+        if (!chiter.hasNext()) {
+          return; // no limit
+        }
+
+        curnode = chiter.next();
+
+        // Only limit possible now
+        if (!XmlUtil.nodeMatches(curnode, CarddavTags.limit)) {
+          throw new WebdavBadRequest("Expected filter or limit");
+        }
 
         if (chiter.hasNext()) {
           throw new WebdavBadRequest("Unexpected elements");
         }
 
-        filter = new Filter(debug);
-        filter.carddavParse(filterNode);
+        Collection<Element> limitChildren = getChildren(curnode);
 
-        if (debug) {
-          trace("REPORT: query");
-          filter.dump();
+        for (Element limNode: limitChildren) {
+          if (!XmlUtil.nodeMatches(limNode, CarddavTags.nresults)) {
+            throw new WebdavBadRequest("Bad limit element");
+          }
+
+          limit = new GetLimits();
+
+          try {
+            limit.limit = Integer.parseInt(XmlUtil.getElementContent(limNode));
+          } catch (Throwable t) {
+            throw new WebdavBadRequest("Bad limit nresults value");
+          }
         }
 
         return;
@@ -305,7 +331,13 @@ public class CarddavReportMethod extends ReportMethod {
     Collection<WebdavNsNode> nodes = null;
 
     if (reportType == reportTypeQuery) {
-      nodes = (Collection<WebdavNsNode>)doNodeAndChildren(node, 0, defaultDepth(depth, 0));
+      QueryResult qr = doNodeAndChildren(node, 0, defaultDepth(depth, 0));
+
+      if (qr.overLimit || qr.serverTruncated) {
+        node.setStatus(507);
+        doNodeProperties(node);
+      }
+      nodes = qr.nodes;
     } else if (reportType == reportTypeMultiGet) {
       nodes = new ArrayList<WebdavNsNode>();
 
@@ -348,26 +380,15 @@ public class CarddavReportMethod extends ReportMethod {
     flush();
   }
 
-  private Collection<WebdavNsNode> getNodes(WebdavNsNode node)
-          throws WebdavException {
-    if (debug) {
-      trace("getNodes: " + node.getUri());
-    }
-
-    CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
-
-    return intf.query(node, filter);
-  }
-
-  private Collection<WebdavNsNode> doNodeAndChildren(WebdavNsNode node,
-                                       int curDepth,
-                                       int maxDepth) throws WebdavException {
+  private QueryResult doNodeAndChildren(WebdavNsNode node,
+                                        int curDepth,
+                                        int maxDepth) throws WebdavException {
     if (node instanceof CarddavCardNode) {
-      // Targetted directly at component
-      Collection<WebdavNsNode> nodes = new ArrayList<WebdavNsNode>();
+      // Targeted directly at component
+      QueryResult qr = new QueryResult();
 
-      nodes.add(node);
-      return nodes;
+      qr.nodes.add(node);
+      return qr;
     }
 
     if (!(node instanceof CarddavColNode)) {
@@ -382,22 +403,41 @@ public class CarddavReportMethod extends ReportMethod {
     CarddavColNode colnode = (CarddavColNode)node;
 
     if (colnode.getWdCollection().getAddressBook()) {
-      return getNodes(node);
-    }
+      CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
 
-    Collection<WebdavNsNode> nodes = new ArrayList<WebdavNsNode>();
+      return intf.query(node, filter, limit);
+    }
 
     curDepth++;
 
+    QueryResult qr = new QueryResult();
+
     if (curDepth > maxDepth) {
-      return nodes;
+      return qr;
     }
 
     for (WebdavNsNode child: getNsIntf().getChildren(node)) {
-      nodes.addAll(doNodeAndChildren(child, curDepth, maxDepth));
+      int sz = qr.nodes.size();
+      if ((limit != null) && (sz > limit.limit)) {
+        qr.overLimit = true;
+        break;
+      }
+
+      QueryResult subqr = doNodeAndChildren(child, curDepth, maxDepth);
+      qr.nodes.addAll(subqr.nodes);
+
+      if (subqr.overLimit) {
+        qr.overLimit = true;
+        break;
+      }
+
+      if (subqr.serverTruncated) {
+        qr.serverTruncated = true;
+        break;
+      }
     }
 
-    return nodes;
+    return qr;
   }
 }
 

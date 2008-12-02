@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.server.SysIntf.GetLimits;
+import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
@@ -83,6 +85,7 @@ public class SpecialUri {
     }
 
     startResponse(resp, format);
+    GetResult res = null;
 
     buildResponse: {
       String addrbook = req.getParameter("addrbook");
@@ -98,14 +101,39 @@ public class SpecialUri {
         break buildResponse;
       }
 
-      Collection<Vcard> cards = doSearch(req, col, sysi, debug);
+      GetLimits limits = null;
 
-      if ((cards == null) || (cards.size() == 0)) {
+      String limitStr = Util.checkNull(req.getParameter("limit"));
+
+      if (limitStr != null) {
+        limits = new GetLimits();
+
+        try {
+          limits.limit = Integer.parseInt(limitStr);
+        } catch (Throwable t) {
+          setStatus(resp, HttpServletResponse.SC_BAD_REQUEST, limitStr);
+          break buildResponse;
+        }
+      }
+
+      res = doSearch(req, col, limits, sysi, debug);
+
+      if (Util.isEmpty(res.cards)) {
         setStatus(resp, HttpServletResponse.SC_NOT_FOUND, format);
         break buildResponse;
       }
 
-      doOutput(resp, cards, format);
+      doOutput(resp, res.cards, format);
+    }
+
+    if ((res != null) && ((res.overLimit) || (res.serverTruncated))) {
+      String msg;
+      if (res.overLimit) {
+        msg = "User limit exceeded";
+      } else {
+        msg = "Server limit exceeded";
+      }
+      setStatus(resp, /*HttpServletResponse.SC_INSUFFICIENT_STORAGE*/ 507, msg);
     }
 
     endResponse(resp, format);
@@ -127,10 +155,11 @@ public class SpecialUri {
     }
   }
 
-  private static Collection<Vcard> doSearch(HttpServletRequest req,
-                                            CarddavCollection col,
-                                            SysIntf sysi,
-                                            boolean debug) throws WebdavException {
+  private static GetResult doSearch(HttpServletRequest req,
+                                    CarddavCollection col,
+                                    GetLimits limits,
+                                    SysIntf sysi,
+                                    boolean debug) throws WebdavException {
     String user = req.getParameter("user");
     String mail = req.getParameter("mail");
     String org = req.getParameter("org");
@@ -177,7 +206,7 @@ public class SpecialUri {
       fltr.addPropFilter(new PropFilter("ORG", new TextMatch(org)));
     }
 
-    return sysi.getCards(col, fltr);
+    return sysi.getCards(col, fltr, limits);
   }
 
   private static void doOutput(HttpServletResponse resp,

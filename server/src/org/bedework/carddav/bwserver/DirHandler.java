@@ -29,6 +29,8 @@ import java.util.Collection;
 
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
+import org.bedework.carddav.server.SysIntf.GetLimits;
+import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
@@ -208,11 +210,13 @@ public interface DirHandler {
    *
    * @param path       to collection
    * @param filter - if non-null defines a search filter
-   * @return Collection  populated card objects
+   * @param limits - applied to this query - possibly null
+   * @return GetResult with populated card objects
    * @throws WebdavException
    */
-  public Collection<Vcard> getCards(String path,
-                                    Filter filter) throws WebdavException;
+  public GetResult getCards(String path,
+                                 Filter filter,
+                                 GetLimits limits) throws WebdavException;
 
   /**
    * @param val
@@ -284,9 +288,11 @@ public interface DirHandler {
    * some access.
    *
    * @param  path          parent collection path
+   * @param limits - applied to this query - possibly null
    * @return Collection   of CarddavCollection
    * @throws WebdavException
    */
-  public Collection<CarddavCollection> getCollections(String path)
+  public GetResult getCollections(String path,
+                                  GetLimits limits)
           throws WebdavException;
 }
