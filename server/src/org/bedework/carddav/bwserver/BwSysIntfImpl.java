@@ -25,7 +25,6 @@
 */
 package org.bedework.carddav.bwserver;
 
-import org.bedework.webdav.WdCollection;
 import org.bedework.carddav.server.CarddavResource;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.PropertyHandler;
@@ -41,6 +40,7 @@ import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
+import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
@@ -537,7 +537,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#copyMove(org.bedework.webdav.WdCollection, org.bedework.webdav.WdCollection, boolean, boolean)
+   * @see org.bedework.carddav.server.SysIntf#copyMove(edu.rpi.cct.webdav.servlet.shared.WdCollection, edu.rpi.cct.webdav.servlet.shared.WdCollection, boolean, boolean)
    */
   public void copyMove(WdCollection from,
                        WdCollection to,
@@ -602,7 +602,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#updateCollection(org.bedework.webdav.WdCollection)
+   * @see org.bedework.carddav.server.SysIntf#updateCollection(edu.rpi.cct.webdav.servlet.shared.WdCollection)
    */
   public void updateCollection(WdCollection val) throws WebdavException {
     try {

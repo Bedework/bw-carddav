@@ -25,7 +25,7 @@
 */
 package org.bedework.carddav.server;
 
-import org.bedework.webdav.WdCollection;
+import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 
 /**
  * @author douglm

@@ -31,8 +31,8 @@ import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Vcard;
-import org.bedework.webdav.WdCollection;
 
+import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 
@@ -134,14 +134,14 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#deleteCollection(org.bedework.webdav.WdCollection)
+   * @see org.bedework.carddav.bwserver.DirHandler#deleteCollection(WdCollection)
    */
   public void deleteCollection(WdCollection col) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#rename(org.bedework.webdav.WdCollection, java.lang.String)
+   * @see org.bedework.carddav.bwserver.DirHandler#rename(WdCollection, String)
    */
   public int rename(WdCollection col,
                     String newName) throws WebdavException {

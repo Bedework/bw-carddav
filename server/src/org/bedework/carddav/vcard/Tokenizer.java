@@ -47,7 +47,7 @@ public class Tokenizer extends StreamTokenizer {
   /**
    * @throws WebdavException
    */
-  public void assertWord()  throws WebdavException {
+  public void assertWord() throws WebdavException {
     assertToken(StreamTokenizer.TT_WORD);
   }
 
