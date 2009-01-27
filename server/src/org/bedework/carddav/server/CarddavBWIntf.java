@@ -337,7 +337,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       access = PrivilegeDefs.privBind;
 
       return sysi.checkAccess(((CarddavCardNode)node).getWdCollection(),
-                              access, true).accessAllowed;
+                              access, true).getAccessAllowed();
     } else {
       return false;
     }
@@ -1066,7 +1066,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   public void emitAcl(WebdavNsNode node) throws WebdavException {
     try {
-      Acl acl = node.getCurrentAccess().acl;
+      Acl acl = node.getCurrentAccess().getAcl();
 
       if (acl != null) {
         accessUtil.emitAcl(acl, true);
@@ -1083,7 +1083,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     try {
       TreeSet<String> hrefs = new TreeSet<String>();
 
-      for (Ace ace: node.getCurrentAccess().acl.getAces()) {
+      for (Ace ace: node.getCurrentAccess().getAcl().getAces()) {
         AceWho who = ace.getWho();
 
         if (who.getWhoType() == WhoDefs.whoTypeUser) {
