@@ -243,6 +243,7 @@ public class SpecialUri {
       }
 
       wtr.write("\n    ]\n");
+      wtr.write("  }\n");
 
       resp.setStatus(HttpServletResponse.SC_OK);
     } catch (IOException ie) {

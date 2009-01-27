@@ -281,7 +281,7 @@ public class Property {
     } else {
       sb.append(Util.jsonEncode(value));
     }
-    sb.append("}\n");
+    sb.append("},\n");
 
     indent = saveIndent;
   }
