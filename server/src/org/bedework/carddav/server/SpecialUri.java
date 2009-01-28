@@ -163,7 +163,8 @@ public class SpecialUri {
     String user = req.getParameter("user");
     String mail = req.getParameter("mail");
     String org = req.getParameter("org");
-    String text = req.getParameter("text");
+
+    String text = req.getParameter("q");
 
     if ((user == null) && (mail == null) &&
         (org == null) && (text == null)) {

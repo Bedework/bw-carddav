@@ -297,7 +297,7 @@ public class Property {
     sb.append(indent);
 
     if (cardinalityZeroOrMore) {
-      sb.append("]");
+      sb.append("],");
     }
 
     sb.append("\n");
