@@ -608,7 +608,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   /**
    * @param path path to this card
-   * @param fullPAth - path includes card name
+   * @param fullPath - path includes card name
    * @param attrs
    * @return
    * @throws WebdavException
@@ -675,7 +675,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
              CLASS
              KEY
              FBURL
-             CALADRURI
+             CALADRURI                      use "mailto: + mail is no value supplied elsewhere
              CALURI
      */
 
@@ -705,8 +705,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       if (fullPath) {
         source = path;
       } else {
-        source = urlHandler.prefix(card.getName());
+        source = path + "/" + card.getName();
       }
+      source = urlHandler.prefix(source);
 
       simpleProp(card, "SOURCE", source);
       // XXX Use the source as th euid as well.
@@ -747,6 +748,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       paramProp(card, "WORK", "TEL", "TYPE", "pager", attrs, "pager");
 
       simpleProp(card, "EMAIL", attrs, "mail");
+
+      String mail = stringAttr(attrs, "mail");
+      if (mail != null) {
+        simpleProp(card, "CALADRURI", "mailto:" + mail);
+      }
 
       //ORG                            organization name;
       //                               one or more levels of org unit names
