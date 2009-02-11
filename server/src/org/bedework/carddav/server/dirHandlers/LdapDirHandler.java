@@ -1042,7 +1042,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       } catch (Throwable t) {
       }
 
-      if (pi != null) {
+      if ((pi != null) && pi.valid) {
         // Do principals
         throw new WebdavException("unimplemented");  // browse principals
       }
