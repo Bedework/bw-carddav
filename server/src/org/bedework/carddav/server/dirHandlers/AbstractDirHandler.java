@@ -188,18 +188,21 @@ public abstract class AbstractDirHandler implements DirHandler {
         if (start == end) {
           // Trying to browse user principals?
           pi.who = null;
+
+          pi.valid = false;
         } else if (path.charAt(start) != '/') {
           throw new WebdavException(principalNotFound);
         } else if (pi.whoType == Ace.whoTypeUser) {
           /* Strip off the principal prefix for real users.
            */
           pi.who = path.substring(start + 1, end);
+
+          pi.valid = true;
         } else {
           pi.who = path;
-        }
 
-        // XXX do this correctly - e.g. see if in directory
-        pi.valid = true;
+          pi.valid = true;
+        }
 
         return pi;
       }

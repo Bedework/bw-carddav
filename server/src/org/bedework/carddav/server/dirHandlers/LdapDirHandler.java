@@ -984,7 +984,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       String dn;
 
-      if (pi != null) {
+      if ((pi != null) && pi.valid) {
         // Do principals
 
         dn = makePrincipalDn(pi.who);
