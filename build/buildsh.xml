@@ -107,7 +107,7 @@
     <mkdir dir="${app.dest.properties}" />
 
     <copy tofile="${app.dest.properties}/options.xml"
-          file="${org.bedework.config.options}" />
+          file="${org.bedework.carddav.options}" />
 
     <!-- ===============================================================
                        Add any resource files

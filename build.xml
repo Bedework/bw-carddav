@@ -29,12 +29,17 @@
             location="${project.home}/libcache"/>
 
   <import file="${build.dir}/buildTools/getJar.xml"/>
+  <import file="${build.dir}/loadDeployConfig.xml"/>
 
   <!-- =================================================================
        init:
        ================================================================= -->
 
   <target name="init">
+    <loadDeployConfig />
+
+    <echo message="*** Options file: ${org.bedework.carddav.options}" />
+
     <delete dir="${lib.dir}" />
     <mkdir dir="${lib.dir}" />
 
@@ -136,7 +141,7 @@
      This target builds jar files ready for the deploy target.
      =================================================================== -->
 
-  <target name="build-source" depends="bld.server" />
+  <target name="build-source" depends="bld.auth.server,bld.unauth.server" />
 
 <!-- ==================== Javadoc Target ===============================
      The "javadoc" target creates Javadoc API documentation for the Java
@@ -174,7 +179,7 @@
   <!-- ===================== internal build targets ====================
        ================================================================= -->
 
-  <target name="bld.server">
+  <target name="bld.auth.server">
     <ant antfile="${org.bedework.carddav.server.base}/build.xml" inheritrefs="true"
          target="build" />
 
@@ -199,6 +204,34 @@
 
       <property name="org.bedework.deploy.name"
                 value="usercarddav" />
+    </ant>
+  </target>
+
+  <target name="bld.unauth.server">
+    <ant antfile="${org.bedework.carddav.server.base}/build.xml" inheritrefs="true"
+         target="build" />
+
+    <!-- ===============================================================
+         Build the unauthenticated war
+         =============================================================== -->
+
+    <property name="app.sou.dir"
+              location="${org.bedework.carddav.server.base}" />
+    <property name="org.bedework.temp.wars.home"
+              location="${dist.home}/wars" />
+    <property name="org.bedework.temp.extrajars.dir"
+              location="${dist.home}/extrajars" />
+
+    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+      <property name="propval.app.context.root"
+                value="${org.bedework.app.pubcarddav.war.name}" />
+      <property name="propval.app.war.name"
+                value="${org.bedework.app.pubcarddav.war.name}" />
+      <property name="propval.app.web.xml"
+                location="${app.sou.dir}/war/WEB-INF/publicweb.xml" />
+
+      <property name="org.bedework.deploy.name"
+                value="pubcarddav" />
     </ant>
   </target>
 </project>

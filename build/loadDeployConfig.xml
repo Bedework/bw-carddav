@@ -17,10 +17,14 @@
       <!-- Load user property definition overrides -->
       <property file="${org.bedework.user.build.properties}" />
 
+      <!-- These should already be defined in the above file
       <property name="org.bedework.config.properties"
                 location="${org.bedework.config.base}/configs/democal.properties" />
       <property name="org.bedework.config.options"
                 location="${org.bedework.config.base}/configs/democal.options.xml" />
+      <property name="org.bedework.carddav.options"
+                location="${org.bedework.config.base}/configs/democal.options.xml" />
+      -->
 
       <echo message="==========================================================" />
       <echo message="Use config properties ${org.bedework.config.properties}" />
@@ -30,6 +34,9 @@
            of the values -->
 
       <xmlproperty file="${org.bedework.config.options}"/>
+
+      <!-- Load the CardDAV options -->
+      <xmlproperty file="${org.bedework.carddav.options}"/>
 
       <if>
         <isset property="bedework-options.org.bedework.global.portal.platform"/>

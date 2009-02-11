@@ -189,8 +189,10 @@
     <!-- Create the runtime options file -->
     <mkdir dir="${app.dest.properties}" />
 
+    <echo message="*** Options file: ${org.bedework.carddav.options}" />
+
     <copy tofile="${app.dest.properties}/options.xml"
-          file="${org.bedework.config.options}" >
+          file="${org.bedework.carddav.options}" >
       <filterset>
         <filter token="RPI-DEBUG" value="${app.debug.val}"/>
       </filterset>
