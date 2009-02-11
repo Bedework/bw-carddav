@@ -16,10 +16,15 @@
     <listener-class>edu.rpi.sss.util.jsp.SessionListener</listener-class>
   </listener>
 
+  <!-- Need this to fush a static table maintained by the servlet -->
+  <listener>
+    <listener-class>org.bedework.carddav.server.CarddavServlet</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>action</servlet-name>
     <servlet-class>
-      org.bedework.caldav.server.CaldavBWServlet
+      org.bedework.carddav.server.CarddavServlet
     </servlet-class>
     <init-param>
       <param-name>application</param-name>
