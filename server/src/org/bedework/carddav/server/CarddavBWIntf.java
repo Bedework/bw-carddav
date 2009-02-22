@@ -59,7 +59,6 @@ import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
-import edu.rpi.cmt.access.PrincipalInfo;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
 import edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb;
@@ -275,22 +274,19 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getAccount()
+     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getPrincipal()
      */
-    public String getAccount() throws AccessException {
+    public AccessPrincipal getPrincipal() throws AccessException {
       try {
-        return sysi.getAccount();
+        return sysi.getPrincipal();
       } catch (Throwable t) {
         throw new AccessException(t);
       }
     }
 
-    /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getPrincipalInfo(java.lang.String)
-     */
-    public PrincipalInfo getPrincipalInfo(String href) throws AccessException {
+    public AccessPrincipal getPrincipal(String href) throws AccessException {
       try {
-        return sysi.getPrincipalInfo(href);
+        return sysi.getPrincipal(href);
       } catch (Throwable t) {
         throw new AccessException(t);
       }
@@ -980,19 +976,13 @@ public class CarddavBWIntf extends WebdavNsIntf {
       if (href.endsWith("/")) {
         href = href.substring(0, href.length());
       }
-      PrincipalInfo pi = getSysi().getPrincipalInfo(href);
 
-      AccessPrincipal ap;
+      AccessPrincipal ap = getSysi().getPrincipal(href);
 
-      if (pi.whoType == Ace.whoTypeUser) {
-        ap = new User(pi.who);
-      } else {
-        ap = new Group(pi.who);
-      }
-
-      res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(), pi.prefix,
+      res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(),
+                                      ap.getPrincipalRef(),
                                       ap, false,
-                                      pi.prefix + "/" + pi.who + "/",
+                                      ap.getPrincipalRef() + "/",
                                       debug));
     }
 
@@ -1418,7 +1408,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
 
       if (isPrincipal) {
-        return new CarddavURI(getSysi().getPrincipalInfo(uri));
+        return new CarddavURI(getSysi().getPrincipal(uri));
       }
 
       if (existance == WebdavNsIntf.existanceDoesExist) {

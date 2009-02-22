@@ -52,7 +52,6 @@ import edu.rpi.cmt.access.Access;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.Acl;
-import edu.rpi.cmt.access.PrincipalInfo;
 import edu.rpi.cmt.access.Privilege;
 import edu.rpi.cmt.access.Privileges;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
@@ -85,8 +84,6 @@ public class BwSysIntfImpl implements SysIntf {
   private UrlHandler urlHandler;
 
   private CardDAVConfig conf;
-
-  private String principalRoot;
 
   private static class HandlerKey {
     String prefix;
@@ -149,10 +146,16 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getAccount()
+   * @see org.bedework.carddav.server.SysIntf#getPrincipal()
    */
-  public String getAccount() throws WebdavException {
-    return account;
+  public AccessPrincipal getPrincipal() throws WebdavException {
+    String href = conf.getUserPrincipalRoot();
+
+    if (!href.endsWith("/")) {
+      href += "/";
+    }
+
+    return getPrincipal(href + account);
   }
 
   private static class MyPropertyHandler extends PropertyHandler {
@@ -204,17 +207,17 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPrincipalInfo(java.lang.String)
+   * @see org.bedework.carddav.server.SysIntf#getPrincipal(java.lang.String)
    */
-  public PrincipalInfo getPrincipalInfo(String href) throws WebdavException {
+  public AccessPrincipal getPrincipal(String href) throws WebdavException {
     String path = pathFromHref(href);
-    PrincipalInfo pi = getHandler(path).getPrincipalInfo(path);
+    AccessPrincipal ap = getHandler(path).getPrincipal(path);
 
-    if ((pi == null) || !pi.valid) {
+    if (ap == null) {
       throw new WebdavNotFound(href);
     }
 
-    return pi;
+    return ap;
   }
 
   /* (non-Javadoc)
@@ -222,7 +225,7 @@ public class BwSysIntfImpl implements SysIntf {
    */
   public String makeHref(AccessPrincipal p) throws WebdavException {
     try {
-      return getUrlHandler().prefix(getHandler(principalRoot).makePrincipalUri(p));
+      return getUrlHandler().prefix(getHandler(conf.getPrincipalRoot()).makePrincipalUri(p));
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -261,7 +264,7 @@ public class BwSysIntfImpl implements SysIntf {
         return null;
       }
 
-      String principalUri = getHandler(principalRoot).makePrincipalUri(pcpl);
+      String principalUri = getHandler(conf.getPrincipalRoot()).makePrincipalUri(pcpl);
 
       String userHomePath = principalUri + "/";
 
@@ -269,7 +272,7 @@ public class BwSysIntfImpl implements SysIntf {
 
       Vcard dirInfo = null;
 
-      DirHandler rootHandler = getHandler(principalRoot);
+      DirHandler rootHandler = getHandler(conf.getPrincipalRoot());
 
       if (getDirInfo) {
         dirInfo = rootHandler.getPrincipalCard(principalUri);
@@ -494,7 +497,7 @@ public class BwSysIntfImpl implements SysIntf {
           throws WebdavException {
     try {
       return new Acl(debug).evaluateAccess(new User(account),
-                                           ent.getOwner().getAccount(),
+                                           ent.getOwner(),
                                            new Privilege[]{Privileges.makePriv(desiredAccess)},
                                            accessString.toCharArray(),
                                            null);

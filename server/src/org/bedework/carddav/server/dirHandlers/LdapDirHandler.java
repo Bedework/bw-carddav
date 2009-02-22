@@ -40,7 +40,8 @@ import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
-import edu.rpi.cmt.access.PrincipalInfo;
+import edu.rpi.cmt.access.AccessPrincipal;
+import edu.rpi.cmt.access.Ace;
 import edu.rpi.sss.util.Util;
 
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-
 
 /** Provide some common methods for ldap based directory handlers.
  *
@@ -976,18 +976,18 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected Attributes getObject(String path,
                              boolean isCollection) throws WebdavException {
     try {
-      PrincipalInfo pi = null;
+      AccessPrincipal ap = null;
       try {
-        pi = getPrincipalInfo(path);
+        ap = getPrincipal(path);
       } catch (Throwable t) {
       }
 
       String dn;
 
-      if ((pi != null) && pi.valid) {
+      if ((ap != null) && (ap.getKind() == Ace.whoTypeUser)) {
         // Do principals
 
-        dn = makePrincipalDn(pi.who);
+        dn = makePrincipalDn(ap.getAccount());
       } else {
         // Not principals - split the path after the suffix and turn into a series
         // of folders
@@ -1036,13 +1036,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         ldapFilter = "(&" + ldapFilter + filter + ")";
       }
 
-      PrincipalInfo pi = null;
+      AccessPrincipal ap = null;
       try {
-        pi = getPrincipalInfo(path);
+        ap = getPrincipal(path);
       } catch (Throwable t) {
       }
 
-      if ((pi != null) && pi.valid) {
+      if (ap != null) {
         // Do principals
         throw new WebdavException("unimplemented");  // browse principals
       }

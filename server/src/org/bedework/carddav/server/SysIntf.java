@@ -36,7 +36,6 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Acl;
-import edu.rpi.cmt.access.PrincipalInfo;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 
 import java.io.Serializable;
@@ -68,12 +67,12 @@ public interface SysIntf {
                    CardDAVConfig conf,
                    boolean debug) throws WebdavException;
 
-  /** Return the current account
-   *
-   * @return String
-   * @throws WebdavException
-   */
-  public String getAccount() throws WebdavException;
+  /** Return the current principal
+  *
+  * @return String
+  * @throws WebdavException
+  */
+ public AccessPrincipal getPrincipal() throws WebdavException;
 
   /** Get a property handler
    *
@@ -110,10 +109,10 @@ public interface SysIntf {
    * principal.
    *
    * @param href
-   * @return PrincipalInfo
+   * @return AccessPrincipal
    * @throws WebdavException
    */
-  public PrincipalInfo getPrincipalInfo(String href) throws WebdavException;
+  public AccessPrincipal getPrincipal(String href) throws WebdavException;
 
   /**
    * @param p

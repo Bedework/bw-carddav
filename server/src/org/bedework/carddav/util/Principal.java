@@ -36,12 +36,14 @@ import java.util.TreeSet;
  *   @author Mike Douglass douglm@rpi.edu
  *  @version 1.0
  */
-public abstract class Principal implements Comparator<Principal>, 
+public abstract class Principal implements Comparator<Principal>,
                                            Comparable<Principal>,
                                            AccessPrincipal {
   /** Account for the principal
    */
   private String account;  // null for guest
+
+  private String principalRef;  // null for guest
 
   /* groups of which this user is a member */
   protected Collection<Principal> groups;
@@ -108,6 +110,17 @@ public abstract class Principal implements Comparator<Principal>,
    */
   public String getAccount() {
     return account;
+  }
+
+  public void setPrincipalRef(String val) {
+    principalRef = val;
+  }
+
+  /**
+   * @return  String principal reference
+   */
+  public String getPrincipalRef() {
+    return principalRef;
   }
 
   /** Set of groups of which principal is a member

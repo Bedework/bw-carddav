@@ -40,7 +40,6 @@ import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.PrincipalInfo;
 
 /** Interface defining a directory handler. The implementing class provides an
  * interface between the CardDAV server and a portion of the directory structure.
@@ -137,10 +136,10 @@ public interface DirHandler {
    * principal. Return null or set PrincipalInfo.valid = false for no principal.
    *
    * @param path
-   * @return PrincipalInfo
+   * @return AccessPrincipal
    * @throws WebdavException
    */
-  public PrincipalInfo getPrincipalInfo(String path) throws WebdavException;
+  public AccessPrincipal getPrincipal(String path) throws WebdavException;
 
   /** Return a card for the principal with the given path. Also tests for a valid
    * principal. Return null for no principal.

@@ -28,8 +28,8 @@ package org.bedework.carddav.server;
 
 import org.bedework.carddav.vcard.Vcard;
 
+import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
-import edu.rpi.cmt.access.PrincipalInfo;
 
 /** We map uris onto an object which may be a calendar or an
  * entity contained within that calendar.
@@ -56,7 +56,7 @@ public class CarddavURI {
 
   String entityName;
 
-  PrincipalInfo principal;
+  AccessPrincipal principal;
 
   boolean resourceUri; // entityname is resource
 
@@ -91,10 +91,10 @@ public class CarddavURI {
     resourceUri = true;
   }
 
-  CarddavURI(PrincipalInfo principal) {
+  CarddavURI(AccessPrincipal principal) {
     exists = true;
     col = null;
-    this.entityName = principal.who;
+    this.entityName = principal.getAccount();
     this.principal = principal;
   }
 
@@ -172,7 +172,7 @@ public class CarddavURI {
    */
   public String getPath() {
     if (principal != null) {
-      return principal.prefix;
+      return principal.getPrincipalRef();
     }
 
     if (entity != null) {
@@ -215,7 +215,7 @@ public class CarddavURI {
       return false;
     }
 
-    return principal.whoType == Ace.whoTypeUser;
+    return principal.getKind() == Ace.whoTypeUser;
   }
 
   /**
@@ -226,7 +226,7 @@ public class CarddavURI {
       return false;
     }
 
-    return principal.whoType == Ace.whoTypeGroup;
+    return principal.getKind() == Ace.whoTypeGroup;
   }
 
   /**

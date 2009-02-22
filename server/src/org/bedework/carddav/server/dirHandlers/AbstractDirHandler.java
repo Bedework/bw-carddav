@@ -29,13 +29,14 @@ import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirectoryInfo;
 import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.util.Group;
+import org.bedework.carddav.util.User;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
-import edu.rpi.cmt.access.PrincipalInfo;
 
 import org.apache.log4j.Logger;
 
@@ -159,11 +160,9 @@ public abstract class AbstractDirHandler implements DirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getPrincipalInfo(java.lang.String)
+   * @see org.bedework.carddav.bwserver.DirHandler#getPrincipal(java.lang.String)
    */
-  public PrincipalInfo getPrincipalInfo(String path) throws WebdavException {
-    PrincipalInfo pi = new PrincipalInfo();
-
+  public AccessPrincipal getPrincipal(String path) throws WebdavException {
     try {
       if (!isPrincipal(path)) {
         return null;
@@ -176,35 +175,41 @@ public abstract class AbstractDirHandler implements DirHandler {
         end--;
       }
 
+      int whoType;
+      String who = null;
+
       for (String prefix: toWho.keySet()) {
         if (!path.startsWith(prefix)) {
           continue;
         }
 
-        pi.prefix = prefix;
-        pi.whoType = toWho.get(prefix);
+        whoType = toWho.get(prefix);
         start = prefix.length();
 
         if (start == end) {
           // Trying to browse user principals?
-          pi.who = null;
-
-          pi.valid = false;
         } else if (path.charAt(start) != '/') {
           throw new WebdavException(principalNotFound);
-        } else if (pi.whoType == Ace.whoTypeUser) {
+        } else if ((whoType == Ace.whoTypeUser) ||
+                   (whoType == Ace.whoTypeGroup)) {
           /* Strip off the principal prefix for real users.
            */
-          pi.who = path.substring(start + 1, end);
-
-          pi.valid = true;
+          who = path.substring(start + 1, end);
         } else {
-          pi.who = path;
-
-          pi.valid = true;
+          who = path;
         }
 
-        return pi;
+        AccessPrincipal ap = null;
+
+        if (who != null) {
+          if (whoType == Ace.whoTypeUser) {
+            ap = new User(who);
+          } else if (whoType == Ace.whoTypeGroup) {
+            ap = new Group(who);
+          }
+        }
+
+        return ap;
       }
 
       throw new WebdavException(principalNotFound);
