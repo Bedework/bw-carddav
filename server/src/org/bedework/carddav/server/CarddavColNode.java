@@ -56,8 +56,6 @@ import org.w3c.dom.Element;
  *   @author Mike Douglass   douglm@rpi.edu
  */
 public class CarddavColNode extends CarddavNode {
-  private CarddavCollection col;
-
   private AccessPrincipal owner;
 
   private String vfreeBusyString;
@@ -91,8 +89,10 @@ public class CarddavColNode extends CarddavNode {
    * @param cdURI
    * @param sysi
    * @param debug
+   * @throws WebdavException
    */
-  public CarddavColNode(CarddavURI cdURI, SysIntf sysi, boolean debug) {
+  public CarddavColNode(CarddavURI cdURI, SysIntf sysi,
+                        boolean debug) throws WebdavException {
     super(cdURI, sysi, debug);
 
     col = cdURI.getCol();

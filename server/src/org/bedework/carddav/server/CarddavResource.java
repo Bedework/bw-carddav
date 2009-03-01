@@ -286,7 +286,11 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    * ==================================================================== */
 
   public int hashCode() {
-    return getParent().getPath().hashCode() * getName().hashCode();
+    try {
+      return getParent().getPath().hashCode() * getName().hashCode();
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
   public int compareTo(CarddavResource that)  {

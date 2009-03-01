@@ -25,16 +25,24 @@
 */
 package org.bedework.carddav.server;
 
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
+import edu.rpi.cct.webdav.servlet.shared.WdCollectionBase;
+import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 
 /**
  * @author douglm
  *
  */
-public class CarddavCollection extends WdCollection {
+public class CarddavCollection extends WdCollectionBase {
   private CarddavCollection parent;
 
   private boolean addressBook;
+
+  /**
+   * @throws WebdavException
+   */
+  public CarddavCollection() throws WebdavException {
+    super();
+  }
 
   /**
    * @param val

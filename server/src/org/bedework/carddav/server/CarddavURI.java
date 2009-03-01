@@ -28,6 +28,7 @@ package org.bedework.carddav.server;
 
 import org.bedework.carddav.vcard.Vcard;
 
+import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 
@@ -138,8 +139,9 @@ public class CarddavURI {
 
   /**
    * @return String
+   * @throws WebdavException
    */
-  public String getColName() {
+  public String getColName() throws WebdavException {
     return col.getName();
   }
 
@@ -169,8 +171,9 @@ public class CarddavURI {
 
   /**
    * @return String
+   * @throws WebdavException
    */
-  public String getPath() {
+  public String getPath() throws WebdavException {
     if (principal != null) {
       return principal.getPrincipalRef();
     }
@@ -184,8 +187,9 @@ public class CarddavURI {
 
   /**
    * @return String
+   * @throws WebdavException
    */
-  public String getUri() {
+  public String getUri() throws WebdavException {
 //    if (entityName == null) {
 //      return getPath();
 //    }
@@ -246,9 +250,14 @@ public class CarddavURI {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer("CaldavURI{path=");
+    StringBuilder sb = new StringBuilder("CaldavURI{path=");
 
-    sb.append(getPath());
+    try {
+      sb.append(getPath());
+    } catch (Throwable t) {
+      sb.append("exception: ");
+      sb.append(t.getMessage());
+    }
     sb.append(", entityName=");
     sb.append(String.valueOf(entityName));
     sb.append("}");
@@ -257,17 +266,21 @@ public class CarddavURI {
   }
 
   public int hashCode() {
-    int hc = entityName.hashCode();
+    try {
+      int hc = entityName.hashCode();
 
-    if (isUser()) {
-      return hc * 1;
+      if (isUser()) {
+        return hc * 1;
+      }
+
+      if (isGroup()) {
+        return hc * 2;
+      }
+
+      return hc * 3 + col.getPath().hashCode();
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
     }
-
-    if (isGroup()) {
-      return hc * 2;
-    }
-
-    return hc * 3 + col.getPath().hashCode();
   }
 
   public boolean equals(Object o) {

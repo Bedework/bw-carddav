@@ -28,6 +28,7 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 
+import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
@@ -45,7 +46,7 @@ import javax.xml.namespace.QName;
  *   @author Mike Douglass   douglm - rpi.edu
  */
 public abstract class CarddavNode extends WebdavNsNode {
-//  protected CaldavURI cdURI;
+  protected CarddavCollection col;
 
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
     new HashMap<QName, PropertyTagEntry>();
@@ -62,7 +63,8 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* for accessing calendars */
   private SysIntf sysi;
 
-  CarddavNode(CarddavURI cdURI, SysIntf sysi, boolean debug) {
+  CarddavNode(CarddavURI cdURI, SysIntf sysi,
+              boolean debug) throws WebdavException {
     super(sysi.getUrlHandler(), cdURI.getPath(), cdURI.isCollection(),
           cdURI.getUri(), debug);
 
@@ -84,6 +86,10 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* ====================================================================
    *                         Public methods
    * ==================================================================== */
+
+  public WdCollection getCollection(boolean deref) throws WebdavException {
+    return col;
+  }
 
   /**
    * @return WdCollection containing or represented by this entity
@@ -132,6 +138,13 @@ public abstract class CarddavNode extends WebdavNsNode {
    */
   public boolean getContentBinary() throws WebdavException {
     return false;
+  }
+
+  /* (non-Javadoc)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getChildren()
+   */
+  public Collection getChildren() throws WebdavException {
+    return null;
   }
 
   /* ====================================================================
