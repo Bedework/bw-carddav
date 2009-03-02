@@ -51,6 +51,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.Access;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
+import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.Privilege;
 import edu.rpi.cmt.access.Privileges;
@@ -480,12 +481,21 @@ public class BwSysIntfImpl implements SysIntf {
   private static String accessString;
 
   static {
-    Acl acl = new Acl();
+    AceWho owner = AceWho.getAceWho(null, Ace.whoTypeOwner, false);
+    AceWho other = AceWho.getAceWho(null, Ace.whoTypeOther, false);
+
+    Collection<Privilege> allPrivs = new ArrayList<Privilege>();
+    allPrivs.add(Access.all);
+
+    Collection<Privilege> readPrivs = new ArrayList<Privilege>();
+    readPrivs.add(Access.read);
 
     try {
-      acl.addAce(new Ace(null, false, Ace.whoTypeOwner, Access.all));
-      acl.addAce(new Ace(null, false, Ace.whoTypeOther, Access.read));
-      accessString = new String(acl.encode());
+      Collection<Ace> aces = new ArrayList<Ace>();
+
+      aces.add(Ace.makeAce(owner, allPrivs, null));
+      aces.add(Ace.makeAce(other, readPrivs, null));
+      accessString = new String(new Acl(aces).encode());
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -496,11 +506,11 @@ public class BwSysIntfImpl implements SysIntf {
                                    boolean returnResult)
           throws WebdavException {
     try {
-      return new Acl(debug).evaluateAccess(new User(account),
-                                           ent.getOwner(),
-                                           new Privilege[]{Privileges.makePriv(desiredAccess)},
-                                           accessString.toCharArray(),
-                                           null);
+      return Acl.evaluateAccess(new User(account),
+                                ent.getOwner(),
+                                new Privilege[]{Privileges.makePriv(desiredAccess)},
+                                accessString.toCharArray(),
+                                null);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
