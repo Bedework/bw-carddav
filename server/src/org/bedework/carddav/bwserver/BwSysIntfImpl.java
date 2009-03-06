@@ -49,12 +49,14 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.Access;
+import edu.rpi.cmt.access.AccessException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.Privilege;
 import edu.rpi.cmt.access.Privileges;
+import edu.rpi.cmt.access.Access.AccessCb;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
@@ -131,6 +133,52 @@ public class BwSysIntfImpl implements SysIntf {
 
   private ArrayList<DirHandler> openHandlers = new ArrayList<DirHandler>();
 
+  private static String userPrincipalRoot;
+  private static String groupPrincipalRoot;
+  private static String resourcePrincipalRoot;
+  private static String venuePrincipalRoot;
+  private static String ticketPrincipalRoot;
+  private static String hostPrincipalRoot;
+
+  /**
+   * @author douglm
+   */
+  private class CDAccessCb implements AccessCb {
+    public String makeHref(String id, int whoType) throws AccessException {
+      if (id.startsWith("/")) {
+        return id;
+      }
+
+      if (whoType == Ace.whoTypeUser) {
+        return userPrincipalRoot + id;
+      }
+
+      if (whoType == Ace.whoTypeGroup) {
+        return groupPrincipalRoot + id;
+      }
+
+      if (whoType == Ace.whoTypeResource) {
+        return resourcePrincipalRoot + id;
+      }
+
+      if (whoType == Ace.whoTypeVenue) {
+        return venuePrincipalRoot + id;
+      }
+
+      if (whoType == Ace.whoTypeTicket) {
+        return ticketPrincipalRoot + id;
+      }
+
+      if (whoType == Ace.whoTypeHost) {
+        return hostPrincipalRoot + id;
+      }
+
+      return id;
+    }
+  }
+
+  private CDAccessCb accessCb = new CDAccessCb();
+
   public void init(HttpServletRequest req,
                    String account,
                    CardDAVConfig conf,
@@ -139,6 +187,13 @@ public class BwSysIntfImpl implements SysIntf {
       this.account = account;
       this.conf = conf;
       this.debug = debug;
+
+      userPrincipalRoot= setRoot(conf.getUserPrincipalRoot());
+      groupPrincipalRoot = setRoot(conf.getGroupPrincipalRoot());
+      resourcePrincipalRoot = setRoot(conf.getResourcePrincipalRoot());
+      venuePrincipalRoot = setRoot(conf.getVenuePrincipalRoot());
+      ticketPrincipalRoot = setRoot(conf.getTicketPrincipalRoot());
+      hostPrincipalRoot = setRoot(conf.getHostPrincipalRoot());
 
       urlHandler = new UrlHandler(req, true);
     } catch (Throwable t) {
@@ -506,7 +561,8 @@ public class BwSysIntfImpl implements SysIntf {
                                    boolean returnResult)
           throws WebdavException {
     try {
-      return Acl.evaluateAccess(new User(account),
+      return Acl.evaluateAccess(accessCb,
+                                new User(account),
                                 ent.getOwner(),
                                 new Privilege[]{Privileges.makePriv(desiredAccess)},
                                 accessString.toCharArray(),
@@ -855,6 +911,14 @@ public class BwSysIntfImpl implements SysIntf {
 
   private String pathFromHref(String href) throws WebdavException {
     return urlHandler.unprefix(href);
+  }
+
+  private String setRoot(String val) {
+    if (!val.endsWith("/")) {
+      return val + "/";
+    }
+
+    return val;
   }
 
   /* ====================================================================
