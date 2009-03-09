@@ -27,7 +27,6 @@
 package org.bedework.carddav.vcard;
 
 import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.util.Uid;
 
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -36,6 +35,7 @@ import java.util.Collection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
+import edu.rpi.sss.util.Uid;
 
 /** Temp def of vcard to get us going
  *
