@@ -349,13 +349,13 @@ public class CarddavReportMethod extends ReportMethod {
                                    WebdavNsIntf.nodeTypeUnknown));
           } catch (WebdavException we) {
             if (hr.endsWith("/")) {
-              nodes.add((WebdavNsNode)new CarddavColNode(intf.getSysi(),
-                                                        we.getStatusCode(),
-                                                        intf.getUri(hr), debug));
+              nodes.add(new CarddavColNode(intf.getSysi(),
+                                           we.getStatusCode(),
+                                           intf.getUri(hr), debug));
             } else {
-              nodes.add((WebdavNsNode)new CarddavCardNode(intf.getSysi(),
-                                                              we.getStatusCode(),
-                                                              intf.getUri(hr), debug));
+            	nodes.add(new CarddavCardNode(intf.getSysi(),
+            	                              we.getStatusCode(),
+            	                              intf.getUri(hr), debug));
             }
           }
         }

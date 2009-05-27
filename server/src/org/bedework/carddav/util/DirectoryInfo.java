@@ -25,12 +25,14 @@
 */
 package org.bedework.carddav.util;
 
+import java.io.Serializable;
+
 /** This class defines the various directory properties we need to make visible
  * to applications.
  *
  * @author Mike Douglass
  */
-public class DirectoryInfo {
+public class DirectoryInfo implements Serializable {
   /* Principals */
   private String principalRoot;
   private String userPrincipalRoot;

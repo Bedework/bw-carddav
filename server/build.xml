@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- This is the ant build file for the webdavdefs module.
+<!-- This is the ant build file for the carddav server classes.
 
      This file will probably need no modification as it is assumed that the
      core of the calendar will be largely site and application independent.

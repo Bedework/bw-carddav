@@ -365,7 +365,7 @@ public class CarddavColNode extends CarddavNode {
           }
 
           if (XmlUtil.nodeMatches(pval, CarddavTags.addressbook)) {
-            ((CarddavCollection)col).setAddressBook(true);
+            col.setAddressBook(true);
           }
         }
 
@@ -407,7 +407,7 @@ public class CarddavColNode extends CarddavNode {
           debugMsg("generatePropResourcetype for " + col);
         }
 
-        if (((CarddavCollection)col).getAddressBook()) {
+        if (col.getAddressBook()) {
           xml.emptyTag(CarddavTags.addressbook);
         }
         xml.closeTag(WebdavTags.resourcetype);

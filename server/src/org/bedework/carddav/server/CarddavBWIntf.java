@@ -871,7 +871,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       throw new WebdavBadRequest();
     }
 
-    CarddavColNode fromCalNode = (CarddavColNode)from;
+    CarddavColNode fromCalNode = from;
     CarddavColNode toCalNode = (CarddavColNode)to;
 
     if (toCalNode.getExists() && !overwrite) {
