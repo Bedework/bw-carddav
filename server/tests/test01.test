@@ -1,0 +1,11 @@
+DESCRIPTION: OPTIONS test
+
+METHOD: OPTIONS
+
+AUTH: false
+
+URL: /pubcarddav/public/
+
+DEPTH: 0
+
+CONTENTTYPE: text/xml

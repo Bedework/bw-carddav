@@ -3,6 +3,7 @@
 	<name>CardDav-server</name>
 	<comment></comment>
 	<projects>
+		<project>bedework</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

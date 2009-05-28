@@ -1,0 +1,27 @@
+DESCRIPTION: 9.4 FInd other users address books
+
+METHOD: REPORT
+
+AUTH: true
+
+URL: /pubcarddav/principals/
+
+DEPTH: 0
+
+CONTENTTYPE: text/xml
+
+CONTENT:
+<?xml version="1.0" encoding="utf-8" ?>
+<D:principal-property-search xmlns:D="DAV:"
+            xmlns:C="urn:ietf:params:xml:ns:carddav">
+   <D:property-search>
+     <D:prop>
+       <D:displayname/>
+     </D:prop>
+     <D:match>Mike</D:match>
+   </D:property-search>
+   <D:prop>
+     <C:addressbook-home-set />
+     <D:displayname/>
+   </D:prop>
+ </D:principal-property-search>

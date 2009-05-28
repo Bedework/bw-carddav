@@ -92,7 +92,7 @@ public class CarddavReportMethod extends ReportMethod {
                          int depth,
                          HttpServletRequest req,
                          HttpServletResponse resp) throws WebdavException {
-    reportType = getCaldavReportType(doc);
+    reportType = getCarddavReportType(doc);
 
     if (reportType < 0) {
       super.process(doc, depth, req, resp);
@@ -110,7 +110,7 @@ public class CarddavReportMethod extends ReportMethod {
    * @return index or <0 for unknown.
    * @throws WebdavException
    */
-  protected int getCaldavReportType(Document doc) throws WebdavException {
+  protected int getCarddavReportType(Document doc) throws WebdavException {
     try {
       Element root = doc.getDocumentElement();
 

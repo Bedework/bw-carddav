@@ -28,9 +28,7 @@
 
   <!-- ========================== Base build Targets ===================
        Here we have one target building the classes and interfaces that make
-       up the calendar access control suite.
-       None of these targets need to be invoked explicitly though you may
-       wish to during development.
+       up the carddav server.
        ================================================================= -->
 
   <target name="build" depends="init"

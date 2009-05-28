@@ -5,7 +5,7 @@
      Authors: Mike Douglass   douglm  rpi edu
 -->
 
-<project name="carddav" default="build-all">
+<project name="carddav" default="deploy">
   <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
   <property environment="env"/>
@@ -36,7 +36,10 @@
        ================================================================= -->
 
   <target name="init">
-    <loadDeployConfig />
+    <property name="org.bedework.project.bedework"
+  	          location="${project.home}/../bedework" />
+
+  	<loadDeployConfig />
 
     <echo message="*** Options file: ${org.bedework.carddav.options}" />
 
@@ -134,14 +137,35 @@
   <target name="build" depends="init,build-source,cleanup"
           description="Compile carddav classes"/>
 
-  <target name="build-all" depends="init,build-source,cleanup"
-          description="Compile carddav classes"/>
-
-  <!-- ===================== bld.all Target ===============================
+  <!-- ===================== build.all Target ===============================
      This target builds jar files ready for the deploy target.
      =================================================================== -->
 
+  <target name="build-all" depends="init,build-source,cleanup"
+          description="Compile carddav classes"/>
+
   <target name="build-source" depends="bld.auth.server,bld.unauth.server" />
+
+  <!-- ===================== deploy Target ===============================
+     Deploy if an application server is defined.
+     =================================================================== -->
+
+  <target name="deploy" depends="build-all"
+          description="Deploy carddav">
+    <if>
+      <isset property="org.bedework.appserver.deploy.dir"/>
+      <then>
+        <copy todir="${org.bedework.appserver.deploy.dir}">
+          <fileset dir="${dist.home}">
+        	  <include name="*.war" />
+         </fileset>
+        </copy>
+      </then>
+      <else>
+        <echo message="********* No deploy directory defined" />
+      </else>
+    </if>
+  </target>
 
 <!-- ==================== Javadoc Target ===============================
      The "javadoc" target creates Javadoc API documentation for the Java
