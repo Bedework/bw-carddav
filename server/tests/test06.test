@@ -6,7 +6,7 @@ AUTH: true
 
 URL: /ucarddav/user/douglm/address-book/Somebody%20Else.vcf
 
-CONTENTTYPE: text/vcard
+CONTENTTYPE: text/directory
 
 CONTENT:
 BEGIN:VCARD

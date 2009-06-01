@@ -31,6 +31,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.sss.util.Util;
 
 import java.io.IOException;
+import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -181,7 +182,30 @@ public class Property {
         addParam(new Param().parse(tokeniser));
       }
 
+      tokeniser.pushBack();
+
       tokeniser.assertToken(':');
+
+      tokeniser.ordinaryChar('"');
+      int nextToken = tokeniser.nextToken();
+      StringBuilder val = new StringBuilder();
+
+      while ((nextToken != StreamTokenizer.TT_EOL) &&
+             (nextToken != StreamTokenizer.TT_EOF)) {
+        if (tokeniser.ttype == StreamTokenizer.TT_WORD) {
+          val.append(tokeniser.sval);
+        } else {
+          val.append((char) tokeniser.ttype);
+        }
+
+        nextToken = tokeniser.nextToken();
+      }
+
+      // reset DQUOTE to be quote char
+      tokeniser.quoteChar('"');
+      tokeniser.pushBack();
+
+      value = val.toString();
     } catch (IOException e) {
       throw new WebdavException(e);
     }

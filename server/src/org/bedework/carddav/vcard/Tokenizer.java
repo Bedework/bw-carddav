@@ -156,9 +156,9 @@ public class Tokenizer extends StreamTokenizer {
    * @throws WebdavException
    */
   public void skipWhitespace() throws WebdavException {
-    while (true) {
+//    while (true) {
       assertToken(StreamTokenizer.TT_EOL);
-    }
+  //  }
   }
 
   protected Logger getLogger() {
