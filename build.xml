@@ -155,6 +155,9 @@
     <if>
       <isset property="org.bedework.appserver.deploy.dir"/>
       <then>
+        <delete dir="${org.bedework.appserver.deploy.dir}/${org.bedework.app.usercarddav.war.name}" />
+        <delete dir="${org.bedework.appserver.deploy.dir}/${org.bedework.app.pubcarddav.war.name}" />
+
         <copy todir="${org.bedework.appserver.deploy.dir}">
           <fileset dir="${dist.home}">
         	  <include name="*.war" />

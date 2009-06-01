@@ -209,6 +209,8 @@ public abstract class AbstractDirHandler implements DirHandler {
           }
         }
 
+        ap.setPrincipalRef(path);
+
         return ap;
       }
 
@@ -312,6 +314,21 @@ public abstract class AbstractDirHandler implements DirHandler {
    */
   protected void addValidUser(String account) {
     validUsers.put(account, account);
+  }
+
+  /** Make a principal ref from an account
+   * @param account
+   * @param type
+   */
+  protected String makePrincipalHref(String account,
+                                     int whoType) throws WebdavException {
+    String root = fromWho.get(whoType);
+
+    if (root == null) {
+      throw new WebdavException(unknownPrincipalType);
+    }
+
+    return root + "/" + account;
   }
 
   /**

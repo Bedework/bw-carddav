@@ -1,0 +1,23 @@
+DESCRIPTION: propfind on user
+
+METHOD: PROPFIND
+
+AUTH: true
+
+URL: /ucarddav/user/douglm
+
+DEPTH: infinity
+
+CONTENTTYPE: text/xml
+
+CONTENT:
+<?xml version="1.0" encoding="utf-8" ?>
+<D:propfind xmlns:D="DAV:">
+  <D:prop>
+    <D:getetag/>
+    <D:getcontentlength/>
+    <D:getcontenttype/>
+    <D:resourcetype/>
+  </D:prop>
+</D:propfind>
+

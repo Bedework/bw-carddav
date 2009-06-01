@@ -1,0 +1,8 @@
+DESCRIPTION: Simple GET
+
+METHOD: GET
+
+AUTH: true
+
+URL: /ucarddav/user/douglm/address-book/Gary%20Schwartz.vcf
+

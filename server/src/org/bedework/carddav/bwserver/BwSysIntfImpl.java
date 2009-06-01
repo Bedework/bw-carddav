@@ -562,9 +562,9 @@ public class BwSysIntfImpl implements SysIntf {
           throws WebdavException {
     try {
       return Acl.evaluateAccess(accessCb,
-                                new User(account),
+                                getPrincipal(),
                                 ent.getOwner(),
-                                new Privilege[]{Privileges.makePriv(desiredAccess)},
+                                Access.privSetAny,
                                 accessString.toCharArray(),
                                 null);
     } catch (Throwable t) {

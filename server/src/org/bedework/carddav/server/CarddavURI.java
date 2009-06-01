@@ -78,8 +78,9 @@ public class CarddavURI {
    * @param exists        true if the referenced object exists
    */
   CarddavURI(CarddavCollection col, Vcard entity,
-            boolean exists) {
-    init(col, null, entity, entity.getName(), exists);
+             String entityName,
+             boolean exists) {
+    init(col, null, entity, entityName, exists);
   }
 
   /** Reference to a contained resource

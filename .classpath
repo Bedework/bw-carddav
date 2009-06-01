@@ -8,5 +8,5 @@
 	<classpathentry kind="lib" path="libcache/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="libcache/servletapi-2.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/bedework"/>
-	<classpathentry kind="output" path="bin/bw-carddav/carddav"/>
+	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav"/>
 </classpath>

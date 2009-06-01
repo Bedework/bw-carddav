@@ -490,19 +490,31 @@ public class CarddavBWIntf extends WebdavNsIntf {
    */
   public Collection<WebdavNsNode> getChildren(WebdavNsNode node) throws WebdavException {
     try {
-      CarddavNode wdnode = getBwnode(node);
-
-      if (!wdnode.isCollection()) {
+      if (!node.isCollection()) {
         // Don't think we should have been called
         return new ArrayList<WebdavNsNode>();
       }
 
       if (debug) {
-        debugMsg("About to get children for " + wdnode.getUri());
+        debugMsg("About to get children for " + node.getUri());
       }
 
-      // XXX We'd like to be applying limits here as well I guess
-      return wdnode.getChildren(null).nodes;
+      Collection<WebdavNsNode> ch = null;
+
+      if (node instanceof CarddavNode) {
+        CarddavNode cdnode = getBwnode(node);
+
+        // XXX We'd like to be applying limits here as well I guess
+        ch = cdnode.getChildren(null).nodes;
+      } else {
+//        ch = node.getChildren().nodes;
+      }
+
+      if (ch == null) {
+        return new ArrayList<WebdavNsNode>();
+      }
+
+      return ch;
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {
@@ -1415,11 +1427,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
         // Provided with collection and entity if needed.
 
         if (card != null) {
-          curi = new CarddavURI(col, card, true);
+          curi = new CarddavURI(col, card, card.getName(), true);
         } else if (rsrc != null) {
           curi = new CarddavURI(rsrc, true);
         } else {
-          curi = new CarddavURI(col, null, true);
+          curi = new CarddavURI(col, null, null, true);
         }
 
         return curi;
@@ -1504,7 +1516,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           throw new WebdavNotFound(uri);
         }
 
-        curi = new CarddavURI(col, card, card != null);
+        curi = new CarddavURI(col, card, split.name, card != null);
       } else {
         if (debug) {
           debugMsg("find resource - col=\"" + col.getPath() + "\" name=\"" +

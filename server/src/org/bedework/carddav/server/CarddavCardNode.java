@@ -93,6 +93,8 @@ public class CarddavCardNode extends CarddavNode {
     allowsGet = true;
     entityName = cdURI.getEntityName();
 
+    exists = cdURI.getExists();
+
     card = cdURI.getEntity();
   }
 

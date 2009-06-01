@@ -541,6 +541,23 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     // parent          CarddavCollection
     // addressBook     boolean
 
+    /* XXX This is incorrect but might get us going
+     * I'm assuming the path starts with our path prefix.
+     * The next element should be the account. Make that into an owner principal.
+     *
+     * Really we need an owner attribute of some kind - allowing fro group ownership
+     * or paths which don't have an owner - e.g. public
+     */
+
+    String[] elements = path.split("/");
+
+    //String[] splitRoot = userRoot.split("/");
+    int accountIndex = 2; // splitRoot.length;
+
+    String pref = makePrincipalHref(elements[2], Ace.whoTypeUser);
+
+    cdc.setOwner(getPrincipal(pref));
+
     return cdc;
   }
 

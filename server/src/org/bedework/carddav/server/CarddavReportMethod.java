@@ -174,7 +174,7 @@ public class CarddavReportMethod extends ReportMethod {
         }
 
         if (preq.reqType == PropRequest.ReqType.prop) {
-          // Look for a calendar-data property
+          // Look for an address-data property
           for (WebdavProperty prop: preq.props) {
             if (prop instanceof AddressData) {
               caldata = (AddressData)prop;

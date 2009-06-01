@@ -187,7 +187,9 @@ public class CarddavColNode extends CarddavNode {
 
       if (gr.cards != null) {
         for (Vcard card: gr.cards) {
-          res.nodes.add(new CarddavCardNode(new CarddavURI(c, card, true),
+          res.nodes.add(new CarddavCardNode(new CarddavURI(c, card,
+                                                           card.getName(),
+                                                           true),
                                             getSysi(), debug));
         }
       }

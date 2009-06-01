@@ -1,0 +1,34 @@
+DESCRIPTION: propfind on user principal
+
+METHOD: PROPFIND
+
+AUTH: true
+
+URL: /ucarddav/principals/users/douglm
+
+DEPTH: 1
+
+CONTENTTYPE: text/xml
+
+CONTENT:
+<?xml version="1.0" encoding="utf-8"?>
+<propfind xmlns="DAV:"
+          xmlns:I="urn:ietf:params:xml:ns:caldav"
+          xmlns:C="urn:ietf:params:xml:ns:carddav"
+          xmlns:G="http://groupdav.org/"
+          xmlns:A="http://calendarserver.org/ns/">
+  <prop>
+    <displayname/>
+    <resourcetype/>
+    <getetag/>
+    <getcontenttype/>
+    <current-user-privilege-set/>
+    <G:component-set/>
+    <I:supported-calendar-component-set/>
+    <I:supported-calendar-data/>
+    <I:calendar-description/>
+    <C:supported-address-data/>
+    <C:addressbook-description/>
+    <A:getctag/>
+  </prop>
+</propfind>

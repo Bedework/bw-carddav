@@ -1,0 +1,20 @@
+DESCRIPTION: REPORT
+
+METHOD: REPORT
+
+AUTH: true
+
+URL: /ucarddav/user/douglm
+
+DEPTH: infinity
+
+CONTENTTYPE: text/xml
+
+CONTENT:
+<?xml version="1.0" encoding="utf-8" ?>
+<C:addressbook-query xmlns:D="DAV:"
+                     xmlns:C="urn:ietf:params:xml:ns:carddav">
+  <D:prop>
+    <D:getetag/>
+  </D:prop>
+</C:addressbook-query>
