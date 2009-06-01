@@ -172,6 +172,13 @@ public interface DirHandler {
   public Collection<String>getGroups(String rootUrl,
                                      String principalUrl) throws WebdavException;
 
+  /** Return the user home for the current principal
+   *
+   * @return String home
+   * @throws WebdavException
+   */
+  public String getprincipalHome() throws WebdavException;
+
   /* ====================================================================
    *                   Cards
    * ==================================================================== */

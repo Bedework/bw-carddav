@@ -429,13 +429,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         if (wi.isUser()) {
           ap = new User(wi.getEntityName());
+          nd = new CarddavUserNode(wi, sysi, ap, debug);
         } else {
           ap = new Group(wi.getEntityName());
+          nd = new CarddavGroupNode(wi, sysi, ap, debug);
         }
 
-        nd = new WebdavPrincipalNode(sysi.getUrlHandler(), wi.getPath(),
-                                     ap, wi.isCollection(),
-                                     wi.getUri(), debug);
       } else if (wi.isCollection()) {
         nd = new CarddavColNode(wi, sysi, debug);
       } else if (wi.isResource()) {

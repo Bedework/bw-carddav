@@ -29,6 +29,7 @@ CONTENT:
     <I:calendar-description/>
     <C:supported-address-data/>
     <C:addressbook-description/>
+    <C:addressbook-home-set/>
     <A:getctag/>
   </prop>
 </propfind>

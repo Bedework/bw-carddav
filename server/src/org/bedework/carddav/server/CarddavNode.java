@@ -172,14 +172,6 @@ public abstract class CarddavNode extends WebdavNsNode {
     XmlEmit xml = intf.getXmlEmit();
 
     try {
-      if (tag.equals(CarddavTags.addressbookHomeSet)) {
-        xml.openTag(tag);
-        generateHref(xml, sysi.getUserInfo(getOwner(), false).userHomePath);
-        xml.closeTag(tag);
-
-        return true;
-      }
-
       // Not known - try higher
       return super.generatePropertyValue(tag, intf, allProp);
     } catch (WebdavException wde) {

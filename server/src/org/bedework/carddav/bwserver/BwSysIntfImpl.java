@@ -322,7 +322,9 @@ public class BwSysIntfImpl implements SysIntf {
 
       String principalUri = getHandler(conf.getPrincipalRoot()).makePrincipalUri(pcpl);
 
-      String userHomePath = principalUri + "/";
+      DirHandler addrBookHandler = getHandler(conf.getAddressBookHandlerPrefix());
+
+      String userHomePath = addrBookHandler.getprincipalHome();
 
       String defaultAddressbookPath = userHomePath + conf.getDefaultAddressbook();
 
