@@ -14,6 +14,7 @@ VERSION:4.0
 REV:20081119042044Z
 UID:/ucarddav/user/douglm/address-book/Somebody%20Else.vcf
 FN:Somebody Else
+SN:Else
 TEL;TYPE=voice:518 555 8159
 EMAIL:selse@rpi.edu
 CALADRURI:mailto:selse@mysite.org

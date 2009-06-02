@@ -1,0 +1,23 @@
+DESCRIPTION: PUT into addressbook with comma
+
+METHOD: PUT
+
+AUTH: true
+
+URL: /ucarddav/user/douglm/address-book/Else%2c%20Another.vcf
+
+HEADER: if-none-match: *
+
+CONTENTTYPE: text/directory
+
+CONTENT:
+BEGIN:VCARD
+VERSION:4.0
+REV:20081119042044Z
+UID:/ucarddav/user/douglm/address-book/Else%2c%20Another.vcf
+FN:Else, Another
+SN:Else
+TEL;TYPE=voice:518 555 8159
+EMAIL:aelse@rpi.edu
+CALADRURI:mailto:aelse@mysite.org
+END:VCARD

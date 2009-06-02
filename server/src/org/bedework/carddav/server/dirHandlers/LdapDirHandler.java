@@ -70,7 +70,7 @@ import javax.naming.directory.SearchResult;
 public abstract class LdapDirHandler extends AbstractDirHandler {
   protected LdapDirHandlerConfig ldapConfig;
 
-  private DirContext ctx;
+  protected DirContext ctx;
 
   private NamingEnumeration<SearchResult> sresult;
 
@@ -727,7 +727,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       source = urlHandler.prefix(source);
 
       simpleProp(card, "SOURCE", source);
-      // XXX Use the source as th euid as well.
+      // XXX Use the source as the uid as well.
       simpleProp(card, "UID", source);
 
       /* The kind for the card either comes from a custom attribute in the
@@ -1101,19 +1101,43 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
 
     sb.append("=");
-    sb.append(elements[i]);
+    sb.append(dnEscape(elements[i]));
     i--;
 
     while (i >= 0) {
       sb.append(",");
       sb.append(ldapConfig.getFolderIdAttr());
       sb.append("=");
-      sb.append(elements[i]);
+      sb.append(dnEscape(elements[i]));
       i--;
     }
 
     sb.append(",");
     sb.append(ldapConfig.getBaseDn());
+
+    return sb.toString();
+  }
+
+  protected String dnEscape(String val) {
+    if (val.indexOf(",") < 0) {
+      return val;
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    int pos = 0;
+    while (pos < val.length()) {
+      int nextPos = val.indexOf(",", pos);
+
+      if (nextPos < 0) {
+        sb.append(val.substring(pos));
+        break;
+      }
+
+      sb.append(val.substring(pos, nextPos));
+      sb.append("\\,");
+      pos = nextPos + 1;
+    }
 
     return sb.toString();
   }

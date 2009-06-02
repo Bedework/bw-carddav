@@ -138,6 +138,20 @@ public class Property {
   }
 
   /**
+   * @return String group
+   */
+  public String getGroup() {
+    return group;
+  }
+
+  /**
+   * @return any parameters or null
+   */
+  public Collection<Param> getParams() {
+    return params;
+  }
+
+  /**
    * @return String value
    */
   public String getValue() {

@@ -55,6 +55,20 @@ public class Param {
     this.value = value;
   }
 
+  /**
+   * @return String name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * @return String value
+   */
+  public String getValue() {
+    return value;
+  }
+
   /** Crude vcard parameter output method
    *
    * @param sb

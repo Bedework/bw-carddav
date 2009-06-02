@@ -29,15 +29,19 @@ import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.vcard.Param;
+import org.bedework.carddav.vcard.Property;
 import org.bedework.carddav.vcard.Vcard;
 
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
+import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 
 import java.util.Collection;
+
+import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingEnumeration;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
@@ -46,7 +50,6 @@ import javax.naming.directory.SearchResult;
  *
  */
 public class LdapAddrBookDirHandler extends LdapDirHandler {
-  DirContext ctx;
   String searchBase; // searchBase which resulted in sresult;
 
   SearchControls constraints;
@@ -83,7 +86,119 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
    */
   public void addCard(String path,
                       Vcard card) throws WebdavException {
-    throw new WebdavException("unimplemented");
+    /** Build a directory record and add the attributes
+     */
+    DirRecord dirRec = new BasicDirRecord();
+
+    String colDn = makeAddrbookDn(path, true);
+    String cn = findProp(card, "FN");
+    if (cn == null) {
+      throw new WebdavBadRequest();
+    }
+
+    dirRec.setDn("cn=" + dnEscape(cn) + ", " + colDn);
+
+//    dirRec.setAttr("uid", account);
+    setAttr(dirRec, "objectclass", "top");
+    setAttr(dirRec, "objectclass", "person");
+    setAttr(dirRec, "objectclass", "organizationalPerson");
+    setAttr(dirRec, "objectclass", "inetOrgPerson");
+
+    if (!setAttr(dirRec, card, "CN", "FN") ||
+        !setAttr(dirRec, card, "SN", "FN")) {
+      throw new WebdavBadRequest();
+    }
+
+    setAttr(dirRec, card, "displayName", "NICKNAME");
+    setAttr(dirRec, card, "mail", "EMAIL");
+    setAttr(dirRec, card, "description", "NOTE");
+
+    Collection<Property> props = card.findProperties("TEL");
+    for (Property prop: props) {
+      String work = prop.getGroup();
+      Collection<Param> params = prop.getParams();
+
+      Param par = null;
+
+      if (params != null) {
+        // XXX Fix this
+        for (Param p: params) {
+          if (p.getName().equals("TYPE")) {
+            par = p;
+            break;
+          }
+        }
+      }
+
+      if ((work == null) || (work.equals("WORK"))) {
+        if ((par == null) ||
+            (par.getValue().equalsIgnoreCase("voice"))) {
+          setAttr(dirRec, "telephoneNumber", prop.getValue());
+        } else if (par.getValue().equalsIgnoreCase("fax")) {
+          setAttr(dirRec, "facsimileTelephoneNumber", prop.getValue());
+        }
+      } else {
+        // HOME
+        if ((par == null) ||
+            (par.getValue().equalsIgnoreCase("voice"))) {
+          setAttr(dirRec, "homePhone", prop.getValue());
+        } else if (par.getValue().equalsIgnoreCase("cell")) {
+          setAttr(dirRec, "mobile", prop.getValue());
+        }
+      }
+    }
+
+    openContext();
+    create(dirRec);
+  }
+
+  private boolean create(DirRecord rec) throws WebdavException {
+    try {
+      ctx.createSubcontext(rec.getDn(), rec.getAttributes());
+      return true;
+    } catch (NameAlreadyBoundException nabe) {
+      return false;
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
+  }
+
+  private boolean setAttr(DirRecord dirRec, Vcard card,
+                       String name, String vpropName) throws WebdavException {
+    Property vprop = card.findProperty(vpropName);
+    if (vprop == null) {
+      return false;
+    }
+
+    try {
+      dirRec.setAttr(name, vprop.getValue());
+      return true;
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
+  }
+
+  private String findProp(Vcard card,
+                          String vpropName) throws WebdavException {
+    Property vprop = card.findProperty(vpropName);
+    if (vprop == null) {
+      return null;
+    }
+
+    return vprop.getValue();
+  }
+
+  private void setAttr(DirRecord dirRec,
+                       String name, String val) throws WebdavException {
+    if (val == null) {
+      return;
+    }
+
+    try {
+      dirRec.setAttr(name, val);
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
   }
 
   /* (non-Javadoc)
