@@ -91,7 +91,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     DirRecord dirRec = new BasicDirRecord();
 
     String colDn = makeAddrbookDn(path, true);
-    String cn = findProp(card, "FN");
+    String cn = card.getName();
     if (cn == null) {
       throw new WebdavBadRequest();
     }
@@ -104,8 +104,8 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     setAttr(dirRec, "objectclass", "organizationalPerson");
     setAttr(dirRec, "objectclass", "inetOrgPerson");
 
-    if (!setAttr(dirRec, card, "CN", "FN") ||
-        !setAttr(dirRec, card, "SN", "FN")) {
+    if (!setAttr(dirRec, card, "givenName", "FN") ||
+        !setAttr(dirRec, card, "sn", "N")) {
       throw new WebdavBadRequest();
     }
 

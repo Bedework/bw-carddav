@@ -594,7 +594,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       boolean calContent = false;
       if ((contentTypePars != null) && contentTypePars.length > 0) {
-        calContent = contentTypePars[0].equals("text/directory");
+        calContent = contentTypePars[0].equals("text/vcard");
       }
 
       if (!col.getAddressBook() || !calContent) {

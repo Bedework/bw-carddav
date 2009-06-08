@@ -138,7 +138,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     //                                     "group" for a group of people,
     //                                     "org" for an organization,
     //                                     "location" */
-    addPropertyAttrMapping("FN", "cn");
+    addPropertyAttrMapping("FN", "givenName");
+    addPropertyAttrMapping("N", "sn");
     //        N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
     addPropertyAttrMapping("NICKNAME", "displayName");
     //      PHOTO

@@ -1,4 +1,4 @@
-DESCRIPTION: PUT into addressbook with comma
+DESCRIPTION: PUT into addressbook with comma in URL but not in name
 
 METHOD: PUT
 
@@ -8,14 +8,14 @@ URL: /ucarddav/user/douglm/address-book/Else%2c%20Another.vcf
 
 HEADER: if-none-match: *
 
-CONTENTTYPE: text/directory
+CONTENTTYPE: text/vcard
 
 CONTENT:
 BEGIN:VCARD
 VERSION:4.0
 REV:20081119042044Z
 UID:/ucarddav/user/douglm/address-book/Else%2c%20Another.vcf
-FN:Else, Another
+FN:Another Else
 SN:Else
 TEL;TYPE=voice:518 555 8159
 EMAIL:aelse@rpi.edu
