@@ -701,8 +701,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       card = new Vcard();
 
-      card.setCreated(stringAttr(attrs, "createTimestamp"));
-      card.setLastmod(stringAttr(attrs, "modifyTimestamp"));
+      card.setCreated(makeIsoDatetime(stringAttr(attrs, "createTimestamp")));
+      card.setLastmod(makeIsoDatetime(stringAttr(attrs, "modifyTimestamp")));
 
       if (card.getLastmod() == null) {
         card.setLastmod(card.getCreated());
@@ -797,6 +797,23 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     } catch (NamingException ne) {
       throw new WebdavException(ne);
     }
+  }
+
+  private String makeIsoDatetime(String val) {
+    if (val == null) {
+      return null;
+    }
+
+    if ((val.length() == 16) &&
+        (val.charAt(8) == 'T')) {
+      return val;
+    }
+
+    if (val.length() == 15) {
+      return val.substring(0, 8) + "T" + val.substring(8);
+    }
+
+    return val;
   }
 
   private String makeFilter(Filter filter) {
