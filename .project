@@ -25,5 +25,10 @@
 			<type>2</type>
 			<location>/home/douglm/eclipse-build/carddav</location>
 		</link>
+		<link>
+			<name>bin/bw-carddav/carddav/carddav/carddav</name>
+			<type>2</type>
+			<location>/home/douglm/eclipse-build/carddav</location>
+		</link>
 	</linkedResources>
 </projectDescription>

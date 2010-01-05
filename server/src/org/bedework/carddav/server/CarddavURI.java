@@ -26,7 +26,7 @@
 
 package org.bedework.carddav.server;
 
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
@@ -53,7 +53,7 @@ public class CarddavURI {
 
   CarddavResource resource;
 
-  Vcard entity;
+  Card entity;
 
   String entityName;
 
@@ -77,7 +77,7 @@ public class CarddavURI {
    * @param entityName
    * @param exists        true if the referenced object exists
    */
-  CarddavURI(CarddavCollection col, Vcard entity,
+  CarddavURI(CarddavCollection col, Card entity,
              String entityName,
              boolean exists) {
     init(col, null, entity, entityName, exists);
@@ -101,7 +101,7 @@ public class CarddavURI {
   }
 
   private void init(CarddavCollection col, CarddavResource res,
-                    Vcard entity, String name,
+                    Card entity, String name,
                     boolean exists) {
     this.col = col;
     this.resource = res;
@@ -134,7 +134,7 @@ public class CarddavURI {
   /**
    * @return Object
    */
-  public Vcard getEntity() {
+  public Card getEntity() {
     return entity;
   }
 

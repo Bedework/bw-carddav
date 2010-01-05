@@ -25,15 +25,16 @@
 */
 package org.bedework.carddav.server.filter;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import net.fortuna.ical4j.vcard.Property;
+
+import org.bedework.carddav.vcard.Card;
+
+import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 
 import org.apache.log4j.Logger;
 
-import org.bedework.carddav.vcard.Property;
-import org.bedework.carddav.vcard.Vcard;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -55,7 +56,7 @@ public class PropFilter {
    *
    * @param name
    */
-  public PropFilter(String name) {
+  public PropFilter(final String name) {
     this.name = name;
   }
 
@@ -64,7 +65,7 @@ public class PropFilter {
    * @param name
    * @param isNotDefined
    */
-  public PropFilter(String name, boolean isNotDefined) {
+  public PropFilter(final String name, final boolean isNotDefined) {
     this.name = name;
     this.isNotDefined = isNotDefined;
   }
@@ -74,7 +75,7 @@ public class PropFilter {
    * @param name
    * @param match
    */
-  public PropFilter(String name, TextMatch match) {
+  public PropFilter(final String name, final TextMatch match) {
     this.name = name;
     this.match = match;
   }
@@ -82,7 +83,7 @@ public class PropFilter {
   /**
    * @param val
    */
-  public void setName(String val) {
+  public void setName(final String val) {
     name = val;
   }
 
@@ -96,7 +97,7 @@ public class PropFilter {
   /**
    * @param val
    */
-  public void setIsNotDefined(boolean val) {
+  public void setIsNotDefined(final boolean val) {
     isNotDefined = val;
   }
 
@@ -110,7 +111,7 @@ public class PropFilter {
   /**
    * @param val
    */
-  public void setTestAllAny(int val) {
+  public void setTestAllAny(final int val) {
     testAllAny = val;
   }
 
@@ -124,7 +125,7 @@ public class PropFilter {
   /**
    * @param val
    */
-  public void setMatch(TextMatch val) {
+  public void setMatch(final TextMatch val) {
     match = val;
   }
 
@@ -150,7 +151,7 @@ public class PropFilter {
    *
    * @param pf
    */
-  public void addParamFilter(ParamFilter pf) {
+  public void addParamFilter(final ParamFilter pf) {
     getParamFilters().add(pf);
   }
 
@@ -162,7 +163,7 @@ public class PropFilter {
    * @return boolean true if the given component matches the property filter
    * @throws WebdavException
    */
-  public boolean filter(Vcard c) throws WebdavException {
+  public boolean filter(final Card c) throws WebdavException {
     try {
       Property prop = c.findProperty(getName());
 
@@ -186,7 +187,7 @@ public class PropFilter {
    * @param log
    * @param indent
    */
-  public void dump(Logger log, String indent) {
+  public void dump(final Logger log, final String indent) {
     StringBuffer sb = new StringBuffer(indent);
 
     sb.append("<prop-filter name=\"");

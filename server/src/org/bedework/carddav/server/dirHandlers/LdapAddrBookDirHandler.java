@@ -25,13 +25,15 @@
 */
 package org.bedework.carddav.server.dirHandlers;
 
+import net.fortuna.ical4j.vcard.Group;
+import net.fortuna.ical4j.vcard.Parameter;
+import net.fortuna.ical4j.vcard.Property;
+
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
-import org.bedework.carddav.vcard.Param;
-import org.bedework.carddav.vcard.Property;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
@@ -39,6 +41,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingEnumeration;
@@ -55,12 +58,170 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   SearchControls constraints;
   NamingEnumeration<SearchResult> sresult;
 
+  /* The following needs to be part of the config - which needs changes */
+
+  /**
+   */
+  public static class AttrMappingInfo {
+    private String attrId;
+
+
+    /** Simple not-required attr<->property
+     *
+     * @param attrId
+     */
+    public AttrMappingInfo(final String attrId) {
+      this.attrId = attrId;
+    }
+
+    /**
+     * @return name of attribute
+     */
+    public String getAttrId() {
+      return attrId;
+    }
+  }
+
+  /**
+   */
+  public static class AttrValue extends AttrMappingInfo {
+    private String value;
+
+
+    /** Simple not-required attr<->property
+     *
+     * @param attrId
+     * @param value
+     */
+    public AttrValue(final String attrId,
+                     final String value) {
+      super(attrId);
+      this.value = value;
+    }
+
+    /**
+     * @return name of attribute
+     */
+    public String getValue() {
+      return value;
+    }
+  }
+
+  /**
+   */
+  public static class AttrPropertyMapping extends AttrMappingInfo {
+    private String propertyName;
+    private String parameterName;
+    private String parameterValue;
+    private boolean required;
+
+    /** Simple not-required attr<->property
+     *
+     * @param attrId
+     * @param propertyName
+     */
+    public AttrPropertyMapping(final String attrId,
+                               final String propertyName) {
+      this(attrId, propertyName, null, null, false);
+    }
+
+    /** Not-required attr<->property+parameter
+     *
+     * @param attrId
+     * @param propertyName
+     * @param parameterName
+     * @param parameterValue
+     */
+    public AttrPropertyMapping(final String attrId,
+                               final String propertyName,
+                               final String parameterName,
+                               final String parameterValue) {
+      this(attrId, propertyName, parameterName, parameterValue, false);
+    }
+
+    /** Possibly required attr<->property
+     *
+     * @param attrId
+     * @param propertyName
+     * @param required
+     */
+    public AttrPropertyMapping(final String attrId,
+                               final String propertyName,
+                               final boolean required) {
+      this(attrId, propertyName, null, null, required);
+    }
+
+    /** Possibly required attr<->property+parameter
+     *
+     * @param attrId
+     * @param propertyName
+     * @param parameterName
+     * @param parameterValue
+     * @param required
+     */
+    public AttrPropertyMapping(final String attrId,
+                               final String propertyName,
+                               final String parameterName,
+                               final String parameterValue,
+                               final boolean required) {
+      super(attrId);
+      this.propertyName = propertyName;
+      this.parameterName = parameterName;
+      this.parameterValue = parameterValue;
+      this.required = required;
+    }
+
+    /**
+     * @return name of property
+     */
+    public String getPropertyName() {
+      return propertyName;
+    }
+
+    /**
+     * @return name of parameter
+     */
+    public String getParameterName() {
+      return parameterName;
+    }
+
+    /**
+     * @return name of parameter value
+     */
+    public String getParameterValue() {
+      return parameterValue;
+    }
+
+    /**
+     * @return true if attribute/property is required
+     */
+    public boolean getRequired() {
+      return required;
+    }
+  }
+
+  private static AttrMappingInfo[] attrInfo = {
+    new AttrValue("objectclass", "top"),
+    new AttrValue("objectclass", "person"),
+    new AttrValue("objectclass", "organizationalPerson"),
+    new AttrValue("objectclass", "inetOrgPerson"),
+
+    new AttrPropertyMapping("givenName", "FN", true),
+    new AttrPropertyMapping("sn", "N", true),
+
+    new AttrPropertyMapping("displayName", "NICKNAME"),
+    new AttrPropertyMapping("mail", "EMAIL"),
+    new AttrPropertyMapping("description", "NOTE"),
+
+  };
+
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
-  public void init(CardDAVConfig cdConfig,
-                   DirHandlerConfig dhConfig,
-                   UrlHandler urlHandler) throws WebdavException {
+  @Override
+  public void init(final CardDAVConfig cdConfig,
+                   final DirHandlerConfig dhConfig,
+                   final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
   }
 
@@ -68,12 +229,13 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
    *                   Principals
    * ==================================================================== */
 
-  public Vcard getPrincipalCard(String href) throws WebdavException {
+  public Card getPrincipalCard(final String href) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
-  public Collection<String>getGroups(String rootUrl,
-                                     String principalUrl) throws WebdavException {
+  @Override
+  public Collection<String>getGroups(final String rootUrl,
+                                     final String principalUrl) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
@@ -84,8 +246,8 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#addCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
-  public void addCard(String path,
-                      Vcard card) throws WebdavException {
+  public void addCard(final String path,
+                      final Card card) throws WebdavException {
     /** Build a directory record and add the attributes
      */
     DirRecord dirRec = new BasicDirRecord();
@@ -98,39 +260,47 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
 
     dirRec.setDn("cn=" + dnEscape(cn) + ", " + colDn);
 
-//    dirRec.setAttr("uid", account);
-    setAttr(dirRec, "objectclass", "top");
-    setAttr(dirRec, "objectclass", "person");
-    setAttr(dirRec, "objectclass", "organizationalPerson");
-    setAttr(dirRec, "objectclass", "inetOrgPerson");
+    for (AttrMappingInfo ami: attrInfo) {
+      if (ami instanceof AttrValue) {
+        AttrValue av = (AttrValue)ami;
 
-    if (!setAttr(dirRec, card, "givenName", "FN") ||
-        !setAttr(dirRec, card, "sn", "N")) {
-      throw new WebdavBadRequest();
+        setAttr(dirRec, av.getAttrId(), av.getValue());
+        continue;
+      }
+
+      if (ami instanceof AttrPropertyMapping) {
+        AttrPropertyMapping apm = (AttrPropertyMapping)ami;
+
+        if (apm.getParameterName() == null) {
+          if (!setAttr(dirRec, card, apm.getAttrId(), apm.getPropertyName())) {
+            if (apm.getRequired()) {
+              throw new WebdavBadRequest();
+            }
+          }
+        }
+        continue;
+      }
+
     }
-
-    setAttr(dirRec, card, "displayName", "NICKNAME");
-    setAttr(dirRec, card, "mail", "EMAIL");
-    setAttr(dirRec, card, "description", "NOTE");
 
     Collection<Property> props = card.findProperties("TEL");
     for (Property prop: props) {
-      String work = prop.getGroup();
-      Collection<Param> params = prop.getParams();
+      Group work = prop.getGroup();
+      List<Parameter> params = prop.getParameters();
 
-      Param par = null;
+      Parameter par = null;
 
       if (params != null) {
         // XXX Fix this
-        for (Param p: params) {
-          if (p.getName().equals("TYPE")) {
+        for (Parameter p: params) {
+          if (p.getId().equals(Parameter.Id.TYPE)) {
             par = p;
             break;
           }
         }
       }
 
-      if ((work == null) || (work.equals("WORK"))) {
+      if ((work == null) || (work.equals(Group.WORK))) {
         if ((par == null) ||
             (par.getValue().equalsIgnoreCase("voice"))) {
           setAttr(dirRec, "telephoneNumber", prop.getValue());
@@ -152,7 +322,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     create(dirRec);
   }
 
-  private boolean create(DirRecord rec) throws WebdavException {
+  private boolean create(final DirRecord rec) throws WebdavException {
     try {
       ctx.createSubcontext(rec.getDn(), rec.getAttributes());
       return true;
@@ -163,8 +333,8 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     }
   }
 
-  private boolean setAttr(DirRecord dirRec, Vcard card,
-                       String name, String vpropName) throws WebdavException {
+  private boolean setAttr(final DirRecord dirRec, final Card card,
+                       final String name, final String vpropName) throws WebdavException {
     Property vprop = card.findProperty(vpropName);
     if (vprop == null) {
       return false;
@@ -178,8 +348,8 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     }
   }
 
-  private String findProp(Vcard card,
-                          String vpropName) throws WebdavException {
+  private String findProp(final Card card,
+                          final String vpropName) throws WebdavException {
     Property vprop = card.findProperty(vpropName);
     if (vprop == null) {
       return null;
@@ -188,8 +358,8 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     return vprop.getValue();
   }
 
-  private void setAttr(DirRecord dirRec,
-                       String name, String val) throws WebdavException {
+  private void setAttr(final DirRecord dirRec,
+                       final String name, final String val) throws WebdavException {
     if (val == null) {
       return;
     }
@@ -204,15 +374,15 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#updateCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
-  public void updateCard(String path,
-                         Vcard card) throws WebdavException {
+  public void updateCard(final String path,
+                         final Card card) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#deleteCard(org.bedework.carddav.server.CarddavCardNode)
    */
-  public void deleteCard(CarddavCardNode val) throws WebdavException {
+  public void deleteCard(final CarddavCardNode val) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
@@ -223,41 +393,41 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#makeCollection(org.bedework.carddav.server.CarddavCollection, java.lang.String)
    */
-  public int makeCollection(CarddavCollection col,
-                            String parentPath) throws WebdavException {
+  public int makeCollection(final CarddavCollection col,
+                            final String parentPath) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#deleteCollection(org.bedework.webdav.WdCollection)
    */
-  public void deleteCollection(WdCollection col) throws WebdavException {
+  public void deleteCollection(final WdCollection col) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#rename(org.bedework.webdav.WdCollection, java.lang.String)
    */
-  public int rename(WdCollection col,
-                    String newName) throws WebdavException {
+  public int rename(final WdCollection col,
+                    final String newName) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#copyMove(org.bedework.carddav.server.Vcard, java.lang.String, java.lang.String, boolean, boolean)
    */
-  public int copyMove(Vcard from,
-                      String toPath,
-                      String name,
-                      boolean copy,
-                      boolean overwrite) throws WebdavException {
+  public int copyMove(final Card from,
+                      final String toPath,
+                      final String name,
+                      final boolean copy,
+                      final boolean overwrite) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#updateCollection(org.bedework.webdav.WdCollection)
    */
-  public void updateCollection(WdCollection val) throws WebdavException {
+  public void updateCollection(final WdCollection val) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 }

@@ -30,7 +30,7 @@ import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -71,7 +71,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
    *                   Principals
    * ==================================================================== */
 
-  public Vcard getPrincipalCard(String path) throws WebdavException {
+  public Card getPrincipalCard(String path) throws WebdavException {
     verifyPath(path);
 
     try {
@@ -102,7 +102,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
    * @see org.bedework.carddav.bwserver.DirHandler#addCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
   public void addCard(String path,
-                      Vcard card) throws WebdavException {
+                      Card card) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
@@ -110,7 +110,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
    * @see org.bedework.carddav.bwserver.DirHandler#updateCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
   public void updateCard(String path,
-                         Vcard card) throws WebdavException {
+                         Card card) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
@@ -151,7 +151,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#copyMove(org.bedework.carddav.server.Vcard, java.lang.String, java.lang.String, boolean, boolean)
    */
-  public int copyMove(Vcard from,
+  public int copyMove(Card from,
                       String toPath,
                       String name,
                       boolean copy,

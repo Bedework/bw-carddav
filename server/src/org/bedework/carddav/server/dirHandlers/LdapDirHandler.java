@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.server.dirHandlers;
 
+import net.fortuna.ical4j.vcard.Property;
+
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
@@ -34,9 +36,8 @@ import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
-import org.bedework.carddav.vcard.Param;
-import org.bedework.carddav.vcard.Property;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.vcard.PropertyBuilder;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
@@ -85,16 +86,17 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     String name;
     String type;
 
-    VcardProperty(String name) {
+    VcardProperty(final String name) {
       this(null, name, null);
     }
 
-    VcardProperty(String group, String name, String type) {
+    VcardProperty(final String group, final String name, final String type) {
       this.group = group;
       this.name = name;
       this.type = type;
     }
 
+    @Override
     public int hashCode() {
       int hc = 0;
 
@@ -109,7 +111,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       return hc * name.hashCode();
     }
 
-    public boolean equals(Object o) {
+    @Override
+    public boolean equals(final Object o) {
       if (!(o instanceof VcardProperty)) {
         return false;
       }
@@ -193,7 +196,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     //      CALURI
   }
 
-  private static void addPropertyAttrMapping(String pname, String aname) {
+  private static void addPropertyAttrMapping(final String pname, final String aname) {
     addPropertyAttrMapping(null, pname, null, aname);
   }
 
@@ -203,10 +206,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   //  addPropertyAttrMapping(group, pname, null, aname);
   //}
 
-  private static void addPropertyAttrMapping(String group,
-                                             String pname,
-                                             String type,
-                                             String aname) {
+  private static void addPropertyAttrMapping(final String group,
+                                             final String pname,
+                                             final String type,
+                                             final String aname) {
     VcardProperty vcp = new VcardProperty(group, pname, type);
     toLdapAttr.put(vcp, aname);
 
@@ -223,9 +226,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
-  public void init(CardDAVConfig cdConfig,
-                   DirHandlerConfig dhConfig,
-                   UrlHandler urlHandler) throws WebdavException {
+  @Override
+  public void init(final CardDAVConfig cdConfig,
+                   final DirHandlerConfig dhConfig,
+                   final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
 
     ldapConfig = (LdapDirHandlerConfig)dhConfig;
@@ -234,7 +238,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#getCard(java.lang.String, java.lang.String)
    */
-  public Vcard getCard(String path, String name) throws WebdavException {
+  public Card getCard(final String path, final String name) throws WebdavException {
     verifyPath(path);
 
     try {
@@ -257,9 +261,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#getCards(java.lang.String, org.bedework.carddav.server.filter.Filter, org.bedework.carddav.server.SysIntf.GetLimits)
    */
-  public GetResult getCards(String path,
-                            Filter filter,
-                            GetLimits limits) throws WebdavException {
+  public GetResult getCards(final String path,
+                            final Filter filter,
+                            final GetLimits limits) throws WebdavException {
     verifyPath(path);
 
     try {
@@ -273,7 +277,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         return res;
       }
 
-      res.cards = new ArrayList<Vcard>();
+      res.cards = new ArrayList<Card>();
 
       for (;;) {
         CardObject co = nextCard(path, false);
@@ -299,7 +303,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#getCollection(java.lang.String)
    */
-  public CarddavCollection getCollection(String path) throws WebdavException {
+  public CarddavCollection getCollection(final String path) throws WebdavException {
     verifyPath(path);
 
     /* We're fetching a collection entity with a fully specified path */
@@ -321,8 +325,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#getCollections(java.lang.String, org.bedework.carddav.server.SysIntf.GetLimits)
    */
-  public GetResult getCollections(String path,
-                                  GetLimits limits)
+  public GetResult getCollections(final String path,
+                                  final GetLimits limits)
          throws WebdavException {
     verifyPath(path);
 
@@ -361,10 +365,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
    *  Protected methods.
    * ==================================================================== */
 
-  protected GetResult search(String base,
-                             String filter,
-                             GetLimits limits,
-                             int scope) throws WebdavException {
+  protected GetResult search(final String base,
+                             final String filter,
+                             final GetLimits limits,
+                             final int scope) throws WebdavException {
     GetResult res = new GetResult();
 
     try {
@@ -423,10 +427,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   private static class CardObject {
     boolean limitExceeded;
 
-    Vcard card;
+    Card card;
   }
 
-  protected CardObject nextCard(String path, boolean fullPath) throws WebdavException {
+  protected CardObject nextCard(final String path, final boolean fullPath) throws WebdavException {
     LdapObject ldo = nextObject();
 
     if (ldo == null) {
@@ -450,8 +454,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     CarddavCollection col;
   }
 
-  protected CollectionObject nextCdCollection(String path,
-                                              boolean fullPath) throws WebdavException {
+  protected CollectionObject nextCdCollection(final String path,
+                                              final boolean fullPath) throws WebdavException {
     LdapObject ldo = nextObject();
 
     if (ldo == null) {
@@ -469,9 +473,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return co;
   }
 
-  protected CarddavCollection makeCdCollection(String path,
-                                               boolean fullPath,
-                                               Attributes attrs) throws WebdavException {
+  protected CarddavCollection makeCdCollection(final String path,
+                                               final boolean fullPath,
+                                               final Attributes attrs) throws WebdavException {
     CarddavCollection cdc = new CarddavCollection();
 
     if (ldapConfig.getAddressBook()) {
@@ -571,7 +575,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     LdapObject() {
     }
 
-    LdapObject(Attributes attrs, String name) {
+    LdapObject(final Attributes attrs, final String name) {
       this.attrs = attrs;
       this.name = name;
       if ((name != null) && (name.length() == 0)) {
@@ -631,9 +635,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
    * @return
    * @throws WebdavException
    */
-  protected Vcard makeVcard(String path,
-                            boolean fullPath,
-                            Attributes attrs) throws WebdavException {
+  protected Card makeVcard(final String path,
+                            final boolean fullPath,
+                            final Attributes attrs) throws WebdavException {
     /* Map ldap attributes onto vcard. The following represents a best guess
      *
      * Group Attr        Param              ldap attr
@@ -697,9 +701,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
              CALURI
      */
 
-    Vcard card;
+    Card card;
     try {
-      card = new Vcard();
+      card = new Card();
 
       card.setCreated(makeIsoDatetime(stringAttr(attrs, "createTimestamp")));
       card.setLastmod(makeIsoDatetime(stringAttr(attrs, "modifyTimestamp")));
@@ -799,7 +803,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  private String makeIsoDatetime(String val) {
+  private String makeIsoDatetime(final String val) {
     if (val == null) {
       return null;
     }
@@ -816,7 +820,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return val;
   }
 
-  private String makeFilter(Filter filter) {
+  private String makeFilter(final Filter filter) {
     if (filter == null) {
       return null;
     }
@@ -859,7 +863,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-  private String makePropFilterExpr(PropFilter filter) {
+  private String makePropFilterExpr(final PropFilter filter) {
     TextMatch tm = filter.getMatch();
 
     if (tm == null) {
@@ -927,7 +931,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-  private String makePropFilterExpr(String attrId, TextMatch tm) {
+  private String makePropFilterExpr(final String attrId, final TextMatch tm) {
     StringBuilder sb = new StringBuilder();
 
     sb.append("(");
@@ -952,16 +956,17 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-  private void simpleProp(Vcard card, String propname,
-                          String value) throws WebdavException {
-    Property p = new Property(propname, value);
+  private void simpleProp(final Card card,
+                          final String propname,
+                          final String value) throws WebdavException {
+    Property p = PropertyBuilder.getProperty(propname, value);
 
     card.addProperty(p);
   }
 
-  private void simpleProp(Vcard card, String propname,
-                          Attributes attrs,
-                          String attrId) throws WebdavException {
+  private void simpleProp(final Card card, final String propname,
+                          final Attributes attrs,
+                          final String attrId) throws WebdavException {
     try {
       Attribute attr = attrs.get(attrId);
 
@@ -975,24 +980,27 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  private void paramProp(Vcard card, String group, String propname,
-                         String paramName, String paramValue,
-                         Attributes attrs,
-                         String attrId) throws WebdavException {
+  private void paramProp(final Card card, final String group,
+                         final String propname,
+                         final String paramName,
+                         final String paramValue,
+                         final Attributes attrs,
+                         final String attrId) throws WebdavException {
     String s = stringAttr(attrs, attrId);
 
     if (s == null) {
       return;
     }
 
-    Property p = new Property(group, propname, s);
-    p.addParam(new Param(paramName, paramValue));
+    Property p = PropertyBuilder.getProperty(group,
+                                             paramName, paramValue,
+                                             propname, s);
 
     card.addProperty(p);
   }
 
-  private String stringAttr(Attributes attrs,
-                           String attrId) throws WebdavException {
+  private String stringAttr(final Attributes attrs,
+                           final String attrId) throws WebdavException {
     try {
       Attribute attr = attrs.get(attrId);
 
@@ -1008,8 +1016,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   /* Do the search for a single object in the directory
 \   */
-  protected Attributes getObject(String path,
-                             boolean isCollection) throws WebdavException {
+  protected Attributes getObject(final String path,
+                             final boolean isCollection) throws WebdavException {
     try {
       AccessPrincipal ap = null;
       try {
@@ -1042,10 +1050,10 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   /* Search for children of the given path.
    */
-  protected GetResult searchChildren(String path,
-                                     String filter,
-                                     GetLimits limits,
-                                     boolean cards) throws WebdavException {
+  protected GetResult searchChildren(final String path,
+                                     final String filter,
+                                     final GetLimits limits,
+                                     final boolean cards) throws WebdavException {
     try {
       StringBuilder sb = new StringBuilder();
 
@@ -1091,13 +1099,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  protected String makePrincipalDn(String account) {
+  protected String makePrincipalDn(final String account) {
     return ldapConfig.getPrincipalIdAttr() + account + "," +
                        ldapConfig.getBaseDn();
   }
 
-  protected String makeAddrbookDn(String path,
-                                 boolean isCollection) throws WebdavException {
+  protected String makeAddrbookDn(final String path,
+                                 final boolean isCollection) throws WebdavException {
     if (dhConfig.getPathPrefix().equals(path)) {
       return ldapConfig.getBaseDn();
     }
@@ -1136,7 +1144,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-  protected String dnEscape(String val) {
+  protected String dnEscape(final String val) {
     if (val.indexOf(",") < 0) {
       return val;
     }

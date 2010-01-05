@@ -38,31 +38,14 @@ import javax.servlet.http.HttpServletRequest;
  * @author Mike Douglass   douglm  rpi . edu
  */
 public class CarddavServlet extends WebdavServlet {
-  private String id = null;
   /* ====================================================================
    *                     Abstract servlet methods
    * ==================================================================== */
 
-  public String getId() {
-    if (id != null) {
-      return id;
-    }
-
-    if (props == null) {
-      return getClass().getName();
-    }
-
-    id = props.getProperty("edu.rpi.cct.uwcal.appname");
-    if (id == null) {
-      id = getClass().getName();
-    }
-
-    return id;
-  }
-
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.common.WebdavServlet#addMethods()
    */
+  @Override
   protected void addMethods() {
     super.addMethods();
 
@@ -70,11 +53,12 @@ public class CarddavServlet extends WebdavServlet {
     methods.put("REPORT", new MethodInfo(CarddavReportMethod.class, false));
   }
 
-  public WebdavNsIntf getNsIntf(HttpServletRequest req)
+  @Override
+  public WebdavNsIntf getNsIntf(final HttpServletRequest req)
       throws WebdavException {
     CarddavBWIntf wi = new CarddavBWIntf();
 
-    wi.init(this, req, props, debug, methods, dumpContent);
+    wi.init(this, req, debug, methods, dumpContent);
     return wi;
   }
 }

@@ -26,23 +26,30 @@
 
 package org.bedework.carddav.vcard;
 
-import org.bedework.carddav.server.CarddavCollection;
+import net.fortuna.ical4j.vcard.Property;
+import net.fortuna.ical4j.vcard.VCard;
+import net.fortuna.ical4j.vcard.VCardBuilder;
+import net.fortuna.ical4j.vcard.VCardOutputter;
+import net.fortuna.ical4j.vcard.Property.Id;
+import net.fortuna.ical4j.vcard.property.Revision;
+import net.fortuna.ical4j.vcard.property.Uid;
 
-import java.io.Reader;
-import java.io.StreamTokenizer;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.bedework.carddav.server.CarddavCollection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.sss.util.Uid;
 
-/** Temp def of vcard to get us going
+import java.io.Reader;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Set;
+
+/** A vcard and properties for cardDAV
  *
  * @author douglm
  *
  */
-public class Vcard {
+public class Card {
 
   private AccessPrincipal owner;
 
@@ -52,7 +59,7 @@ public class Vcard {
 
   private String created;
 
-  private Collection<Property> props;
+  private VCard vcard;
 
   private String strForm;
 
@@ -60,10 +67,12 @@ public class Vcard {
 
   private String prevLastmod;
 
+  private static VCardOutputter cardOut = new VCardOutputter();
+
   /**
    * @param val
    */
-  public void setOwner(AccessPrincipal val) {
+  public void setOwner(final AccessPrincipal val) {
     owner = val;
   }
 
@@ -78,7 +87,7 @@ public class Vcard {
   *
   * @param val    String name
   */
- public void setName(String val) {
+ public void setName(final String val) {
    name = val;
  }
 
@@ -93,7 +102,7 @@ public class Vcard {
   /**
    * @param val
    */
-  public void setCreated(String val) {
+  public void setCreated(final String val) {
     created = val;
   }
 
@@ -106,29 +115,27 @@ public class Vcard {
 
   /**
    * @param val
+   * @throws WebdavException
    */
-  public void setLastmod(String val) {
-    Property rev = findProperty("REV");
-
-    if (rev == null) {
-      rev = new Property("REV", null);
-      addProperty(rev);
+  public void setLastmod(final String val) throws WebdavException {
+    try {
+      replaceProperty(new Revision(null, val));
+    } catch (Throwable t) {
+      throw new WebdavException(t);
     }
-
-    rev.value = val;
   }
 
   /**
    * @return String
    */
   public String getLastmod() {
-    Property rev = findProperty("REV");
+    Revision rev = (Revision)findProperty(Property.Id.REV);
 
     if (rev == null) {
       return null;
     }
 
-    return rev.value;
+    return rev.getValue();
   }
 
   /** Lastmod before any changes were made
@@ -141,36 +148,35 @@ public class Vcard {
 
   /**
    * @param val
+   * @throws WebdavException
    */
-  public void setUid(String val) {
-    Property uid = findProperty("UID");
-
-    if (uid == null) {
-      uid = new Property("UID", null);
-      addProperty(uid);
+  public void setUid(final String val) throws WebdavException {
+    try {
+      replaceProperty(new Uid(null, val));
+    } catch (Throwable t) {
+      throw new WebdavException(t);
     }
-
-    uid.value = val;
   }
 
   /**
    * @return String
+   * @throws WebdavException
    */
-  public String getUid() {
-    Property uid = findProperty("UID");
+  public String getUid() throws WebdavException {
+    Uid uid = (Uid)findProperty(Property.Id.UID);
 
     if (uid == null) {
-      setUid(Uid.getUid());
-      uid = findProperty("UID");
+      setUid(edu.rpi.sss.util.Uid.getUid());
+      uid = (Uid)findProperty(Property.Id.UID);
     }
 
-    return uid.value;
+    return uid.getValue();
   }
 
   /**
    * @param val
    */
-  public void setParent(CarddavCollection val) {
+  public void setParent(final CarddavCollection val) {
     parent = val;
   }
 
@@ -184,136 +190,93 @@ public class Vcard {
   /**
    * @param val
    */
-  public void addProperty(Property val) {
-    if (props == null) {
-      props = new ArrayList<Property>();
-    }
+  public void addProperty(final Property val) {
+    vcard.getProperties().add(val);
+  }
 
-    props.add(val);
+  /**
+   * @param id
+   * @return property or null
+   */
+  public Property findProperty(final Id id) {
+    return vcard.getProperty(id);
   }
 
   /**
    * @param name
    * @return property or null
    */
-  public Property findProperty(String name) {
-    if (props == null) {
-      return null;
-    }
+  public Property findProperty(final String name) {
+    Property.Id id = null;
 
-    for (Property p: props) {
-      if (name.equals(p.name)) {
-        return p;
+    for (Property.Id i: Property.Id.values()) {
+      if (i.toString().equals(name)) {
+        id = i;
+        break;
       }
     }
 
-    return null;
+    if (id != null) {
+      return vcard.getProperty(id);
+    }
+
+    return vcard.getExtendedProperty(name);
   }
 
   /**
    * @param name
    * @return property or null
    */
-  public Collection<Property> findProperties(String name) {
-    Collection<Property> props = new ArrayList<Property>();
+  public List<Property> findProperties(final String name) {
+    Property.Id id = null;
 
-    if (props == null) {
-      return props;
-    }
-
-    for (Property p: props) {
-      if (name.equals(p.name)) {
-        props.add(p);
+    for (Property.Id i: Property.Id.values()) {
+      if (i.toString().equals(name)) {
+        id = i;
+        break;
       }
     }
 
-    return props;
+    if (id != null) {
+      return vcard.getProperties(id);
+    }
+
+    return vcard.getExtendedProperties(name);
   }
-
-  private static final int WORD_CHAR_START = 32;
-
-  private static final int WORD_CHAR_END = 255;
-
-  private static final int WHITESPACE_CHAR_START = 0;
-
-  private static final int WHITESPACE_CHAR_END = 20;
 
   /**
    * @param rdr
    * @return Vcard
    * @throws WebdavException
    */
-  public Vcard parse(Reader rdr) throws WebdavException {
-    Tokenizer tokeniser = new Tokenizer(rdr);
-
+  public void parse(final Reader rdr) throws WebdavException {
     try {
-      tokeniser.resetSyntax();
-      tokeniser.wordChars(WORD_CHAR_START, WORD_CHAR_END);
-      tokeniser.whitespaceChars(WHITESPACE_CHAR_START,
-                                WHITESPACE_CHAR_END);
-      tokeniser.ordinaryChar(':');
-      tokeniser.ordinaryChar(';');
-      tokeniser.ordinaryChar('=');
-      tokeniser.ordinaryChar('\t');
-      tokeniser.eolIsSignificant(true);
-      tokeniser.whitespaceChars(0, 0);
-      tokeniser.quoteChar('"');
-
-      // BEGIN:VCALENDAR
-      tokeniser.assertToken("BEGIN");
-
-      tokeniser.assertToken(':');
-
-      tokeniser.assertToken("VCARD", true);
-
-      tokeniser.assertToken(StreamTokenizer.TT_EOL);
-
-      while (!tokeniser.testToken("END")) {
-        addProperty(new Property().parse(tokeniser));
-        tokeniser.skipWhitespace();
-      }
-
-      tokeniser.assertToken(':');
-
-      tokeniser.assertToken("VCARD", true);
-      tokeniser.skipWhitespace();
-
-      prevLastmod = getLastmod();
-
-      return this;
-    } catch (WebdavException wde) {
-      throw wde;
-    } catch (Exception e) {
-      throw new WebdavException(e);
+      vcard = new VCardBuilder(rdr).build();
+    } catch (Throwable t) {
+      throw new WebdavException(t);
     }
   }
 
   /**
    * @return String
+   * @throws WebdavException
    */
-  public String output() {
+  public String output() throws WebdavException {
     if (strForm != null) {
       return strForm;
     }
 
-    StringBuilder sb = new StringBuilder();
+    StringWriter sw = new StringWriter();
 
-    sb.append("BEGIN:VCARD\n");
-    sb.append("VERSION:4.0\n");
-
-    if (props != null) {
-      for (Property p: props) {
-        if ("VERSION".equals(p.name)) {
-          continue;
-        }
-
-        p.output(sb);
+    synchronized (cardOut) {
+      try {
+        cardOut.output(vcard, sw);
+      } catch (Throwable t) {
+        throw new WebdavException(t);
       }
     }
 
-    sb.append("END:VCARD\n\n");
-
-    strForm = sb.toString();
+    strForm = sw.toString();
 
     return strForm;
   }
@@ -334,36 +297,31 @@ public class Vcard {
 
     indent += "";
 
-    Property version = new Property(VcardDefs.getPropertyDef("VERSION"), "4.0");
+    PropertyOutput version = new PropertyOutput("VERSION", "4.0");
 
     version.outputJson(indent, sb);
 
-    for (String pname: VcardDefs.getPropertyNames()) {
+    Set<String> pnames = VcardDefs.getPropertyNames();
+
+    for (String pname: pnames) {
       if ("VERSION".equals(pname)) {
         continue;
       }
 
-      Collection<Property> props = findProperties(pname);
+      List<Property> props = findProperties(pname);
 
       if (!props.isEmpty()) {
-        int ct = 0;
-        for (Property pr: props) {
-          if (ct == 0) {
-            pr.outputJsonStart(indent, sb);
-          }
-
-          pr.outputJsonValue(indent, sb);
-
-          ct++;
-          if (ct == props.size()) {
-            pr.outputJsonEnd(indent, sb);
-          }
-        }
+        new PropertyOutput(props).outputJson(indent, sb);
       }
     }
+
+    List<Property> props = vcard.getProperties();
+
     if (props != null) {
       for (Property p: props) {
-        p.outputJson(indent, sb);
+        if (!pnames.contains(p.getId().toString())) {
+          new PropertyOutput(p).outputJson(indent, sb);
+        }
       }
     }
 
@@ -375,7 +333,24 @@ public class Vcard {
     return jsonStrForm;
   }
 
+  @Override
   public String toString() {
-    return output();
+    try {
+      return output();
+    } catch (Throwable t) {
+      return t.getMessage();
+    }
+  }
+
+  private void replaceProperty(final Property val) {
+    List<Property> ps = vcard.getProperties();
+
+    Property p = vcard.getProperty(val.getId());
+
+    if (p != null) {
+      ps.remove(p);
+    }
+
+    ps.add(val);
   }
 }

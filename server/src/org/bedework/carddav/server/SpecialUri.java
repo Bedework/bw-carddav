@@ -31,7 +31,7 @@ import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVConfig;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -211,13 +211,13 @@ public class SpecialUri {
   }
 
   private static void doOutput(HttpServletResponse resp,
-                               Collection<Vcard> cards,
+                               Collection<Card> cards,
                                String format) throws WebdavException {
     try {
       Writer wtr = resp.getWriter();
 
       if (format.equals(formatVcard)) {
-        for (Vcard card: cards) {
+        for (Card card: cards) {
           wtr.write(card.output());
         }
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -234,7 +234,7 @@ public class SpecialUri {
 
       boolean first = true;
 
-      for (Vcard card: cards) {
+      for (Card card: cards) {
         if (first) {
           first = false;
         } else {

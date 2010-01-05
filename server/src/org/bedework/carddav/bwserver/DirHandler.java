@@ -34,7 +34,7 @@ import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -148,7 +148,7 @@ public interface DirHandler {
    * @return Vcard
    * @throws WebdavException
    */
-  public Vcard getPrincipalCard(String path) throws WebdavException;
+  public Card getPrincipalCard(String path) throws WebdavException;
 
   /**
    * @param p
@@ -190,7 +190,7 @@ public interface DirHandler {
    * @throws WebdavException
    */
   public void addCard(String path,
-                      Vcard card) throws WebdavException;
+                      Card card) throws WebdavException;
 
   /** Update a card.
    *
@@ -199,7 +199,7 @@ public interface DirHandler {
    * @throws WebdavException
    */
   public void updateCard(String path,
-                         Vcard card) throws WebdavException;
+                         Card card) throws WebdavException;
 
   /** Get card given the collection and String name.
    *
@@ -208,7 +208,7 @@ public interface DirHandler {
    * @return Vcard or null
    * @throws WebdavException
    */
-  public Vcard getCard(String path, String name)
+  public Card getCard(String path, String name)
           throws WebdavException;
 
   /** Return the cards for the current user in the given collection using the
@@ -269,7 +269,7 @@ public interface DirHandler {
    * @return true if destination created (i.e. not updated)
    * @throws WebdavException
    */
-  public int copyMove(Vcard from,
+  public int copyMove(Card from,
                       String toPath,
                       String name,
                       boolean copy,

@@ -27,7 +27,7 @@
 package org.bedework.carddav.server;
 
 import org.bedework.carddav.server.query.AddressData;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import org.w3c.dom.Element;
 
@@ -50,7 +50,7 @@ import javax.xml.namespace.QName;
  *   @author Mike Douglass   douglm  rpi.edu
  */
 public class CarddavCardNode extends CarddavNode {
-  private Vcard card;
+  private Card card;
 
   private String entityName;
 
@@ -365,7 +365,7 @@ public boolean generatePropertyValue(QName tag,
    * @param val
    * @throws WebdavException
    */
-  public void setCard(Vcard val) throws WebdavException {
+  public void setCard(Card val) throws WebdavException {
     card = val;
   }
 
@@ -373,7 +373,7 @@ public boolean generatePropertyValue(QName tag,
    * @return VCard
    * @throws WebdavException
    */
-  public Vcard getCard() throws WebdavException {
+  public Card getCard() throws WebdavException {
     return card;
   }
 

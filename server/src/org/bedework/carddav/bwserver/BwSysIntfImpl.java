@@ -37,7 +37,7 @@ import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.User;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
@@ -328,7 +328,7 @@ public class BwSysIntfImpl implements SysIntf {
 
       String defaultAddressbookPath = userHomePath + conf.getDefaultAddressbook();
 
-      Vcard dirInfo = null;
+      Card dirInfo = null;
 
       DirHandler rootHandler = getHandler(conf.getPrincipalRoot());
 
@@ -458,7 +458,7 @@ public class BwSysIntfImpl implements SysIntf {
    * @see org.bedework.carddav.server.SysIntf#addCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
   public void addCard(String path,
-                      Vcard card) throws WebdavException {
+                      Card card) throws WebdavException {
     try {
       getHandler(path).addCard(path, card);
     } catch (WebdavException wde) {
@@ -472,7 +472,7 @@ public class BwSysIntfImpl implements SysIntf {
    * @see org.bedework.carddav.server.SysIntf#updateCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
   public void updateCard(String path,
-                         Vcard card) throws WebdavException {
+                         Card card) throws WebdavException {
     try {
       getHandler(path).updateCard(path, card);
     } catch (WebdavException wde) {
@@ -501,7 +501,7 @@ public class BwSysIntfImpl implements SysIntf {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.SysIntf#getCard(org.bedework.carddav.server.CarddavColNode, java.lang.String)
    */
-  public Vcard getCard(String path,
+  public Card getCard(String path,
                        String name) throws WebdavException {
     try {
       return getHandler(path).getCard(path, name);
@@ -641,7 +641,7 @@ public class BwSysIntfImpl implements SysIntf {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.SysIntf#copyMove(org.bedework.carddav.server.Vcard, org.bedework.webdav.WdCollection, java.lang.String, boolean, boolean)
    */
-  public boolean copyMove(Vcard from,
+  public boolean copyMove(Card from,
                           WdCollection to,
                           String name,
                           boolean copy,

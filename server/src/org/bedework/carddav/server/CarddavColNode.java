@@ -28,7 +28,7 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -186,7 +186,7 @@ public class CarddavColNode extends CarddavNode {
       gr = getSysi().getCards(c, null, limits);
 
       if (gr.cards != null) {
-        for (Vcard card: gr.cards) {
+        for (Card card: gr.cards) {
           res.nodes.add(new CarddavCardNode(new CarddavURI(c, card,
                                                            card.getName(),
                                                            true),

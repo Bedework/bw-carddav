@@ -28,7 +28,7 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
-import org.bedework.carddav.vcard.Vcard;
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
@@ -167,7 +167,7 @@ public interface SysIntf {
 
     /** Some directory information for the user.
      */
-    public Vcard directoryInfo;
+    public Card directoryInfo;
 
     /**
      * @param account
@@ -178,7 +178,7 @@ public interface SysIntf {
      */
     public UserInfo(String account, String principalPathPrefix,
                     String userHomePath,
-                    String defaultAddressbookPath, Vcard directoryInfo) {
+                    String defaultAddressbookPath, Card directoryInfo) {
       this.account = account;
       this.principalPathPrefix = principalPathPrefix;
       this.userHomePath = userHomePath;
@@ -230,7 +230,7 @@ public interface SysIntf {
    * @throws WebdavException
    */
  public void addCard(String path,
-                     Vcard card) throws WebdavException;
+                     Card card) throws WebdavException;
 
   /** Update a card.
    *
@@ -239,7 +239,7 @@ public interface SysIntf {
    * @throws WebdavException
    */
   public void updateCard(String path,
-                         Vcard card) throws WebdavException;
+                         Card card) throws WebdavException;
 
   /** limits for getCards and getCollections */
   public static class GetLimits {
@@ -259,7 +259,7 @@ public interface SysIntf {
     public boolean overLimit;
 
     /** The possibly truncated result from getCards */
-    public Collection<Vcard> cards;
+    public Collection<Card> cards;
 
     /** The possibly truncated result from getCollections */
     public Collection<CarddavCollection> collections;
@@ -288,7 +288,7 @@ public interface SysIntf {
    * @return Vcard or null
    * @throws WebdavException
    */
-  public Vcard getCard(String path, String name)
+  public Card getCard(String path, String name)
           throws WebdavException;
 
   /**
@@ -368,7 +368,7 @@ public interface SysIntf {
    * @return true if destination created (i.e. not updated)
    * @throws WebdavException
    */
-  public boolean copyMove(Vcard from,
+  public boolean copyMove(Card from,
                           WdCollection to,
                           String name,
                           boolean copy,

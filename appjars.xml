@@ -11,7 +11,7 @@
 
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
-              name="bw-carddavsvr" version="3.5"
+              name="bw-carddavsvr" version="3.6"
               projecthome="${project.home}" />
     </sequential>
  </macrodef>
