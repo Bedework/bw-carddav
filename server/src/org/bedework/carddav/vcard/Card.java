@@ -69,6 +69,21 @@ public class Card {
 
   private static VCardOutputter cardOut = new VCardOutputter();
 
+  /** Create Card with a new embedded VCard
+   *
+   */
+  public Card() {
+    this(new VCard());
+  }
+
+  /** Create card with supplied vcard
+   *
+   * @param vcard
+   */
+  public Card(final VCard vcard) {
+    this.vcard = vcard;
+  }
+
   /**
    * @param val
    */

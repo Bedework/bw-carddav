@@ -38,10 +38,6 @@ import java.util.List;
  * @author douglm
  *
  */
-/**
- * @author douglm
- *
- */
 public class PropertyOutput {
   //private String group;
   private String name;
@@ -82,9 +78,9 @@ public class PropertyOutput {
    * @param ps
    */
   public PropertyOutput(final List<Property> ps) {
+    p = ps.get(0); // For th ename
     def = VcardDefs.getPropertyDef(p.getId().toString());
     this.ps = ps;
-    p = ps.get(0); // For th ename
   }
 
   /**

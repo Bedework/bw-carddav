@@ -54,7 +54,7 @@
     <getJar name="gdata-calendar" version="1.0" />
     <getJar name="gdata-client" version="1.0" />
     <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
-    <getJar name="ical4j-vcard" version="0.9.2" />
+    <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
     <getJar name="log4j" version="1.2.8" />
     <getJar name="servletapi" version="2.4" />
 

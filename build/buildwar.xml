@@ -258,9 +258,13 @@ ${propval.app.war.name}.context=${propval.app.context.root}
          Any jar files required
          =============================================================== -->
 
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.rpiaccess}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.rpiutil}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.bw-webdavserver}" />
+
+    <copy todir="${app.dest.lib}" overwrite="yes">
+      <fileset dir="${lib.dir}" excludes="servlet*.jar" />
+      <fileset dir="${dist.home}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
 
     <!-- NOT CARDDAV
     <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-codec}"/>

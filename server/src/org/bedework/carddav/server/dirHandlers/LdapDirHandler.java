@@ -706,9 +706,12 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       card = new Card();
 
       card.setCreated(makeIsoDatetime(stringAttr(attrs, "createTimestamp")));
-      card.setLastmod(makeIsoDatetime(stringAttr(attrs, "modifyTimestamp")));
 
-      if (card.getLastmod() == null) {
+      String lastMod = stringAttr(attrs, "modifyTimestamp");
+
+      if (lastMod != null) {
+        card.setLastmod(makeIsoDatetime(lastMod));
+      } else {
         card.setLastmod(card.getCreated());
       }
 
