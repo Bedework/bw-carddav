@@ -59,7 +59,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
 
   private String encoding;  /* Always binary */
 
-  private int contentLength;  /* Always binary */
+  private long contentLength;
 
   /* ====================================================================
    *                  Non-db fields - should be in a wrapper
@@ -89,7 +89,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   /**
    * @param val
    */
-  public void setOwner(AccessPrincipal val) {
+  public void setOwner(final AccessPrincipal val) {
     owner = val;
   }
 
@@ -103,7 +103,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   /**
    * @param val
    */
-  public void setParent(CarddavCollection val) {
+  public void setParent(final CarddavCollection val) {
     parent = val;
   }
 
@@ -118,7 +118,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    * @param val    String name
    */
-  public void setName(String val) {
+  public void setName(final String val) {
     name = val;
   }
 
@@ -133,7 +133,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   /**
    * @param val
    */
-  public void setCreated(String val) {
+  public void setCreated(final String val) {
     created = val;
   }
 
@@ -147,7 +147,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   /**
    * @param val
    */
-  public void setLastmod(String val) {
+  public void setLastmod(final String val) {
     lastmod = val;
   }
 
@@ -162,7 +162,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    * @param val    sequence number
    */
-  public void setSequence(int val) {
+  public void setSequence(final int val) {
     sequence = val;
   }
 
@@ -178,7 +178,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    *  @param  val   String contentType
    */
-  public void setContentType(String val) {
+  public void setContentType(final String val) {
     contentType = val;
   }
 
@@ -194,7 +194,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    *  @param  val   String encoding
    */
-  public void setEncoding(String val) {
+  public void setEncoding(final String val) {
     encoding = val;
   }
 
@@ -208,17 +208,17 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
 
   /** Set the length
    *
-   *  @param  val   int
+   *  @param  val   long
    */
-  public void setContentLength(int val) {
+  public void setContentLength(final long val) {
     contentLength = val;
   }
 
   /** Get the length
    *
-   *  @return int     length
+   *  @return long     length
    */
-  public int getContentLength() {
+  public long getContentLength() {
     return contentLength;
   }
 
@@ -237,7 +237,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    *  @param val     lastmod
    */
-  public void setPrevLastmod(String val) {
+  public void setPrevLastmod(final String val) {
     prevLastmod = val;
   }
 
@@ -253,7 +253,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    *  @param val     sequence number
    */
-  public void setPrevSeq(int val) {
+  public void setPrevSeq(final int val) {
     prevSeq = val;
   }
 
@@ -269,7 +269,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *
    *  @param  val   BwResourceContent
    */
-  public void setContent(CarddavResourceContent val) {
+  public void setContent(final CarddavResourceContent val) {
     content = val;
   }
 
@@ -285,6 +285,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
    *                   Object methods
    * ==================================================================== */
 
+  @Override
   public int hashCode() {
     try {
       return getParent().getPath().hashCode() * getName().hashCode();
@@ -293,7 +294,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
     }
   }
 
-  public int compareTo(CarddavResource that)  {
+  public int compareTo(final CarddavResource that)  {
     if (this == that) {
       return 0;
     }
@@ -306,6 +307,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
     return Util.cmpObjval(getName(), that.getName());
   }
 
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("BwAttachment{");
 

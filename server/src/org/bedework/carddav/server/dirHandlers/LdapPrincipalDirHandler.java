@@ -32,9 +32,9 @@ import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 
+import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 
 import java.util.Collection;
 
@@ -59,9 +59,9 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
-  public void init(CardDAVConfig cdConfig,
-                   DirHandlerConfig dhConfig,
-                   UrlHandler urlHandler) throws WebdavException {
+  public void init(final CardDAVConfig cdConfig,
+                   final DirHandlerConfig dhConfig,
+                   final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
 
     ldapConfig = (LdapDirHandlerConfig)dhConfig;
@@ -71,7 +71,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
    *                   Principals
    * ==================================================================== */
 
-  public Card getPrincipalCard(String path) throws WebdavException {
+  public Card getPrincipalCard(final String path) throws WebdavException {
     verifyPath(path);
 
     try {
@@ -89,8 +89,9 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     }
   }
 
-  public Collection<String>getGroups(String rootUrl,
-                                     String principalUrl) throws WebdavException {
+  @Override
+  public Collection<String>getGroups(final String rootUrl,
+                                     final String principalUrl) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
@@ -101,23 +102,23 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#addCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
-  public void addCard(String path,
-                      Card card) throws WebdavException {
+  public void addCard(final String path,
+                      final Card card) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#updateCard(java.lang.String, org.bedework.carddav.server.Vcard)
    */
-  public void updateCard(String path,
-                         Card card) throws WebdavException {
+  public void updateCard(final String path,
+                         final Card card) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#deleteCard(org.bedework.carddav.server.CarddavCardNode)
    */
-  public void deleteCard(CarddavCardNode val) throws WebdavException {
+  public void deleteCard(final CarddavCardNode val) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
@@ -128,41 +129,41 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#makeCollection(org.bedework.carddav.server.CarddavCollection, java.lang.String)
    */
-  public int makeCollection(CarddavCollection col,
-                            String parentPath) throws WebdavException {
+  public int makeCollection(final CarddavCollection col,
+                            final String parentPath) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#deleteCollection(WdCollection)
    */
-  public void deleteCollection(WdCollection col) throws WebdavException {
+  public void deleteCollection(final WdCollection col) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#rename(WdCollection, String)
    */
-  public int rename(WdCollection col,
-                    String newName) throws WebdavException {
+  public int rename(final WdCollection col,
+                    final String newName) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#copyMove(org.bedework.carddav.server.Vcard, java.lang.String, java.lang.String, boolean, boolean)
    */
-  public int copyMove(Card from,
-                      String toPath,
-                      String name,
-                      boolean copy,
-                      boolean overwrite) throws WebdavException {
+  public int copyMove(final Card from,
+                      final String toPath,
+                      final String name,
+                      final boolean copy,
+                      final boolean overwrite) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#updateCollection(org.bedework.webdav.WdCollection)
    */
-  public void updateCollection(WdCollection val) throws WebdavException {
+  public void updateCollection(final WdCollection val) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 }

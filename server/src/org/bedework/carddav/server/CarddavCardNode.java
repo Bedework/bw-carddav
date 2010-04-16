@@ -29,8 +29,6 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.vcard.Card;
 
-import org.w3c.dom.Element;
-
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
@@ -38,6 +36,8 @@ import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
+
+import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public class CarddavCardNode extends CarddavNode {
    * @param uri
    * @param debug
    */
-  public CarddavCardNode(SysIntf sysi, int status, String uri, boolean debug) {
+  public CarddavCardNode(final SysIntf sysi, final int status, final String uri, final boolean debug) {
     super(true, sysi, uri, debug);
     setStatus(status);
     this.uri = uri;
@@ -84,8 +84,8 @@ public class CarddavCardNode extends CarddavNode {
    * @param debug
    * @throws WebdavException
    */
-  public CarddavCardNode(CarddavURI cdURI,
-                         SysIntf sysi, boolean debug) throws WebdavException {
+  public CarddavCardNode(final CarddavURI cdURI,
+                         final SysIntf sysi, final boolean debug) throws WebdavException {
     super(cdURI, sysi, debug);
 
     col = cdURI.getCol();
@@ -98,7 +98,8 @@ public class CarddavCardNode extends CarddavNode {
     card = cdURI.getEntity();
   }
 
-  public void init(boolean content) throws WebdavException {
+  @Override
+  public void init(final boolean content) throws WebdavException {
     if (!content) {
       return;
     }
@@ -108,6 +109,7 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.CarddavNode#getWdCollection()
    */
+  @Override
   public CarddavCollection getWdCollection() throws WebdavException {
     return col;
   }
@@ -115,6 +117,7 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getOwner()
    */
+  @Override
   public AccessPrincipal getOwner() throws WebdavException {
     if (col == null) {
       return null;
@@ -130,8 +133,9 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#removeProperty(org.w3c.dom.Element)
    */
-  public boolean removeProperty(Element val,
-                                SetPropertyResult spr) throws WebdavException {
+  @Override
+  public boolean removeProperty(final Element val,
+                                final SetPropertyResult spr) throws WebdavException {
     warn("Unimplemented - removeProperty");
 
     return false;
@@ -140,8 +144,9 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#setProperty(org.w3c.dom.Element)
    */
-  public boolean setProperty(Element val,
-                             SetPropertyResult spr) throws WebdavException {
+  @Override
+  public boolean setProperty(final Element val,
+                             final SetPropertyResult spr) throws WebdavException {
     if (super.setProperty(val, spr)) {
       return true;
     }
@@ -152,6 +157,7 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#update()
    */
+  @Override
   public void update() throws WebdavException {
     getSysi().updateCard(col.getPath(), card);
   }
@@ -166,6 +172,7 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#trailSlash()
    */
+  @Override
   public boolean trailSlash() {
     return false;
   }
@@ -177,7 +184,8 @@ public class CarddavCardNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
    */
-  public boolean knownProperty(QName tag) {
+  @Override
+  public boolean knownProperty(final QName tag) {
     if (propertyNames.get(tag) != null) {
       return true;
     }
@@ -189,9 +197,10 @@ public class CarddavCardNode extends CarddavNode {
  /* (non-Javadoc)
  * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.rpi.sss.util.xml.QName, edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
  */
-public boolean generatePropertyValue(QName tag,
-                                      WebdavNsIntf intf,
-                                      boolean allProp) throws WebdavException {
+@Override
+public boolean generatePropertyValue(final QName tag,
+                                      final WebdavNsIntf intf,
+                                      final boolean allProp) throws WebdavException {
     //PropVal pv = new PropVal();
     //XmlEmit xml = intf.getXmlEmit();
 
@@ -211,6 +220,7 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getPropertyNames()
    */
+  @Override
   public Collection<PropertyTagEntry> getPropertyNames() throws WebdavException {
     Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
 
@@ -220,7 +230,8 @@ public boolean generatePropertyValue(QName tag,
     return res;
   }
 
-  public Collection<WebdavProperty> getProperties(String ns) throws WebdavException {
+  @Override
+  public Collection<WebdavProperty> getProperties(final String ns) throws WebdavException {
     init(true);
     ArrayList<WebdavProperty> al = new ArrayList<WebdavProperty>();
 
@@ -230,6 +241,7 @@ public boolean generatePropertyValue(QName tag,
     return al;
   }
 
+  @Override
   public String getContentString() throws WebdavException {
     return card.output();
   }
@@ -238,6 +250,7 @@ public boolean generatePropertyValue(QName tag,
    *                   Overridden property methods
    * ==================================================================== */
 
+  @Override
   public CurrentAccess getCurrentAccess() throws WebdavException {
     if (col == null) {
       return null;
@@ -246,7 +259,8 @@ public boolean generatePropertyValue(QName tag,
     return getSysi().checkAccess(col, PrivilegeDefs.privAny, true);
   }
 
-  public String getEtagValue(boolean strong) throws WebdavException {
+  @Override
+  public String getEtagValue(final boolean strong) throws WebdavException {
     init(true);
 
     if (card == null) {
@@ -261,7 +275,7 @@ public boolean generatePropertyValue(QName tag,
    * @return etag before changes
    * @throws WebdavException
    */
-  public String getPrevEtagValue(boolean strong) throws WebdavException {
+  public String getPrevEtagValue(final boolean strong) throws WebdavException {
     init(true);
 
     if (card == null) {
@@ -271,7 +285,7 @@ public boolean generatePropertyValue(QName tag,
     return makeEtag(card.getPrevLastmod());
   }
 
-  private String makeEtag(String lastmod) {
+  private String makeEtag(final String lastmod) {
     StringBuilder val = new StringBuilder();
     val.append("\"");
     val.append(lastmod);
@@ -280,6 +294,7 @@ public boolean generatePropertyValue(QName tag,
     return val.toString();
   }
 
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
@@ -300,6 +315,7 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
    */
+  @Override
   public String getContentLang() throws WebdavException {
     return "en";
   }
@@ -307,7 +323,8 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLen()
    */
-  public int getContentLen() throws WebdavException {
+  @Override
+  public long getContentLen() throws WebdavException {
     if (card != null) {
       return card.output().length();
     }
@@ -318,6 +335,7 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
    */
+  @Override
   public String getContentType() throws WebdavException {
     return "text/directory; charset=UTF-8";
   }
@@ -325,6 +343,7 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
    */
+  @Override
   public String getCreDate() throws WebdavException {
     init(false);
 
@@ -339,6 +358,7 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getDisplayname()
    */
+  @Override
   public String getDisplayname() throws WebdavException {
     return getEntityName();
   }
@@ -346,6 +366,7 @@ public boolean generatePropertyValue(QName tag,
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getLastmodDate()
    */
+  @Override
   public String getLastmodDate() throws WebdavException {
     init(false);
 
@@ -365,7 +386,7 @@ public boolean generatePropertyValue(QName tag,
    * @param val
    * @throws WebdavException
    */
-  public void setCard(Card val) throws WebdavException {
+  public void setCard(final Card val) throws WebdavException {
     card = val;
   }
 

@@ -25,8 +25,6 @@
 */
 package org.bedework.carddav.bwserver;
 
-import java.util.Collection;
-
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
@@ -36,10 +34,12 @@ import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 
+import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
+
+import java.util.Collection;
 
 /** Interface defining a directory handler. The implementing class provides an
  * interface between the CardDAV server and a portion of the directory structure.

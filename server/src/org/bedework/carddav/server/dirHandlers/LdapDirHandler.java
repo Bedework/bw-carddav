@@ -39,8 +39,8 @@ import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.carddav.vcard.PropertyBuilder;
 
+import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.sss.util.Util;

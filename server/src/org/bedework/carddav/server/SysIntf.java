@@ -31,9 +31,9 @@ import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
+import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
@@ -176,9 +176,9 @@ public interface SysIntf {
      * @param defaultAddressbookPath
      * @param directoryInfo
      */
-    public UserInfo(String account, String principalPathPrefix,
-                    String userHomePath,
-                    String defaultAddressbookPath, Card directoryInfo) {
+    public UserInfo(final String account, final String principalPathPrefix,
+                    final String userHomePath,
+                    final String defaultAddressbookPath, final Card directoryInfo) {
       this.account = account;
       this.principalPathPrefix = principalPathPrefix;
       this.userHomePath = userHomePath;

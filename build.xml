@@ -25,6 +25,9 @@
   <property name="buildjar" location="${build.dir}/buildTools/buildjar.xml"/>
   <property name="buildwar" location="${build.dir}/buildwar.xml"/>
 
+  <property name="org.bedework.temp.dir"
+            location="${dist.home}/temp" />
+
   <property name="org.bedework.libcache.dir"
             location="${project.home}/libcache"/>
 

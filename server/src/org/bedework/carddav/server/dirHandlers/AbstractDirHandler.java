@@ -27,14 +27,14 @@ package org.bedework.carddav.server.dirHandlers;
 
 import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.util.CardDAVConfig;
-import org.bedework.carddav.util.DirectoryInfo;
 import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.util.DirectoryInfo;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 
+import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 
@@ -93,7 +93,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
    */
-  public void open(String account) throws WebdavException {
+  public void open(final String account) throws WebdavException {
     this.account = account;
   }
 
@@ -106,9 +106,9 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
-  public void init(CardDAVConfig cdConfig,
-                   DirHandlerConfig dhConfig,
-                   UrlHandler urlHandler) throws WebdavException {
+  public void init(final CardDAVConfig cdConfig,
+                   final DirHandlerConfig dhConfig,
+                   final UrlHandler urlHandler) throws WebdavException {
     this.cdConfig = cdConfig;
     this.dhConfig = dhConfig;
     this.urlHandler = urlHandler;
@@ -151,7 +151,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#isPrincipal(java.lang.String)
    */
-  public boolean isPrincipal(String val) throws WebdavException {
+  public boolean isPrincipal(final String val) throws WebdavException {
     if (val == null) {
       return false;
     }
@@ -162,7 +162,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#getPrincipal(java.lang.String)
    */
-  public AccessPrincipal getPrincipal(String path) throws WebdavException {
+  public AccessPrincipal getPrincipal(final String path) throws WebdavException {
     try {
       if (!isPrincipal(path)) {
         return null;
@@ -223,7 +223,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#makePrincipalUri(edu.rpi.cmt.access.AccessPrincipal)
    */
-  public String makePrincipalUri(AccessPrincipal p) throws WebdavException {
+  public String makePrincipalUri(final AccessPrincipal p) throws WebdavException {
     if (isPrincipal(p.getAccount())) {
       return p.getAccount();
     }
@@ -249,7 +249,7 @@ public abstract class AbstractDirHandler implements DirHandler {
    * @see org.bedework.carddav.bwserver.DirHandler#getGroups(java.lang.String, java.lang.String)
    */
   public Collection<String>getGroups(String rootUrl,
-                                     String principalUrl) throws WebdavException {
+                                     final String principalUrl) throws WebdavException {
     Collection<String> urls = new TreeSet<String>();
 
     if (principalUrl == null) {
@@ -288,7 +288,7 @@ public abstract class AbstractDirHandler implements DirHandler {
    * @param path
    * @throws WebdavException
    */
-  protected void verifyPath(String path) throws WebdavException {
+  protected void verifyPath(final String path) throws WebdavException {
     if (!path.startsWith(dhConfig.getPathPrefix())) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
     }
@@ -304,7 +304,7 @@ public abstract class AbstractDirHandler implements DirHandler {
    * @param account
    * @return boolean
    */
-  protected synchronized boolean lookupUser(String account) {
+  protected synchronized boolean lookupUser(final String account) {
     if ((lastFlush != 0) &&
         (System.currentTimeMillis() - lastFlush > flushTime)) {
       validUsers.clear();
@@ -316,7 +316,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /** Add a checked user to the table
    * @param account
    */
-  protected void addValidUser(String account) {
+  protected void addValidUser(final String account) {
     validUsers.put(account, account);
   }
 
@@ -324,8 +324,8 @@ public abstract class AbstractDirHandler implements DirHandler {
    * @param account
    * @param type
    */
-  protected String makePrincipalHref(String account,
-                                     int whoType) throws WebdavException {
+  protected String makePrincipalHref(final String account,
+                                     final int whoType) throws WebdavException {
     String root = fromWho.get(whoType);
 
     if (root == null) {
@@ -349,14 +349,14 @@ public abstract class AbstractDirHandler implements DirHandler {
   /**
    * @param t
    */
-  protected void error(Throwable t) {
+  protected void error(final Throwable t) {
     getLogger().error(this, t);
   }
 
   /**
    * @param msg
    */
-  protected void trace(String msg) {
+  protected void trace(final String msg) {
     getLogger().debug(msg);
   }
 
@@ -364,7 +364,7 @@ public abstract class AbstractDirHandler implements DirHandler {
    *  Private methods.
    * ==================================================================== */
 
-  private void initWhoMaps(String prefix, int whoType) {
+  private void initWhoMaps(final String prefix, final int whoType) {
     toWho.put(prefix, whoType);
     fromWho.put(whoType, prefix);
   }

@@ -34,6 +34,9 @@ import edu.rpi.sss.util.DateTimeUtil;
 
 import org.w3c.dom.Element;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import javax.xml.namespace.QName;
 
 /** Class to represent a resource such as a file.
@@ -58,7 +61,7 @@ public class CarddavResourceNode extends CarddavNode {
    * @param uri
    * @param debug
    */
-  public CarddavResourceNode(SysIntf sysi, int status, String uri, boolean debug) {
+  public CarddavResourceNode(final SysIntf sysi, final int status, final String uri, final boolean debug) {
     super(true, sysi, uri, debug);
     setStatus(status);
     this.uri = uri;
@@ -71,8 +74,8 @@ public class CarddavResourceNode extends CarddavNode {
    * @param debug
    * @throws WebdavException
    */
-  public CarddavResourceNode(CarddavURI cdURI,
-                             SysIntf sysi, boolean debug) throws WebdavException {
+  public CarddavResourceNode(final CarddavURI cdURI,
+                             final SysIntf sysi, final boolean debug) throws WebdavException {
     super(cdURI, sysi, debug);
 
     resource = cdURI.getResource();
@@ -88,7 +91,8 @@ public class CarddavResourceNode extends CarddavNode {
     }
   }
 
-  public void init(boolean content) throws WebdavException {
+  @Override
+  public void init(final boolean content) throws WebdavException {
     if (!content) {
       return;
     }
@@ -108,6 +112,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.CarddavNode#getWdCollection()
    */
+  @Override
   public CarddavCollection getWdCollection() throws WebdavException {
     return col;
   }
@@ -115,6 +120,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getOwner()
    */
+  @Override
   public AccessPrincipal getOwner() throws WebdavException {
     if (owner == null) {
       if (resource == null) {
@@ -130,8 +136,9 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#removeProperty(org.w3c.dom.Element)
    */
-  public boolean removeProperty(Element val,
-                                SetPropertyResult spr) throws WebdavException {
+  @Override
+  public boolean removeProperty(final Element val,
+                                final SetPropertyResult spr) throws WebdavException {
     warn("Unimplemented - removeProperty");
 
     return false;
@@ -140,8 +147,9 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#setProperty(org.w3c.dom.Element)
    */
-  public boolean setProperty(Element val,
-                             SetPropertyResult spr) throws WebdavException {
+  @Override
+  public boolean setProperty(final Element val,
+                             final SetPropertyResult spr) throws WebdavException {
     if (super.setProperty(val, spr)) {
       return true;
     }
@@ -152,6 +160,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#update()
    */
+  @Override
   public void update() throws WebdavException {
     if (resource != null) {
       getSysi().updateFile(resource, true);
@@ -168,6 +177,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#trailSlash()
    */
+  @Override
   public boolean trailSlash() {
     return false;
   }
@@ -179,7 +189,8 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
    */
-  public boolean knownProperty(QName tag) {
+  @Override
+  public boolean knownProperty(final QName tag) {
     // Not ours
     return super.knownProperty(tag);
   }
@@ -187,7 +198,7 @@ public class CarddavResourceNode extends CarddavNode {
   /**
    * @param val
    */
-  public void setResource(CarddavResource val) {
+  public void setResource(final CarddavResource val) {
     resource = val;
   }
 
@@ -206,6 +217,7 @@ public class CarddavResourceNode extends CarddavNode {
    *                   Overridden property methods
    * ==================================================================== */
 
+  @Override
   public CurrentAccess getCurrentAccess() throws WebdavException {
     if (currentAccess != null) {
       return currentAccess;
@@ -220,7 +232,8 @@ public class CarddavResourceNode extends CarddavNode {
     return currentAccess;
   }
 
-  public String getEtagValue(boolean strong) throws WebdavException {
+  @Override
+  public String getEtagValue(final boolean strong) throws WebdavException {
     init(true);
 
     if (resource == null) {
@@ -235,7 +248,7 @@ public class CarddavResourceNode extends CarddavNode {
    * @return etag before changes
    * @throws WebdavException
    */
-  public String getPrevEtagValue(boolean strong) throws WebdavException {
+  public String getPrevEtagValue(final boolean strong) throws WebdavException {
     init(true);
 
     if (resource == null) {
@@ -245,7 +258,7 @@ public class CarddavResourceNode extends CarddavNode {
     return makeEtag(resource.getPrevLastmod(), resource.getPrevSeq(), strong);
   }
 
-  private String makeEtag(String lastmod, int seq, boolean strong) {
+  private String makeEtag(final String lastmod, final int seq, final boolean strong) {
     StringBuilder val = new StringBuilder();
     if (!strong) {
       val.append("W");
@@ -260,6 +273,7 @@ public class CarddavResourceNode extends CarddavNode {
     return val.toString();
   }
 
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
@@ -280,6 +294,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentBinary()
    */
+  @Override
   public boolean getContentBinary() throws WebdavException {
     return true;
   }
@@ -287,27 +302,31 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentString()
    */
+  @Override
   public String getContentString() throws WebdavException {
     init(true);
     throw new WebdavException("binary content");
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getBinaryContent()
-   */
-  public byte[] getBinaryContent() throws WebdavException {
+  /** Return binary content
+  *
+  * @return InputStream       content.
+  * @throws WebdavException
+  */
+  public InputStream getBinaryContent() throws WebdavException {
     init(true);
 
     if ((resource == null) || (resource.getContent() == null)) {
       return null;
     }
 
-    return resource.getContent().getValue();
+    return new ByteArrayInputStream(resource.getContent().getValue());
   }
 
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
    */
+  @Override
   public String getContentLang() throws WebdavException {
     return "en";
   }
@@ -315,7 +334,8 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLen()
    */
-  public int getContentLen() throws WebdavException {
+  @Override
+  public long getContentLen() throws WebdavException {
     init(true);
 
     if (resource == null) {
@@ -328,6 +348,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
    */
+  @Override
   public String getContentType() throws WebdavException {
     if (resource == null) {
       return null;
@@ -339,6 +360,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
    */
+  @Override
   public String getCreDate() throws WebdavException {
     init(false);
 
@@ -352,6 +374,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getDisplayname()
    */
+  @Override
   public String getDisplayname() throws WebdavException {
     return getEntityName();
   }
@@ -359,6 +382,7 @@ public class CarddavResourceNode extends CarddavNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getLastmodDate()
    */
+  @Override
   public String getLastmodDate() throws WebdavException {
     init(false);
 
