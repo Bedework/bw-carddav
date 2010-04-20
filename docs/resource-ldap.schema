@@ -1,0 +1,185 @@
+#
+# Resource schema as defined by draft-cal-resource-schema-00.txt
+#
+
+objectIdentifier BedeworkRoot 1.3.6.1.4.1.32350
+objectIdentifier BedeworkVcard BedeworkRoot:0
+
+objectIdentifier VcardLDAP BedeworkVcard:0
+
+objectIdentifier VcardLDAPattributeType VcardLDAP:0
+objectIdentifier VcardLDAPobjectClass VcardLDAP:1
+
+attributetype ( VcardLDAPattributeType:1
+          NAME 'CalResourceType'
+          DESC 'Calendar Resource Type'
+          EQUALITY caseIgnoreMatch
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+          SINGLE-VALUE )
+
+attributetype ( VcardLDAPattributeType:2
+          NAME 'NickName'
+          DESC 'Nick Name'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+          
+attributetype ( VcardLDAPattributeType:3
+          NAME 'Categories'
+          DESC 'Categories'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+               
+attributetype ( VcardLDAPattributeType:4
+          NAME 'Restricted'
+          DESC 'Access Restricted'
+          EQUALITY booleanMatch
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( VcardLDAPattributeType:5
+          NAME 'AdmittanceURL'
+          DESC 'Cal Resource Admittance Info URL'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+                              
+attributetype ( VcardLDAPattributeType:6
+          NAME 'AccessabilityURL'
+          DESC 'Cal Resource Accessability Info URL'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:7
+          NAME 'Capacity'
+          DESC 'Cal Resource Capacity'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
+
+attributetype ( VcardLDAPattributeType:8
+          NAME 'InventoryList'
+          DESC 'Inventory List'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:9
+          NAME 'InventoryURL'
+          DESC 'Cal Resource Inventory Info URL'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:10
+          NAME 'ResourceManager'
+          DESC 'Cal Resource Manager Info'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 )
+
+attributetype ( VcardLDAPattributeType:11
+          NAME 'TimeZoneID'
+          DESC 'Cal Time Zone ID'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:12
+          NAME 'Multiplebookings'
+          DESC 'Cal Num Bookings Allowed'
+          EQUALITY integerMatch
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
+
+attributetype ( VcardLDAPattributeType:13
+          NAME 'MaxInstances'
+          DESC 'Cal Maximum Instances allowed'
+          EQUALITY integerMatch
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
+
+attributetype ( VcardLDAPattributeType:14
+          NAME 'BookingWindowStart'
+          DESC 'Cal Booking Window Start'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:15
+          NAME 'BookingWindowEnd'
+          DESC 'Cal Booking Window End'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:16
+          NAME 'Autoaccept'
+          DESC 'Cal Scheduling auto accept'
+          EQUALITY booleanMatch
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( VcardLDAPattributeType:17
+          NAME 'ApprovalInfoURL'
+          DESC 'Cal Sched Approval Info'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:18
+          NAME 'SchedAdmin'
+          DESC 'Cal Sched Admin Info'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 )
+
+attributetype ( VcardLDAPattributeType:19
+          NAME 'Free'
+          DESC 'Free or Priced resource'
+          EQUALITY booleanMatch
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( VcardLDAPattributeType:20
+          NAME 'CostURL'
+          DESC 'Cal Resource Cost Info'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( VcardLDAPattributeType:21
+          NAME 'ResourceNotes'
+          DESC 'Cal Resource Notes'
+          EQUALITY caseIgnoreIA5Match
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+#
+#  Objectclass definitions
+#
+
+objectclass ( VcardLDAPobjectClass:2
+          NAME 'CalendarResource'
+          DESC 'Calendar Resource Object Class'
+          SUP top
+          AUXILIARY
+          MUST (calresourcetype $ uid)
+          MAY (cn $ nickname $ description $ ou $ categories $ member $
+               uniquemember $ accessabilityurl $ capacity $ owner $
+               resourcemanager $ calcapuri $ calfburl $ calcaladruri $
+               timezoneid $ multiplebookings $ maxinstances $
+               bookingwindowstart $ bookingwindowend $ resourcenotes) )
+               
+objectclass ( VcardLDAPobjectClass:3
+          NAME 'AdmittanceInfo'
+          DESC 'Calendar Resource Admittance Info Class'
+          SUP CalendarResource
+          AUXILIARY
+          MUST (admittanceurl)
+          MAY (restricted) )              
+
+objectclass ( VcardLDAPobjectClass:4
+          NAME 'InventoryInfo'
+          DESC 'Calendar Resource Inventory Info Class'
+          SUP CalendarResource
+          AUXILIARY
+          MAY (inventorylist $ inventoryurl) )
+
+objectclass ( VcardLDAPobjectClass:5
+          NAME 'SchedApprovalInfo'
+          DESC 'Calendar Sched Approval Class'
+          SUP CalendarResource
+          AUXILIARY
+          MAY(autoaccept $ approvalinfourl $ schedadmin) )
+
+objectclass ( VcardLDAPobjectClass:6
+          NAME 'CalendarResourceCost'
+          DESC 'Calendar Resource Cost Object Class'
+          SUP CalendarResource
+          AUXILIARY
+          MAY (free $ costurl) )
+
+          
