@@ -181,7 +181,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       sysi.init(req, account, config, debug);
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
-                                  new CalDavAccessXmlCb(sysi), debug);
+                                  new CardDavAccessXmlCb(sysi), debug);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -203,7 +203,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       sysi.init(req, account, config, debug);
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
-                                  new CalDavAccessXmlCb(sysi), debug);
+                                  new CardDavAccessXmlCb(sysi), debug);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -246,12 +246,13 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   /**
    */
-  private static class CalDavAccessXmlCb implements AccessXmlCb, Serializable {
+  private static class CardDavAccessXmlCb implements AccessXmlCb, Serializable {
     private SysIntf sysi;
 
     private QName errorTag;
+    private String errorMsg;
 
-    CalDavAccessXmlCb(final SysIntf sysi) {
+    CardDavAccessXmlCb(final SysIntf sysi) {
       this.sysi = sysi;
     }
 
@@ -303,6 +304,20 @@ public class CarddavBWIntf extends WebdavNsIntf {
      */
     public QName getErrorTag() throws AccessException {
       return errorTag;
+    }
+
+    /* (non-Javadoc)
+     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#setErrorMsg(java.lang.String)
+     */
+    public void setErrorMsg(final String val) throws AccessException {
+      errorMsg = val;
+    }
+
+    /* (non-Javadoc)
+     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getErrorMsg()
+     */
+    public String getErrorMsg() throws AccessException {
+      return errorMsg;
     }
   }
 
