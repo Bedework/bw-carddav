@@ -8,11 +8,60 @@
     <sequential>
       <delete dir="${org.bedework.temp.extrajars.dir}" />
       <mkdir dir="${org.bedework.temp.extrajars.dir}" />
+    	
+    	<property name="bedework.home"
+    	          location="${project.home}/../bedework" />
 
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="bw-carddavsvr" version="3.6"
               projecthome="${project.home}" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="bw-webdavserver" version="3.6"
+              projecthome="${bedework.home}/projects/webdav" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="rpiaccess" version="3.6" project="access"
+              projecthome="${bedework.home}/projects/access" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="rpiutil" version="3.6" project="rpiutil"
+              projecthome="${bedework.home}/projects/rpiutil" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="commons-codec" version="1.3"/>
+    	
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="commons-httpclient" version="3.0"/>
+      
+    	<!--
+    	gdata-calendar-1.0.jar
+    	gdata-client-1.0.jar
+      -->
+      
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="ical4j" version="1.0-rc3-SNAPSHOT"/>
+      
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="ical4j-vcard" version="0.9.3-SNAPSHOT"/>
+      <if>
+      	<not>
+          <isset property="org.bedework.global.build.ear" />
+        </not>
+        <then>
+          <getJar lib="${org.bedework.temp.extrajars.dir}"
+            libcache="${org.bedework.libcache.dir}"
+            name="log4j" version="1.2.8" />
+        </then>
+      </if>
     </sequential>
  </macrodef>
 </project>

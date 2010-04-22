@@ -22,9 +22,7 @@
                 location="${org.bedework.config.base}/configs/democal.properties" />
       <property name="org.bedework.config.options"
                 location="${org.bedework.config.base}/configs/democal.options.xml" />
-      <property name="org.bedework.carddav.options"
-                location="${org.bedework.config.base}/configs/democal.options.xml" />
-      -->
+                -->
 
       <echo message="==========================================================" />
       <echo message="Use config properties ${org.bedework.config.properties}" />
@@ -34,7 +32,6 @@
            of the values -->
 
       <xmlproperty file="${org.bedework.config.options}"/>
-      <property file="${org.bedework.config.properties}" />
 
       <!-- Load the CardDAV options -->
       <xmlproperty file="${org.bedework.carddav.options}"/>
@@ -60,12 +57,15 @@
         </else>
       </if>
 
+    	<!--
       <if>
         <isset property="org.bedework.global.build.ear"/>
         <then>
+          <echo message="******************* load from ${org.bedework.configurations.home}/.platform/ear.properties" />
           <property file="${org.bedework.configurations.home}/.platform/ear.properties" />
         </then>
       </if>
+      -->
 
       <property name="org.bedework.global.version"
                 value="${bedework-options.org.bedework.global.version}" />

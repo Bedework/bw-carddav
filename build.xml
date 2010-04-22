@@ -27,12 +27,22 @@
 
   <property name="org.bedework.temp.dir"
             location="${dist.home}/temp" />
+  
+  <delete dir="${org.bedework.temp.dir}" />
+  <mkdir dir="${org.bedework.temp.dir}" />
 
   <property name="org.bedework.libcache.dir"
             location="${project.home}/libcache"/>
 
   <import file="${build.dir}/buildTools/getJar.xml"/>
   <import file="${build.dir}/loadDeployConfig.xml"/>
+
+	<!--
+  <property name="org.bedework.deployutil.jar"
+            location="${build.dir}/${org.bedework.deployutil.jar.name}-${project.version}.jar" />
+            -->
+  <property name="org.bedework.deployutil.jar"
+            location="${build.dir}/bw-deployutil-3.6.jar" />
 
   <!-- =================================================================
        init:
@@ -43,6 +53,20 @@
   	          location="${project.home}/../bedework" />
 
   	<loadDeployConfig />
+
+    <property name="org.bedework.temp.wars.home"
+              location="${dist.home}/temp/wars" />
+  	
+    <if>
+      <not>
+        <isset property="org.bedework.global.context.roots" />
+      </not>
+      <then>
+        <tempfile property="org.bedework.global.context.roots"
+                  destdir="${org.bedework.temp.dir}"
+                  prefix="context-roots" suffix=".properties" />
+      </then>
+    </if>
 
     <echo message="*** Options file: ${org.bedework.carddav.options}" />
 
@@ -103,6 +127,68 @@
       </fileset>
     </path>
   </target>
+	
+	<target name="deploy-init" depends="init">
+
+    <!-- ========= Stuff in main bedework deployment build file =========   -->
+    <!-- Where we put ear stuff -->
+    <if>
+      <isset property="org.bedework.global.build.ear" />
+      <then>
+        <property name="app.ear.file.name"
+                  value="${org.bedework.global.ear.name}-card.ear" />
+
+        <if>
+          <equals arg1="${org.bedework.global.ear.zipped}"
+                  arg2="yes" />
+          <then>
+            <property name="org.bedework.ear.dir"
+                      location="${dist.home}/${org.bedework.global.ear.name}-card" />
+            <property name="org.bedework.ear.file"
+                      location="${dist.home}/${org.bedework.global.ear.name}-card.ear" />
+          </then>
+          <else>
+            <property name="org.bedework.ear.dir"
+                      location="${dist.home}/${org.bedework.global.ear.name}-card.ear" />
+          </else>
+        </if>
+
+        <property name="org.bedework.ear.templib"
+                  location="${org.bedework.temp.dir}/earlib" />
+
+        <property name="org.bedework.ear.properties.dir"
+                  location="${org.bedework.temp.dir}/ear-properties" />
+
+        <property name="org.bedework.ear.properties.jar"
+                  location="${org.bedework.ear.dir}/bw-ear-properties.jar"/>
+
+        <delete dir="${org.bedework.ear.dir}" />
+        <mkdir dir="${org.bedework.ear.dir}" />
+
+        <delete dir="${org.bedework.ear.templib}" />
+        <mkdir dir="${org.bedework.ear.templib}" />
+
+        <delete dir="${org.bedework.ear.properties.dir}" />
+        <mkdir dir="${org.bedework.ear.properties.dir}" />
+      </then>
+    </if>
+    
+    <property name="org.bedework.temp.extrajars.dir"
+              location="${org.bedework.temp.dir}/extrajars" />
+
+    <!-- Preserve extra jars for ear builds -->
+    <property name="org.bedework.temp.ear.extrajars.dir"
+              location="${org.bedework.temp.dir}/earextrajars" />
+    
+    <property name="org.bedework.global.context.roots"
+              location="${org.bedework.temp.dir}/context-roots.properties" />
+
+    <!-- ===== End of stuff in main bedework deployment build file ======   -->
+		
+    <!-- Clean up before we start -->
+    <delete dir="${org.bedework.temp.wars.home}" />
+    <mkdir dir="${org.bedework.temp.wars.home}" />
+  </target>
 
   <!-- =================================================================
        Clean out all library files from other projects and all generated
@@ -156,8 +242,10 @@
      Deploy if an application server is defined.
      =================================================================== -->
 
-  <target name="deploy" depends="build-all"
+  <target name="deploy" depends="deploy-init,build-all"
   	      description="Deploy carddav">
+    <ant antfile="deploy.xml" target="deployFiles" inheritRefs="true" />
+  	<!--
     <if>
       <isset property="org.bedework.appserver.deploy.dir"/>
       <then>
@@ -174,6 +262,7 @@
         <echo message="********* No deploy directory defined" />
       </else>
     </if>
+    -->
   </target>
 
 <!-- ==================== Javadoc Target ===============================
@@ -222,10 +311,6 @@
 
     <property name="app.sou.dir"
               location="${org.bedework.carddav.server.base}" />
-    <property name="org.bedework.temp.wars.home"
-              location="${dist.home}/wars" />
-    <property name="org.bedework.temp.extrajars.dir"
-              location="${dist.home}/extrajars" />
 
     <ant antfile="${buildwar}" inheritRefs="true" target="build" >
       <property name="propval.app.context.root"
@@ -250,10 +335,6 @@
 
     <property name="app.sou.dir"
               location="${org.bedework.carddav.server.base}" />
-    <property name="org.bedework.temp.wars.home"
-              location="${dist.home}/wars" />
-    <property name="org.bedework.temp.extrajars.dir"
-              location="${dist.home}/extrajars" />
 
     <ant antfile="${buildwar}" inheritRefs="true" target="build" >
       <property name="propval.app.context.root"

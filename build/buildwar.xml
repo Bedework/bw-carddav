@@ -60,7 +60,7 @@
       <import file="${build.dir}/portals/${org.bedework.global.portal.platform}War.xml" />
     </then>
   </if>
-
+	
   <import file="${build.dir}/platforms/${org.bedework.global.deploy.platform}War.xml" />
 
   <target name="init" depends="init.common">
@@ -91,6 +91,8 @@
   </target>
 
   <target name="init.common">
+    <echo message="+_+_+_+_+_+_+_+_+_+_+_  org.bedework.temp.wars.home=${org.bedework.temp.wars.home}"/>
+
     <!-- Destinations - where we build an unwrapped war -->
     <property name="app.dest.war"
               location="${org.bedework.temp.wars.home}/${propval.app.war.name}.war" />
@@ -169,6 +171,10 @@
          directory. They will be copied into the appropriate place for the
          war and transformed by the above filter.
          =============================================================== -->
+
+    <!-- Create the runtime options file -->
+    <mkdir dir="${app.dest.properties}" />
+
     <if>
       <available file="${app.sou.dir}/properties" type="dir" />
       <then>
@@ -180,17 +186,6 @@
       </then>
     </if>
 
-    <copy todir="${app.dest.classes}">
-      <fileset dir="${app.sou.dir}/war/WEB-INF/classes"
-               includes="*"/>
-      <filterset refid="property.filters" />
-    </copy>
-
-    <!-- Create the runtime options file -->
-    <mkdir dir="${app.dest.properties}" />
-
-    <echo message="*** Options file: ${org.bedework.carddav.options}" />
-
     <copy tofile="${app.dest.properties}/options.xml"
           file="${org.bedework.carddav.options}" >
       <filterset>
@@ -199,9 +194,22 @@
       <filterset refid="property.filters" />
     </copy>
 
+  	<!--
+    <copy todir="${app.dest.classes}">
+      <fileset dir="${app.sou.dir}/war/WEB-INF/classes"
+               includes="*"/>
+      <filterset refid="property.filters" />
+    </copy>
+    -->
+
+    <!-- Make our own servlet.properties file for struts applications
     <copy tofile="${app.dest.classes}/servlet.properties" file="${app.sou.properties}">
       <filterset refid="property.filters" />
     </copy>
+    -->
+
+    <copy tofile="${app.dest.classes}/sysevents.properties"
+          file="${org.bedework.config.sysevents.properties}" />
 
     <!-- ===============================================================
          Add hibernate jars and property files from calendar api.
@@ -242,71 +250,107 @@
 ${propval.app.war.name}.context=${propval.app.context.root}
     </echo>
 
-    <!-- NOT CARDDAV
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.antlr}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.asm-attrs}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.asm}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.cglib}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.dom4j}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.ehcache}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.hibernate}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.jgroups}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.jta}" />
-     -->
-
-    <!-- ===============================================================
-         Any jar files required
-         =============================================================== -->
-
-
-    <copy todir="${app.dest.lib}" overwrite="yes">
-      <fileset dir="${lib.dir}" excludes="servlet*.jar" />
-      <fileset dir="${dist.home}">
-        <include name="*.jar"/>
-      </fileset>
-    </copy>
-
-    <!-- NOT CARDDAV
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-codec}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-collections}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-httpclient}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-lang}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-ssl}"/>
-    -->
-
-    <!-- Mail related stuff NOT CARDDAV
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.activation}" />
-     -->
-
-    <!-- any extra files-->
-    <if>
-      <isset property="org.bedework.temp.extrajars.dir" />
-      <then>
-        <copy todir="${app.dest.lib}" >
-          <fileset dir="${org.bedework.temp.extrajars.dir}" />
-        </copy>
-      </then>
-    </if>
+    <!-- Add libraries: Platform specific -->
+    <antcall target="addLibs" inheritRefs="true" />
 
     <!-- Platform specific -->
     <antcall target="doPlatform" inheritRefs="true" />
 
     <!-- build the war file -->
     <mkdir dir="${dist.home}" />
+    
+    <!-- may be there as a file or a directory -->
     <delete file="${app.war.file}" />
-
-    <war warfile="${app.war.file}"
-         webxml="${app.dest.web.xml}"
-         basedir="${app.dest.war}"
-         excludes="WEB-INF/web.xml" />
+    <delete dir="${app.war.file}" />
+    
+    <if>
+      <or>
+        <not>
+          <isset property="org.bedework.global.wars.zipped" />
+        </not>
+        <istrue value="${org.bedework.global.wars.zipped}"/>
+      </or>
+      <then>
+        <!-- Build a zipped war file -->
+        <war warfile="${app.war.file}"
+             webxml="${app.dest.web.xml}"
+             basedir="${app.dest.war}"
+             excludes="WEB-INF/web.xml" />
+      </then>
+      <else>
+        <!-- Unzipped war file -->
+        <copy todir="${app.war.file}">
+          <fileset dir="${app.dest.war}"  includes="*"/>
+          <filterset refid="property.filters" />
+        </copy>
+      </else>
+    </if>
   </target>
 
-  <!-- =================================================================
-       If this is a struts app the following gets executed.
-       We create an updated struts-config.xml file and add some jars.
-       ================================================================= -->
-
   <target name="struts-stuff" if="org.bedework.strutsapp">
+    <!-- Make our own servlet.properties file for struts applications -->
+    <echo file="${app.dest.classes}/servlet.properties" ><![CDATA[#
+# ========================================================================
+# This file contains all properties for servlet applications.
+# It cannot be application specific as the jboss build creates a
+# single set of resources on the classpath.
+# ========================================================================
+#
+
+# ========================================================================
+# Properties for the xml/xslt based calendar web applications
+# ========================================================================
+#
+# author Mike Douglass douglm rpi.edu
+
+# This is only here because the jetspeed portal-struts bridge does not seem to be
+# passing across the servlet context.
+#org.bedework.svcicb.sessionAttrName=org.bedework.admin.svcicb.sessionattrname.@APP-NAME@
+
+# These are required by the Struts framework
+errors.header=<errors><ul>
+errors.footer=</ul></errors>
+
+messages.header=<messages><ul>
+messages.footer=</ul></messages>
+
+edu.rpi.sss.util.action.noactionerrors=yes
+
+applicationResources=<li>Cannot load application resources bundle {0}</li>
+
+# set the default content type - html for jsp, xml for xml/xslt.
+#edu.rpi.sss.util.action.contenttype=@DEFAULT-CONTENTTYPE@
+edu.rpi.sss.util.action.contenttype=text/xml
+
+edu.rpi.sss.util.error.exc=<li>Exception: {0}</li>
+
+# Turn nocache headers on. We don't use the standard struts directives
+# because we need to be able to turn nocache off for a single response.
+# This gets around an IE problem with delivery of files.
+edu.rpi.sss.util.action.nocache=yes
+
+org.bedework.security.prefix=@SECURITY-PREFIX@
+
+edu.rpi.sss.util.action.logprefix=@APP-NAME@
+
+# Roles we need to know about - init action uses these
+# (Not using roles in the current system)
+#org.bedework.role.admin=@SECURITY-PREFIX@.admin
+#org.bedework.role.contentadmin=@SECURITY-PREFIX@.contentadmin
+#org.bedework.role.alert=@SECURITY-PREFIX@.alerts
+#org.bedework.role.owner=@SECURITY-PREFIX@.owner
+]]></echo>
+
+    <!-- Replace the tokens -->
+    <replace file="${app.dest.classes}/servlet.properties">
+      <replacefilter token="@SECURITY-PREFIX@"
+                     value="${propval.app.security.prefix}" />
+      <replacefilter token="@APP-NAME@"
+                     value="${propval.app.name}" />
+      <replacefilter token="@DEFAULT-CONTENTTYPE@"
+                     value="${propval.app.default.contenttype}" />
+    </replace>
+      
     <!-- Copy a dummy startup file into the war. -->
     <copy todir="${app.dest.war}">
       <fileset dir="${app.sou.dir}/war/" includes="setup.do" />
@@ -329,17 +373,5 @@ ${propval.app.war.name}.context=${propval.app.context.root}
       </then>
     </if>
 
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.xalan}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.struts}"/>
-
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.antlr}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-beanutils}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-digester}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-fileupload}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-logging}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-validator}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.jakarta-oro}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.jstl}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.jstl-standard}"/>
   </target>
 </project>

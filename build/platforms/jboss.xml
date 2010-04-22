@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file is imported by termination/build.xml and adds the targets
+     which will be invoked by that file.
+        doPlatform - misc stuff
+     =================================================================== -->
+
+<project name="bedework.platformTermination" default="doPlatform" >
+  <target name="doPlatform" >
+  </target>
+</project>

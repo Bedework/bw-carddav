@@ -32,4 +32,180 @@
       </then>
     </if>
   </target>
+  
+  <!-- ================================================================
+       Add libraries
+       ================================================================ -->
+
+  <target name="addLibs">
+    <if>
+      <not>
+        <isset property="org.bedework.global.build.ear" />
+      </not>
+      <then>
+        <!-- Library in war file -->
+        <property name="app.dest.lib"
+                  location="${app.dest.webinf}/lib" />
+        <antcall target="copyLibs" inheritRefs="true" />
+      </then>
+      <else>
+        <!-- Preserve extra jars for later -->
+        <copy todir="${org.bedework.temp.ear.extrajars.dir}" >
+          <fileset dir="${org.bedework.temp.extrajars.dir}" />
+        </copy>
+      </else>
+    </if>
+  </target>
+  
+  <!-- ================================================================
+       Deploy war
+       ================================================================ -->
+
+  <target name="deployWar">
+    <if>
+      <not>
+        <isset property="org.bedework.global.build.ear" />
+      </not>
+      <then>
+        <echo message="***************************************************************" />
+        <echo message="Deploying standalone app ${app.war.file} into ${org.bedework.appserver.dir}/${propval.app.deploy.dir}" />
+        <echo message="***************************************************************" />
+
+        <!-- copy the war file. -->
+        <copy todir="${org.bedework.appserver.dir}/${propval.app.deploy.dir}" file="${app.war.file}"
+              overwrite="yes" />
+
+        <!-- Delete expanded version -->
+        <delete dir="${org.bedework.appserver.dir}/${propval.app.deploy.dir}/${propval.app.war.name}" />
+      </then>
+    </if>
+  </target>
+    
+  <!-- ================================================================
+       Deploy ear
+       ================================================================ -->
+
+  <target name="deployEar">
+    <!-- Common library in ear file -->
+    <property name="app.dest.lib"
+              location="${org.bedework.ear.dir}" />
+    <antcall target="copyLibs" inheritRefs="true" />
+
+    <!-- And the extra jars we preserved -->
+    <copy todir="${app.dest.lib}" >
+      <fileset dir="${org.bedework.temp.ear.extrajars.dir}" />
+    </copy>
+    
+    <echo message="***************************************************************" />
+    <echo message="Building ear file for jboss deployment" />
+    <echo message="***************************************************************" />
+
+    <jar jarfile="${org.bedework.ear.properties.jar}">
+      <fileset dir="${org.bedework.ear.properties.dir}"/>
+    </jar>
+
+    <path id="app.xml.cp">
+      <pathelement location="${org.bedework.deployutil.jar}"/>
+    </path>
+
+    <taskdef name="applicationXml"
+             classname="org.bedework.deployment.ApplicationXmlTask">
+      <classpath refid="app.xml.cp"/>
+    </taskdef>
+
+    <echo message="outFile=${org.bedework.ear.dir}/META-INF/application.xml
+                    warDir=${org.bedework.temp.dir}/wars
+                    contexts=${org.bedework.global.context.roots}" />
+
+  	<mkdir dir="${org.bedework.ear.dir}/META-INF" />
+  	
+    <applicationXml displayName="Bedework calendar suite"
+                    outFile="${org.bedework.ear.dir}/META-INF/application.xml"
+                    warDir="${org.bedework.temp.dir}/wars"
+                    contexts="${org.bedework.global.context.roots}">
+      <fileset dir="${org.bedework.ear.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </applicationXml>
+    
+    <echo file="${org.bedework.ear.dir}/META-INF/jboss-app.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<jboss-app>
+   <loader-repository> 
+     org.bedework:archive=@EAR_NAME@ 
+     <loader-repository-config>java2ParentDelegation=false</loader-repository-config> 
+   </loader-repository> 
+</jboss-app>
+]]></echo>
+      
+    <replace file="${org.bedework.ear.dir}/META-INF/jboss-app.xml"
+             token="@EAR_NAME@" 
+             value="${app.ear.file.name}"/>
+          
+    <manifest file="${org.bedework.ear.dir}/META-INF/MANIFEST.MF" />
+
+    <if>
+      <equals arg1="${org.bedework.global.ear.wars.zipped}"
+              arg2="yes" />
+      <then>
+        <copy toDir="${org.bedework.ear.dir}">
+          <fileset dir="${dist.home}"
+                   includes="*.war" />
+        </copy>
+      </then>
+      <else>
+        <copy toDir="${org.bedework.ear.dir}">
+          <fileset dir="${org.bedework.temp.wars.home}"/>
+        </copy>
+      </else>
+    </if>
+
+    <if>
+      <equals arg1="${org.bedework.global.ear.zipped}"
+              arg2="yes" />
+      <then>
+         <zip destfile="${org.bedework.ear.file}"
+             basedir="${org.bedework.ear.dir}"/>
+      </then>
+    </if>
+
+    <!-- copy the ear - at the moment copy the uncompressed. -->
+
+    <if>
+      <isset property="org.bedework.appserver.deploy.dir" />
+      <then>
+        <delete dir="${org.bedework.appserver.deploy.dir}/${app.ear.file.name}" />
+        <mkdir dir="${org.bedework.appserver.deploy.dir}/${app.ear.file.name}" />
+        <copy todir="${org.bedework.appserver.deploy.dir}/${app.ear.file.name}">
+          <fileset dir="${org.bedework.ear.dir}"/>
+        </copy>
+      </then>
+    </if>
+  </target>
+  
+  <!-- ================================================================
+       Private target to copy libraries
+       ================================================================ -->
+
+  <target name="copyLibs">
+    <if>
+      <isset property="org.bedework.build.caldav.google" />
+      <then>
+        <copy todir="${app.dest.lib}">
+          <fileset dir="${google.dir}">
+            <include name="*.jar"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
+
+    <!-- ===============================================================
+         Any jar files required
+         =============================================================== -->
+
+    <!-- any extra files-->
+    <copy todir="${app.dest.lib}" >
+      <fileset dir="${org.bedework.temp.extrajars.dir}" />
+    </copy>
+
+  </target>
 </project>
