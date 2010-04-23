@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="libcache/bw-webdavserver-3.6.jar"/>
 	<classpathentry kind="lib" path="lib/rpiaccess-3.6.jar"/>
 	<classpathentry kind="lib" path="lib/rpiutil-3.6.jar"/>
+	<classpathentry kind="lib" path="libcache/ical4j-vcard-0.9.3-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav/carddav"/>
 </classpath>

@@ -1,12 +1,37 @@
+/* **********************************************************************
+    Copyright 2010 Rensselaer Polytechnic Institute. All worldwide rights reserved.
+
+    Redistribution and use of this distribution in source and binary forms,
+    with or without modification, are permitted provided that:
+       The above copyright notice and this permission notice appear in all
+        copies and supporting documentation;
+
+        The name, identifiers, and trademarks of Rensselaer Polytechnic
+        Institute are not used in advertising or publicity without the
+        express prior written permission of Rensselaer Polytechnic Institute;
+
+    DISCLAIMER: The software is distributed" AS IS" without any express or
+    implied warranty, including but not limited to, any implied warranties
+    of merchantability or fitness for a particular purpose or any warrant)'
+    of non-infringement of any current or pending patent rights. The authors
+    of the software make no representations about the suitability of this
+    software for any particular purpose. The entire risk as to the quality
+    and performance of the software is with the user. Should the software
+    prove defective, the user assumes the cost of all necessary servicing,
+    repair or correction. In particular, neither Rensselaer Polytechnic
+    Institute, nor the authors of the software are liable for any indirect,
+    special, consequential, or incidental damages related to the software,
+    to the maximum extent the law permits.
+*/
 package org.bedework.carddav.server.dirHandlers;
 
+import java.io.Serializable;
+
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.ModificationItem;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-
-import java.io.Serializable;
 
 /** This class represents a directory record which may be built from a
     number of attributes, retrieved as a search result or read from some input
@@ -69,7 +94,7 @@ public abstract class DirRecord implements Serializable {
    * @return  Attribute
    * @throws NamingException
    */
-  public Attribute findAttr(String attr) throws NamingException {
+  public Attribute findAttr(final String attr) throws NamingException {
     return getAttributes().get(attr);
   }
 
@@ -80,7 +105,7 @@ public abstract class DirRecord implements Serializable {
    * @param val
    * @throws NamingException
    */
-  public void setAttr(String attr, Object val) throws NamingException {
+  public void setAttr(final String attr, final Object val) throws NamingException {
     getAttributes().put(attr, val);
   }
 
@@ -97,7 +122,7 @@ public abstract class DirRecord implements Serializable {
    * @param val
    * @throws NamingException
    */
-  public void setName(String val) throws NamingException {
+  public void setName(final String val) throws NamingException {
     name = val;
   }
 
@@ -115,7 +140,7 @@ public abstract class DirRecord implements Serializable {
    * @param val
    * @throws NamingException
    */
-  public void setDn(String val) {
+  public void setDn(final String val) {
     dn = val;
   }
 
@@ -134,7 +159,7 @@ public abstract class DirRecord implements Serializable {
    * @return boolean
    * @throws Throwable
    */
-  public boolean equals(DirRecord that) throws Throwable {
+  public boolean equals(final DirRecord that) throws Throwable {
     if (!dnEquals(that)) {
       return false;
     }
@@ -172,8 +197,8 @@ public abstract class DirRecord implements Serializable {
    * @return boolean
    * @throws Throwable
    */
-  public boolean equals(DirRecord that, String[] thisAttrIDs,
-                        String[] thatAttrIDs) throws Throwable {
+  public boolean equals(final DirRecord that, final String[] thisAttrIDs,
+                        final String[] thatAttrIDs) throws Throwable {
     if ((thisAttrIDs == null) || (thatAttrIDs == null)) {
       throw new Exception("DirectoryRecord: null attrID list");
     }
@@ -237,7 +262,7 @@ public abstract class DirRecord implements Serializable {
    * @return boolean
    * @throws Throwable
    */
-  public boolean equals(DirRecord that, String[] attrIDs) throws Throwable {
+  public boolean equals(final DirRecord that, final String[] attrIDs) throws Throwable {
     return equals(that, attrIDs, attrIDs);
   }
 
@@ -249,9 +274,10 @@ public abstract class DirRecord implements Serializable {
    * @return boolean
    * @throws Throwable
    */
-  public boolean equalsAllBut(DirRecord that, String[] attrIDs) throws Throwable {
-    if (attrIDs == null)
+  public boolean equalsAllBut(final DirRecord that, final String[] attrIDs) throws Throwable {
+    if (attrIDs == null) {
       throw new Exception("DirectoryRecord: null attrID list");
+    }
 
     if (!dnEquals(that)) {
       return false;
@@ -259,13 +285,17 @@ public abstract class DirRecord implements Serializable {
 
     int n = attrIDs.length;
 
-    if (n == 0) return true;
+    if (n == 0) {
+      return true;
+    }
 
     Attributes thisAttrs = getAttributes();
     Attributes thatAttrs = that.getAttributes();
 
     if (thisAttrs == null) {
-      if (thatAttrs == null) return true;
+      if (thatAttrs == null) {
+        return true;
+      }
       return false;
     }
 
@@ -287,7 +317,7 @@ public abstract class DirRecord implements Serializable {
       return true;
     }
 
-    NamingEnumeration ne = thisAttrs.getAll();
+    NamingEnumeration<?> ne = thisAttrs.getAll();
 
     if (ne == null) {
       return false;
@@ -298,15 +328,17 @@ public abstract class DirRecord implements Serializable {
       String id = attr.getID();
       boolean present = false;
 
-      for (int i = 0; i < attrIDs.length; i++) {
-        if (id.equalsIgnoreCase(attrIDs[i])) {
+      for (String attrID : attrIDs) {
+        if (id.equalsIgnoreCase(attrID)) {
           present = true;
           break;
         }
       }
       if (present) {
         // We don't compare
-        if (thatAttrs.get(id) != null) thatLeft--;
+        if (thatAttrs.get(id) != null) {
+          thatLeft--;
+        }
       } else {
         Attribute thatAttr = thatAttrs.get(id);
         if (thatAttr == null) {
@@ -328,7 +360,7 @@ public abstract class DirRecord implements Serializable {
    * @return boolean
    * @throws Throwable
    */
-  public boolean attrEquals(Attribute thisA, Attribute that) throws Throwable {
+  public boolean attrEquals(final Attribute thisA, final Attribute that) throws Throwable {
     int sz = thisA.size();
 
     if (sz != that.size()) {
@@ -339,7 +371,7 @@ public abstract class DirRecord implements Serializable {
       return true;
     }
 
-    NamingEnumeration ne = thisA.getAll();
+    NamingEnumeration<?> ne = thisA.getAll();
 
     if (ne == null) {
       return false;
@@ -366,10 +398,10 @@ public abstract class DirRecord implements Serializable {
    *           2 for val present in multi-valued attr
    * @throws Throwable
    */
-  public int attrValCompare(Object val, Attribute that,
-                            boolean ignoreCase) throws Throwable {
+  public int attrValCompare(final Object val, final Attribute that,
+                            final boolean ignoreCase) throws Throwable {
     if (that.size() != 1) {
-      NamingEnumeration ne = that.getAll();
+      NamingEnumeration<?> ne = that.getAll();
 
       if (ne == null) {
         return -2;
@@ -416,8 +448,8 @@ public abstract class DirRecord implements Serializable {
    *           2 for val present in multi-valued attr
    * @throws Throwable
    */
-  public int attrValCompare(Object val, String attrName,
-                            boolean ignoreCase) throws Throwable {
+  public int attrValCompare(final Object val, final String attrName,
+                            final boolean ignoreCase) throws Throwable {
     Attribute a = findAttr(attrName);
 
     if (a == null) {
@@ -426,8 +458,10 @@ public abstract class DirRecord implements Serializable {
     return attrValCompare(val, a, ignoreCase);
   }
 
-  private int compareVal(Object o, String s, boolean ignoreCase) {
-    if (!(o instanceof String)) return -2;
+  private int compareVal(final Object o, final String s, final boolean ignoreCase) {
+    if (!(o instanceof String)) {
+      return -2;
+    }
 
     int c;
     if (ignoreCase) {
@@ -452,7 +486,7 @@ public abstract class DirRecord implements Serializable {
    * @return boolean
    * @throws Throwable
    */
-  public boolean dnEquals(DirRecord that) throws Throwable {
+  public boolean dnEquals(final DirRecord that) throws Throwable {
     if (that == null) {
       throw new Exception("Null record for dnEquals");
     }
@@ -477,7 +511,7 @@ public abstract class DirRecord implements Serializable {
    * @param   val    Object value
    * @throws NamingException
    */
-  public void addAttr(String attr, Object val) throws NamingException {
+  public void addAttr(final String attr, final Object val) throws NamingException {
 //  System.out.println("addAttr " + attr);
 
     Attribute a = findAttr(attr);
@@ -496,7 +530,7 @@ public abstract class DirRecord implements Serializable {
    * @return  Object attribute value
    * @throws Throwable
    */
-  public Object getAttrVal(String attr) throws Throwable {
+  public Object getAttrVal(final String attr) throws Throwable {
     if (attr.equalsIgnoreCase("dn")) {
       return getDn();
     }
@@ -517,7 +551,7 @@ public abstract class DirRecord implements Serializable {
    * @return  boolean true if we found it
    * @throws Throwable
    */
-  public boolean contains(Attribute attr) throws Throwable {
+  public boolean contains(final Attribute attr) throws Throwable {
     if (attr == null) {
       return false; // protect
     }
@@ -528,7 +562,7 @@ public abstract class DirRecord implements Serializable {
       return false;
     }
 
-    NamingEnumeration ne = attr.getAll();
+    NamingEnumeration<?> ne = attr.getAll();
 
     while (ne.hasMore()) {
       if (!recAttr.contains(ne.next())) {
@@ -557,7 +591,7 @@ public abstract class DirRecord implements Serializable {
    * @return NamingEnumeration
    * @throws NamingException
    */
-  public NamingEnumeration attrElements(String attr) throws NamingException {
+  public NamingEnumeration<?> attrElements(final String attr) throws NamingException {
     Attribute a = findAttr(attr);
 
     if (a == null) {
@@ -573,7 +607,7 @@ public abstract class DirRecord implements Serializable {
    * @return  String attribute value
    * @throws Throwable
    */
-  public String getAttrStr(String attr) throws Throwable {
+  public String getAttrStr(final String attr) throws Throwable {
     Object o = getAttrVal(attr);
 
     if (o == null) {
@@ -612,14 +646,14 @@ public abstract class DirRecord implements Serializable {
   /**
    * @param val
    */
-  public void setIsContent(boolean val) {
+  public void setIsContent(final boolean val) {
     isContentRec = val;
   }
 
   /**
    * @param val
    */
-  public void setChangeType(int val) {
+  public void setChangeType(final int val) {
     changeType = val;
   }
 }
