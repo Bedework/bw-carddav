@@ -53,7 +53,6 @@ public class PropertyBuilder {
   private static final ParameterFactoryRegistry parameterFactoryRegistry =
     new ParameterFactoryRegistry();
 
-  @SuppressWarnings("unused")
   private PropertyBuilder() {
   }
 
@@ -72,7 +71,7 @@ public class PropertyBuilder {
     }
 
     try {
-      return factory.createProperty(null, value);
+      return factory.createProperty(new ArrayList<Parameter>(), value);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -96,7 +95,7 @@ public class PropertyBuilder {
     }
 
     try {
-      return factory.createProperty(group, null, value);
+      return factory.createProperty(group, new ArrayList<Parameter>(), value);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }

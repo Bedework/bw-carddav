@@ -751,6 +751,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       simpleProp(card, "FN", attrs, "cn");
+      simpleProp(card, "N", attrs, "sn");
       //N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
       simpleProp(card, "NICKNAME", attrs, "displayName");
 
@@ -1133,7 +1134,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     sb.append(dnEscape(elements[i]));
     i--;
 
-    while (i >= 0) {
+    while (i > 0) {
       sb.append(",");
       sb.append(ldapConfig.getFolderIdAttr());
       sb.append("=");

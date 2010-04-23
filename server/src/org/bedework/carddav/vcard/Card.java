@@ -26,6 +26,7 @@
 
 package org.bedework.carddav.vcard;
 
+import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.VCard;
 import net.fortuna.ical4j.vcard.VCardBuilder;
@@ -33,6 +34,7 @@ import net.fortuna.ical4j.vcard.VCardOutputter;
 import net.fortuna.ical4j.vcard.Property.Id;
 import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
+import net.fortuna.ical4j.vcard.property.Version;
 
 import org.bedework.carddav.server.CarddavCollection;
 
@@ -41,6 +43,7 @@ import edu.rpi.cmt.access.AccessPrincipal;
 
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -73,16 +76,17 @@ public class Card {
    *
    */
   public Card() {
-    this(new VCard());
+    vcard = new VCard();
+    vcard.getProperties().add(Version.VERSION_4_0);
   }
 
-  /** Create card with supplied vcard
+  /* * Create card with supplied vcard
    *
    * @param vcard
-   */
+   * /
   public Card(final VCard vcard) {
     this.vcard = vcard;
-  }
+  }*/
 
   /**
    * @param val
@@ -134,7 +138,7 @@ public class Card {
    */
   public void setLastmod(final String val) throws WebdavException {
     try {
-      replaceProperty(new Revision(null, val));
+      replaceProperty(new Revision(new ArrayList<Parameter>(), val));
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -312,7 +316,7 @@ public class Card {
 
     indent += "";
 
-    PropertyOutput version = new PropertyOutput("VERSION", "4.0");
+    PropertyOutput version = new PropertyOutput(vcard.getProperty(Property.Id.VERSION));
 
     version.outputJson(indent, sb);
 

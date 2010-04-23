@@ -8,8 +8,11 @@
 	<classpathentry kind="lib" path="libcache/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="libcache/servletapi-2.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/bedework"/>
-	<classpathentry kind="lib" path="libcache/ical4j-vcard-0.9.2.jar"/>
 	<classpathentry kind="lib" path="libcache/ical4j-1.0-rc2.jar"/>
 	<classpathentry kind="lib" path="libcache/commons-codec-1.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ical4j-vcard-0.9.3-SNAPSHOT-"/>
+	<classpathentry kind="lib" path="libcache/bw-webdavserver-3.6.jar"/>
+	<classpathentry kind="lib" path="lib/rpiaccess-3.6.jar"/>
+	<classpathentry kind="lib" path="lib/rpiutil-3.6.jar"/>
 	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav/carddav"/>
 </classpath>
