@@ -26,12 +26,10 @@
 
 package org.bedework.carddav.server;
 
-import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
@@ -230,16 +228,18 @@ public boolean generatePropertyValue(final QName tag,
     return res;
   }
 
+  /* UNUSED
   @Override
   public Collection<WebdavProperty> getProperties(final String ns) throws WebdavException {
     init(true);
     ArrayList<WebdavProperty> al = new ArrayList<WebdavProperty>();
 
-    /* Default property calendar-data returns all of the object */
+    /* Default property calendar-data returns all of the object * /
     al.add(new AddressData(CarddavTags.addressData, debug));
 
     return al;
   }
+  */
 
   @Override
   public String getContentString() throws WebdavException {

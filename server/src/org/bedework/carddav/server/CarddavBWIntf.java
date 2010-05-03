@@ -553,10 +553,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getContent(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
-  public Reader getContent(final WebdavNsNode node) throws WebdavException {
+  public Reader getContent(final HttpServletRequest req,
+                           final HttpServletResponse resp,
+                           final WebdavNsNode node) throws WebdavException {
     try {
       if (!node.getAllowsGet()) {
         return null;
@@ -602,10 +604,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String, java.io.Reader, boolean, java.lang.String)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, boolean, java.lang.String)
    */
   @Override
-  public PutContentResult putContent(final WebdavNsNode node,
+  public PutContentResult putContent(final HttpServletRequest req,
+                                     final WebdavNsNode node,
                                      final String[] contentTypePars,
                                      final Reader contentRdr,
                                      final boolean create,
@@ -647,10 +650,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putBinaryContent(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String, java.io.InputStream, boolean, java.lang.String)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putBinaryContent(javax.servlet.http.HttpServletRequest, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.InputStream, boolean, java.lang.String)
    */
   @Override
-  public PutContentResult putBinaryContent(final WebdavNsNode node,
+  public PutContentResult putBinaryContent(final HttpServletRequest req,
+                                           final WebdavNsNode node,
                                            final String[] contentTypePars,
                                            final InputStream contentStream,
                                            boolean create,
