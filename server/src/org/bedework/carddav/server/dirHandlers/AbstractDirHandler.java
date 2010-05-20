@@ -294,7 +294,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     }
 
     int prefixLen = dhConfig.getPathPrefix().length();
-    if ((path.length() > prefixLen + 1) && (path.charAt(prefixLen + 1) != '/')) {
+    if ((path.length() > prefixLen + 1) && (path.charAt(prefixLen) != '/')) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
     }
   }

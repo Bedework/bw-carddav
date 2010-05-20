@@ -158,23 +158,28 @@ public class CarddavBWIntf extends WebdavNsIntf {
       namespacePrefix = WebdavUtils.getUrlPrefix(req);
       namespace = namespacePrefix + "/schema";
 
+      /* Note that the options factory returns a static object and we should
+       * initialise the config once only
+       */
       OptionsI opts = CardOptionsFactory.getOptions(debug);
       config = (CardDAVConfig)opts.getAppProperty(appName);
       if (config == null) {
         config = new CardDAVConfig();
       }
 
-      String dirHandlersElementName = "org.bedework.global.dirhandlers";
-      Collection<String> dirHandlerNames = opts.getNames(dirHandlersElementName);
+      if (!config.dirHandlersConfigured()) {
+        String dirHandlersElementName = "org.bedework.global.dirhandlers";
+        Collection<String> dirHandlerNames = opts.getNames(dirHandlersElementName);
 
-      for (String dhn: dirHandlerNames) {
-        Object o = opts.getProperty(dirHandlersElementName + "." + dhn);
+        for (String dhn: dirHandlerNames) {
+          Object o = opts.getProperty(dirHandlersElementName + "." + dhn);
 
-        if (debug) {
-          debugMsg("dhn=" + dhn);
+          if (debug) {
+            debugMsg("dhn=" + dhn);
+          }
+
+          config.addDirhandler((DirHandlerConfig)o);
         }
-
-        config.addDirhandler((DirHandlerConfig)o);
       }
 
       sysi = getSysIntf();

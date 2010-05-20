@@ -36,6 +36,8 @@ public class DirHandlerConfig {
 
   private String className;
 
+  private String cardKind;
+
   private boolean debug;
 
   /** Set the pathPrefix which defines the paths for which we call this handler.
@@ -53,7 +55,7 @@ public class DirHandlerConfig {
    *
    * @param val    String path
    */
-  public void setPathPrefix(String val) {
+  public void setPathPrefix(final String val) {
     pathPrefix = val;
   }
 
@@ -70,7 +72,7 @@ public class DirHandlerConfig {
    *
    * @param val
    */
-  public void setAddressBook(boolean val)  {
+  public void setAddressBook(final boolean val)  {
     addressBook = val;
   }
 
@@ -86,7 +88,7 @@ public class DirHandlerConfig {
   *
   * @param val    String
   */
- public void setClassName(String val) {
+ public void setClassName(final String val) {
    className = val;
  }
 
@@ -98,10 +100,26 @@ public class DirHandlerConfig {
    return className;
  }
 
+ /** If set defines the default kind in this directory
+  *
+  * @param val
+  */
+ public void setCardKind(final String val)  {
+   cardKind = val;
+ }
+
+ /** If set defines the default kind in this directory
+  *
+  * @return String val
+  */
+ public String getCardKind()  {
+   return cardKind;
+ }
+
  /**
   * @param val
   */
- public void setDebug(boolean val)  {
+ public void setDebug(final boolean val)  {
    debug = val;
  }
 

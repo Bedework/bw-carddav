@@ -11,8 +11,8 @@ objectIdentifier VcardLDAPattributeType VcardLDAP:0
 objectIdentifier VcardLDAPobjectClass VcardLDAP:1
 
 attributetype ( VcardLDAPattributeType:1
-          NAME 'CalResourceType'
-          DESC 'Calendar Resource Type'
+          NAME 'CalResourceKind'
+          DESC 'Calendar Resource Kind'
           EQUALITY caseIgnoreMatch
           SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
           SINGLE-VALUE )
@@ -140,46 +140,42 @@ attributetype ( VcardLDAPattributeType:21
 #
 #  Objectclass definitions
 #
-
-objectclass ( VcardLDAPobjectClass:2
-          NAME 'CalendarResource'
-          DESC 'Calendar Resource Object Class'
-          SUP top
-          AUXILIARY
-          MUST (calresourcetype $ uid)
-          MAY (cn $ nickname $ description $ ou $ categories $ member $
-               uniquemember $ accessabilityurl $ capacity $ owner $
-               resourcemanager $ calcapuri $ calfburl $ calcaladruri $
-               timezoneid $ multiplebookings $ maxinstances $
-               bookingwindowstart $ bookingwindowend $ resourcenotes) )
                
 objectclass ( VcardLDAPobjectClass:3
           NAME 'AdmittanceInfo'
           DESC 'Calendar Resource Admittance Info Class'
-          SUP CalendarResource
           AUXILIARY
-          MUST (admittanceurl)
-          MAY (restricted) )              
+          MAY (admittanceurl $ restricted) )              
 
 objectclass ( VcardLDAPobjectClass:4
           NAME 'InventoryInfo'
           DESC 'Calendar Resource Inventory Info Class'
-          SUP CalendarResource
           AUXILIARY
           MAY (inventorylist $ inventoryurl) )
 
 objectclass ( VcardLDAPobjectClass:5
           NAME 'SchedApprovalInfo'
           DESC 'Calendar Sched Approval Class'
-          SUP CalendarResource
           AUXILIARY
           MAY(autoaccept $ approvalinfourl $ schedadmin) )
 
 objectclass ( VcardLDAPobjectClass:6
           NAME 'CalendarResourceCost'
           DESC 'Calendar Resource Cost Object Class'
-          SUP CalendarResource
           AUXILIARY
           MAY (free $ costurl) )
+
+objectclass ( VcardLDAPobjectClass:2
+          NAME 'CalendarResource'
+          DESC 'Calendar Resource Object Class'
+          SUP (calEntry $ AdmittanceInfo $ InventoryInfo $
+              SchedApprovalInfo $ CalendarResourceCost)
+          AUXILIARY
+          MUST (calresourcekind $ uid)
+          MAY (cn $ nickname $ description $ ou $ categories $ member $
+               uniquemember $ accessabilityurl $ capacity $ owner $
+               resourcemanager $ 
+               timezoneid $ multiplebookings $ maxinstances $
+               bookingwindowstart $ bookingwindowend $ resourcenotes) )
 
           

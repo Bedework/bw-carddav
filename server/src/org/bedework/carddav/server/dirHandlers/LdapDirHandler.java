@@ -26,10 +26,12 @@
 package org.bedework.carddav.server.dirHandlers;
 
 import net.fortuna.ical4j.vcard.Property;
+import net.fortuna.ical4j.vcard.property.Kind;
 
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
+import org.bedework.carddav.server.dirHandlers.LdapMapping.AttrPropertyMapping;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
@@ -47,8 +49,6 @@ import edu.rpi.sss.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -74,154 +74,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected DirContext ctx;
 
   private NamingEnumeration<SearchResult> sresult;
-
-  /* The data for this should probably come from the dirhandler config */
-
-  /* These mappers provide the mapping for simple one atttribute per property
-   * More complex mappings have to be dealt with in another manner.
-   */
-
-  protected static class VcardProperty {
-    String group;
-    String name;
-    String type;
-
-    VcardProperty(final String name) {
-      this(null, name, null);
-    }
-
-    VcardProperty(final String group, final String name, final String type) {
-      this.group = group;
-      this.name = name;
-      this.type = type;
-    }
-
-    @Override
-    public int hashCode() {
-      int hc = 0;
-
-      if (group != null) {
-        hc = group.hashCode();
-      }
-
-      if (type != null) {
-        hc*= type.hashCode();
-      }
-
-      return hc * name.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-      if (!(o instanceof VcardProperty)) {
-        return false;
-      }
-
-      VcardProperty that = (VcardProperty)o;
-
-      return (Util.compareStrings(group, that.group) == 0) &&
-             (Util.compareStrings(type, that.type) == 0) &&
-             (Util.compareStrings(name, that.name) == 0);
-    }
-  }
-
-  protected static final Map<VcardProperty, String> toLdapAttr =
-    new HashMap<VcardProperty, String>();
-
-  protected static final Map<String, Collection<String>> toLdapAttrNoGroup =
-    new HashMap<String, Collection<String>>();
-
-  protected static final Map<String, VcardProperty> toVcardProperty =
-    new HashMap<String, VcardProperty>();
-
-  static {
-    //      SOURCE                         ldap url
-    //      NAME                           some sort of name
-    //      KIND                           "individual" for a single person,
-    //                                     "group" for a group of people,
-    //                                     "org" for an organization,
-    //                                     "location" */
-    addPropertyAttrMapping("FN", "givenName");
-    addPropertyAttrMapping("N", "sn");
-    //        N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
-    addPropertyAttrMapping("NICKNAME", "displayName");
-    //      PHOTO
-    //      BDAY
-    //      DDAY
-    //      BIRTH
-    //      DEATH
-    //      GENDER
-    //      ADR                            po box; apartment or suite; street;
-    //                                     locality (e.g., city);
-    //                                     region (e.g., state or province);
-    //                                     postal code; country
-    //      LABEL
-    addPropertyAttrMapping("HOME", "TEL", "voice", "homePhone");
-    //HOME  TEL         TYPE=msg
-    //HOME  TEL         TYPE=fax
-    addPropertyAttrMapping("HOME", "TEL", "cell", "mobile");
-    //HOME  TEL         TYPE=video
-    //HOME  TEL         TYPE=pager
-    addPropertyAttrMapping("WORK", "TEL", "voice", "telephoneNumber");
-    //WORK  TEL         TYPE=msg
-    addPropertyAttrMapping("WORK", "TEL", "fax", "facsimileTelephoneNumber");
-    //WORK  TEL         TYPE=cell
-    //WORK  TEL         TYPE=video
-    addPropertyAttrMapping("WORK", "TEL", "pager", "pager");
-    addPropertyAttrMapping("EMAIL", "mail");
-    addPropertyAttrMapping("IMPP", "IM");
-    //      LANG
-    //      TZ
-    //      GEO
-    addPropertyAttrMapping("TITLE", "title");
-    //      ROLE
-    //      LOGO
-    //      ORG                            organization name;
-    //                                     one or more levels of org unit names
-    //      MEMBER                         urls of group members
-    //      RELATED
-    //      CATEGORIES
-    addPropertyAttrMapping("NOTE", "description");
-    //      PRODID
-    //      REV
-    //      SORT-STRING
-    //      SOUND
-    //      UID                            Use the source for the moment.
-    //      URL
-    //      VERSION                        Value="4.0"
-    //      CLASS
-    //      KEY
-    //      FBURL
-    //      CALADRURI
-    //      CALURI
-  }
-
-  private static void addPropertyAttrMapping(final String pname, final String aname) {
-    addPropertyAttrMapping(null, pname, null, aname);
-  }
-
-  //private static void addPropertyAttrMapping(String group,
-  //                                           String pname,
-  //                                           String aname) {
-  //  addPropertyAttrMapping(group, pname, null, aname);
-  //}
-
-  private static void addPropertyAttrMapping(final String group,
-                                             final String pname,
-                                             final String type,
-                                             final String aname) {
-    VcardProperty vcp = new VcardProperty(group, pname, type);
-    toLdapAttr.put(vcp, aname);
-
-    Collection<String> anames = toLdapAttrNoGroup.get(pname);
-    if (anames == null) {
-      anames = new ArrayList<String>();
-      toLdapAttrNoGroup.put(pname, anames);
-    }
-    anames.add(aname);
-
-    toVcardProperty.put(aname, vcp);
-  }
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
@@ -740,16 +592,50 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       /* The kind for the card either comes from a custom attribute in the
        * directory or from an explicitly defined kind in the configuration.
-       *
-       * We probably need some sort of objectClass to kind mapper.
        */
 
-      if (ldapConfig.getCardKind() != null) {
-        simpleProp(card, "KIND", ldapConfig.getCardKind());
-      } else {
-        //simpleProp(card, "KIND", attrs, "cardkind");
+      String attrId = LdapMapping.getKindAttrId();
+      Attribute attr = null;
+
+      if (attrId != null) {
+        attr = attrs.get(attrId);
       }
 
+      if ((attr != null) && (attr.get() != null)) {
+        simpleProp(card, "KIND", (String)attr.get());
+      } else if (ldapConfig.getCardKind() != null) {
+        simpleProp(card, "KIND", ldapConfig.getCardKind());
+      }
+
+      Kind kind = (Kind)card.findProperty(Property.Id.KIND);
+
+      if (kind == null) {
+        // Default is individual
+        kind = Kind.INDIVIDUAL;
+      }
+
+      for (LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
+        if (!(lm instanceof AttrPropertyMapping)) {
+          continue;
+        }
+
+        AttrPropertyMapping apm = (AttrPropertyMapping)lm;
+
+        if (!apm.getKinds().isEmpty() && !apm.getKinds().contains(kind)) {
+          continue;
+        }
+
+        if ((apm.getGroup() == null) &&
+            (apm.getParameterValue() == null)) {
+          simpleProp(card, apm.getPropertyName(), attrs, apm.getAttrId());
+        } else {
+          paramProp(card, apm.getGroup(), apm.getPropertyName(),
+                    apm.getParameterName(), apm.getParameterValue(),
+                    attrs, apm.getAttrId());
+        }
+      }
+
+      /*
       simpleProp(card, "FN", attrs, "cn");
       simpleProp(card, "N", attrs, "sn");
       //N                              sn; Given Names; Honorific Prefixes; Honorific Suffixes
@@ -784,6 +670,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       //                               one or more levels of org unit names
 
       simpleProp(card, "NOTE", attrs, "description");
+      */
 
       /* If the groupMemberAttr is defined in the config try to fetch it.
        * If we succeed add the values to the member property converted into
@@ -880,7 +767,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     if ((cpos < 0) && (Util.isEmpty(filter.getParamFilters()))) {
       // No group - no params - single attribute
-      String attrId = toLdapAttr.get(new VcardProperty(name));
+      String attrId = LdapMapping.propertyToLdapAttr.get(new AttrPropertyMapping(name, null));
 
       if (attrId == null) {
         return null;
@@ -898,7 +785,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       name = name.substring(cpos + 1);
     }
 
-    Collection<String> anames = toLdapAttrNoGroup.get(name);
+    Collection<String> anames = LdapMapping.toLdapAttrNoGroup.get(name);
     if (Util.isEmpty(anames)) {
       return null;
     }

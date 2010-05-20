@@ -31,6 +31,8 @@ import net.fortuna.ical4j.vcard.Property;
 
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
+import org.bedework.carddav.server.dirHandlers.LdapMapping.AttrPropertyMapping;
+import org.bedework.carddav.server.dirHandlers.LdapMapping.AttrValue;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
@@ -57,163 +59,6 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
 
   SearchControls constraints;
   NamingEnumeration<SearchResult> sresult;
-
-  /* The following needs to be part of the config - which needs changes */
-
-  /**
-   */
-  public static class AttrMappingInfo {
-    private String attrId;
-
-
-    /** Simple not-required attr<->property
-     *
-     * @param attrId
-     */
-    public AttrMappingInfo(final String attrId) {
-      this.attrId = attrId;
-    }
-
-    /**
-     * @return name of attribute
-     */
-    public String getAttrId() {
-      return attrId;
-    }
-  }
-
-  /**
-   */
-  public static class AttrValue extends AttrMappingInfo {
-    private String value;
-
-
-    /** Simple not-required attr<->property
-     *
-     * @param attrId
-     * @param value
-     */
-    public AttrValue(final String attrId,
-                     final String value) {
-      super(attrId);
-      this.value = value;
-    }
-
-    /**
-     * @return name of attribute
-     */
-    public String getValue() {
-      return value;
-    }
-  }
-
-  /**
-   */
-  public static class AttrPropertyMapping extends AttrMappingInfo {
-    private String propertyName;
-    private String parameterName;
-    private String parameterValue;
-    private boolean required;
-
-    /** Simple not-required attr<->property
-     *
-     * @param attrId
-     * @param propertyName
-     */
-    public AttrPropertyMapping(final String attrId,
-                               final String propertyName) {
-      this(attrId, propertyName, null, null, false);
-    }
-
-    /** Not-required attr<->property+parameter
-     *
-     * @param attrId
-     * @param propertyName
-     * @param parameterName
-     * @param parameterValue
-     */
-    public AttrPropertyMapping(final String attrId,
-                               final String propertyName,
-                               final String parameterName,
-                               final String parameterValue) {
-      this(attrId, propertyName, parameterName, parameterValue, false);
-    }
-
-    /** Possibly required attr<->property
-     *
-     * @param attrId
-     * @param propertyName
-     * @param required
-     */
-    public AttrPropertyMapping(final String attrId,
-                               final String propertyName,
-                               final boolean required) {
-      this(attrId, propertyName, null, null, required);
-    }
-
-    /** Possibly required attr<->property+parameter
-     *
-     * @param attrId
-     * @param propertyName
-     * @param parameterName
-     * @param parameterValue
-     * @param required
-     */
-    public AttrPropertyMapping(final String attrId,
-                               final String propertyName,
-                               final String parameterName,
-                               final String parameterValue,
-                               final boolean required) {
-      super(attrId);
-      this.propertyName = propertyName;
-      this.parameterName = parameterName;
-      this.parameterValue = parameterValue;
-      this.required = required;
-    }
-
-    /**
-     * @return name of property
-     */
-    public String getPropertyName() {
-      return propertyName;
-    }
-
-    /**
-     * @return name of parameter
-     */
-    public String getParameterName() {
-      return parameterName;
-    }
-
-    /**
-     * @return name of parameter value
-     */
-    public String getParameterValue() {
-      return parameterValue;
-    }
-
-    /**
-     * @return true if attribute/property is required
-     */
-    public boolean getRequired() {
-      return required;
-    }
-  }
-
-  private static AttrMappingInfo[] attrInfo = {
-    new AttrValue("objectclass", "top"),
-    new AttrValue("objectclass", "person"),
-    new AttrValue("objectclass", "organizationalPerson"),
-    new AttrValue("objectclass", "inetOrgPerson"),
-
-    new AttrPropertyMapping("givenName", "FN", true),
-    new AttrPropertyMapping("sn", "N", true),
-
-    new AttrPropertyMapping("displayName", "NICKNAME"),
-    new AttrPropertyMapping("mail", "EMAIL"),
-    new AttrPropertyMapping("description", "NOTE"),
-
-  };
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
@@ -260,16 +105,16 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
 
     dirRec.setDn("cn=" + dnEscape(cn) + ", " + colDn);
 
-    for (AttrMappingInfo ami: attrInfo) {
-      if (ami instanceof AttrValue) {
-        AttrValue av = (AttrValue)ami;
+    for (LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
+      if (lm instanceof AttrValue) {
+        AttrValue av = (AttrValue)lm;
 
         setAttr(dirRec, av.getAttrId(), av.getValue());
         continue;
       }
 
-      if (ami instanceof AttrPropertyMapping) {
-        AttrPropertyMapping apm = (AttrPropertyMapping)ami;
+      if (lm instanceof AttrPropertyMapping) {
+        AttrPropertyMapping apm = (AttrPropertyMapping)lm;
 
         if (apm.getParameterName() == null) {
           if (!setAttr(dirRec, card, apm.getAttrId(), apm.getPropertyName())) {

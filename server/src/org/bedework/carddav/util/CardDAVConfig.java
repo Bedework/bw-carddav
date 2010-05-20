@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.util;
 
+import edu.rpi.sss.util.Util;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -64,7 +66,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setSysintfImpl(String val) {
+  public void setSysintfImpl(final String val) {
     sysintfImpl = val;
   }
 
@@ -80,7 +82,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setWebaddrServiceURI(String val) {
+  public void setWebaddrServiceURI(final String val) {
     webaddrServiceURI = val;
   }
 
@@ -96,7 +98,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setWebaddrPublicAddrbook(String val) {
+  public void setWebaddrPublicAddrbook(final String val) {
     webaddrPublicAddrbook = val;
   }
 
@@ -111,7 +113,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
   /**
    * @param val
    */
-  public void setDirectoryBrowsingDisallowed(boolean val) {
+  public void setDirectoryBrowsingDisallowed(final boolean val) {
     directoryBrowsingDisallowed = val;
   }
 
@@ -126,7 +128,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setDefaultAddressbook(String val) {
+  public void setDefaultAddressbook(final String val) {
     defaultAddressbook = val;
   }
 
@@ -142,7 +144,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setAddressBookHandlerPrefix(String val) {
+  public void setAddressBookHandlerPrefix(final String val) {
     addressBookHandlerPrefix = val;
   }
 
@@ -158,7 +160,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setPrincipalRoot(String val) {
+  public void setPrincipalRoot(final String val) {
     principalRoot = val;
   }
 
@@ -174,7 +176,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setUserPrincipalRoot(String val) {
+  public void setUserPrincipalRoot(final String val) {
     userPrincipalRoot = val;
   }
 
@@ -190,7 +192,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setGroupPrincipalRoot(String val) {
+  public void setGroupPrincipalRoot(final String val) {
     groupPrincipalRoot = val;
   }
 
@@ -206,7 +208,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setResourcePrincipalRoot(String val) {
+  public void setResourcePrincipalRoot(final String val) {
     resourcePrincipalRoot = val;
   }
 
@@ -222,7 +224,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setVenuePrincipalRoot(String val) {
+  public void setVenuePrincipalRoot(final String val) {
     venuePrincipalRoot = val;
   }
 
@@ -238,7 +240,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setTicketPrincipalRoot(String val) {
+  public void setTicketPrincipalRoot(final String val) {
     ticketPrincipalRoot = val;
   }
 
@@ -254,7 +256,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    *
    * @param val    String
    */
-  public void setHostPrincipalRoot(String val) {
+  public void setHostPrincipalRoot(final String val) {
     hostPrincipalRoot = val;
   }
 
@@ -267,9 +269,16 @@ public class CardDAVConfig /*extends ConfigCommon */{
   }
 
   /**
+   * @return true if we already added the dir handler configs.
+   */
+  public boolean dirHandlersConfigured() {
+    return !Util.isEmpty(handlerConfigs);
+  }
+
+  /**
    * @param dhc
    */
-  public void addDirhandler(DirHandlerConfig dhc) {
+  public void addDirhandler(final DirHandlerConfig dhc) {
     if (handlerConfigs == null) {
       handlerConfigs = new ArrayList<DirHandlerConfig>();
     }
@@ -284,7 +293,7 @@ public class CardDAVConfig /*extends ConfigCommon */{
    * @param path
    * @return DirHandlerConfig or null
    */
-  public DirHandlerConfig findDirhandler(String path) {
+  public DirHandlerConfig findDirhandler(final String path) {
     DirHandlerConfig conf = null;
     int matchLen = 0;
 

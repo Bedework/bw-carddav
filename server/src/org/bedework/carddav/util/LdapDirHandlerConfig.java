@@ -71,8 +71,6 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
 
   private String[] attrIdList = defaultAttrIdList;
 
-  private String cardKind;
-
   private String folderObjectClass;
 
   private String addressbookObjectClass;
@@ -97,7 +95,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setModuleType(String val)  {
+  public void setModuleType(final String val)  {
     moduleType  = val;
   }
 
@@ -111,7 +109,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   /**
    * @param val
    */
-  public void setInitialContextFactory(String val)  {
+  public void setInitialContextFactory(final String val)  {
     initialContextFactory  = val;
   }
 
@@ -125,7 +123,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   /**
    * @param val
    */
-  public void setSecurityAuthentication(String val)  {
+  public void setSecurityAuthentication(final String val)  {
     securityAuthentication  = val;
   }
 
@@ -140,7 +138,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   *
   * @param val
   */
-  public void setSecurityProtocol(String val)  {
+  public void setSecurityProtocol(final String val)  {
     securityProtocol = val;
   }
 
@@ -156,7 +154,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setProviderUrl(String val)  {
+  public void setProviderUrl(final String val)  {
     providerUrl = val;
   }
 
@@ -172,7 +170,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setBaseDn(String val)  {
+  public void setBaseDn(final String val)  {
     baseDn = val;
   }
 
@@ -188,7 +186,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setQueryLimit(int val)  {
+  public void setQueryLimit(final int val)  {
     queryLimit = val;
   }
 
@@ -204,15 +202,15 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAttrIds(String val)  {
+  public void setAttrIds(final String val)  {
     attrIds = val;
 
     String[] alist = attrIds.split("[,\\s]");
 
     ArrayList<String> al = new ArrayList<String>(Arrays.asList(defaultAttrIdList));
 
-    for (int i = 0; i < alist.length; i++) {
-      String a = alist[i].trim();
+    for (String element : alist) {
+      String a = element.trim();
 
       if (a.length() > 0) {
         al.add(a);
@@ -238,27 +236,11 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
     return attrIdList;
   }
 
-  /** The 'kind' property value
-   *
-   * @param val
-   */
-  public void setCardKind(String val)  {
-    cardKind = val;
-  }
-
-  /** An object class which identifies an entry as a user
-   *
-   * @return String val
-   */
-  public String getCardKind()  {
-    return cardKind;
-  }
-
   /**
    *
    * @param val
    */
-  public void setFolderObjectClass(String val)  {
+  public void setFolderObjectClass(final String val)  {
     folderObjectClass = val;
   }
 
@@ -274,7 +256,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAddressbookObjectClass(String val)  {
+  public void setAddressbookObjectClass(final String val)  {
     addressbookObjectClass = val;
   }
 
@@ -290,7 +272,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAddressbookEntryObjectClass(String val)  {
+  public void setAddressbookEntryObjectClass(final String val)  {
     addressbookEntryObjectClass = val;
   }
 
@@ -306,7 +288,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setPrincipalIdAttr(String val)  {
+  public void setPrincipalIdAttr(final String val)  {
     principalIdAttr = val;
   }
 
@@ -322,7 +304,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setFolderIdAttr(String val)  {
+  public void setFolderIdAttr(final String val)  {
     folderIdAttr = val;
   }
 
@@ -338,7 +320,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAddressbookIdAttr(String val)  {
+  public void setAddressbookIdAttr(final String val)  {
     addressbookIdAttr = val;
   }
 
@@ -354,7 +336,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAddressbookEntryIdAttr(String val)  {
+  public void setAddressbookEntryIdAttr(final String val)  {
     addressbookEntryIdAttr = val;
   }
 
@@ -370,7 +352,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setGroupMemberAttr(String val)  {
+  public void setGroupMemberAttr(final String val)  {
     groupMemberAttr = val;
   }
 
@@ -386,7 +368,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAuthDn(String val)  {
+  public void setAuthDn(final String val)  {
     authDn = val;
   }
 
@@ -402,7 +384,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setAuthPw(String val)  {
+  public void setAuthPw(final String val)  {
     authPw = val;
   }
 
