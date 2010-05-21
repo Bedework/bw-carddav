@@ -48,7 +48,9 @@ import edu.rpi.cmt.access.Ace;
 import edu.rpi.sss.util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -74,6 +76,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected DirContext ctx;
 
   private NamingEnumeration<SearchResult> sresult;
+
+  private String[] attrIdList;
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
@@ -250,7 +254,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         constraints.setCountLimit(limit);
       }
 
-      constraints.setReturningAttributes(ldapConfig.getAttrIdList());
+      constraints.setReturningAttributes(getAttrIdList());
 
       try {
         sresult = ctx.search(base, filter, constraints);
@@ -929,7 +933,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         dn = makeAddrbookDn(path, isCollection);
       }
 
-      return ctx.getAttributes(dn, ldapConfig.getAttrIdList());
+      return ctx.getAttributes(dn, getAttrIdList());
     } catch (NameNotFoundException nnfe) {
       return null;
     } catch (WebdavException wde) {
@@ -1091,5 +1095,20 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         ctx.close();
       } catch (Throwable t) {}
     }
+  }
+
+  protected String[] getAttrIdList() {
+    if (attrIdList != null) {
+      return attrIdList;
+    }
+
+    List<String> a = new ArrayList<String>(LdapMapping.defaultAttrIdList);
+
+    if (ldapConfig.getAttrIdList() != null) {
+      a.addAll(Arrays.asList(ldapConfig.getAttrIdList()));
+    }
+    attrIdList = a.toArray(new String[0]);
+
+    return attrIdList;
   }
 }

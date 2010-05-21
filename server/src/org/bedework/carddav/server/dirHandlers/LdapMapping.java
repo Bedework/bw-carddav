@@ -290,6 +290,11 @@ public class LdapMapping {
   public static final Map<LdapMapping, String> propertyToLdapAttr =
     new HashMap<LdapMapping, String>();
 
+  /** We have to explicitly fetch attributes to get system attributes. This is
+   * the default list we obtain. The config can name extra attributes.
+   */
+  public static final List<String> defaultAttrIdList = new ArrayList<String>();
+
   /** If non null this is the mapping for the KIND property */
   private static AttrPropertyMapping kindProperty = null;
 
@@ -408,7 +413,18 @@ public class LdapMapping {
     //WORK  TEL         TYPE=msg
     //WORK  TEL         TYPE=cell
     //WORK  TEL         TYPE=video
+
+    /* Add extra default attributes */
+    addDefaultAttrId("createTimestamp");
+    addDefaultAttrId("modifyTimestamp");
+    addDefaultAttrId("o");
+    addDefaultAttrId("objectClass");
+    addDefaultAttrId("org");
+    addDefaultAttrId("ou");
+    addDefaultAttrId("uid");
+    addDefaultAttrId("uniqueMember");
   }
+
 
   private static void addAttrValue(final String aname,
                                    final String pname) {
@@ -453,6 +469,14 @@ public class LdapMapping {
 
     if (propertyName.equalsIgnoreCase(Property.Id.KIND.toString())) {
       kindProperty = apm;
+    }
+
+    addDefaultAttrId(aname);
+  }
+
+  private static void addDefaultAttrId(final String aname) {
+    if (!defaultAttrIdList.contains(aname)) {
+      defaultAttrIdList.add(aname);
     }
   }
 
