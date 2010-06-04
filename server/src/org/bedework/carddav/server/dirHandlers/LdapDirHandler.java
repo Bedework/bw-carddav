@@ -771,7 +771,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     if ((cpos < 0) && (Util.isEmpty(filter.getParamFilters()))) {
       // No group - no params - single attribute
-      String attrId = LdapMapping.propertyToLdapAttr.get(new AttrPropertyMapping(name, null));
+      String attrId = LdapMapping.simplePropertyToLdapAttr(name);
 
       if (attrId == null) {
         return null;

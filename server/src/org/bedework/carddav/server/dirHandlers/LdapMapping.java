@@ -242,18 +242,22 @@ public class LdapMapping {
 
     @Override
     public int hashCode() {
-      int hc = getAttrId().hashCode() * propertyName.hashCode();
+      int hc = getAttrId().hashCode();
+
+      if (propertyName != null) {
+        hc *= propertyName.hashCode();
+      }
 
       if (group != null) {
         hc = group.hashCode();
       }
 
       if (parameterName != null) {
-        hc*= parameterName.hashCode();
+        hc *= parameterName.hashCode();
       }
 
       if (parameterValue != null) {
-        hc*= parameterValue.hashCode();
+        hc *= parameterValue.hashCode();
       }
 
       return hc;
@@ -287,8 +291,8 @@ public class LdapMapping {
 
   /** Map property info to attribute
    */
-  public static final Map<LdapMapping, String> propertyToLdapAttr =
-    new HashMap<LdapMapping, String>();
+  private static final Map<String, String> simplePropertyToLdapAttrMap =
+    new HashMap<String, String>();
 
   /** We have to explicitly fetch attributes to get system attributes. This is
    * the default list we obtain. The config can name extra attributes.
@@ -465,7 +469,9 @@ public class LdapMapping {
     }
     anames.add(aname);
 
-    propertyToLdapAttr.put(apm, aname);
+    if (group == null) {
+      simplePropertyToLdapAttrMap.put(propertyName.toUpperCase(), aname);
+    }
 
     if (propertyName.equalsIgnoreCase(Property.Id.KIND.toString())) {
       kindProperty = apm;
@@ -478,6 +484,15 @@ public class LdapMapping {
     if (!defaultAttrIdList.contains(aname)) {
       defaultAttrIdList.add(aname);
     }
+  }
+
+  /** Return the ldap attribute for a simple property name
+   *
+   * @param pname
+   * @return ldap attribute
+   */
+  public static String simplePropertyToLdapAttr(final String pname) {
+    return simplePropertyToLdapAttrMap.get(pname.toUpperCase());
   }
 
   /**

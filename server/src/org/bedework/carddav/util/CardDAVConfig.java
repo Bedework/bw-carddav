@@ -29,7 +29,7 @@ import edu.rpi.sss.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.List;
 
 /** This class defines the various properties we need for a carddav server
  *
@@ -41,6 +41,10 @@ public class CardDAVConfig /*extends ConfigCommon */{
 
   /* Web address service uri - null for no web address service */
   private String webaddrServiceURI;
+
+  private String webaddrServicePropertiesList;
+
+  private List<String> webaddrServiceProperties;
 
   /* Path prefix for public searches */
   private String webaddrPublicAddrbook;
@@ -92,6 +96,34 @@ public class CardDAVConfig /*extends ConfigCommon */{
    */
   public String getWebaddrServiceURI() {
     return webaddrServiceURI;
+  }
+
+  /** Set the comma separated list of web addr book searchable properties
+   *
+   * @param val    String
+   */
+  public void setWebaddrServicePropertiesList(final String val) {
+    webaddrServicePropertiesList = val;
+
+    webaddrServiceProperties = new ArrayList<String>();
+
+    for (String s: val.split(",")) {
+      webaddrServiceProperties.add(s.trim());
+    }
+  }
+
+  /**
+   * @return comma separated list of web addr book searchable properties
+   */
+  public String getWebaddrServicePropertiesList() {
+    return webaddrServicePropertiesList;
+  }
+
+  /**
+   * @return List derived from webaddrServicePropertiesList
+   */
+  public List<String> getWebaddrServiceProperties() {
+    return webaddrServiceProperties;
   }
 
   /**

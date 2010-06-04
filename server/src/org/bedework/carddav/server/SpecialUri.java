@@ -64,12 +64,12 @@ public class SpecialUri {
    * @return true for a special uri
    * @throws WebdavException
    */
-  public static boolean process(HttpServletRequest req,
-                                HttpServletResponse resp,
-                                String resourceUri,
-                                SysIntf sysi,
-                                CardDAVConfig config,
-                                boolean debug) throws WebdavException {
+  public static boolean process(final HttpServletRequest req,
+                                final HttpServletResponse resp,
+                                final String resourceUri,
+                                final SysIntf sysi,
+                                final CardDAVConfig config,
+                                final boolean debug) throws WebdavException {
     if (config.getWebaddrServiceURI() == null) {
       return false;
     }
@@ -116,7 +116,7 @@ public class SpecialUri {
         }
       }
 
-      res = doSearch(req, col, limits, sysi, debug);
+      res = doSearch(req, col, limits, config, sysi, debug);
 
       if (Util.isEmpty(res.cards)) {
         setStatus(resp, HttpServletResponse.SC_NOT_FOUND, format);
@@ -141,8 +141,8 @@ public class SpecialUri {
     return true;
   }
 
-  private static void startResponse(HttpServletResponse resp,
-                                    String format) throws WebdavException {
+  private static void startResponse(final HttpServletResponse resp,
+                                    final String format) throws WebdavException {
     if (format.equals(formatVcard)) {
       return;
     }
@@ -155,37 +155,15 @@ public class SpecialUri {
     }
   }
 
-  private static GetResult doSearch(HttpServletRequest req,
-                                    CarddavCollection col,
-                                    GetLimits limits,
-                                    SysIntf sysi,
-                                    boolean debug) throws WebdavException {
-    String user = req.getParameter("user");
-    String mail = req.getParameter("mail");
-    String org = req.getParameter("org");
-
+  private static GetResult doSearch(final HttpServletRequest req,
+                                    final CarddavCollection col,
+                                    final GetLimits limits,
+                                    final CardDAVConfig config,
+                                    final SysIntf sysi,
+                                    final boolean debug) throws WebdavException {
     String text = req.getParameter("q");
 
-    if ((user == null) && (mail == null) &&
-        (org == null) && (text == null)) {
-      throw new WebdavBadRequest();
-    }
-
     boolean orThem = true;
-
-    if (text != null) {
-      if ((user != null) && (mail != null)) {
-        // Conflict
-        throw new WebdavBadRequest("Conflicting request parameters");
-      }
-
-      if (user == null) {
-        user = text;
-      }
-      if (mail == null) {
-        mail = text;
-      }
-    }
 
     Filter fltr = new Filter(debug);
 
@@ -195,24 +173,35 @@ public class SpecialUri {
       fltr.setTestAllAny(Filter.testAllOf);
     }
 
-    if (user != null) {
-      fltr.addPropFilter(new PropFilter("FN", new TextMatch(user)));
+    boolean hadTerm = false;
+
+    for (String wsp: config.getWebaddrServiceProperties()) {
+      String val = req.getParameter(wsp);
+
+      if (val != null) {
+        if (text != null) {
+          throw new WebdavBadRequest("Conflicting request parameters");
+        }
+      } else if (text != null) {
+        val = text;
+      }
+
+      if (val != null) {
+        hadTerm = true;
+        fltr.addPropFilter(new PropFilter(wsp, new TextMatch(val)));
+      }
     }
 
-    if (mail != null) {
-      fltr.addPropFilter(new PropFilter("EMAIL", new TextMatch(mail)));
-    }
-
-    if (org != null) {
-      fltr.addPropFilter(new PropFilter("ORG", new TextMatch(org)));
+    if (!hadTerm) {
+      throw new WebdavBadRequest("No search terms provided");
     }
 
     return sysi.getCards(col, fltr, limits);
   }
 
-  private static void doOutput(HttpServletResponse resp,
-                               Collection<Card> cards,
-                               String format) throws WebdavException {
+  private static void doOutput(final HttpServletResponse resp,
+                               final Collection<Card> cards,
+                               final String format) throws WebdavException {
     try {
       Writer wtr = resp.getWriter();
 
@@ -252,9 +241,9 @@ public class SpecialUri {
     }
   }
 
-  private static void setStatus(HttpServletResponse resp,
-                                int status,
-                                String format) throws WebdavException {
+  private static void setStatus(final HttpServletResponse resp,
+                                final int status,
+                                final String format) throws WebdavException {
     try {
       if (format.equals(formatVcard)) {
         resp.setStatus(status);
@@ -272,8 +261,8 @@ public class SpecialUri {
     }
   }
 
-  private static void endResponse(HttpServletResponse resp,
-                                    String format) throws WebdavException {
+  private static void endResponse(final HttpServletResponse resp,
+                                    final String format) throws WebdavException {
     if (format.equals(formatVcard)) {
       return;
     }
