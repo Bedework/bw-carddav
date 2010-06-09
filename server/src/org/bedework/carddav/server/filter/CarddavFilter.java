@@ -205,7 +205,7 @@ public class CarddavFilter {
    *
    * @param debug
    */
-  public CarddavFilter(boolean debug) {
+  public CarddavFilter(final boolean debug) {
     this.debug = debug;
   }
 
@@ -214,7 +214,7 @@ public class CarddavFilter {
    * @param xmlStr
    * @throws WebdavException
    */
-  public void parse(String xmlStr) throws WebdavException {
+  public void parse(final String xmlStr) throws WebdavException {
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setNamespaceAware(true);
@@ -234,7 +234,7 @@ public class CarddavFilter {
    * @param nd
    * @throws WebdavException
    */
-  public void parse(Node nd) throws WebdavException {
+  public void parse(final Node nd) throws WebdavException {
     if (!XmlUtil.nodeMatches(nd, CarddavTags.filter)) {
       throw new WebdavBadRequest();
     }
@@ -253,9 +253,7 @@ public class CarddavFilter {
     /* prop-filter* */
 
     try {
-      for (int i = 0; i < children.length; i++) {
-        Node curnode = children[i];
-
+      for (Element curnode : children) {
         if (debug) {
           trace("filter element: " +
               curnode.getNamespaceURI() + ":" +
@@ -283,9 +281,15 @@ public class CarddavFilter {
    *
    *    <!ATTLIST prop-filter name CDATA #REQUIRED>
    */
-  private PropFilter parsePropFilter(Node nd) throws WebdavException {
+  private PropFilter parsePropFilter(final Node nd) throws WebdavException {
     try {
-      PropFilter pf = new PropFilter(getOnlyAttrVal(nd, "name"));
+      String name = getAttrVal(nd, "name");
+
+      if (name == null) {
+        throw new WebdavBadRequest("Missing name attribute");
+      }
+
+      PropFilter pf = new PropFilter(name);
 
       Element[] children = getChildren(nd);
 
@@ -345,7 +349,7 @@ public class CarddavFilter {
    *
    *    <!ATTLIST param-filter name CDATA #REQUIRED>
    */
-  private ParamFilter parseParamFilter(Node nd) throws WebdavException {
+  private ParamFilter parseParamFilter(final Node nd) throws WebdavException {
     String name = getOnlyAttrVal(nd, "name");
 
     // Only one child - either is-defined | text-match
@@ -375,7 +379,7 @@ public class CarddavFilter {
    *
    *  <!ATTLIST text-match caseless (yes|no)>
    */
-  private TextMatch parseTextMatch(Node nd) throws WebdavException {
+  private TextMatch parseTextMatch(final Node nd) throws WebdavException {
     //int numAttrs = XmlUtil.numAttrs(nd);
     int numValid = 0;
 
@@ -398,7 +402,7 @@ public class CarddavFilter {
 
     if (mtype != null) {
       matchType = -1;
-      for (int i = 1; i < TextMatch.matchTypes.length; i++) {
+      for (int i = 0; i < TextMatch.matchTypes.length; i++) {
         if (TextMatch.matchTypes[i].equals(mtype)) {
           matchType = i;
           break;
@@ -423,7 +427,7 @@ public class CarddavFilter {
     }
   }
 
-  private int getTestAllAnyAttr(Node nd) throws WebdavException {
+  private int getTestAllAnyAttr(final Node nd) throws WebdavException {
     String testType = getAttrVal(nd, "test");
 
     if (testType == null) {
@@ -445,7 +449,7 @@ public class CarddavFilter {
   /**
    * @param val
    */
-  public void setTestAllAny(int val) {
+  public void setTestAllAny(final int val) {
     testAllAny = val;
   }
 
@@ -477,11 +481,11 @@ public class CarddavFilter {
   /**
    * @param pf
    */
-  public void addPropFilter(PropFilter pf) {
+  public void addPropFilter(final PropFilter pf) {
     getPropFilters().add(pf);
   }
 
-  private Element[] getChildren(Node nd) throws WebdavException {
+  private Element[] getChildren(final Node nd) throws WebdavException {
     try {
       return XmlUtil.getElementsArray(nd);
     } catch (Throwable t) {
@@ -493,7 +497,7 @@ public class CarddavFilter {
     }
   }
 
-  private Element getOnlyChild(Node nd) throws WebdavException {
+  private Element getOnlyChild(final Node nd) throws WebdavException {
     try {
       return XmlUtil.getOnlyElement(nd);
     } catch (Throwable t) {
@@ -505,7 +509,7 @@ public class CarddavFilter {
     }
   }
 
-  private String getAttrVal(Node nd, String name) throws WebdavException {
+  private String getAttrVal(final Node nd, final String name) throws WebdavException {
     NamedNodeMap nnm = nd.getAttributes();
 
     if (nnm == null) {
@@ -515,7 +519,7 @@ public class CarddavFilter {
     return XmlUtil.getAttrVal(nnm, name);
   }
 
-  private String getOnlyAttrVal(Node nd, String name) throws WebdavException {
+  private String getOnlyAttrVal(final Node nd, final String name) throws WebdavException {
     NamedNodeMap nnm = nd.getAttributes();
 
     if ((nnm == null) || (nnm.getLength() != 1)) {
@@ -530,7 +534,7 @@ public class CarddavFilter {
     return res;
   }
 
-  private Boolean yesNoAttr(Node nd, String name) throws WebdavException {
+  private Boolean yesNoAttr(final Node nd, final String name) throws WebdavException {
     NamedNodeMap nnm = nd.getAttributes();
 
     if ((nnm == null) || (nnm.getLength() == 0)) {
@@ -575,19 +579,19 @@ public class CarddavFilter {
     return log;
   }
 
-  protected void debugMsg(String msg) {
+  protected void debugMsg(final String msg) {
     getLogger().debug(msg);
   }
 
-  protected void error(Throwable t) {
+  protected void error(final Throwable t) {
     getLogger().error(this, t);
   }
 
-  protected void logIt(String msg) {
+  protected void logIt(final String msg) {
     getLogger().info(msg);
   }
 
-  protected void trace(String msg) {
+  protected void trace(final String msg) {
     getLogger().debug(msg);
   }
 }

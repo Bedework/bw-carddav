@@ -50,6 +50,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -80,6 +81,7 @@ public class CarddavReportMethod extends ReportMethod {
 
   /** Called at each request
    */
+  @Override
   public void init() {
   }
 
@@ -88,10 +90,11 @@ public class CarddavReportMethod extends ReportMethod {
    * @param doc
    * @throws WebdavException
    */
-  protected void process(Document doc,
-                         int depth,
-                         HttpServletRequest req,
-                         HttpServletResponse resp) throws WebdavException {
+  @Override
+  protected void process(final Document doc,
+                         final int depth,
+                         final HttpServletRequest req,
+                         final HttpServletResponse resp) throws WebdavException {
     reportType = getCarddavReportType(doc);
 
     if (reportType < 0) {
@@ -110,7 +113,7 @@ public class CarddavReportMethod extends ReportMethod {
    * @return index or <0 for unknown.
    * @throws WebdavException
    */
-  protected int getCarddavReportType(Document doc) throws WebdavException {
+  protected int getCarddavReportType(final Document doc) throws WebdavException {
     try {
       Element root = doc.getDocumentElement();
 
@@ -143,7 +146,7 @@ public class CarddavReportMethod extends ReportMethod {
    * @param doc
    * @throws WebdavException
    */
-  private void processDoc(Document doc) throws WebdavException {
+  private void processDoc(final Document doc) throws WebdavException {
     try {
       Element root = doc.getDocumentElement();
 
@@ -184,6 +187,12 @@ public class CarddavReportMethod extends ReportMethod {
       }
 
       if (!chiter.hasNext()) {
+        if (reportType == reportTypeQuery) {
+          throw new WebdavBadRequest("Require filter element");
+        }
+        if (reportType == reportTypeMultiGet) {
+          throw new WebdavBadRequest("Require one or more hrefs");
+        }
         throw new WebdavBadRequest();
       }
 
@@ -309,9 +318,9 @@ public class CarddavReportMethod extends ReportMethod {
    * @param depth
    * @throws WebdavException
    */
-  public void processResp(HttpServletRequest req,
-                          HttpServletResponse resp,
-                          int depth) throws WebdavException {
+  public void processResp(final HttpServletRequest req,
+                          final HttpServletResponse resp,
+                          final int depth) throws WebdavException {
     resp.setStatus(WebdavStatusCode.SC_MULTI_STATUS);
     resp.setContentType("text/xml; charset=UTF-8");
 
@@ -380,9 +389,9 @@ public class CarddavReportMethod extends ReportMethod {
     flush();
   }
 
-  private QueryResult doNodeAndChildren(WebdavNsNode node,
+  private QueryResult doNodeAndChildren(final WebdavNsNode node,
                                         int curDepth,
-                                        int maxDepth) throws WebdavException {
+                                        final int maxDepth) throws WebdavException {
     if (node instanceof CarddavCardNode) {
       // Targeted directly at component
       QueryResult qr = new QueryResult();
