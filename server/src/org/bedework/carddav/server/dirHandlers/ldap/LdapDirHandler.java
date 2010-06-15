@@ -23,7 +23,7 @@
     special, consequential, or incidental damages related to the software,
     to the maximum extent the law permits.
 */
-package org.bedework.carddav.server.dirHandlers;
+package org.bedework.carddav.server.dirHandlers.ldap;
 
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.property.Kind;
@@ -31,7 +31,8 @@ import net.fortuna.ical4j.vcard.property.Kind;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.dirHandlers.LdapMapping.AttrPropertyMapping;
+import org.bedework.carddav.server.dirHandlers.AbstractDirHandler;
+import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapping;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
@@ -402,22 +403,26 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     // parent          CarddavCollection
     // addressBook     boolean
 
-    /* XXX This is incorrect but might get us going
-     * I'm assuming the path starts with our path prefix.
-     * The next element should be the account. Make that into an owner principal.
-     *
-     * Really we need an owner attribute of some kind - allowing fro group ownership
-     * or paths which don't have an owner - e.g. public
-     */
+    if (dhConfig.getOwnerHref() != null) {
+      cdc.setOwner(getPrincipal(dhConfig.getOwnerHref()));
+    } else {
+      /* XXX This is incorrect but might get us going
+       * I'm assuming the path starts with our path prefix.
+       * The next element should be the account. Make that into an owner principal.
+       *
+       * Really we need an owner attribute of some kind - allowing for group ownership
+       * or paths which don't have an owner - e.g. public
+       */
 
-    String[] elements = path.split("/");
+      String[] elements = path.split("/");
 
-    //String[] splitRoot = userRoot.split("/");
-    int accountIndex = 2; // splitRoot.length;
+      //String[] splitRoot = userRoot.split("/");
+      int accountIndex = 2; // splitRoot.length;
 
-    String pref = makePrincipalHref(elements[2], Ace.whoTypeUser);
+      String pref = makePrincipalHref(elements[2], Ace.whoTypeUser);
 
-    cdc.setOwner(getPrincipal(pref));
+      cdc.setOwner(getPrincipal(pref));
+    }
 
     return cdc;
   }

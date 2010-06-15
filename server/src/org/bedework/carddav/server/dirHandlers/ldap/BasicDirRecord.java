@@ -1,4 +1,5 @@
-package org.bedework.carddav.server.dirHandlers;
+package org.bedework.carddav.server.dirHandlers.ldap;
+
 
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;

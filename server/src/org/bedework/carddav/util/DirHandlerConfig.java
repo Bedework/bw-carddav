@@ -36,6 +36,8 @@ public class DirHandlerConfig {
 
   private String className;
 
+  private String ownerHref;
+
   private String cardKind;
 
   private boolean debug;
@@ -98,6 +100,22 @@ public class DirHandlerConfig {
   */
  public String getClassName() {
    return className;
+ }
+
+ /** Set the href for the owner
+  *
+  * @param val    String
+  */
+ public void setOwnerHref(final String val) {
+   ownerHref = val;
+ }
+
+ /** get the href for the owner
+  *
+  * @return String
+  */
+ public String getOwnerHref() {
+   return ownerHref;
  }
 
  /** If set defines the default kind in this directory

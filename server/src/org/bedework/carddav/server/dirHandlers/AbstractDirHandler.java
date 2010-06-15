@@ -335,6 +335,36 @@ public abstract class AbstractDirHandler implements DirHandler {
     return root + "/" + account;
   }
 
+  protected static class SplitResult {
+    /** */
+    public String path;
+    /** */
+    public String name;
+
+    SplitResult(final String path, final String name) {
+      this.path = path;
+      this.name = name;
+    }
+  }
+
+  /* Split the uri so that result.path is the path up to the name part result.name
+   *
+   * NormalizeUri was called previously so we have no trailing "/"
+   */
+  protected SplitResult splitUri(final String uri) throws WebdavException {
+    int pos = uri.lastIndexOf("/");
+    if (pos < 0) {
+      // bad uri
+      throw new WebdavBadRequest("Invalid uri: " + uri);
+    }
+
+    if (pos == 0) {
+      return new SplitResult(uri, null);
+    }
+
+    return new SplitResult(uri.substring(0, pos), uri.substring(pos + 1));
+  }
+
   /**
    * @return Logger
    */
@@ -351,6 +381,13 @@ public abstract class AbstractDirHandler implements DirHandler {
    */
   protected void error(final Throwable t) {
     getLogger().error(this, t);
+  }
+
+  /**
+   * @param msg
+   */
+  protected void warn(final String msg) {
+    getLogger().warn(msg);
   }
 
   /**

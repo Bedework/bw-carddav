@@ -23,7 +23,7 @@
     special, consequential, or incidental damages related to the software,
     to the maximum extent the law permits.
 */
-package org.bedework.carddav.server.dirHandlers;
+package org.bedework.carddav.server.dirHandlers.ldap;
 
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.property.Kind;

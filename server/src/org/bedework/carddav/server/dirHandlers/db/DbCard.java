@@ -24,7 +24,7 @@
     to the maximum extent the law permits.
 */
 
-package org.bedework.carddav.vcard;
+package org.bedework.carddav.server.dirHandlers.db;
 
 import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
@@ -36,100 +36,132 @@ import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
 
-import org.bedework.carddav.server.CarddavCollection;
-
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-/** A vcard and properties for cardDAV
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+/** A representation of a vcard and properties for database persistance in cardDAV
  *
  * @author douglm
  *
  */
-public class Card {
+@Entity
+@Table(name = "BWCD_CARDS")
+public class DbCard extends DbNamedEntity<DbCard> {
+  @Column(name = "BWCD_FN")
+  private String fn;
 
-  private AccessPrincipal owner;
+  @Column(name = "BWCD_UID")
+  private String uid;
 
-  private String name;
+  @OneToMany
+  @JoinColumn(name = "BWCD_CARDID", nullable = false)
+  private List<DbCardProperty> properties;
 
-  private CarddavCollection parent;
+  @Column(name = "BWCD_LASTMOD")
+  private String lastmod;
 
-  private String created;
-
+  @Transient
   private VCard vcard;
 
+  @Column(name="BWCD_STRCARD")
   private String strForm;
-
-  private String jsonStrForm;
 
   private String prevLastmod;
 
   private static VCardOutputter cardOut = new VCardOutputter();
 
-  /** Create Card with a new embedded VCard
+  /** Create DbCard with a new embedded VCard
    *
+   * @throws WebdavException
    */
-  public Card() {
+  public DbCard() throws WebdavException {
+  }
+
+  /** Create DbCard with new card
+   *
+   * @param fn
+   * @throws WebdavException
+   */
+  public DbCard(final String fn) throws WebdavException {
     vcard = new VCard();
     vcard.getProperties().add(Version.VERSION_4_0);
+
+    setFn(fn);
+    setUid(edu.rpi.sss.util.Uid.getUid());
   }
 
-  /** Create card with supplied vcard
+  /** Create DbCard with supplied vcard
    *
    * @param vcard
+   * @throws WebdavException
    */
-  public Card(final VCard vcard) {
+  public DbCard(final VCard vcard) throws WebdavException {
     this.vcard = vcard;
+
+    fn = findProperty(Property.Id.FN).getValue();
+
+    Uid uid = (Uid)findProperty(Property.Id.UID);
+
+    if (uid == null) {
+      setUid(edu.rpi.sss.util.Uid.getUid());
+    } else {
+      this.uid = uid.getValue();
+    }
+
+    for (Property p: vcard.getProperties()) {
+      addDbProperty(makeDbProperty(p));
+    }
+  }
+
+  /** Set the fn
+   *
+   * @param val    String fn
+   * @throws WebdavException
+   */
+  public void setFn(final String val) throws WebdavException {
+    fn = val;
+  }
+
+  /** Get the name
+   *
+   * @return String   name
+   * @throws WebdavException
+   */
+  public String getFn() throws WebdavException {
+    return fn;
   }
 
   /**
    * @param val
+   * @throws WebdavException
    */
-  public void setOwner(final AccessPrincipal val) {
-    owner = val;
+  public void setUid(final String val) throws WebdavException {
+    uid = val;
+    try {
+      replaceProperty(new Uid(null, val));
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
   }
 
   /**
-   * @return AccessPrincipal
+   * @return String
+   * @throws WebdavException
    */
-  public AccessPrincipal getOwner() {
-    return owner;
-  }
-
-  /** Set the name
-  *
-  * @param val    String name
-  */
- public void setName(final String val) {
-   name = val;
- }
-
- /** Get the name
-  *
-  * @return String   name
-  */
- public String getName() {
-   return name;
- }
-
-  /**
-   * @param val
-   */
-  public void setCreated(final String val) {
-    created = val;
-  }
-
-  /**
-   * @return String created
-   */
-  public String getCreated() {
-    return created;
+  public String getUid() throws WebdavException {
+    return uid;
   }
 
   /**
@@ -137,6 +169,8 @@ public class Card {
    * @throws WebdavException
    */
   public void setLastmod(final String val) throws WebdavException {
+    lastmod = val;
+
     try {
       replaceProperty(new Revision(new ArrayList<Parameter>(), val));
     } catch (Throwable t) {
@@ -151,10 +185,12 @@ public class Card {
     Revision rev = (Revision)findProperty(Property.Id.REV);
 
     if (rev == null) {
+      lastmod = null;
       return null;
     }
 
-    return rev.getValue();
+    lastmod = rev.getValue();
+    return lastmod;
   }
 
   /** Lastmod before any changes were made
@@ -163,54 +199,6 @@ public class Card {
    */
   public String getPrevLastmod() {
     return prevLastmod;
-  }
-
-  /**
-   * @param val
-   * @throws WebdavException
-   */
-  public void setUid(final String val) throws WebdavException {
-    try {
-      replaceProperty(new Uid(null, val));
-    } catch (Throwable t) {
-      throw new WebdavException(t);
-    }
-  }
-
-  /**
-   * @return String
-   * @throws WebdavException
-   */
-  public String getUid() throws WebdavException {
-    Uid uid = (Uid)findProperty(Property.Id.UID);
-
-    if (uid == null) {
-      setUid(edu.rpi.sss.util.Uid.getUid());
-      uid = (Uid)findProperty(Property.Id.UID);
-    }
-
-    return uid.getValue();
-  }
-
-  /**
-   * @param val
-   */
-  public void setParent(final CarddavCollection val) {
-    parent = val;
-  }
-
-  /**
-   * @return parent.
-   */
-  public CarddavCollection getParent() {
-    return parent;
-  }
-
-  /**
-   * @return vcard or null
-   */
-  public VCard getVcard() {
-    return vcard;
   }
 
   /**
@@ -271,6 +259,24 @@ public class Card {
   }
 
   /**
+   * @return vcard or null
+   * @throws WebdavException
+   */
+  public VCard getVcard() throws WebdavException {
+    if (vcard != null) {
+      return vcard;
+    }
+
+    if (strForm == null) {
+      return null;
+    }
+
+    parse(new StringReader(strForm));
+
+    return vcard;
+  }
+
+  /**
    * @param rdr
    * @return Vcard
    * @throws WebdavException
@@ -307,65 +313,39 @@ public class Card {
     return strForm;
   }
 
-  /**
-   * @param indent
-   * @return String
-   */
-  public String outputJson(String indent) {
-    if (jsonStrForm != null) {
-      return jsonStrForm;
-    }
-
-    StringBuilder sb = new StringBuilder();
-
-    sb.append(indent);
-    sb.append("{\n");
-
-    indent += "";
-
-    PropertyOutput version = new PropertyOutput(vcard.getProperty(Property.Id.VERSION));
-
-    version.outputJson(indent, sb);
-
-    Set<String> pnames = VcardDefs.getPropertyNames();
-
-    for (String pname: pnames) {
-      if ("VERSION".equals(pname)) {
-        continue;
-      }
-
-      List<Property> props = findProperties(pname);
-
-      if (!props.isEmpty()) {
-        new PropertyOutput(props).outputJson(indent, sb);
-      }
-    }
-
-    List<Property> props = vcard.getProperties();
-
-    if (props != null) {
-      for (Property p: props) {
-        if (!pnames.contains(p.getId().toString())) {
-          new PropertyOutput(p).outputJson(indent, sb);
-        }
-      }
-    }
-
-    sb.append(indent);
-    sb.append("}");
-
-    jsonStrForm = sb.toString();
-
-    return jsonStrForm;
-  }
+  /* ====================================================================
+   *                   Object methods
+   * ==================================================================== */
 
   @Override
   public String toString() {
-    try {
-      return output();
-    } catch (Throwable t) {
-      return t.getMessage();
+    StringBuilder sb = new StringBuilder("DbCard{");
+
+    toStringSegment(sb);
+
+    return sb.toString();
+  }
+
+  /* ====================================================================
+   *                   Private methods
+   * ==================================================================== */
+
+  /**
+   * @param id
+   * @return property or null
+   */
+  private DbCardProperty findDbProperty(final String name) {
+    if (properties == null) {
+      return null;
     }
+
+    for (DbCardProperty p: properties) {
+      if (name.equals(p.getName())) {
+        return p;
+      }
+    }
+
+    return null;
   }
 
   private void replaceProperty(final Property val) {
@@ -378,5 +358,35 @@ public class Card {
     }
 
     ps.add(val);
+
+    String name = val.getId().toString();
+    DbCardProperty prop = findDbProperty(name);
+
+    if (prop != null) {
+      properties.remove(prop);
+    }
+
+    properties.add(makeDbProperty(val));
+  }
+
+  private void addDbProperty(final DbCardProperty val) {
+    if (properties == null) {
+      properties = new ArrayList<DbCardProperty>();
+    }
+
+    properties.add(val);
+  }
+
+  private DbCardProperty makeDbProperty(final Property val) {
+    String name = val.getId().toString();
+    String value = val.getValue();
+
+    DbCardProperty dbp = new DbCardProperty(name, value, this);
+
+    for (Parameter par: val.getParameters()) {
+      dbp.addParam(new DbCardParam(par.getId().toString(), par.getValue(), dbp));
+    }
+
+    return dbp;
   }
 }
