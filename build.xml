@@ -24,6 +24,9 @@
   <property name="build.dir" location="${project.home}/build"/>
   <property name="buildjar" location="${build.dir}/buildTools/buildjar.xml"/>
   <property name="buildwar" location="${build.dir}/buildwar.xml"/>
+  <property name="buildsh" location="${build.dir}/buildsh.xml"/>
+
+  <property name="resources.dir" location="${project.home}/resources"/>
 
   <property name="org.bedework.temp.dir"
             location="${dist.home}/temp" />
@@ -100,6 +103,9 @@
     <property name="org.bedework.carddav.server.base"
               location="${project.home}/server" />
 
+    <property name="org.bedework.carddav.dumpres.base"
+              location="${project.home}/dumpres" />
+
     <mkdir dir="${dist.home}" />
 
     <property name="test.data.dir"
@@ -118,6 +124,9 @@
 
     <property name="server.jar"
               location="${dist.home}/${edu.rpi.cmt.carddav.server.jar}-${project.version}.jar" />
+
+    <property name="dumpres.jar"
+              location="${dist.home}/${edu.rpi.cmt.carddav.dumpres.jar}-${project.version}.jar" />
 
     <!-- ==================== Compilation Classpath ==================== -->
 
@@ -140,6 +149,9 @@
       <then>
         <property name="app.ear.file.name"
                   value="${org.bedework.global.ear.name}-card.ear" />
+
+        <property name="dumpres.app.zip.name"
+                  value="${org.bedework.global.ear.name}-carddumpres" />
 
         <if>
           <equals arg1="${org.bedework.global.ear.zipped}"
@@ -176,6 +188,9 @@
       </then>
     </if>
     
+	  <property name="org.bedework.temp.shellscr.home"
+	            location="${org.bedework.temp.dir}/shellscr" />
+
     <property name="org.bedework.temp.extrajars.dir"
               location="${org.bedework.temp.dir}/extrajars" />
 
@@ -239,7 +254,8 @@
   <target name="build-all" depends="init,build-source,cleanup"
           description="Compile carddav classes"/>
 
-  <target name="build-source" depends="bld.auth.server,bld.unauth.server" />
+  <target name="build-source" 
+  	      depends="bld.auth.server,bld.unauth.server,bld.dumpres" />
 
   <!-- ===================== deploy Target ===============================
      Deploy if an application server is defined.
@@ -266,6 +282,21 @@
       </else>
     </if>
     -->
+    <getJar lib="${org.bedework.temp.extrajars.dir}"
+            libcache="${org.bedework.libcache.dir}"
+            name="bw-carddumpres" version="3.6"
+            projecthome="${project.home}" />
+
+    <ant antfile="deployService.xml" target="deploy" inheritRefs="true" >
+    	<property name="propval.app.zip.name"
+    	          value="${dumpres.app.zip.name}" />
+      <property name="app.service.base" 
+                location="${org.bedework.carddav.dumpres.base}" />
+    	<property name="app.global.properties.dir" 
+                location="${resources.dir}" />
+   </ant>
+  	
+    <ant antfile="deployTermination.xml" target="deployTerminate" inheritRefs="true" />
   </target>
 
 <!-- ==================== Javadoc Target ===============================
@@ -350,5 +381,10 @@
       <property name="org.bedework.deploy.name"
                 value="pubcarddav" />
     </ant>
+  </target>
+
+  <target name="bld.dumpres">
+    <ant antfile="${org.bedework.carddav.dumpres.base}/build.xml" inheritrefs="true"
+         target="build" />
   </target>
 </project>

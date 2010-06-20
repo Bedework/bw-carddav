@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- ===================================================================
+     Object to represent a card.
+     =================================================================== -->
+
+<hibernate-mapping>
+  <class name="org.bedework.carddav.server.dirHandlers.db.DbCard"
+         table="bwcd_cards" >
+    <cache usage="read-write"/>
+    <id name="id" type="long" column="bwcd_id">
+      <generator class="native"/>
+    </id>
+
+    <!-- db entity properties -->
+
+    <version name="seq" column="bwcd_seq" type="integer" />
+
+    <property name="byteSize" column="bwcd_bytesize" type="integer" />
+
+    <property name="ownerHref" column="bwcd_ownerhref" type="string"
+              index="bwcdidx_card_owner" not-null="true" />
+
+    <property name="acl" column="bwcd_acl" type="string"
+              length="3900" />
+
+    <property name="parentPath" column="bwcd_parent_path" type="string" length="3000"
+              not-null="true"
+              index="bwcdidx_card_parentpath" />
+
+    <property name="created" type="string">
+      <column name="bwcd_created" length="16" not-null="true" />
+    </property>
+
+    <!-- named entity properties -->
+
+    <property name="name" column="bwcd_name" type="string" length="500"
+              index="bwcdidx_card_name" />
+    
+    <!-- card properties -->
+
+    <property name="lastmod" type="string" >
+      <column name="bwcd_lastmod" length="16" not-null="true" />
+    </property>
+    
+    <property name="fn" column="bwcd_fn" type="string" length="1000"
+              index="bwcdidx_card_fn" />
+
+    <property name="uid" column="bwcd_uid" type="string" length="1000"
+              index="bwcdidx_card_uid" />
+
+    <property name="kind" column="bwcd_kind" type="string" length="100"
+              index="bwcdidx_card_kind" />
+
+    <bag name="properties" table="bwcd_card_properties"
+         cascade="all-delete-orphan" >
+      <key column="bwcd_cardid" foreign-key="bwcd_prprp_pid_fk" />
+      <many-to-many class="org.bedework.carddav.server.dirHandlers.db.DbCardProperty"
+                    unique="true"
+                    column="bwcd_propid"
+                    foreign-key="bwcd_card_prop_fk" />
+    </bag>
+
+    <property name="strForm" column="bwcd_strForm" type="text"/>
+  </class>
+</hibernate-mapping>
+

@@ -28,28 +28,17 @@ package org.bedework.carddav.server.dirHandlers.db;
 
 import edu.rpi.sss.util.Util;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 /** A representation of a vcard property parameter for database persistance in cardDAV.
  * Allows us to index the values for searching
  *
  * @author douglm
  *
  */
-@Table(name = "BWCD_PARS")
-public class DbCardParam {
-  @ManyToOne
-  @JoinColumn(name = "BWCD_PROPID", nullable = false,
-              updatable = false, insertable = false)
+public class DbCardParam extends UnversionedDbentity<DbCardParam> {
   private DbCardProperty property;
 
-  @Column(name = "BWCD_PARNAME")
   private String name;
 
-  @Column(name = "BWCD_PARVALUE")
   private String value;
 
   /** Null constructor
@@ -121,6 +110,27 @@ public class DbCardParam {
   /* ====================================================================
    *                   Object methods
    * ==================================================================== */
+
+  @Override
+  public int compareTo(final DbCardParam that) {
+    try {
+      int res = Util.compareStrings(getName(), that.getName());
+
+      if (res != 0) {
+        return res;
+      }
+
+      res = Util.compareStrings(getValue(), that.getValue());
+
+      if (res != 0) {
+        return res;
+      }
+
+      return Util.compareStrings(getName(), that.getName());
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
 
   @Override
   public String toString() {

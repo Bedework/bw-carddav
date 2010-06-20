@@ -50,6 +50,9 @@
     <filter token="LIFERAY-COMPANY-ID"
             value="${org.bedework.global.liferay.company-id}"/>
 
+    <filter token="JBOSS-CARDDB-DATASOURCE"
+            value="${org.bedework.global.jboss.carddb.datasource.jndiname}"/>
+
     <!--      Application settings            -->
 
     <filter token="APP-DESCRIPTION"

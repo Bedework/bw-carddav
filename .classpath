@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="server/src"/>
+	<classpathentry kind="src" path="dumpres/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/bedework"/>
 	<classpathentry kind="lib" path="lib/rpiaccess-3.6.jar"/>
@@ -15,7 +16,5 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/servletapi-2.4.jar"/>
 	<classpathentry kind="lib" path="libcache/hibernate-3.3.1.ga.jar"/>
-	<classpathentry kind="lib" path="libcache/hibernate-annotations-3.4.0.GA.jar"/>
-	<classpathentry kind="lib" path="libcache/ejb3-persistence-3.4.0.GA.jar"/>
 	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav/carddav"/>
 </classpath>

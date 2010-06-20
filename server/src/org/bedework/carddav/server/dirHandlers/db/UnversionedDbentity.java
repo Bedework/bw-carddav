@@ -27,10 +27,6 @@ package org.bedework.carddav.server.dirHandlers.db;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 /** Base type for a database entity. We require an id and the subclasses must
  * implement hashcode and compareTo.
  *
@@ -41,8 +37,6 @@ import javax.persistence.Id;
  */
 public class UnversionedDbentity<T> extends DumpEntity<T>
         implements Comparable<T>, Serializable {
-  @Id @GeneratedValue
-  @Column(name = "BWCD_ID")
   private Long id;
 
   /**

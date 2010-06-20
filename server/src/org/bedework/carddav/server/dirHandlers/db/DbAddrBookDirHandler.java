@@ -25,6 +25,11 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.LastModified;
+
+import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.util.CardDAVConfig;
@@ -86,19 +91,22 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
     dc.setName(card.getName());
     dc.setParentPath(path);
+    dc.setOwnerHref(card.getOwner().getPrincipalRef());
 
     create(dc);
   }
 
   private boolean create(final DbCard card) throws WebdavException {
-    card.output(); // Ensure string form exists
-    try {
-      openSession();
+//    try {
+  //    openSession();
+
+      card.setDtstamps();
+      card.output(); // Ensure string form exists
 
       sess.save(card);
 
       return true;
-    } catch (WebdavException wde) {
+/*    } catch (WebdavException wde) {
       rollbackTransaction();
       throw wde;
     } catch (Throwable t) {
@@ -107,7 +115,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     } finally {
       endTransaction();
       closeSession();
-    }
+    }*/
   }
 
   /* (non-Javadoc)
@@ -115,10 +123,19 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    */
   public void updateCard(final String path,
                          final Card card) throws WebdavException {
-    try {
-      openSession();
+//    try {
+      if (card.getName() == null) {
+        throw new WebdavBadRequest();
+      }
 
-      sess.update(card);
+  //    openSession();
+
+      DbCard dc = getDbCard(path, card.getName());
+      dc.setVcard(card.getVcard());
+      dc.setDtstamps();
+
+      sess.update(dc);
+      /*
     } catch (WebdavException wde) {
       rollbackTransaction();
       throw wde;
@@ -129,6 +146,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       endTransaction();
       closeSession();
     }
+    */
   }
 
   /* (non-Javadoc)
@@ -147,7 +165,61 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    */
   public int makeCollection(final CarddavCollection col,
                             final String parentPath) throws WebdavException {
-    throw new WebdavException("unimplemented");
+//    try {
+  //    openSession();
+
+      /* Ensure doesn't exist */
+      StringBuilder sb = new StringBuilder();
+      sb.append("select col.name from ");
+      sb.append(DbCollection.class.getName());
+      sb.append(" col where col.name=:name and col.parentPath=:pp");
+
+      sess.createQuery(sb.toString());
+
+      sess.setString("name", col.getName());
+      sess.setString("pp", ensureSlashAtEnd(parentPath));
+
+      Collection res = sess.getList();
+      if (res.size() > 0) {
+        return DirHandler.statusDuplicate;
+      }
+
+      DbCollection dbc = new DbCollection();
+
+      dbc.setName(col.getName());
+      dbc.setDescription(col.getDescription());
+      dbc.setAddressBook(col.getAddressBook());
+      dbc.setOwnerHref(col.getOwner().getPrincipalRef());
+      dbc.setParentPath(ensureSlashAtEnd(parentPath));
+
+      DateTime dt = new DateTime(true);
+
+      if (col.getLastmod() == null) {
+        dbc.setLastmod(new LastModified(dt).getValue());
+      } else {
+        dbc.setLastmod(col.getLastmod());
+      }
+
+      if (col.getCreated() == null) {
+        dbc.setCreated(new Created(dt).getValue());
+      } else {
+        dbc.setCreated(col.getCreated());
+      }
+
+      sess.save(dbc);
+
+      return DirHandler.statusCreated;
+      /*
+    } catch (WebdavException wde) {
+      rollbackTransaction();
+      throw wde;
+    } catch (Throwable t) {
+      rollbackTransaction();
+      throw new WebdavException(t);
+    } finally {
+      endTransaction();
+      closeSession();
+    }*/
   }
 
   /* (non-Javadoc)

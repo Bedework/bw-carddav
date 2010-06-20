@@ -27,26 +27,19 @@
 package org.bedework.carddav.server.dirHandlers.db;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import edu.rpi.sss.util.Util;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-/** A representation of a vcard and properties for database persistance in cardDAV
+/** A representation of a vcard and properties for database persistence in cardDAV
  *
  * @author douglm
  *
  */
-@Entity
-@Table(name = "BWCD_COLLECTIONS")
 public class DbCollection extends DbNamedEntity<DbCollection> {
-  @Column(name = "BWCD_LASTMOD")
   private String lastmod;
 
-  @Column(name = "BWCD_DESC")
   private String description;
 
-  private String prevLastmod;
+  private boolean addressBook;
 
   /** Create DbCollection
    *
@@ -83,12 +76,18 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
     return description;
   }
 
-  /** Lastmod before any changes were made
-   *
-   * @return String
+  /**
+   * @param val
    */
-  public String getPrevLastmod() {
-    return prevLastmod;
+  public void setAddressBook(final boolean val) {
+    addressBook = val;
+  }
+
+  /**
+   * @return boolean
+   */
+  public boolean getAddressBook() {
+    return addressBook;
   }
 
   /**
@@ -107,6 +106,21 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
   /* ====================================================================
    *                   Object methods
    * ==================================================================== */
+
+  @Override
+  public int compareTo(final DbCollection that) {
+    try {
+      int res = Util.compareStrings(getParentPath(), that.getParentPath());
+
+      if (res != 0) {
+        return res;
+      }
+
+      return Util.compareStrings(getName(), that.getName());
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
 
   @Override
   public String toString() {

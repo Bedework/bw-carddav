@@ -4,8 +4,10 @@
      terminations task.
      =================================================================== -->
 
-<project name="bwdeploy.termination" default="deployFiles" >
+<project name="bwdeploy.ear" default="deployFiles" >
   <import file="${build.dir}/platforms/${org.bedework.global.deploy.platform}War.xml" />
+
+  <import file="${build.dir}/buildfilters.xml" />
 
   <dirname property="this.dir" file="${ant.file}"/>
 

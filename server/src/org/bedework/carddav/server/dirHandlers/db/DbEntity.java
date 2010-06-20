@@ -28,9 +28,6 @@ package org.bedework.carddav.server.dirHandlers.db;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.Column;
-import javax.persistence.Version;
-
 /** Base type for a database entity. We require an id and the subclasses must
  * implement hashcode and compareTo.
  *
@@ -50,22 +47,24 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
   private Collection<DbEntity<?>> deletedEntities;
 
   /* db version number */
-  @Version
-  @Column(name="BWCD_SEQ")
   private Integer seq;
 
   /* For quota'd dbentities. */
-  @Column(name="BWCD_BYTESIZE")
   private int byteSize;
 
-  @Column(name = "BWCD_OWNER_HREF")
   private String ownerHref;
 
-  @Column(name="BWCD_PARENT")
+  private String acl;
+
   private String parentPath;
 
-  @Column(name = "BWCD_CREDATE")
   private String created;
+
+  /** No-arg constructor
+   *
+   */
+  public DbEntity() {
+  }
 
   /** The last calculated byte size should be stored with the entity. On update
    * call calculateByteSize to get a new value and use the difference to adjust
@@ -82,12 +81,6 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
    */
   public int getByteSize() {
     return byteSize;
-  }
-
-  /** No-arg constructor
-   *
-   */
-  public DbEntity() {
   }
 
   /** Set the seq for this entity
@@ -118,6 +111,20 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
    */
   public String getOwnerHref() {
     return ownerHref;
+  }
+
+  /**
+   * @param val
+   */
+  public void setAcl(final String val) {
+    acl = val;
+  }
+
+  /**
+   * @return String
+   */
+  public String getAcl() {
+    return acl;
   }
 
   /**
@@ -223,5 +230,7 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
     sb.append(getParentPath());
     sb.append(", created=");
     sb.append(getCreated());
+    sb.append(",\n   acl=");
+    sb.append(getAcl());
   }
 }

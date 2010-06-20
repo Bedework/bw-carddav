@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+     This file is imported by buildsh.xml and others and adds the targets:
+        doHibProps: builds a set of properties for the service
+        addLibs: add libraries for this platform
+        addResources: add anything we want in the resources directory 
+        addExtras: add scripts for runnable versions and META-INF for
+                   jboss services etc.
+        deployService: deploy the service
+     =================================================================== -->
+
+<project name="bedework.platformService" default="doHibProps" >
+  <target name="doHibProps" >
+    <if>
+      <istrue value="${propval.app.runnable}" />
+      <then>
+        <antcall target="runnableDoHibProps" inheritRefs="true" />
+      </then>
+      <else>
+        <echo file="${app.dest.classes}/hibernate.properties">
+hibernate.dialect=${org.bedework.global.hibernate.dialect}
+    	
+hibernate.connection.datasource=java:${org.bedework.global.jboss.carddb.datasource.jndiname}
+
+hibernate.bytecode.use_reflection_optimizer=false
+hibernate.cache.use_second_level_cache=false
+#
+# Here for better debugging
+#
+hibernate.jdbc.batch_size=0
+    </echo>
+      </else>
+    </if>
+  </target>
+  
+  <!-- ================================================================
+       Add libraries
+       ================================================================ -->
+
+  <target name="addLibs">
+    <if>
+      <istrue value="${propval.app.runnable}" />
+      <then>
+        <property name="app.dest.lib"
+                  location="${app.dest.home}/lib" />
+      	<antcall target="runnableAddLibs" inheritRefs="true" />
+      </then>
+      <else>
+        <!-- Library in sar file -->
+        <property name="app.dest.lib"
+                  location="${app.dest.webinf}/lib" />
+        <antcall target="copyLibs" inheritRefs="true" />
+      </else>
+    </if>
+  </target>
+  
+  <!-- ================================================================
+       Add resources
+       ================================================================ -->
+
+  <target name="addResources">
+    <if>
+      <istrue value="${propval.app.runnable}" />
+      <then>
+        <antcall target="runnableAddResources" inheritRefs="true" />
+      </then>
+      <else>
+        <!-- None for this platform -->
+      </else>
+    </if>
+  </target>
+  
+  <!-- ================================================================
+       Add extras
+       ================================================================ -->
+
+  <target name="addExtras">
+    <if>
+      <istrue value="${propval.app.runnable}" />
+      <then>
+        <antcall target="runnableAddExtras" inheritRefs="true" />
+      </then>
+      <else>
+        <property name="metainf.dir"
+                  location="${app.service.base}/resources/META-INF" />
+    
+      	<mkdir dir="${app.dest.home}/META-INF" />
+      	
+        <echo file="${app.dest.home}/META-INF/jboss-structure.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <context>
+    <path name=""/>
+    <metaDataPath>
+      <path name="META-INF"/>
+    </metaDataPath>        
+    <classpath>
+      <path name="classes"/>
+      <path name="lib" suffixes=".jar" />
+    </classpath>
+  </context>
+</structure>
+]]></echo>
+  	
+        <copy todir="${app.dest.home}/META-INF">
+      	  <fileset dir="${metainf.dir}" />
+          <filterset refid="property.filters" />
+        </copy>
+      </else>
+    </if>
+  </target>
+
+  <target name="deployService">
+    <!-- copy the sar - at the moment copy the uncompressed. -->
+
+    <if>
+      <istrue value="${propval.app.runnable}" />
+      <then>
+        <antcall target="runnableDeployService" inheritRefs="true" />
+      </then>
+      <else>
+        <if>
+          <isset property="org.bedework.appserver.deploy.dir" />
+          <then>
+            <property name="app.dest.home"
+                      location="${org.bedework.temp.shellscr.home}/${propval.app.zip.name}" />
+    
+          	<delete dir="${org.bedework.appserver.deploy.dir}/${propval.app.zip.name}.sar" />
+            <mkdir dir="${org.bedework.appserver.deploy.dir}/${propval.app.zip.name}.sar" />
+            <copy todir="${org.bedework.appserver.deploy.dir}/${propval.app.zip.name}.sar">
+              <fileset dir="${app.dest.home}"/>
+            </copy>
+          </then>
+        </if>
+      </else>
+    </if>
+  </target>
+  
+  <!-- ================================================================
+       Private target to copy libraries
+       ================================================================ -->
+
+  <target name="copyLibs">
+    <!-- any extra files-->
+    <copy todir="${app.dest.lib}" >
+      <fileset dir="${org.bedework.temp.extrajars.dir}" />
+    </copy>
+  </target>
+</project>

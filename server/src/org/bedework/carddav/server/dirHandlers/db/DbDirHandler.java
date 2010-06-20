@@ -60,10 +60,6 @@ public abstract class DbDirHandler extends AbstractDirHandler {
   /** When we were created for debugging */
   protected Timestamp objTimestamp;
 
-  /** Ensure we don't open while open
-   */
-  protected boolean isOpen;
-
   /** Current hibernate session - exists only across one user interaction
    */
   protected HibSession sess;
@@ -100,32 +96,53 @@ public abstract class DbDirHandler extends AbstractDirHandler {
   }
 
   /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
+   */
+  @Override
+  public void open(final String account) throws WebdavException {
+    super.open(account);
+
+    if (isOpen()) {
+      return;
+    }
+    openSession();
+    open = true;
+  }
+
+  /* (non-Javadoc)
+   * @see org.bedework.carddav.bwserver.DirHandler#close()
+   */
+  @Override
+  public void close() throws WebdavException {
+    super.close();
+
+    try {
+      endTransaction();
+    } catch (WebdavException wde) {
+      try {
+        rollbackTransaction();
+      } catch (WebdavException wde1) {}
+      throw wde;
+    } finally {
+      try {
+        closeSession();
+      } catch (WebdavException wde1) {}
+    }
+  }
+
+
+  /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#getCard(java.lang.String, java.lang.String)
    */
   public Card getCard(final String path, final String name) throws WebdavException {
-    verifyPath(path);
-
-    try {
-      openSession();
-
-      StringBuilder sb = new StringBuilder();
-
-      sb.append("from ");
-      sb.append(DbCard.class.getName());
-      sb.append(" card where card.parentPath=:path");
-      sb.append(" and card.name=:name");
-
-      sess.createQuery(sb.toString());
-      sess.setString("path", path);
-      sess.setString("name", name);
-
-      DbCard card = (DbCard)sess.getUnique();
+//    try {
+      DbCard card = getDbCard(path, name);
 
       if (card == null) {
         return null;
       }
 
-      return makeVcard(card);
+      return makeVcard(card);/*
     } catch (WebdavException wde) {
       rollbackTransaction();
       throw wde;
@@ -135,7 +152,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
     } finally {
       endTransaction();
       closeSession();
-    }
+    }*/
   }
 
   /* (non-Javadoc)
@@ -147,8 +164,8 @@ public abstract class DbDirHandler extends AbstractDirHandler {
                             final GetLimits limits) throws WebdavException {
     verifyPath(path);
 
-    try {
-      openSession();
+//    try {
+  //    openSession();
 
       StringBuilder sb = new StringBuilder();
 
@@ -176,7 +193,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
       }
 
       return res;
-    } catch (WebdavException wde) {
+/*    } catch (WebdavException wde) {
       rollbackTransaction();
       throw wde;
     } catch (Throwable t) {
@@ -185,7 +202,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
     } finally {
       endTransaction();
       closeSession();
-    }
+    }*/
   }
 
   /* (non-Javadoc)
@@ -195,20 +212,21 @@ public abstract class DbDirHandler extends AbstractDirHandler {
     verifyPath(path);
 
     /* We're fetching a collection entity with a fully specified path */
-    try {
-      openSession();
+//    try {
+  //    openSession();
 
       StringBuilder sb = new StringBuilder();
 
       sb.append("from ");
       sb.append(DbCollection.class.getName());
-      sb.append(" where col.parentPath=:path");
+      sb.append(" col where col.parentPath=:path");
       sb.append(" and col.name=:name");
 
       SplitResult sr = splitUri(path);
 
       sess.createQuery(sb.toString());
-      sess.setString("path", sr.path);
+
+      sess.setString("path", ensureSlashAtEnd(sr.path));
       sess.setString("name", sr.name);
 
       DbCollection col = (DbCollection)sess.getUnique();
@@ -218,6 +236,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
       }
 
       return makeCdCollection(col);
+      /*
     } catch (WebdavException wde) {
       rollbackTransaction();
       throw wde;
@@ -227,7 +246,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
     } finally {
       endTransaction();
       closeSession();
-    }
+    }*/
   }
 
   /* (non-Javadoc)
@@ -239,8 +258,8 @@ public abstract class DbDirHandler extends AbstractDirHandler {
          throws WebdavException {
     verifyPath(path);
 
-    try {
-      openSession();
+//    try {
+  //    openSession();
 
       StringBuilder sb = new StringBuilder();
 
@@ -266,7 +285,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
       }
 
       return res;
-    } catch (WebdavException wde) {
+/*    } catch (WebdavException wde) {
       rollbackTransaction();
       throw wde;
     } catch (Throwable t) {
@@ -275,20 +294,40 @@ public abstract class DbDirHandler extends AbstractDirHandler {
     } finally {
       endTransaction();
       closeSession();
-    }
+    }*/
   }
 
   /* ====================================================================
    *  Protected methods.
    * ==================================================================== */
 
+  protected DbCard getDbCard(final String path, final String name) throws WebdavException {
+    verifyPath(path);
+
+//    openSession();
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("from ");
+    sb.append(DbCard.class.getName());
+    sb.append(" card where card.parentPath=:path");
+    sb.append(" and card.name=:name");
+
+    sess.createQuery(sb.toString());
+    sess.setString("path", path);
+    sess.setString("name", name);
+
+    return (DbCard)sess.getUnique();
+  }
+
   protected CarddavCollection makeCdCollection(final DbCollection col) throws WebdavException {
     CarddavCollection cdc = new CarddavCollection();
 
-    if (dbConfig.getAddressBook()) {
-      /* This prefix is flagged as an address book. */
-      cdc.setAddressBook(true);
-    }
+    //if (dbConfig.getAddressBook()) {
+    //  /* This prefix is flagged as an address book. */
+    //  cdc.setAddressBook(true);
+    //}
+    cdc.setAddressBook(col.getAddressBook());
 
     cdc.setCreated(col.getCreated());
     cdc.setLastmod(col.getLastmod());
@@ -310,6 +349,8 @@ public abstract class DbDirHandler extends AbstractDirHandler {
     // addressBook     boolean
 
     cdc.setOwner(getPrincipal(col.getOwnerHref()));
+    cdc.setPath(col.getParentPath() + "/" + col.getName());
+    cdc.setParentPath(col.getParentPath());
 
     return cdc;
   }
@@ -489,17 +530,17 @@ public abstract class DbDirHandler extends AbstractDirHandler {
    * ==================================================================== */
 
   protected void checkOpen() throws WebdavException {
-    if (!isOpen) {
+    if (!isOpen()) {
       throw new WebdavException("Session call when closed");
     }
   }
 
   protected synchronized void openSession() throws WebdavException {
-    if (isOpen) {
+    if (isOpen()) {
       throw new WebdavException("Already open");
     }
 
-    isOpen = true;
+    open = true;
 
     if (sess != null) {
       warn("Session is not null. Will close");
@@ -522,7 +563,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
   }
 
   protected synchronized void closeSession() throws WebdavException {
-    if (!isOpen) {
+    if (!isOpen()) {
       if (debug) {
         trace("Close for " + objTimestamp + " closed session");
       }
@@ -553,7 +594,7 @@ public abstract class DbDirHandler extends AbstractDirHandler {
       } catch (Throwable t1) {}
       sess = null; // Discard on error
     } finally {
-      isOpen = false;
+      open = false;
     }
   }
 
@@ -595,6 +636,14 @@ public abstract class DbDirHandler extends AbstractDirHandler {
       sess.flush();
     }
   }*/
+
+  protected String ensureSlashAtEnd(final String val) {
+    if (val.endsWith("/")) {
+      return val;
+    }
+
+    return val + "/";
+  }
 
   /* ====================================================================
    *                   private methods

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- ===================================================================
+     Object to represent a card.
+     =================================================================== -->
+
+<hibernate-mapping>
+  <class name="org.bedework.carddav.server.dirHandlers.db.DbCollection"
+         table="bwcd_collections" >
+    <cache usage="read-write"/>
+    <id name="id" type="long" column="bwcd_id">
+      <generator class="native"/>
+    </id>
+
+    <!-- db entity properties -->
+
+    <version name="seq" column="bwcd_seq" type="integer" />
+
+    <property name="byteSize" column="bwcd_bytesize" type="integer" />
+
+    <property name="ownerHref" column="bwcd_ownerhref" type="string"
+              index="bwcdidx_col_owner" not-null="true" />
+
+    <property name="acl" column="bwcd_acl" type="string"
+              length="3900" />
+
+    <property name="parentPath" column="bwcd_parent_path" type="string" length="3000"
+              not-null="true"
+              index="bwcdidx_col_parentpath" />
+
+    <property name="created" type="string">
+      <column name="bwcd_created" length="16" not-null="true" />
+    </property>
+
+    <!-- named entity properties -->
+
+    <property name="name" column="bwcd_name" type="string" length="500"
+              index="bwcdidx_col_name" />
+    
+    <!-- collection properties -->
+
+    <property name="lastmod" type="string" >
+      <column name="bwcd_lastmod" length="16" not-null="true" />
+    </property>
+    
+    <property name="description" column="bwcd_desc" type="string" length="1000"
+              index="bwcdidx_col_desc" />
+
+    <property name="addressBook" column="bwcd_addrbook" 
+              type="boolean" not-null="true" />
+
+  </class>
+</hibernate-mapping>
+

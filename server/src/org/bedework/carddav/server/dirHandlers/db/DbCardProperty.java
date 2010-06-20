@@ -26,14 +26,10 @@
 
 package org.bedework.carddav.server.dirHandlers.db;
 
+import edu.rpi.sss.util.Util;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /** A representation of a vcard property for database persistance in cardDAV.
  * Allows us to index the values for searching
@@ -41,21 +37,13 @@ import javax.persistence.Table;
  * @author douglm
  *
  */
-@Table(name = "BWCD_PROPS")
 public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
-  @ManyToOne
-  @JoinColumn(name = "BWCD_CARDID", nullable = false,
-              updatable = false, insertable = false)
   private DbCard card;
 
-  @Column(name = "BWCD_PNAME")
   private String name;
 
-  @OneToMany
-  @JoinColumn(name = "BWCD_PROPID", nullable = false)
   private List<DbCardParam> params;
 
-  @Column(name = "BWCD_PVALUE")
   private String value;
 
   /** Null constructor
@@ -73,11 +61,11 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
    */
   public DbCardProperty(final String name,
                         final String value,
-                        final DbCard card,
+      //                  final DbCard card,
                         final DbCardParam... params) {
     this.name = name;
     this.value = value;
-    this.card = card;
+    //this.card = card;
 
     for (DbCardParam param: params) {
       if (this.params == null) {
@@ -130,6 +118,7 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   /**
    * @return parameters or null
    */
+  // @ JoinColumn(name = "BWCD_PROPID", nullable = false)
   public List<DbCardParam> getParams() {
     return params;
   }
@@ -206,6 +195,29 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   /* ====================================================================
    *                   Object methods
    * ==================================================================== */
+
+  @Override
+  public int compareTo(final DbCardProperty that) {
+    try {
+      int res = Util.compareStrings(getName(), that.getName());
+
+      if (res != 0) {
+        return res;
+      }
+
+      res = Util.compareStrings(getValue(), that.getValue());
+
+      if (res != 0) {
+        return res;
+      }
+
+//      return Util.compareStrings(getName(), that.getName());
+      // TODO - compare params
+      return res;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
 
   @Override
   public String toString() {

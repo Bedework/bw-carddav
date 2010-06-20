@@ -25,8 +25,6 @@
  */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import javax.persistence.Column;
-
 /** Base type for a database entity with a name.
  *
  * @author Mike Douglass
@@ -35,7 +33,6 @@ import javax.persistence.Column;
  * @param <T>
  */
 public class DbNamedEntity<T> extends DbEntity<T> {
-  @Column(name = "BWCD_NAME")
   private String name;
 
   /** Set the name

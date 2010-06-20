@@ -17,6 +17,8 @@
 <project name="bw.buildsh" default="build">
   <import file="${build.dir}/buildfilters.xml" />
 
+  <import file="${build.dir}/platforms/${org.bedework.global.deploy.platform}Service.xml" />
+
   <target name="init">
     <!-- Destinations - where we build stuff -->
     <property name="app.dest.home"
@@ -26,9 +28,7 @@
     <property name="app.dest.classes"
               location="${app.dest.home}/classes" />
     <property name="app.dest.properties"
-              location="${app.dest.classes}/properties/calendar" />
-    <property name="app.dest.resources"
-              location="${app.dest.home}/resources" />
+              location="${app.dest.classes}/properties/carddav" />
     <property name="app.dest.data"
               location="${app.dest.home}/data" />
 
@@ -47,61 +47,35 @@
 
     <mkdir dir="${app.dest.lib}" />
 
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-collections}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-logging}"/>
-
-    <!-- core files -->
-
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.rpiaccess}" />
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.rpiutil}" />
-
-    <!-- any extra files-->
-   <copy todir="${app.dest.lib}" >
-     <fileset dir="${org.bedework.temp.extrajars.dir}" />
-   </copy>
-
-    <!-- Some more standard libs -->
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.log4j}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-codec}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-digester}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-collections}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-httpclient}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-lang}"/>
-    <copy todir="${app.dest.lib}" file="${org.bedework.appjar.commons-ssl}"/>
-
-    <!-- jdbc stuff -->
-
-    <if>
-      <available file="${org.bedework.global.ext.lib}/jdbc" type="dir" />
-      <then>
-        <!-- jdbc drivers -->
-        <copy todir="${app.dest.lib}" flatten="yes" >
-          <!-- local jdbc drivers -->
-          <fileset dir="${org.bedework.global.ext.lib}/jdbc">
-            <include name="*.jar"/>
-          </fileset>
-        </copy>
-      </then>
-      <else>
-        <!-- Include the quickstart jdbc driver -->
-        <copy todir="${app.dest.lib}" file="${org.bedework.appjar.hsqldb}"/>
-      </else>
-    </if>
+    <!-- Platform specific -->
+    <antcall target="addLibs" inheritRefs="true" />
 
     <copy todir="${app.dest.classes}">
-      <fileset dir="${org.bedework.project.calendarapi}/calCore/resources/properties" />
+      <fileset dir="${app.global.properties.dir}" />
       <filterset refid="property.filters" />
     </copy>
 
+    <!--
     <copy todir="${app.dest.classes}">
       <fileset dir="${org.bedework.project.calendarapi}/calCore/resources/hbms" />
       <filterset refid="property.filters" />
     </copy>
 
-    <copy todir="${app.dest.classes}" overwrite="yes" >
-      <fileset refid="org.bedework.extra.resources" />
-      <filterset refid="property.filters" />
-    </copy>
+    <copy tofile="${app.dest.classes}/sysevents.properties"
+          file="${org.bedework.config.sysevents.properties}" /> -->
+
+    <if>
+      <isreference refid="org.bedework.extra.resources" />
+      <then>
+        <copy todir="${app.dest.classes}" overwrite="yes" >
+          <fileset refid="org.bedework.extra.resources" />
+          <filterset refid="property.filters" />
+        </copy>
+      </then>
+    </if>
+
+    <!-- Platform specific hibernate properties -->
+    <antcall target="doHibProps" inheritRefs="true" />
 
     <!-- Create the env.properties file -->
     <mkdir dir="${app.dest.properties}" />
@@ -113,65 +87,36 @@
                        Add any resource files
          =============================================================== -->
 
-    <copy tofile="${app.dest.resources}/log4j.xml"
-          file="${org.bedework.runsh.log4j.xml}"
-          failonerror="false" />
+    <!-- Platform specific -->
+    <antcall target="addResources" inheritRefs="true" />
 
     <!-- ===============================================================
                        Add any data files
          =============================================================== -->
 
-    <mkdir dir="${app.dest.data}" />
-
-    <copy todir="${app.dest.data}" overwrite="yes" >
-      <fileset refid="org.bedework.shellscr.data" />
-      <filterset refid="property.filters" />
-    </copy>
-
-    <!-- ===============================================================
-                       Build the classpath
-         =============================================================== -->
-
-    <path id="app.run.path">
-      <fileset dir="${app.dest.lib}">
-        <include name="*.jar"/>
-      </fileset>
-      <pathelement location="${app.dest.resources}" />
-    </path>
-    <pathconvert property="app.run.cp" refid="app.run.path"
-                 targetos="unix" >
-      <map from="${app.dest.lib}" to="./lib"/>
-      <map from="${app.dest.resources}" to="./resources"/>
-    </pathconvert>
-    <pathconvert property="app.run.wincp" refid="app.run.path"
-                 targetos="windows" >
-      <map from="${app.dest.lib}" to="./lib"/>
-      <map from="${app.dest.resources}" to="./resources"/>
-    </pathconvert>
+    <if>
+      <istrue value="${org.bedework.shellscr.copy.data}" />
+      <then>
+        <mkdir dir="${app.dest.data}" />
+    
+        <copy todir="${app.dest.data}" overwrite="yes" >
+          <fileset refid="org.bedework.shellscr.data" />
+          <filterset refid="property.filters" />
+        </copy>
+      </then>
+    </if>
 
     <!-- ===============================================================
-                       Copy and modify the shell script
+                       Add any extra stuff
          =============================================================== -->
 
-    <copy tofile="${app.dest.home}/${propval.app.shellscr.name}"
-          file="${app.run.shellscr}" >
-      <filterset>
-        <filter token="CP"
-                value=".:./classes:${app.run.cp}"/>
-      </filterset>
-      <filterset refid="property.filters" />
-    </copy>
+    <!-- Platform specific -->
+    <antcall target="addExtras" inheritRefs="true" />
+    
+    <!-- ================================================================
+         Build the zip file
+         ================================================================ -->
 
-    <copy tofile="${app.dest.home}/${propval.app.batscr.name}"
-          file="${app.run.batscr}" >
-      <filterset>
-        <filter token="CP"
-                value=".;./classes;${app.run.wincp}"/>
-      </filterset>
-      <filterset refid="property.filters" />
-    </copy>
-
-    <!-- build the zip file -->
     <mkdir dir="${dist.home}" />
     <delete file="${app.zip.file}" />
 
@@ -180,4 +125,3 @@
     </zip>
   </target>
 </project>
-

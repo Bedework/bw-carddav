@@ -36,6 +36,7 @@ import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
@@ -196,6 +197,8 @@ public class BwSysIntfImpl implements SysIntf {
       hostPrincipalRoot = setRoot(conf.getHostPrincipalRoot());
 
       urlHandler = new UrlHandler(req, true);
+
+      ensureProvisioned();
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -461,6 +464,10 @@ public class BwSysIntfImpl implements SysIntf {
   public void addCard(final String path,
                       final Card card) throws WebdavException {
     try {
+      if (card.getOwner() == null) {
+        card.setOwner(makeOwner());
+      }
+
       getHandler(path).addCard(path, card);
     } catch (WebdavException wde) {
       throw wde;
@@ -589,6 +596,10 @@ public class BwSysIntfImpl implements SysIntf {
   public int makeCollection(final CarddavCollection col,
                             final String parentPath) throws WebdavException {
     try {
+      if (col.getOwner() == null) {
+        col.setOwner(makeOwner());
+      }
+
       handleStatus(getHandler(parentPath).makeCollection(col, parentPath));
       return HttpServletResponse.SC_CREATED;
     } catch (WebdavException wde) {
@@ -724,9 +735,10 @@ public class BwSysIntfImpl implements SysIntf {
   public CarddavResource getFile(final WdCollection coll,
                             final String name) throws WebdavException {
     try {
-      throw new WebdavException("unimplemented");
-    } catch (WebdavException wde) {
-      throw wde;
+      return null;
+      //throw new WebdavException("unimplemented");
+    //} catch (WebdavException wde) {
+    //  throw wde;
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -922,6 +934,95 @@ public class BwSysIntfImpl implements SysIntf {
     }
 
     return val;
+  }
+
+  private void ensureProvisioned() throws WebdavException {
+    /* Ensure the current account is fully provisioned - i.e. has home and
+     * address book.
+     */
+    if (conf.getDefaultAddressbook() == null) {
+      throw new WebdavException("No default address book");
+    }
+
+    if (conf.getAddressBookHandlerPrefix() == null) {
+      throw new WebdavException("No default address book handler prefix");
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append(conf.getAddressBookHandlerPrefix());
+    sb.append("/");
+
+    String adbhPfx = sb.toString();
+
+    sb.append(account);
+    sb.append("/");
+
+    String userHome = sb.toString();
+
+    CarddavCollection col = getCollection(userHome);
+
+    boolean noHome = col == null;
+    User owner = new User(account);
+    owner.setPrincipalRef(userPrincipalRoot + account);
+
+    if (noHome) {
+      int resp = makeCollection(makeCdCollection(adbhPfx,
+                                                 account,
+                                                 false,
+                                                 owner),
+                                 adbhPfx);
+      if (resp != HttpServletResponse.SC_CREATED) {
+        throw new WebdavException("Unable to create user home: " + resp);
+      }
+    }
+
+    sb.append(conf.getDefaultAddressbook());
+    sb.append("/");
+
+    boolean noAddrbook = noHome;
+
+    if (!noHome) {
+      col = getCollection(sb.toString());
+      noAddrbook = col == null;
+    }
+
+    if (!noAddrbook) {
+      return;
+    }
+
+    int resp = makeCollection(makeCdCollection(userHome,
+                                               conf.getDefaultAddressbook(),
+                                               true,
+                                               owner),
+                              userHome);
+    if (resp != HttpServletResponse.SC_CREATED) {
+      throw new WebdavException("Unable to create user addressbook: " + resp);
+    }
+  }
+
+  private CarddavCollection makeCdCollection(final String parentPath,
+                                             final String name,
+                                             final boolean addrBook,
+                                             final AccessPrincipal owner) throws WebdavException {
+    CarddavCollection cdc = new CarddavCollection();
+
+    cdc.setAddressBook(addrBook);
+    cdc.setName(name);
+    cdc.setDisplayName(name);
+
+    cdc.setOwner(owner);
+    cdc.setPath(parentPath + "/" + name);
+    cdc.setParentPath(parentPath);
+
+    return cdc;
+  }
+
+  private AccessPrincipal makeOwner() {
+    User owner = new User(account);
+    owner.setPrincipalRef(userPrincipalRoot + account);
+
+    return owner;
   }
 
   /* ====================================================================

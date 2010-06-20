@@ -88,8 +88,10 @@ public interface DirHandler {
   public void open(String account) throws WebdavException;
 
   /** Close the handler
+   *
+   * @throws WebdavException
    */
-  public void close();
+  public void close() throws WebdavException;
 
   /**
    * @return boolean

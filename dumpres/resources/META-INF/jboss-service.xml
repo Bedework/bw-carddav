@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+  <!--  guarantee separate classloader -->
+  <loader-repository> 
+    org.bedework:archive=carddav-dumpres-service 
+  </loader-repository> 
+  
+  <mbean code="org.bedework.carddav.dumpres.BwCardDumpRestore"
+         name="org.bedework:service=CardDumpres">
+    <attribute name="Account">admin</attribute>
+    
+    <attribute name="Appname">dumpres</attribute>
+    
+    <!-- Create tables - false for safety - set true in console -->
+    <attribute name="Create">false</attribute>
+    
+    <!-- Statement delimiter -->
+    <attribute name="Delimiter">;</attribute>
+    
+    <!-- Drop tables - false for safety - set true in console -->
+    <attribute name="Drop">false</attribute>
+    
+    <!-- Export to database? - false for safety - set true in console -->
+    <attribute name="Export">false</attribute>
+    
+    <!-- Format the output? -->
+    <attribute name="Format">true</attribute>
+    
+    <!-- Do we halt on error? -->
+    <attribute name="HaltOnError">true</attribute>
+    
+    <!-- Schema Output file name - full path, folders must exist -->
+    <attribute name="SchemaOutFile">${jboss.server.data.dir}/bedework/carddumprestore/schema.txt</attribute>
+    
+    <!-- SQL input file name - full path. Used instead of the configuration? -->
+    <!--  There appears to be a bug in the hibernate code. Everybody initialises
+        this to /import.sql. Set to null causes an NPE 
+        Make sure it refers to a non-existant file -->
+    <attribute name="SqlIn">not-a-file.sql</attribute>
+    
+    <!-- XML data input file name - full path. Used for data restore -->
+    <attribute name="DataIn">${jboss.server.data.dir}/bedework/carddumprestore/initcard.xml</attribute>
+    
+    <!-- XML data output directory - full path. Used for data dump -->
+    <attribute name="DataOut">${jboss.server.data.dir}/bedework/carddumprestore/</attribute>
+    
+    <!-- XML data output file prefix - for data dump -->
+    <attribute name="DataOutPrefix">bwcarddata</attribute>
+
+    <!-- We need activemq 
+    <depends>jboss.jca:service=ConnectionFactoryBinding,name=activemq/QueueConnectionFactory</depends>
+    -->    
+    
+    <!-- We also need the database -->
+    <depends>jboss.jca:service=DataSourceBinding,name=CardDS</depends>
+  </mbean>
+</server>

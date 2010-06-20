@@ -100,7 +100,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#close()
    */
-  public void close() {
+  public void close() throws WebdavException {
   }
 
   /* (non-Javadoc)
@@ -352,17 +352,25 @@ public abstract class AbstractDirHandler implements DirHandler {
    * NormalizeUri was called previously so we have no trailing "/"
    */
   protected SplitResult splitUri(final String uri) throws WebdavException {
-    int pos = uri.lastIndexOf("/");
+    String noEndSlash;
+
+    if (uri.endsWith("/")) {
+      noEndSlash = uri.substring(0, uri.length() - 1);
+    } else {
+      noEndSlash = uri;
+    }
+
+    int pos = noEndSlash.lastIndexOf("/");
     if (pos < 0) {
       // bad uri
       throw new WebdavBadRequest("Invalid uri: " + uri);
     }
 
     if (pos == 0) {
-      return new SplitResult(uri, null);
+      return new SplitResult(noEndSlash, null);
     }
 
-    return new SplitResult(uri.substring(0, pos), uri.substring(pos + 1));
+    return new SplitResult(noEndSlash.substring(0, pos), noEndSlash.substring(pos + 1));
   }
 
   /**

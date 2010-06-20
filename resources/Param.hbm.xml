@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- ===================================================================
+     Object to represent a property parameter.
+     =================================================================== -->
+
+<hibernate-mapping>
+  <class name="org.bedework.carddav.server.dirHandlers.db.DbCardParam"
+         table="bwcd_propparams" >
+    <cache usage="read-write"/>
+    <id name="id" type="long" column="bwcd_id">
+      <generator class="native"/>
+    </id>
+
+    <!-- param properties -->
+
+    <property name="name" column="bwcd_name" type="string" length="500" />
+
+    <property name="value" column="bwcd_value" type="text"/>
+  </class>
+</hibernate-mapping>
+

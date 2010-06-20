@@ -26,17 +26,22 @@
 
 package org.bedework.carddav.server.dirHandlers.db;
 
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.VCard;
 import net.fortuna.ical4j.vcard.VCardBuilder;
 import net.fortuna.ical4j.vcard.VCardOutputter;
 import net.fortuna.ical4j.vcard.Property.Id;
+import net.fortuna.ical4j.vcard.property.Kind;
 import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import edu.rpi.sss.util.Util;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -44,38 +49,24 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 /** A representation of a vcard and properties for database persistance in cardDAV
  *
  * @author douglm
  *
  */
-@Entity
-@Table(name = "BWCD_CARDS")
 public class DbCard extends DbNamedEntity<DbCard> {
-  @Column(name = "BWCD_FN")
   private String fn;
 
-  @Column(name = "BWCD_UID")
   private String uid;
 
-  @OneToMany
-  @JoinColumn(name = "BWCD_CARDID", nullable = false)
+  private String kind;
+
   private List<DbCardProperty> properties;
 
-  @Column(name = "BWCD_LASTMOD")
   private String lastmod;
 
-  @Transient
   private VCard vcard;
 
-  @Column(name="BWCD_STRCARD")
   private String strForm;
 
   private String prevLastmod;
@@ -110,19 +101,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   public DbCard(final VCard vcard) throws WebdavException {
     this.vcard = vcard;
 
-    fn = findProperty(Property.Id.FN).getValue();
-
-    Uid uid = (Uid)findProperty(Property.Id.UID);
-
-    if (uid == null) {
-      setUid(edu.rpi.sss.util.Uid.getUid());
-    } else {
-      this.uid = uid.getValue();
-    }
-
-    for (Property p: vcard.getProperties()) {
-      addDbProperty(makeDbProperty(p));
-    }
+    initFromVcard();
   }
 
   /** Set the fn
@@ -132,6 +111,16 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public void setFn(final String val) throws WebdavException {
     fn = val;
+/*
+    if (val == null) {
+      return;
+    }
+
+    try {
+      replaceProperty(new Fn(new ArrayList<Parameter>(), val));
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }*/
   }
 
   /** Get the name
@@ -149,11 +138,16 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public void setUid(final String val) throws WebdavException {
     uid = val;
+/*
+    if (val == null) {
+      return;
+    }
+
     try {
-      replaceProperty(new Uid(null, val));
+      replaceProperty(new Uid(new ArrayList<Parameter>(), val));
     } catch (Throwable t) {
       throw new WebdavException(t);
-    }
+    }*/
   }
 
   /**
@@ -168,20 +162,81 @@ public class DbCard extends DbNamedEntity<DbCard> {
    * @param val
    * @throws WebdavException
    */
+  public void setKind(final String val) throws WebdavException {
+    kind = val;
+/*
+    if (val == null) {
+      return;
+    }
+
+    try {
+      replaceProperty(new Kind(new ArrayList<Parameter>(), val));
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }*/
+  }
+
+  /**
+   * @return String
+   * @throws WebdavException
+   */
+  public String getKind() throws WebdavException {
+    return kind;
+  }
+
+  /**
+   * @param val
+   */
+  public void setProperties(final List<DbCardProperty> val) {
+    properties = val;
+  }
+
+  /**
+   * @return DbCardProperty list
+   */
+  public List<DbCardProperty> getProperties() {
+    return properties;
+  }
+
+  /** Set the string form of the card
+   *
+   * @param val    String
+   */
+  public void setStrForm(final String val) {
+    strForm = val;
+  }
+
+  /** Get the name
+   *
+   * @return String   name
+   */
+  public String getStrForm() {
+    return strForm;
+  }
+
+  /**
+   * @param val
+   * @throws WebdavException
+   */
   public void setLastmod(final String val) throws WebdavException {
     lastmod = val;
+/*
+    if (val == null) {
+      return;
+    }
 
     try {
       replaceProperty(new Revision(new ArrayList<Parameter>(), val));
     } catch (Throwable t) {
       throw new WebdavException(t);
-    }
+    }*/
   }
 
   /**
    * @return String
    */
   public String getLastmod() {
+    /*
     Revision rev = (Revision)findProperty(Property.Id.REV);
 
     if (rev == null) {
@@ -189,7 +244,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
       return null;
     }
 
-    lastmod = rev.getValue();
+    lastmod = rev.getValue();*/
     return lastmod;
   }
 
@@ -259,6 +314,18 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
+   * @param val
+   * @throws WebdavException
+   */
+  public void setVcard(final VCard val) throws WebdavException {
+    vcard = val;
+    if (val == null) {
+      vcard = new VCard();
+    }
+    initFromVcard();
+  }
+
+  /**
    * @return vcard or null
    * @throws WebdavException
    */
@@ -294,6 +361,12 @@ public class DbCard extends DbNamedEntity<DbCard> {
    * @throws WebdavException
    */
   public String output() throws WebdavException {
+    try {
+      replaceProperty(new Revision(new ArrayList<Parameter>(), getLastmod()));
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
+
     if (strForm != null) {
       return strForm;
     }
@@ -314,8 +387,45 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /* ====================================================================
+   *                   Convenience methods
+   * ==================================================================== */
+
+  /** Set the lastmod and created if created is not set already.
+   * @throws WebdavException
+   */
+  public void setDtstamps() throws WebdavException {
+    DateTime dt = new DateTime(true);
+    setLastmod(new LastModified(dt).getValue());
+
+    if (getCreated() == null) {
+      setCreated(new Created(dt).getValue());
+    }
+  }
+
+  /* ====================================================================
    *                   Object methods
    * ==================================================================== */
+
+  @Override
+  public int compareTo(final DbCard that) {
+    try {
+      int res = Util.compareStrings(getParentPath(), that.getParentPath());
+
+      if (res != 0) {
+        return res;
+      }
+
+      res = Util.compareStrings(getUid(), that.getUid());
+
+      if (res != 0) {
+        return res;
+      }
+
+      return Util.compareStrings(getName(), that.getName());
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
 
   @Override
   public String toString() {
@@ -330,17 +440,53 @@ public class DbCard extends DbNamedEntity<DbCard> {
    *                   Private methods
    * ==================================================================== */
 
+  private void initFromVcard() throws WebdavException {
+    setFn(findProperty(Property.Id.FN).getValue());
+
+    Property k = findProperty(Property.Id.KIND);
+
+    if (k != null) {
+      setKind(k.getValue());
+    } else {
+      setKind(Kind.INDIVIDUAL.getValue());
+    }
+
+    Uid uid = (Uid)findProperty(Property.Id.UID);
+
+    if (uid == null) {
+      setUid(edu.rpi.sss.util.Uid.getUid());
+    } else {
+      setUid(uid.getValue());
+    }
+
+    for (Property p: vcard.getProperties()) {
+      if (p.getId() == Property.Id.FN) {
+        setFn(p.getValue());
+      }
+
+      if (p.getId() == Property.Id.KIND) {
+        setKind(p.getValue());
+      }
+
+      if (p.getId() == Property.Id.UID) {
+        setUid(p.getValue());
+      }
+
+      addDbProperty(makeDbProperty(p));
+    }
+  }
+
   /**
    * @param id
    * @return property or null
    */
   private DbCardProperty findDbProperty(final String name) {
-    if (properties == null) {
+    if (getProperties() == null) {
       return null;
     }
 
-    for (DbCardProperty p: properties) {
-      if (name.equals(p.getName())) {
+    for (DbCardProperty p: getProperties()) {
+      if (name.toUpperCase().equals(p.getName())) {
         return p;
       }
     }
@@ -349,6 +495,11 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   private void replaceProperty(final Property val) {
+    if (vcard == null) {
+      // Might happen during read from db
+      return;
+    }
+
     List<Property> ps = vcard.getProperties();
 
     Property p = vcard.getProperty(val.getId());
@@ -362,31 +513,33 @@ public class DbCard extends DbNamedEntity<DbCard> {
     String name = val.getId().toString();
     DbCardProperty prop = findDbProperty(name);
 
-    if (prop != null) {
-      properties.remove(prop);
+    if ((prop != null) && (getProperties() != null)) {
+      getProperties().remove(prop);
     }
 
-    properties.add(makeDbProperty(val));
+    addDbProperty(makeDbProperty(val));
   }
 
   private void addDbProperty(final DbCardProperty val) {
-    if (properties == null) {
-      properties = new ArrayList<DbCardProperty>();
+    if (getProperties() == null) {
+      setProperties(new ArrayList<DbCardProperty>());
     }
 
-    properties.add(val);
+    val.setCard(this);
+    getProperties().add(val);
   }
 
   private DbCardProperty makeDbProperty(final Property val) {
-    String name = val.getId().toString();
+    String name = val.getId().toString().toUpperCase();
     String value = val.getValue();
 
-    DbCardProperty dbp = new DbCardProperty(name, value, this);
+    DbCardProperty dbp = new DbCardProperty(name, value/*, this*/);
 
     for (Parameter par: val.getParameters()) {
       dbp.addParam(new DbCardParam(par.getId().toString(), par.getValue(), dbp));
     }
 
+    dbp.setCard(this);
     return dbp;
   }
 }

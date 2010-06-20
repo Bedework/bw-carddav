@@ -8,5 +8,15 @@
 
 <project name="bedework.platformTermination" default="doPlatform" >
   <target name="doPlatform" >
+    <!-- If requested copy in the db configuration. -->
+
+    <if>
+      <istrue value="${org.bedework.global.copy.bedeworkcardds.config}" />
+      <then>
+        <copy file="${org.bedework.config.home}/bedework-card-ds.xml"
+              tofile="${org.bedework.appserver.deploy.dir}/bedework-card-ds.xml"
+              overwrite="yes" />
+      </then>
+    </if>
   </target>
 </project>

@@ -52,7 +52,7 @@
 
   <import file="${build.dir}/buildfilters.xml" />
 
-    <import file="${project.home}/appjars.xml" />
+  <import file="${project.home}/appjars.xml" />
 
   <if>
     <isset property="org.bedework.global.portal.platform" />
@@ -215,6 +215,11 @@
          Add hibernate jars and property files from calendar api.
          =============================================================== -->
 
+    <copy todir="${app.dest.classes}">
+      <fileset dir="${resources.dir}" />
+      <filterset refid="property.filters" />
+    </copy>
+  	
     <!--  NOT CALDAV
     <copy todir="${app.dest.classes}">
       <fileset dir="${org.bedework.project.calendarapi}/calCore/resources/properties" />
