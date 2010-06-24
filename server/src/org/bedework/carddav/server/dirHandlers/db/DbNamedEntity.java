@@ -32,8 +32,10 @@ package org.bedework.carddav.server.dirHandlers.db;
  *
  * @param <T>
  */
-public class DbNamedEntity<T> extends DbEntity<T> {
+public abstract class DbNamedEntity<T> extends DbEntity<T> {
   private String name;
+
+  private String path;
 
   /** Set the name
    *
@@ -50,6 +52,24 @@ public class DbNamedEntity<T> extends DbEntity<T> {
   public String getName() {
     return name;
   }
+
+  /**
+   * @param val
+   */
+  public void setPath(final String val) {
+    path = val;
+  }
+
+  /**
+   * @return path.
+   */
+  public String getPath() {
+    return path;
+  }
+
+  /* ====================================================================
+   *                   SharedEntity methods
+   * ==================================================================== */
 
   /**
    * @param sb

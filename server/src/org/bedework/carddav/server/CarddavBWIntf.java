@@ -1631,6 +1631,6 @@ public class CarddavBWIntf extends WebdavNsIntf {
       return new SplitResult(uri, null);
     }
 
-    return new SplitResult(uri.substring(0, pos), uri.substring(pos + 1));
+    return new SplitResult(uri.substring(0, pos + 1), uri.substring(pos + 1));
   }
 }

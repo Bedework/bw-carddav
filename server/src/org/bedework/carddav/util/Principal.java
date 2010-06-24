@@ -68,7 +68,7 @@ public abstract class Principal implements Comparator<Principal>,
    *
    * @param  account            String account name
    */
-  public Principal(String account) {
+  public Principal(final String account) {
     this.account = account;
   }
 
@@ -85,7 +85,7 @@ public abstract class Principal implements Comparator<Principal>,
    *
    * @param val
    */
-  public void setUnauthenticated(boolean val) {
+  public void setUnauthenticated(final boolean val) {
     if (val) {
       setAccount(null);
     }
@@ -101,7 +101,7 @@ public abstract class Principal implements Comparator<Principal>,
   /**
    * @param val
    */
-  public void setAccount(String val) {
+  public void setAccount(final String val) {
     account = val;
   }
 
@@ -112,7 +112,7 @@ public abstract class Principal implements Comparator<Principal>,
     return account;
   }
 
-  public void setPrincipalRef(String val) {
+  public void setPrincipalRef(final String val) {
     principalRef = val;
   }
 
@@ -127,7 +127,7 @@ public abstract class Principal implements Comparator<Principal>,
    *
    * @param val        Collection of Principal
    */
-  public void setGroups(Collection<Principal> val) {
+  public void setGroups(final Collection<Principal> val) {
     groupNames = null;
     groups = val;
   }
@@ -151,7 +151,7 @@ public abstract class Principal implements Comparator<Principal>,
   /**
    * @param val Principal
    */
-  public void addGroup(Principal val) {
+  public void addGroup(final Principal val) {
     getGroups().add(val);
   }
 
@@ -166,7 +166,7 @@ public abstract class Principal implements Comparator<Principal>,
    *
    * @param val        Set of String
    */
-  public void setGroupNames(Collection<String> val) {
+  public void setGroupNames(final Collection<String> val) {
     groupNames = val;
   }
 
@@ -184,7 +184,7 @@ public abstract class Principal implements Comparator<Principal>,
     return groupNames;
   }
 
-  protected void toStringSegment(StringBuffer sb) {
+  protected void toStringSegment(final StringBuffer sb) {
     sb.append("account=");
     sb.append(account);
     sb.append(", kind=");
@@ -197,7 +197,7 @@ public abstract class Principal implements Comparator<Principal>,
    * @param name  tag
    * @param val   BwPrincipal
    */
-  public static void toStringSegment(StringBuffer sb, String name, Principal val) {
+  public static void toStringSegment(final StringBuffer sb, final String name, final Principal val) {
     if (name != null) {
       sb.append(", ");
       sb.append(name);
@@ -221,7 +221,7 @@ public abstract class Principal implements Comparator<Principal>,
    *                 <0 if s1 is lexicographically less than s2;
    *                 >0 if s1 is lexicographically greater than s2.
    */
-  public static int compareStrings(String s1, String s2) {
+  public static int compareStrings(final String s1, final String s2) {
     if (s1 == null) {
       if (s2 != null) {
         return -1;
@@ -241,22 +241,24 @@ public abstract class Principal implements Comparator<Principal>,
    *                   Object methods
    * ==================================================================== */
 
-  public int compareTo(Principal o) {
+  public int compareTo(final Principal o) {
     return compare(this, o);
   }
 
-  public int compare(Principal p1, Principal p2) {
+  public int compare(final Principal p1, final Principal p2) {
+    /*
     if (p1.getKind() < p2.getKind()) {
       return -1;
     }
 
     if (p1.getKind() > p2.getKind()) {
       return 1;
-    }
+    }*/
 
-    return compareStrings(p1.getAccount(), p2.getAccount());
+    return compareStrings(p1.getPrincipalRef(), p2.getPrincipalRef());
   }
 
+  @Override
   public int hashCode() {
     int hc = 7 * (getKind() + 1);
 
@@ -267,6 +269,12 @@ public abstract class Principal implements Comparator<Principal>,
     return hc;
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    return compareTo((Principal)o) == 0;
+  }
+
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer("Principal{");
 

@@ -40,6 +40,8 @@ import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
 
+import org.bedework.carddav.server.access.AccessState;
+
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.sss.util.Util;
 
@@ -111,16 +113,6 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public void setFn(final String val) throws WebdavException {
     fn = val;
-/*
-    if (val == null) {
-      return;
-    }
-
-    try {
-      replaceProperty(new Fn(new ArrayList<Parameter>(), val));
-    } catch (Throwable t) {
-      throw new WebdavException(t);
-    }*/
   }
 
   /** Get the name
@@ -138,16 +130,6 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public void setUid(final String val) throws WebdavException {
     uid = val;
-/*
-    if (val == null) {
-      return;
-    }
-
-    try {
-      replaceProperty(new Uid(new ArrayList<Parameter>(), val));
-    } catch (Throwable t) {
-      throw new WebdavException(t);
-    }*/
   }
 
   /**
@@ -164,16 +146,6 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public void setKind(final String val) throws WebdavException {
     kind = val;
-/*
-    if (val == null) {
-      return;
-    }
-
-    try {
-      replaceProperty(new Kind(new ArrayList<Parameter>(), val));
-    } catch (Throwable t) {
-      throw new WebdavException(t);
-    }*/
   }
 
   /**
@@ -220,31 +192,12 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public void setLastmod(final String val) throws WebdavException {
     lastmod = val;
-/*
-    if (val == null) {
-      return;
-    }
-
-    try {
-      replaceProperty(new Revision(new ArrayList<Parameter>(), val));
-    } catch (Throwable t) {
-      throw new WebdavException(t);
-    }*/
   }
 
   /**
    * @return String
    */
   public String getLastmod() {
-    /*
-    Revision rev = (Revision)findProperty(Property.Id.REV);
-
-    if (rev == null) {
-      lastmod = null;
-      return null;
-    }
-
-    lastmod = rev.getValue();*/
     return lastmod;
   }
 
@@ -384,6 +337,25 @@ public class DbCard extends DbNamedEntity<DbCard> {
     strForm = sw.toString();
 
     return strForm;
+  }
+
+  /* ====================================================================
+   *                   SharedEntity methods
+   * ==================================================================== */
+
+  @Override
+  public boolean isCollection() {
+    return false;
+  }
+
+  @Override
+  public void setAccessState(final AccessState val) {
+    // Don't do this.
+  }
+
+  @Override
+  public AccessState getAccessState() {
+    return null;
   }
 
   /* ====================================================================

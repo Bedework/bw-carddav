@@ -1,5 +1,5 @@
 /* **********************************************************************
-    Copyright 2007 Rensselaer Polytechnic Institute. All worldwide rights reserved.
+    Copyright 2006 Rensselaer Polytechnic Institute. All worldwide rights reserved.
 
     Redistribution and use of this distribution in source and binary forms,
     with or without modification, are permitted provided that:
@@ -23,81 +23,87 @@
     special, consequential, or incidental damages related to the software,
     to the maximum extent the law permits.
 */
-package org.bedework.carddav.util;
+package org.bedework.carddav.server.access;
 
 
-/** This class defines the various properties we need to make a connection
- * and retrieve a group and user information via ldap.
+/** Entities implementing this support access control as implemented by the access
+ * utilities.
+ *
+ * <p>The owner href (ownerHref), encoded acl (access) and parent path must be
+ * persisted.
+ *
+ *  <isCollection is usually derived.
+ *
+ * <p>path may be persisted or derived.
+ *
+ * <p>accessState is a transient object allowing us to calculate the access and
+ * possibly cache that calculation.
+ *
  *
  * @author Mike Douglass
+ * @version 1.0
+ *
+ * @param <T>
  */
-public class DbDirHandlerConfig extends DirHandlerConfig {
-  private String moduleType;
-
-  private String rootAccess;
-
-  private String rootOwner;
-
-  private int queryLimit;
-
-  /** Used by configuration tools
+public interface SharedEntity {
+  /** Href of owner
    *
    * @param val
    */
-  public void setModuleType(final String val)  {
-    moduleType  = val;
-  }
+  void setOwnerHref(final String val);
 
-  /**
+  /** Href of owner
+   *
    * @return String
    */
-  public String getRootAccess()  {
-    return rootAccess;
-  }
+  String getOwnerHref();
 
-  /**
+  /** Encoded acl
    *
    * @param val
    */
-  public void setRootAccess(final String val)  {
-    rootAccess  = val;
-  }
+  void setAccess(final String val);
 
-  /**
+  /** Encoded acl
+   *
    * @return String
    */
-  public String getRootOwner()  {
-    return rootOwner;
-  }
+  String getAccess();
 
-  /**
+  /** Access is inherited from the parent
    *
    * @param val
    */
-  public void setRootOwner(final String val)  {
-    rootOwner  = val;
-  }
+  void setParentPath(final String val);
+
+  /** Access is inherited from the parent
+   *
+   * @return parentPath.
+   */
+  String getParentPath();
 
   /**
-   * @return String
+   * @return the full path of this entity (parentPath + "/" + name)
    */
-  public String getModuleType()  {
-    return moduleType;
-  }
+  String getPath();
 
-  /** Set the query limit - 0 for no limit
+  /** We only try to preserve access state in collections. There will be many more
+   * entity objects (events, cards etc) than collections. In addition, most
+   * entity objects don't have specific access set on them so the access is
+   * essentially the parent collection access.
+   *
+   * @return boolean true for this entity being a collection
+   */
+  boolean isCollection();
+
+  /** Set the access state
    *
    * @param val
    */
-  public void setQueryLimit(final int val)  {
-    queryLimit = val;
-  }
+  void setAccessState(AccessState val);
 
   /**
-   *
-   * @return int val
+   * @return current AccessState object or null
    */
-  public int getQueryLimit()  {
-    return queryLimit;
-  }
+  AccessState getAccessState();
 }

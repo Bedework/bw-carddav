@@ -83,7 +83,10 @@ public abstract class AbstractDirHandler implements DirHandler {
 
   private transient Logger log;
 
+  /* This DOES NOT have the trailing "/" on the root prefix */
   private HashMap<String, Integer> toWho = new HashMap<String, Integer>();
+
+  /* This DOES have the trailing "/" on the root prefix */
   private HashMap<Integer, String> fromWho = new HashMap<Integer, String>();
 
   private HashMap<String, String> validUsers = new HashMap<String, String>();
@@ -234,7 +237,7 @@ public abstract class AbstractDirHandler implements DirHandler {
       throw new WebdavException(unknownPrincipalType);
     }
 
-    return root + "/" + p.getAccount();
+    return root + p.getAccount();
   }
 
   /* *
@@ -332,7 +335,7 @@ public abstract class AbstractDirHandler implements DirHandler {
       throw new WebdavException(unknownPrincipalType);
     }
 
-    return root + "/" + account;
+    return root + account;
   }
 
   protected static class SplitResult {
@@ -411,6 +414,11 @@ public abstract class AbstractDirHandler implements DirHandler {
 
   private void initWhoMaps(final String prefix, final int whoType) {
     toWho.put(prefix, whoType);
-    fromWho.put(whoType, prefix);
+
+    if (prefix.endsWith("/")) {
+      fromWho.put(whoType, prefix);
+    } else {
+      fromWho.put(whoType, prefix + "/");
+    }
   }
 }

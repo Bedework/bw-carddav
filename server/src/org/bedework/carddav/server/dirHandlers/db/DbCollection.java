@@ -26,6 +26,8 @@
 
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.carddav.server.access.AccessState;
+
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.sss.util.Util;
 
@@ -40,6 +42,8 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
   private String description;
 
   private boolean addressBook;
+
+  private AccessState accessState;
 
   /** Create DbCollection
    *
@@ -88,6 +92,25 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
    */
   public boolean getAddressBook() {
     return addressBook;
+  }
+
+  /* ====================================================================
+   *                   SharedEntity methods
+   * ==================================================================== */
+
+  @Override
+  public boolean isCollection() {
+    return true;
+  }
+
+  @Override
+  public void setAccessState(final AccessState val) {
+    accessState = val;
+  }
+
+  @Override
+  public AccessState getAccessState() {
+    return accessState;
   }
 
   /**

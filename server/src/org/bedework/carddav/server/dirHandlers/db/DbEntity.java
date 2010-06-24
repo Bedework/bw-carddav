@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.carddav.server.access.SharedEntity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,7 +38,7 @@ import java.util.Collection;
  *
  * @param <T>
  */
-public class DbEntity<T> extends UnversionedDbentity<T> {
+public abstract class DbEntity<T> extends UnversionedDbentity<T> implements SharedEntity {
   /* Hibernate does not implicitly delete db entities during update or
    * save, except for those referenced as part of a Collection.
    *
@@ -54,7 +56,9 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
 
   private String ownerHref;
 
-  private String acl;
+  private String creatorHref;
+
+  private String access;
 
   private String parentPath;
 
@@ -116,15 +120,29 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
   /**
    * @param val
    */
-  public void setAcl(final String val) {
-    acl = val;
+  public void setCreatorHref(final String val) {
+    creatorHref = val;
   }
 
   /**
    * @return String
    */
-  public String getAcl() {
-    return acl;
+  public String getCreatorHref() {
+    return creatorHref;
+  }
+
+  /**
+   * @param val
+   */
+  public void setAccess(final String val) {
+    access = val;
+  }
+
+  /**
+   * @return String
+   */
+  public String getAccess() {
+    return access;
   }
 
   /**
@@ -231,6 +249,6 @@ public class DbEntity<T> extends UnversionedDbentity<T> {
     sb.append(", created=");
     sb.append(getCreated());
     sb.append(",\n   acl=");
-    sb.append(getAcl());
+    sb.append(getAccess());
   }
 }

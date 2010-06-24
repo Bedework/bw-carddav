@@ -24,12 +24,19 @@
     <property name="ownerHref" column="bwcd_ownerhref" type="string"
               index="bwcdidx_card_owner" not-null="true" />
 
-    <property name="acl" column="bwcd_acl" type="string"
+    <property name="creatorHref" column="bwcd_creatorhref" type="string"
+              not-null="true" />
+
+    <property name="access" column="bwcd_acl" type="string"
               length="3900" />
 
     <property name="parentPath" column="bwcd_parent_path" type="string" length="3000"
               not-null="true"
               index="bwcdidx_card_parentpath" />
+
+    <property name="path" column="bwcd_path" type="string" length="3000"
+              not-null="true"
+              index="bwcdidx_card_path" />
 
     <property name="created" type="string">
       <column name="bwcd_created" length="16" not-null="true" />

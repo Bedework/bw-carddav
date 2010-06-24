@@ -55,6 +55,8 @@ public class CardDAVConfig /*extends ConfigCommon */{
 
   private String addressBookHandlerPrefix;
 
+  private String userHomeRoot;
+
   /* Principals */
   private String principalRoot;
   private String userPrincipalRoot;
@@ -186,6 +188,22 @@ public class CardDAVConfig /*extends ConfigCommon */{
    */
   public String getAddressBookHandlerPrefix() {
     return addressBookHandlerPrefix;
+  }
+
+  /** Set the user home root e.g. "/user"
+   *
+   * @param val    String
+   */
+  public void setUserHomeRoot(final String val) {
+    userHomeRoot = val;
+  }
+
+  /** Set the user home root e.g. "/user"
+   *
+   * @return String
+   */
+  public String getUserHomeRoot() {
+    return userHomeRoot;
   }
 
   /** Set the principal root e.g. "/principals"

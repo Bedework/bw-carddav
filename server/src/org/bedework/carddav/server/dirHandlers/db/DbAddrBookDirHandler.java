@@ -40,6 +40,7 @@ import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
 
 import java.util.Collection;
 
@@ -91,31 +92,20 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
     dc.setName(card.getName());
     dc.setParentPath(path);
+    dc.setPath(path + dc.getName());
     dc.setOwnerHref(card.getOwner().getPrincipalRef());
+    dc.setCreatorHref(dc.getOwnerHref());
 
     create(dc);
   }
 
   private boolean create(final DbCard card) throws WebdavException {
-//    try {
-  //    openSession();
+    card.setDtstamps();
+    card.output(); // Ensure string form exists
 
-      card.setDtstamps();
-      card.output(); // Ensure string form exists
+    sess.save(card);
 
-      sess.save(card);
-
-      return true;
-/*    } catch (WebdavException wde) {
-      rollbackTransaction();
-      throw wde;
-    } catch (Throwable t) {
-      rollbackTransaction();
-      throw new WebdavException(t);
-    } finally {
-      endTransaction();
-      closeSession();
-    }*/
+    return true;
   }
 
   /* (non-Javadoc)
@@ -123,30 +113,15 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    */
   public void updateCard(final String path,
                          final Card card) throws WebdavException {
-//    try {
-      if (card.getName() == null) {
-        throw new WebdavBadRequest();
-      }
-
-  //    openSession();
-
-      DbCard dc = getDbCard(path, card.getName());
-      dc.setVcard(card.getVcard());
-      dc.setDtstamps();
-
-      sess.update(dc);
-      /*
-    } catch (WebdavException wde) {
-      rollbackTransaction();
-      throw wde;
-    } catch (Throwable t) {
-      rollbackTransaction();
-      throw new WebdavException(t);
-    } finally {
-      endTransaction();
-      closeSession();
+    if (card.getName() == null) {
+      throw new WebdavBadRequest();
     }
-    */
+
+    DbCard dc = getDbCard(path, card.getName());
+    dc.setVcard(card.getVcard());
+    dc.setDtstamps();
+
+    sess.update(dc);
   }
 
   /* (non-Javadoc)
@@ -165,61 +140,99 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    */
   public int makeCollection(final CarddavCollection col,
                             final String parentPath) throws WebdavException {
-//    try {
-  //    openSession();
+    boolean home = parentPath.equals(userHomeRoot);
 
-      /* Ensure doesn't exist */
+    /* If home ensure the user root exists */
+    if (home) {
       StringBuilder sb = new StringBuilder();
       sb.append("select col.name from ");
       sb.append(DbCollection.class.getName());
-      sb.append(" col where col.name=:name and col.parentPath=:pp");
+      sb.append(" col where col.name=:name and col.parentPath='/'");
 
       sess.createQuery(sb.toString());
 
       sess.setString("name", col.getName());
-      sess.setString("pp", ensureSlashAtEnd(parentPath));
 
       Collection res = sess.getList();
-      if (res.size() > 0) {
-        return DirHandler.statusDuplicate;
+
+      if (res.size() == 0) {
+        /* Create user root */
+        DbCollection root = new DbCollection();
+
+        root.setName(userHomeRoot);
+//        root.setParentPath("/");
+        root.setPath(userHomeRoot);
+        root.setAddressBook(false);
+        root.setAccess(dbConfig.getRootAccess() + " "); // Loses trailing " "
+        root.setOwnerHref(dbConfig.getRootOwner());
+        root.setCreatorHref(dbConfig.getRootOwner());
+
+        DateTime dt = new DateTime(true);
+
+        root.setLastmod(new LastModified(dt).getValue());
+        root.setCreated(new Created(dt).getValue());
+
+        sess.save(root);
+        sess.flush();
       }
+    }
 
-      DbCollection dbc = new DbCollection();
+    /* Ensure doesn't exist */
+    StringBuilder sb = new StringBuilder();
+    sb.append("select col.name from ");
+    sb.append(DbCollection.class.getName());
+    sb.append(" col where col.name=:name and col.parentPath=:pp");
 
-      dbc.setName(col.getName());
-      dbc.setDescription(col.getDescription());
-      dbc.setAddressBook(col.getAddressBook());
-      dbc.setOwnerHref(col.getOwner().getPrincipalRef());
-      dbc.setParentPath(ensureSlashAtEnd(parentPath));
+    sess.createQuery(sb.toString());
 
-      DateTime dt = new DateTime(true);
+    sess.setString("name", col.getName());
+    sess.setString("pp", ensureSlashAtEnd(parentPath));
 
-      if (col.getLastmod() == null) {
-        dbc.setLastmod(new LastModified(dt).getValue());
-      } else {
-        dbc.setLastmod(col.getLastmod());
+    Collection res = sess.getList();
+    if (res.size() > 0) {
+      return DirHandler.statusDuplicate;
+    }
+
+    if (!home) {
+      // Check access on parent
+      if (getDbCollection(parentPath, privBind) == null) {
+        throw new WebdavForbidden();
       }
+    }
 
-      if (col.getCreated() == null) {
-        dbc.setCreated(new Created(dt).getValue());
-      } else {
-        dbc.setCreated(col.getCreated());
-      }
+    DbCollection dbc = new DbCollection();
 
-      sess.save(dbc);
+    dbc.setName(col.getName());
+    dbc.setDescription(col.getDescription());
+    dbc.setAddressBook(col.getAddressBook());
 
-      return DirHandler.statusCreated;
-      /*
-    } catch (WebdavException wde) {
-      rollbackTransaction();
-      throw wde;
-    } catch (Throwable t) {
-      rollbackTransaction();
-      throw new WebdavException(t);
-    } finally {
-      endTransaction();
-      closeSession();
-    }*/
+    dbc.setOwnerHref(col.getOwner().getPrincipalRef());
+    dbc.setCreatorHref(dbc.getOwnerHref());
+
+    dbc.setParentPath(ensureSlashAtEnd(parentPath));
+    dbc.setPath(dbc.getParentPath() + dbc.getName() + "/");
+
+    DateTime dt = new DateTime(true);
+
+    if (col.getLastmod() == null) {
+      dbc.setLastmod(new LastModified(dt).getValue());
+    } else {
+      dbc.setLastmod(col.getLastmod());
+    }
+
+    if (col.getCreated() == null) {
+      dbc.setCreated(new Created(dt).getValue());
+    } else {
+      dbc.setCreated(col.getCreated());
+    }
+
+    sess.save(dbc);
+
+    if (home) {
+      sess.flush();
+    }
+
+    return DirHandler.statusCreated;
   }
 
   /* (non-Javadoc)
