@@ -413,6 +413,11 @@ public class DbCard extends DbNamedEntity<DbCard> {
    * ==================================================================== */
 
   private void initFromVcard() throws WebdavException {
+    // XXX Do this the inefficient way for the moment
+    if (getProperties() != null) {
+      getProperties().clear();
+    }
+
     setFn(findProperty(Property.Id.FN).getValue());
 
     Property k = findProperty(Property.Id.KIND);

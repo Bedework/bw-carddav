@@ -96,6 +96,9 @@
 
     <getJar name="rpiutil" version="3.6" project="rpiutil"
             projecthome="${project.home}/../bedework/projects/rpiutil" />
+  	
+    <getJar name="bw-davio" version="3.6" project="davutil" 
+            projecthome="${project.home}/../bedework/projects/davutil" />
 
     <getJar name="bw-webdavserver" version="3.6" project="webdav"
             projecthome="${project.home}/../bedework/projects/webdav" />

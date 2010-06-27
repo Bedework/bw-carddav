@@ -770,9 +770,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
     Card oldCard = sysi.getCard(col.getPath(), entityName);
 
+    card.setName(entityName);
+
     if (oldCard == null) {
       created = true;
-      card.setName(entityName);
 
       sysi.addCard(col.getPath(), card);
 
@@ -782,7 +783,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       throw new WebdavException(HttpServletResponse.SC_PRECONDITION_FAILED);
     } else {
-      if (!entityName.equals(card.getName())) {
+      if (!entityName.equals(oldCard.getName())) {
         throw new WebdavBadRequest("Mismatched names");
       }
 
@@ -1343,7 +1344,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         /* If no name was assigned use the guid */
         String name = card.getName();
         if (name == null) {
-          name = card.getUid() + ".ics";
+          name = card.getUid() + ".vcf";
         }
 
         String curi = uri + "/" + name;
@@ -1403,11 +1404,6 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   /** Find the named item by following down the path from the root.
    * This requires the names at each level to be unique (and present)
-   *
-   * I don't think the name.now has to have an ics suffix. Draft 7 goes as
-   * far as saying it may have ".ics" or ".ifb"
-   *
-   * For the moment enforce one or the other
    *
    * <p>Uri is at least /user/user-id or <br/>
    *    /public
