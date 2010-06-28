@@ -23,7 +23,7 @@
     special, consequential, or incidental damages related to the software,
     to the maximum extent the law permits.
 */
-package org.bedework.carddav.util;
+package org.bedework.carddav.tools;
 
 import org.bedework.http.client.dav.DavClient;
 import org.bedework.http.client.dav.DavResp;
@@ -234,7 +234,9 @@ public class Importer {
           readContent(in, resp.getContentLength(), resp.getCharset());
         }
       } finally {
-        in.close();
+        if (in != null) {
+          in.close();
+        }
       }
 
       return true;

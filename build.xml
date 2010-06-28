@@ -109,6 +109,9 @@
     <property name="org.bedework.carddav.dumpres.base"
               location="${project.home}/dumpres" />
 
+    <property name="org.bedework.carddav.tools.base"
+              location="${project.home}/tools" />
+
     <mkdir dir="${dist.home}" />
 
     <property name="test.data.dir"
@@ -130,6 +133,9 @@
 
     <property name="dumpres.jar"
               location="${dist.home}/${edu.rpi.cmt.carddav.dumpres.jar}-${project.version}.jar" />
+
+    <property name="tools.jar"
+              location="${dist.home}/${edu.rpi.cmt.carddav.tools.jar}-${project.version}.jar" />
 
     <!-- ==================== Compilation Classpath ==================== -->
 
@@ -155,6 +161,9 @@
 
         <property name="dumpres.app.zip.name"
                   value="${org.bedework.global.ear.name}-carddumpres" />
+
+        <property name="tools.app.zip.name"
+                  value="${org.bedework.global.ear.name}-cardtools" />
 
         <if>
           <equals arg1="${org.bedework.global.ear.zipped}"
@@ -258,7 +267,7 @@
           description="Compile carddav classes"/>
 
   <target name="build-source" 
-  	      depends="bld.auth.server,bld.unauth.server,bld.dumpres" />
+  	      depends="bld.auth.server,bld.unauth.server,bld.dumpres,bld.tools" />
 
   <!-- ===================== deploy Target ===============================
      Deploy if an application server is defined.
@@ -290,6 +299,11 @@
             name="bw-carddumpres" version="3.6"
             projecthome="${project.home}" />
 
+    <getJar lib="${org.bedework.temp.extrajars.dir}"
+            libcache="${org.bedework.libcache.dir}"
+            name="bw-cardtools" version="3.6"
+            projecthome="${project.home}" />
+
     <ant antfile="deployService.xml" target="deploy" inheritRefs="true" >
     	<property name="propval.app.zip.name"
     	          value="${dumpres.app.zip.name}" />
@@ -297,6 +311,26 @@
                 location="${org.bedework.carddav.dumpres.base}" />
     	<property name="app.global.properties.dir" 
                 location="${resources.dir}" />
+   </ant>
+
+    <getJar lib="${org.bedework.temp.extrajars.dir}"
+            libcache="${org.bedework.libcache.dir}"
+            name="bw-davio" version="3.6"
+            projecthome="${bedework.home}/projects/davutil" />
+    
+    <getJar lib="${org.bedework.temp.extrajars.dir}"
+            libcache="${org.bedework.libcache.dir}"
+            name="log4j" version="1.2.8"/>
+
+    <ant antfile="${buildsh}" target="build" inheritRefs="true" >
+      <property name="propval.app.zip.name"
+                value="${tools.app.zip.name}" />
+      <property name="app.service.base" 
+                location="${org.bedework.carddav.tools.base}" />
+      <property name="app.global.properties.dir" 
+                location="${org.bedework.carddav.tools.base}/resources" />
+      <property name="org.bedework.deploy.name" 
+                value="tools" />
    </ant>
   	
     <ant antfile="deployTermination.xml" target="deployTerminate" inheritRefs="true" />
@@ -388,6 +422,11 @@
 
   <target name="bld.dumpres">
     <ant antfile="${org.bedework.carddav.dumpres.base}/build.xml" inheritrefs="true"
+         target="build" />
+  </target>
+
+  <target name="bld.tools">
+    <ant antfile="${org.bedework.carddav.tools.base}/build.xml" inheritrefs="true"
          target="build" />
   </target>
 </project>

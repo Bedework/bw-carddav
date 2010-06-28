@@ -51,7 +51,14 @@
     <antcall target="addLibs" inheritRefs="true" />
 
     <copy todir="${app.dest.classes}">
-      <fileset dir="${app.global.properties.dir}" />
+      <fileset dir="${app.global.properties.dir}"
+               excludes="*.sh,*.bat" />
+      <filterset refid="property.filters" />
+    </copy>
+
+    <copy todir="${app.dest.home}">
+      <fileset dir="${app.global.properties.dir}"
+               includes="*.sh,*.bat" />
       <filterset refid="property.filters" />
     </copy>
 

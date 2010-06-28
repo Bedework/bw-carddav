@@ -119,6 +119,14 @@
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="commons-httpclient" version="3.0"/>
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="commons-ssl" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="commons-logging" />
       
     	<!--
     	gdata-calendar-1.0.jar
