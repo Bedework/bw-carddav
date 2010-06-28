@@ -400,6 +400,11 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   @Override
+  public int hashCode() {
+    return getPath().hashCode();
+  }
+
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("DbCard{");
 

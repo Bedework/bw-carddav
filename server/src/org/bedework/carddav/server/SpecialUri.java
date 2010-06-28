@@ -116,7 +116,15 @@ public class SpecialUri {
         }
       }
 
-      res = doSearch(req, col, limits, config, sysi, debug);
+      if (req.getParameter("list") != null) {
+        if (req.getParameter("addrbook") == null) {
+          throw new WebdavBadRequest("Must specify addressbook");
+        }
+
+        res = doList(req, col, limits, config, sysi, debug);
+      } else {
+        res = doSearch(req, col, limits, config, sysi, debug);
+      }
 
       if (Util.isEmpty(res.cards)) {
         setStatus(resp, HttpServletResponse.SC_NOT_FOUND, format);
@@ -124,7 +132,7 @@ public class SpecialUri {
       }
 
       doOutput(resp, res.cards, format);
-    }
+    } // buildResponse
 
     if ((res != null) && ((res.overLimit) || (res.serverTruncated))) {
       String msg;
@@ -197,6 +205,15 @@ public class SpecialUri {
     }
 
     return sysi.getCards(col, fltr, limits);
+  }
+
+  private static GetResult doList(final HttpServletRequest req,
+                                  final CarddavCollection col,
+                                  final GetLimits limits,
+                                  final CardDAVConfig config,
+                                  final SysIntf sysi,
+                                  final boolean debug) throws WebdavException {
+    return sysi.getCards(col, null, limits);
   }
 
   private static void doOutput(final HttpServletResponse resp,

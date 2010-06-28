@@ -376,6 +376,14 @@ public abstract class AbstractDirHandler implements DirHandler {
     return new SplitResult(noEndSlash.substring(0, pos), noEndSlash.substring(pos + 1));
   }
 
+  protected String ensureEndSlash(final String val) {
+    if (val.endsWith("/")) {
+      return val;
+    }
+
+    return  val + "/";
+  }
+
   /**
    * @return Logger
    */

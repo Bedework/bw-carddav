@@ -252,7 +252,7 @@ public interface SysIntf {
 
   /** Result from getCards and getCollections */
   public static class GetResult {
-    /** Server truncted the query result */
+    /** Server truncated the query result */
     public boolean serverTruncated;
 
     /** Exceeded user limit */

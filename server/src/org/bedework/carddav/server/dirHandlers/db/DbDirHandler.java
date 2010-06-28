@@ -253,7 +253,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
       StringBuilder sb = new StringBuilder();
 
-      sb.append("from ");
+      sb.append("select card from ");
       sb.append(DbCard.class.getName());
       sb.append(" card join card.properties props where card.parentPath=:path");
 
@@ -295,7 +295,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   public CarddavCollection getCollection(final String path) throws WebdavException {
     verifyPath(path);
 
-    DbCollection col = getDbCollection(path, privRead);
+    DbCollection col = getDbCollection(ensureEndSlash(path), privRead);
 
     if (col == null) {
       return null;
