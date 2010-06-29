@@ -1,5 +1,5 @@
 /* **********************************************************************
-    Copyright 2008 Rensselaer Polytechnic Institute. All worldwide rights reserved.
+    Copyright 2010 Rensselaer Polytechnic Institute. All worldwide rights reserved.
 
     Redistribution and use of this distribution in source and binary forms,
     with or without modification, are permitted provided that:
@@ -33,8 +33,6 @@ import org.bedework.carddav.server.access.AccessUtilI;
 import org.bedework.carddav.server.access.SharedEntity;
 import org.bedework.carddav.server.dirHandlers.AbstractDirHandler;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.server.filter.PropFilter;
-import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DbDirHandlerConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
@@ -49,14 +47,12 @@ import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
-import edu.rpi.sss.util.Util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /** Provide some common methods for db based directory handlers.
@@ -253,14 +249,18 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
       StringBuilder sb = new StringBuilder();
 
-      sb.append("select card from ");
+      sb.append("select distinct card from ");
       sb.append(DbCard.class.getName());
       sb.append(" card join card.properties props where card.parentPath=:path");
 
-      makeFilter(sb, filter);
+      DbFilter fltr = new DbFilter(sb);
+
+      fltr.makeFilter(filter);
 
       sess.createQuery(sb.toString());
       sess.setString("path", path);
+
+      fltr.parReplace(sess);
 
       List<DbCard> l = sess.getList();
 
@@ -425,161 +425,6 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     sess.setString("path", path);
 
     return (DbCollection)sess.getUnique();
-  }
-
-  private static final String parPrefix = "FPAR";
-
-  private static class Fltr {
-    int findex;
-    List<String> params = new ArrayList<String>();
-  }
-
-  private Fltr makeFilter(final StringBuilder sb, final Filter filter) {
-    if (filter == null) {
-      return null;
-    }
-
-    Collection<PropFilter> pfilters = filter.getPropFilters();
-
-    if ((pfilters == null) || pfilters.isEmpty()) {
-      return null;
-    }
-
-    Fltr fltr = new Fltr();
-
-    boolean first = true;
-
-    for (PropFilter pfltr: pfilters) {
-      makePropFilterExpr(fltr, sb, pfltr, first);
-
-      first = false;
-    }
-
-    return fltr;
-  }
-
-  private void makePropFilterExpr(final Fltr fltr,
-                                  final StringBuilder sb,
-                                  final PropFilter filter,
-                                  final boolean first) {
-    TextMatch tm = filter.getMatch();
-
-    if (tm == null) {
-      return;
-    }
-
-    int testAllAnyProps = filter.getTestAllAny();
-
-    String name = filter.getName();
-
-    int cpos = name.indexOf(',');
-
-    if ((cpos < 0) && (Util.isEmpty(filter.getParamFilters()))) {
-      // No group - no params - single attribute
-
-      if (!first) {
-        if (testAllAnyProps == Filter.testAllOf) {
-          sb.append(" and (");
-        } else {
-          sb.append(" or (");
-        }
-      }
-
-      makePropFilterExpr(fltr, sb, name, tm);
-    }
-
-    /* TODO Do this later
-    if (cpos > 0) {
-      if (name.endsWith(",")) {
-        // Don't do that
-        return;
-      }
-
-      name = name.substring(cpos + 1);
-    }
-
-    Collection<String> anames = LdapMapping.toLdapAttrNoGroup.get(name);
-    if (Util.isEmpty(anames)) {
-      return;
-    }
-
-    StringBuilder sb = new StringBuilder();
-
-    boolean first = true;
-
-    for (String attrId: anames) {
-      String ptest = makePropFilterExpr(attrId, tm);
-
-      if (ptest == null) {
-        continue;
-      }
-
-      sb.append(ptest);
-
-      if (first) {
-        first = false;
-        continue;
-      }
-
-      sb.append(")");
-
-      if (testAllAnyProps == Filter.testAllOf) {
-        sb.append(" and ");
-      } else {
-        sb.append(" or ");
-      }
-    }
-
-    return sb.toString();
-    */
-  }
-
-  private void addPar(final Fltr fltr,
-                      final StringBuilder sb,
-                      final String val) {
-    sb.append(":");
-    sb.append(parPrefix);
-    sb.append(fltr.findex);
-    fltr.findex++;
-
-    fltr.params.add(val);
-  }
-
-  private String makePropFilterExpr(final Fltr fltr,
-                                    final StringBuilder sb,
-                                    final String name, final TextMatch tm) {
-    sb.append("(prop.name=");
-    addPar(fltr, sb, name);
-    sb.append(" and prop.value");
-
-    int mt = tm.getMatchType();
-
-    if (mt == TextMatch.matchTypeEquals) {
-      sb.append("=");
-      addPar(fltr, sb, tm.getVal());
-    } else {
-      sb.append(" like ");
-
-      String val;
-
-      if ((mt == TextMatch.matchTypeContains) ||
-          (mt == TextMatch.matchTypeEndsWith)) {
-        val = "%" + tm.getVal();
-      } else {
-        val = tm.getVal();
-      }
-
-      if ((mt == TextMatch.matchTypeContains) ||
-          (mt == TextMatch.matchTypeStartsWith)) {
-        val += "%";
-      }
-
-      addPar(fltr, sb, val);
-    }
-
-    sb.append(")");
-
-    return sb.toString();
   }
 
   /**

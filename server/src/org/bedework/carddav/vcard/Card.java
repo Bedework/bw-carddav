@@ -217,7 +217,10 @@ public class Card {
    * @param val
    */
   public void addProperty(final Property val) {
-    vcard.getProperties().add(val);
+    if ((val.getId() != Property.Id.VERSION) ||
+        (findProperty(Property.Id.VERSION) == null)) {
+      vcard.getProperties().add(val);
+    }
   }
 
   /**
