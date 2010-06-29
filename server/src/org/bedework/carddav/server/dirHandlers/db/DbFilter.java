@@ -34,7 +34,9 @@ import edu.rpi.sss.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Add filtering expression to hsql.
  *
@@ -43,6 +45,24 @@ import java.util.List;
  */
 public class DbFilter {
   private static final String parPrefix = "FPAR";
+
+  /* Entry for property we store as a column */
+  static class PField {
+    String pname;
+    String col;
+
+    PField(final String pname, final String col) {
+      this.pname = pname;
+      this.col = col;
+    }
+  }
+
+  private static Map<String, PField> pfields = new HashMap<String, PField>();
+
+  static {
+    pfields.put("fn", new PField("fn", "fn"));
+    pfields.put("kind", new PField("kind", "kind"));
+  }
 
   int findex;
   List<String> params = new ArrayList<String>();
@@ -169,9 +189,17 @@ public class DbFilter {
   }
 
   private void makePropFilterExpr(final String name, final TextMatch tm) {
-    sb.append("props.name=");
-    addPar(sb, name);
-    sb.append(" and props.value");
+    PField pf = pfields.get(name.toLowerCase());
+
+    if (pf != null) {
+      // Use the column value
+      sb.append("card.");
+      sb.append(pf.col);
+    } else {
+      sb.append("props.name=");
+      addPar(sb, name);
+      sb.append(" and props.value");
+    }
 
     int mt = tm.getMatchType();
 

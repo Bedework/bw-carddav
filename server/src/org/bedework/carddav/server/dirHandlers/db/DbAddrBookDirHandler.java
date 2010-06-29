@@ -28,10 +28,12 @@ package org.bedework.carddav.server.dirHandlers.db;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.vcard.VCard;
 
 import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
+import org.bedework.carddav.util.CardDAVBadData;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
@@ -84,7 +86,16 @@ public class DbAddrBookDirHandler extends DbDirHandler {
                       final Card card) throws WebdavException {
     /** Build a directory record and add the attributes
      */
-    DbCard dc = new DbCard(card.getVcard());
+
+    VCard vc = card.getVcard();
+
+    try {
+      vc.validate();
+    } catch (Throwable t) {
+      throw new CardDAVBadData(t.getMessage());
+    }
+
+    DbCard dc = new DbCard(vc);
 
     if (card.getName() == null) {
       throw new WebdavBadRequest();
@@ -117,8 +128,17 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       throw new WebdavBadRequest();
     }
 
-    DbCard dc = getDbCard(path, card.getName());
-    dc.setVcard(card.getVcard());
+    VCard vc = card.getVcard();
+
+    try {
+      vc.validate();
+    } catch (Throwable t) {
+      throw new CardDAVBadData(t.getMessage());
+    }
+
+    DbCard dc = new DbCard(vc);
+
+    dc.setVcard(vc);
     dc.setDtstamps();
 
     sess.update(dc);

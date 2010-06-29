@@ -26,6 +26,7 @@
 package org.bedework.carddav.server.query;
 
 import net.fortuna.ical4j.vcard.Property;
+import net.fortuna.ical4j.vcard.property.Kind;
 
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.vcard.Card;
@@ -34,6 +35,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
 import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
+import edu.rpi.sss.util.Util;
 import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 
@@ -44,6 +46,7 @@ import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
@@ -218,11 +221,45 @@ public class AddressData extends WebdavProperty {
     try {
       Card ncard = new Card();
 
+      /* Always set FN and KIND */
+      boolean fnSet = false;
+      boolean kindSet = false;
+
       for (Prop pr: props) {
-        Property p = card.findProperty(pr.getName());
+        List<Property> ps = card.findProperties(pr.getName());
+        if (Util.isEmpty(ps)) {
+          continue;
+        }
+
+        for (Property p: ps) {
+          ncard.addProperty(p);
+
+          if (p.getId() == Property.Id.KIND) {
+            kindSet = true;
+          } else if (p.getId() == Property.Id.FN) {
+            fnSet = true;
+          }
+        }
+      }
+
+      if (!kindSet) {
+        Property p = card.findProperty(Property.Id.KIND);
 
         if (p != null) {
           ncard.addProperty(p);
+        } else {
+          ncard.addProperty(Kind.INDIVIDUAL);
+        }
+      }
+
+      if (!fnSet) {
+        Property p = card.findProperty(Property.Id.FN);
+
+        if (p != null) {
+          ncard.addProperty(p);
+        } else {
+          // This is not valid
+          // ncard.addProperty(Kind.INDIVIDUAL);
         }
       }
 
