@@ -54,8 +54,8 @@ public class VcardDefs {
      * @param name
      * @param cardinality
      */
-    public PropertyDef(String name,
-                       int cardinality) {
+    public PropertyDef(final String name,
+                       final int cardinality) {
       this.name = name;
       this.cardinality = cardinality;
     }
@@ -118,6 +118,14 @@ public class VcardDefs {
     addPropertyDef("FBURL", cardinalityZeroOrOne);
     addPropertyDef("CALADRURI", cardinalityZeroOrOne);
     addPropertyDef("CALURI", cardinalityZeroOrOne);
+
+    // Resource properties
+
+    addPropertyDef("AUTOACCEPT", cardinalityOne);
+    addPropertyDef("BOOKINGSTART", cardinalityOne);
+    addPropertyDef("BOOKINGEND", cardinalityOne);
+    addPropertyDef("CAPACITY", cardinalityOne);
+    addPropertyDef("COSTINFO", cardinalityOne);
   }
 
   /** XXX This should probably be cloned
@@ -125,7 +133,7 @@ public class VcardDefs {
    * @param name
    * @return
    */
-  public static PropertyDef getPropertyDef(String name) {
+  public static PropertyDef getPropertyDef(final String name) {
     return propertyDefs.get(name.toUpperCase());
   }
 
@@ -136,8 +144,8 @@ public class VcardDefs {
     return propertyDefs.keySet();
   }
 
-  private static void addPropertyDef(String name,
-                                     int cardinality) {
+  private static void addPropertyDef(final String name,
+                                     final int cardinality) {
     propertyDefs.put(name, new PropertyDef(name, cardinality));
   }
 }

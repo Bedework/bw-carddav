@@ -39,6 +39,8 @@ import java.util.List;
  *
  */
 public class PropertyOutput {
+  private boolean first;
+
   //private String group;
   private String name;
 
@@ -59,55 +61,75 @@ public class PropertyOutput {
   /**
    * @param name
    * @param value
+   * @param first
    */
-  public PropertyOutput(final String name, final String value) {
+  public PropertyOutput(final String name,
+                        final String value,
+                        final boolean first) {
     def = VcardDefs.getPropertyDef(name);
     this.name = name;
     this.value = value;
+    this.first = first;
   }
 
   /**
    * @param p
+   * @param first
    */
-  public PropertyOutput(final Property p) {
+  public PropertyOutput(final Property p,
+                        final boolean first) {
     def = VcardDefs.getPropertyDef(p.getId().toString());
     this.p = p;
+    this.first = first;
   }
 
   /**
    * @param ps
+   * @param first
    */
-  public PropertyOutput(final List<Property> ps) {
-    p = ps.get(0); // For th ename
+  public PropertyOutput(final List<Property> ps,
+                        final boolean first) {
+    p = ps.get(0); // For the name
     def = VcardDefs.getPropertyDef(p.getId().toString());
     this.ps = ps;
+    this.first = first;
   }
 
   /**
    * @param indent
    * @param sb
    */
-  public void outputJson(final String indent, final StringBuilder sb) {
+  public void outputJson(final String indent,
+                         final StringBuilder sb) {
     outputJsonStart(indent, sb);
 
     if (ps == null) {
-      outputJsonValue(p, indent, sb);
+      outputJsonValue(p, indent, sb, true);
     } else {
+      boolean firstVal = true;
+
       for (Property pr: ps) {
-        outputJsonValue(pr, indent, sb);
+        outputJsonValue(pr, indent + "        ", sb, firstVal);
+
+        firstVal = false;
       }
     }
 
-    outputJsonEnd(indent, sb);
+    outputJsonEnd(indent + "        ", sb);
   }
 
   /**
    * @param indent
    * @param sb
    */
-  private void outputJsonStart(final String indent, final StringBuilder sb) {
+  private void outputJsonStart(final String indent,
+                               final StringBuilder sb) {
     boolean cardinalityZeroOrMore = (def == null) ||
                (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
+
+    if (!first) {
+      sb.append(",\n");
+    }
 
     sb.append(indent);
     sb.append("\"");
@@ -123,7 +145,7 @@ public class PropertyOutput {
     sb.append(Util.jsonName(nm));
 
     if (cardinalityZeroOrMore) {
-      sb.append("\" : [");
+      sb.append("\" : [\n");
     } else {
       sb.append("\" : ");
     }
@@ -137,7 +159,8 @@ public class PropertyOutput {
    */
   private void outputJsonValue(final Property pval,
                                String indent,
-                               final StringBuilder sb) {
+                               final StringBuilder sb,
+                               final boolean first) {
     boolean cardinalityZeroOrMore = (def == null) ||
                 (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
 
@@ -146,6 +169,10 @@ public class PropertyOutput {
     {"value" : "bar at example.com"}
   ]
  */
+
+    if (!first) {
+      sb.append(",\n");
+    }
 
     if (cardinalityZeroOrMore) {
       sb.append(indent);
@@ -182,7 +209,7 @@ public class PropertyOutput {
     } else {
       sb.append(Util.jsonEncode(val));
     }
-    sb.append("},\n");
+    sb.append("}");
 
     indent = saveIndent;
   }
@@ -195,13 +222,12 @@ public class PropertyOutput {
   private void outputJsonEnd(final String indent, final StringBuilder sb) {
     boolean cardinalityZeroOrMore = (def == null) ||
                (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
-    sb.append(indent);
 
     if (cardinalityZeroOrMore) {
-      sb.append("],");
+      sb.append("\n");
+      sb.append(indent);
+      sb.append("]");
     }
-
-    sb.append("\n");
   }
 
   @Override

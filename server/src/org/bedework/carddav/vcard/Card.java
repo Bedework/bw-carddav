@@ -326,11 +326,12 @@ public class Card {
 
     indent += "";
 
-    PropertyOutput version = new PropertyOutput(vcard.getProperty(Property.Id.VERSION));
-
-    version.outputJson(indent, sb);
+    new PropertyOutput(vcard.getProperty(Property.Id.VERSION),
+                       true).outputJson(indent, sb);
 
     Set<String> pnames = VcardDefs.getPropertyNames();
+
+    /* Output known properties first */
 
     for (String pname: pnames) {
       if ("VERSION".equals(pname)) {
@@ -340,20 +341,23 @@ public class Card {
       List<Property> props = findProperties(pname);
 
       if (!props.isEmpty()) {
-        new PropertyOutput(props).outputJson(indent, sb);
+        new PropertyOutput(props, false).outputJson(indent, sb);
       }
     }
+
+    /* Now ouput any extra unknown properties */
 
     List<Property> props = vcard.getProperties();
 
     if (props != null) {
       for (Property p: props) {
         if (!pnames.contains(p.getId().toString())) {
-          new PropertyOutput(p).outputJson(indent, sb);
+          new PropertyOutput(p, false).outputJson(indent, sb);
         }
       }
     }
 
+    sb.append("\n");
     sb.append(indent);
     sb.append("}");
 
