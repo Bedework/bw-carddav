@@ -642,7 +642,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
        */
 
       Card card = new Card();
-      card.parse(contentRdr);
+      try {
+        card.parse(contentRdr);
+      } catch (Throwable t) {
+        throw new WebdavForbidden(CarddavTags.supportedAddressData,
+                                  t.getMessage());
+      }
 
       pcr.created = putCard(bwnode, card, create, ifEtag);
 
