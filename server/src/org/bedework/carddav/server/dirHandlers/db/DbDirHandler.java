@@ -54,6 +54,8 @@ import org.hibernate.cfg.Configuration;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Provide some common methods for db based directory handlers.
  *
@@ -215,24 +217,13 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
    * @see org.bedework.carddav.bwserver.DirHandler#getCard(java.lang.String, java.lang.String)
    */
   public Card getCard(final String path, final String name) throws WebdavException {
-//    try {
-      DbCard card = getDbCard(path, name);
+    DbCard card = getDbCard(path, name);
 
-      if (card == null) {
-        return null;
-      }
+    if (card == null) {
+      return null;
+    }
 
-      return makeVcard(card);/*
-    } catch (WebdavException wde) {
-      rollbackTransaction();
-      throw wde;
-    } catch (Throwable t) {
-      rollbackTransaction();
-      throw new WebdavException(t);
-    } finally {
-      endTransaction();
-      closeSession();
-    }*/
+    return makeVcard(card);
   }
 
   /* (non-Javadoc)
@@ -244,49 +235,35 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
                             final GetLimits limits) throws WebdavException {
     verifyPath(path);
 
-//    try {
-  //    openSession();
+    StringBuilder sb = new StringBuilder();
 
-      StringBuilder sb = new StringBuilder();
+    sb.append("select card from ");
+    sb.append(DbCard.class.getName());
+    sb.append(" card join card.properties props where card.parentPath=:path");
 
-      sb.append("select distinct card from ");
-      sb.append(DbCard.class.getName());
-      sb.append(" card join card.properties props where card.parentPath=:path");
+    DbFilter fltr = new DbFilter(sb);
 
-      DbFilter fltr = new DbFilter(sb);
+    fltr.makeFilter(filter);
 
-      fltr.makeFilter(filter);
+    sess.createQuery(sb.toString());
+    sess.setString("path", path);
 
-      sess.createQuery(sb.toString());
-      sess.setString("path", path);
+    fltr.parReplace(sess);
 
-      fltr.parReplace(sess);
+    /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
+     * distinct with a set
+     */
+    Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
 
-      List<DbCard> l = sess.getList();
+    GetResult res = new GetResult();
 
-      GetResult res = new GetResult();
+    res.cards = new ArrayList<Card>();
 
-      res.cards = new ArrayList<Card>();
+    for (DbCard dbc: cardSet) {
+      res.cards.add(makeVcard(dbc));
+    }
 
-      if (l == null) {
-        return res;
-      }
-
-      for (DbCard dbc: l) {
-        res.cards.add(makeVcard(dbc));
-      }
-
-      return res;
-/*    } catch (WebdavException wde) {
-      rollbackTransaction();
-      throw wde;
-    } catch (Throwable t) {
-      rollbackTransaction();
-      throw new WebdavException(t);
-    } finally {
-      endTransaction();
-      closeSession();
-    }*/
+    return res;
   }
 
   /* (non-Javadoc)
