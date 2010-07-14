@@ -496,6 +496,13 @@ public class LdapMapping {
   }
 
   /**
+   * @return mapping for KIND or null if no mapping
+   */
+  public static AttrPropertyMapping getKindMapping() {
+    return kindProperty;
+  }
+
+  /**
    * @return attrId or null if no mapping
    */
   public static String getKindAttrId() {

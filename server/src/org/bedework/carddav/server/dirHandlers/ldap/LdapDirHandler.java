@@ -623,6 +623,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         kind = Kind.INDIVIDUAL;
       }
 
+      AttrPropertyMapping kindMapping = LdapMapping.getKindMapping();
+
       for (LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
         if (!(lm instanceof AttrPropertyMapping)) {
           continue;
@@ -630,6 +632,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
         AttrPropertyMapping apm = (AttrPropertyMapping)lm;
 
+        if ((kindMapping != null) &&
+            kindMapping.equals(apm)) {
+          // Already done kind
+          continue;
+        }
+
+        /* Skip this property mapping if it isn't for this kind of vcard */
         if (!apm.getKinds().isEmpty() && !apm.getKinds().contains(kind)) {
           continue;
         }
