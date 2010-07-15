@@ -1015,11 +1015,19 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   protected String makeAddrbookDn(final String path,
                                  final boolean isCollection) throws WebdavException {
-    if (dhConfig.getPathPrefix().equals(path)) {
+    String remPath;
+
+    if (path.endsWith("/")) {
+      remPath = path.substring(0, path.length() - 1);
+    } else {
+      remPath = path;
+    }
+
+    if (dhConfig.getPathPrefix().equals(remPath)) {
       return ldapConfig.getBaseDn();
     }
 
-    String remPath = path.substring(dhConfig.getPathPrefix().length() + 1);
+    remPath = path.substring(dhConfig.getPathPrefix().length() + 1);
     if (remPath.endsWith(".vcf")) {
       remPath = remPath.substring(0, remPath.length() - 4);
     }
@@ -1029,25 +1037,28 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     StringBuilder sb = new StringBuilder();
     int i = elements.length - 1;
 
-    if (isCollection) {
-      sb.append(ldapConfig.getFolderIdAttr());
-    } else {
-      sb.append(ldapConfig.getAddressbookEntryIdAttr());
-    }
+    if (i >= 0) {
+      if (isCollection) {
+        sb.append(ldapConfig.getFolderIdAttr());
+      } else {
+        sb.append(ldapConfig.getAddressbookEntryIdAttr());
+      }
 
-    sb.append("=");
-    sb.append(dnEscape(elements[i]));
-    i--;
-
-    while (i > 0) {
-      sb.append(",");
-      sb.append(ldapConfig.getFolderIdAttr());
       sb.append("=");
       sb.append(dnEscape(elements[i]));
       i--;
+
+      while (i > 0) {
+        sb.append(",");
+        sb.append(ldapConfig.getFolderIdAttr());
+        sb.append("=");
+        sb.append(dnEscape(elements[i]));
+        i--;
+      }
+
+      sb.append(",");
     }
 
-    sb.append(",");
     sb.append(ldapConfig.getBaseDn());
 
     return sb.toString();
