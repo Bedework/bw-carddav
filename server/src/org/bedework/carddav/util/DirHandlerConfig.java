@@ -32,6 +32,8 @@ package org.bedework.carddav.util;
 public class DirHandlerConfig {
   private String pathPrefix;
 
+  private String cardPathPrefix;
+
   private boolean addressBook;
 
   private String className;
@@ -67,6 +69,36 @@ public class DirHandlerConfig {
    */
   public String getPathPrefix() {
     return pathPrefix;
+  }
+
+  /** Set the cardPathPrefix which defines the prefix for principal cards.
+   *
+   * <p>For example, if the pathPrefix is "/principals/locations" and the
+   * cardPathPrefix is "/public/locations" then given a principal
+   * <pre>
+   *   /principals/locations/vcc309
+   * <pre>
+   * we create a card path by replacing one prefix with another and appending
+   * ".vcf" to give
+   * <pre>
+   *   /public/locations/vcc309.vcf
+   * <pre>
+   *
+   * <p>This is probably insufficient. We almost certainly need to define a
+   * property the value of which replaces the name part of the path.
+   *
+   * @param val    String path
+   */
+  public void setCardPathPrefix(final String val) {
+    cardPathPrefix = val;
+  }
+
+  /** Get the cardPathPrefix
+   *
+   * @return String   path
+   */
+  public String getCardPathPrefix() {
+    return cardPathPrefix;
   }
 
   /** True if this prefix represents an addressbook. Only required if we have no

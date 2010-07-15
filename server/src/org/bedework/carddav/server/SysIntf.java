@@ -146,7 +146,7 @@ public interface SysIntf {
   /**
    * @author Mike Douglass
    */
-  public static class UserInfo implements Serializable {
+  public static class PrincipalInfo implements Serializable {
     /** account as returned by caladdrToUser
      *
      * Currently tail end of principal path
@@ -165,6 +165,10 @@ public interface SysIntf {
      */
     public String defaultAddressbookPath;
 
+    /** Path to card for principal
+     */
+    public String principalCardPath;
+
     /** Some directory information for the user.
      */
     public Card directoryInfo;
@@ -174,29 +178,33 @@ public interface SysIntf {
      * @param principalPathPrefix
      * @param userHomePath
      * @param defaultAddressbookPath
+     * @param principalCardPath
      * @param directoryInfo
      */
-    public UserInfo(final String account, final String principalPathPrefix,
+    public PrincipalInfo(final String account, final String principalPathPrefix,
                     final String userHomePath,
-                    final String defaultAddressbookPath, final Card directoryInfo) {
+                    final String defaultAddressbookPath,
+                    final String principalCardPath,
+                    final Card directoryInfo) {
       this.account = account;
       this.principalPathPrefix = principalPathPrefix;
       this.userHomePath = userHomePath;
       this.defaultAddressbookPath = defaultAddressbookPath;
+      this.principalCardPath = principalCardPath;
       this.directoryInfo = directoryInfo;
     }
   }
 
-  /** Given a valid user account return the associated calendar user information
-   * needed for caldav interactions.
+  /** Given a valid principal return the associated information
+   * needed for carddav interactions.
    *
    * @param pcpl         the principal
    * @param getDirInfo  get directory info if true and available.
-   * @return CalUserInfo or null if not caladdr for this system
+   * @return PrincipalInfo or null
    * @throws WebdavException  for errors
    */
-  public UserInfo getUserInfo(AccessPrincipal pcpl,
-                              boolean getDirInfo) throws WebdavException;
+  public PrincipalInfo getPrincipalInfo(AccessPrincipal pcpl,
+                                        boolean getDirInfo) throws WebdavException;
 
   /** Given a uri returns a Collection of uris that allow search operations on
    * principals for that resource.
@@ -215,7 +223,7 @@ public interface SysIntf {
    * @return Collection of CalUserInfo
    * @throws WebdavException
    */
-  public Collection<UserInfo> getPrincipals(String resourceUri,
+  public Collection<PrincipalInfo> getPrincipals(String resourceUri,
                                   PrincipalPropertySearch pps)
           throws WebdavException;
 

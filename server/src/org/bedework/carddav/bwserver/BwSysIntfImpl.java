@@ -315,10 +315,10 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getUserInfo(edu.rpi.cmt.access.AccessPrincipal, boolean)
+   * @see org.bedework.carddav.server.SysIntf#getPrincipalInfo(edu.rpi.cmt.access.AccessPrincipal, boolean)
    */
-  public UserInfo getUserInfo(final AccessPrincipal pcpl,
-                              final boolean getDirInfo) throws WebdavException {
+  public PrincipalInfo getPrincipalInfo(final AccessPrincipal pcpl,
+                                        final boolean getDirInfo) throws WebdavException {
     try {
       if ((pcpl == null) || pcpl.getUnauthenticated()) {
         return null;
@@ -334,21 +334,56 @@ public class BwSysIntfImpl implements SysIntf {
 
       Card dirInfo = null;
 
-      DirHandler rootHandler = getHandler(conf.getPrincipalRoot());
+      DirHandlerConfig dhc = conf.findDirhandler(pcpl.getPrincipalRef());
 
-      if (getDirInfo) {
-        dirInfo = rootHandler.getPrincipalCard(principalUri);
+      // XXX This is a temp fix to get us a linkage to our vcard
+      // It needs more work
+
+      String cardPathPrefix = dhc.getCardPathPrefix();
+      String cardPath = null;
+
+      if (cardPathPrefix != null) {
+        StringBuilder sb = new StringBuilder(cardPathPrefix);
+
+        if (!cardPathPrefix.endsWith("/")) {
+          sb.append("/");
+        }
+
+        String pfx = dhc.getPathPrefix();
+
+        if (!pfx.endsWith("/")) {
+          pfx += "/";
+        }
+
+        if (!pcpl.getPrincipalRef().startsWith(pfx)) {
+          // Something wrong
+          cardPath = null;
+        } else {
+          sb.append(pcpl.getPrincipalRef().substring(pfx.length()));
+          sb.append(".vcf");
+          cardPath = sb.toString();
+        }
+      }
+
+      if (getDirInfo && (cardPath != null)) {
+        DirHandler cardHandler = getHandler(cardPath);
+
+        int p = cardPath.lastIndexOf('/');
+
+        dirInfo = cardHandler.getCard(cardPath.substring(0, p),
+                                      cardPath.substring(p));
       }
 
       // XXX Cheat at this - we should just use principals throughout.
       String prefix = principalUri.substring(0, principalUri.length() -
                                              pcpl.getAccount().length());
 
-      return new UserInfo(pcpl.getAccount(),
-                          prefix,
-                          userHomePath,
-                          defaultAddressbookPath,
-                          dirInfo);
+      return new PrincipalInfo(pcpl.getAccount(),
+                               prefix,
+                               userHomePath,
+                               defaultAddressbookPath,
+                               cardPath,
+                               dirInfo);
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -375,10 +410,10 @@ public class BwSysIntfImpl implements SysIntf {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.SysIntf#getPrincipals(java.lang.String, edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch)
    */
-  public Collection<UserInfo> getPrincipals(String resourceUri,
+  public Collection<PrincipalInfo> getPrincipals(String resourceUri,
                                                final PrincipalPropertySearch pps)
           throws WebdavException {
-    ArrayList<UserInfo> principals = new ArrayList<UserInfo>();
+    ArrayList<PrincipalInfo> principals = new ArrayList<PrincipalInfo>();
 
     if (pps.applyToPrincipalCollectionSet) {
       /* I believe it's valid (if unhelpful) to return nothing
@@ -436,14 +471,14 @@ public class BwSysIntfImpl implements SysIntf {
       matchVal = mval;
     }
 
-    UserInfo cui = null;
+    PrincipalInfo cui = null;
 
     if (addressbookHomeSet) {
       String path = getUrlHandler().unprefix(matchVal);
 
       CarddavCollection col = getCollection(path);
       if (col != null) {
-        cui = getUserInfo(col.getOwner(), true);
+        cui = getPrincipalInfo(col.getOwner(), true);
       }
     }
 

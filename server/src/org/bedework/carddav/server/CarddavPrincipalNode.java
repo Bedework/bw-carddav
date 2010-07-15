@@ -26,6 +26,8 @@
 
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.server.SysIntf.PrincipalInfo;
+
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavPrincipalNode;
@@ -49,11 +51,15 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   /* for accessing calendars */
   private SysIntf sysi;
 
+  /* Fetched for principal properties */
+  private PrincipalInfo pinfo;
+
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
     new HashMap<QName, PropertyTagEntry>();
 
   static {
     addPropEntry(propertyNames, CarddavTags.addressbookHomeSet);
+    addPropEntry(propertyNames, CarddavTags.principalAddress);
   }
 
   /**
@@ -107,11 +113,26 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
 
     try {
       if (tag.equals(CarddavTags.addressbookHomeSet)) {
-        xml.openTag(tag);
-        generateHref(xml, sysi.getUserInfo(getOwner(), false).defaultAddressbookPath);
-        xml.closeTag(tag);
+        String addrPath = getPinfo().defaultAddressbookPath;
 
-        return true;
+        if (addrPath != null) {
+          xml.openTag(tag);
+          generateHref(xml, addrPath);
+          xml.closeTag(tag);
+
+          return true;
+        }
+      }
+
+      if (tag.equals(CarddavTags.principalAddress)) {
+        String cardPath = getPinfo().principalCardPath;
+        if (cardPath != null) {
+          xml.openTag(tag);
+          generateHref(xml, cardPath);
+          xml.closeTag(tag);
+
+          return true;
+        }
       }
 
       // Not known - try higher
@@ -125,12 +146,32 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getPropertyNames()
    */
   @Override
-  public Collection<PropertyTagEntry> getPropertyNames()throws WebdavException {
+  public Collection<PropertyTagEntry> getPropertyNames() throws WebdavException {
     Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
 
     res.addAll(super.getPropertyNames());
     res.addAll(propertyNames.values());
 
     return res;
+  }
+
+  private PrincipalInfo getPinfo() throws WebdavException {
+    if (pinfo != null) {
+      return pinfo;
+    }
+
+    pinfo = sysi.getPrincipalInfo(getOwner(),
+                                  true);
+
+    if (pinfo == null) {
+      // Fake one up
+      pinfo = new PrincipalInfo(getOwner().getAccount(),
+                                null,
+                                null,
+                                null,
+                                null,
+                                null);
+    }
+    return pinfo;
   }
 }

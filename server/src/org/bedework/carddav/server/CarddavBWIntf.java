@@ -27,7 +27,7 @@ package org.bedework.carddav.server;
 
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.SysIntf.UserInfo;
+import org.bedework.carddav.server.SysIntf.PrincipalInfo;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.util.CardDAVConfig;
@@ -456,9 +456,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         if (wi.isUser()) {
           ap = new User(wi.getEntityName());
+          ap.setPrincipalRef(wi.getPath());
           nd = new CarddavUserNode(wi, sysi, ap, debug);
         } else {
           ap = new Group(wi.getEntityName());
+          ap.setPrincipalRef(wi.getPath());
           nd = new CarddavGroupNode(wi, sysi, ap, debug);
         }
 
@@ -1077,7 +1079,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           throws WebdavException {
     ArrayList<WebdavNsNode> pnodes = new ArrayList<WebdavNsNode>();
 
-    for (UserInfo cui: sysi.getPrincipals(resourceUri, pps)) {
+    for (PrincipalInfo cui: sysi.getPrincipals(resourceUri, pps)) {
       pnodes.add(new WebdavPrincipalNode(sysi.getUrlHandler(),
                                          cui.principalPathPrefix,
                                          new User(cui.account), true,
