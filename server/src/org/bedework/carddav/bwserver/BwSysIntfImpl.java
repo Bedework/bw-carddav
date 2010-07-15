@@ -328,7 +328,7 @@ public class BwSysIntfImpl implements SysIntf {
 
       DirHandler addrBookHandler = getHandler(conf.getAddressBookHandlerPrefix());
 
-      String userHomePath = addrBookHandler.getprincipalHome();
+      String userHomePath = addrBookHandler.getprincipalHome(pcpl);
 
       String defaultAddressbookPath = userHomePath + conf.getDefaultAddressbook();
 

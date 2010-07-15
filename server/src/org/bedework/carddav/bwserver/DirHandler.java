@@ -181,6 +181,14 @@ public interface DirHandler {
    */
   public String getprincipalHome() throws WebdavException;
 
+  /** Return the user home for the given principal
+   *
+   * @param p
+   * @return String home
+   * @throws WebdavException
+   */
+  public String getprincipalHome(AccessPrincipal p) throws WebdavException;
+
   /* ====================================================================
    *                   Cards
    * ==================================================================== */

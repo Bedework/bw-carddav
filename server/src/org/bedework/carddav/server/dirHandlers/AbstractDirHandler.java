@@ -282,6 +282,10 @@ public abstract class AbstractDirHandler implements DirHandler {
     return dhConfig.getPathPrefix() + "/" + account + "/";
   }
 
+  public String getprincipalHome(final AccessPrincipal p) throws WebdavException {
+    return dhConfig.getPathPrefix() + "/" + p.getAccount() + "/";
+  }
+
   /* ====================================================================
    *  Protected methods.
    * ==================================================================== */
