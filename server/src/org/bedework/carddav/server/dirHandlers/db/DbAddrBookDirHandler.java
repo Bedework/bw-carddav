@@ -173,11 +173,12 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       StringBuilder sb = new StringBuilder();
       sb.append("select col.name from ");
       sb.append(DbCollection.class.getName());
-      sb.append(" col where col.name=:name and col.parentPath='/'");
+      sb.append(" col where col.name=:name and col.parentPath is null");
 
       sess.createQuery(sb.toString());
 
-      sess.setString("name", col.getName());
+      String rootName = userHomeRoot.substring(1, userHomeRoot.length() - 1);
+      sess.setString("name", rootName);
 
       Collection res = sess.getList();
 
@@ -185,7 +186,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
         /* Create user root */
         DbCollection root = new DbCollection();
 
-        root.setName(userHomeRoot);
+        root.setName(rootName);
 //        root.setParentPath("/");
         root.setPath(userHomeRoot);
         root.setAddressBook(false);
