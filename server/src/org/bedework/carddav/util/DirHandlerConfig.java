@@ -34,6 +34,8 @@ public class DirHandlerConfig {
 
   private String cardPathPrefix;
 
+  private String cardPathPrefixes;
+
   private boolean addressBook;
 
   private String className;
@@ -99,6 +101,30 @@ public class DirHandlerConfig {
    */
   public String getCardPathPrefix() {
     return cardPathPrefix;
+  }
+
+  /** Set the cardPathPrefixes which defines the prefixes for principal cards based
+   * on an account prefix.
+   *
+   * <p>For example, if the principal is /principals/users/loc_resource01
+   * and the cardPathPrefixes is "/public/people,loc_:/public/locations" then
+   * we create a card path
+   * <pre>
+   *   /public/locations/resource01.vcf
+   * <pre>
+   *
+   * @param val    String
+   */
+  public void setCardPathPrefixes(final String val) {
+    cardPathPrefixes = val;
+  }
+
+  /** Get the cardPathPrefixes
+   *
+   * @return String
+   */
+  public String getCardPathPrefixes() {
+    return cardPathPrefixes;
   }
 
   /** True if this prefix represents an addressbook. Only required if we have no

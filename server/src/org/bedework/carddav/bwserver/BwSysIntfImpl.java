@@ -198,7 +198,9 @@ public class BwSysIntfImpl implements SysIntf {
 
       urlHandler = new UrlHandler(req, true);
 
-      ensureProvisioned();
+      if (account != null) {
+        ensureProvisioned();
+      }
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -334,36 +336,7 @@ public class BwSysIntfImpl implements SysIntf {
 
       Card dirInfo = null;
 
-      DirHandlerConfig dhc = conf.findDirhandler(pcpl.getPrincipalRef());
-
-      // XXX This is a temp fix to get us a linkage to our vcard
-      // It needs more work
-
-      String cardPathPrefix = dhc.getCardPathPrefix();
-      String cardPath = null;
-
-      if (cardPathPrefix != null) {
-        StringBuilder sb = new StringBuilder(cardPathPrefix);
-
-        if (!cardPathPrefix.endsWith("/")) {
-          sb.append("/");
-        }
-
-        String pfx = dhc.getPathPrefix();
-
-        if (!pfx.endsWith("/")) {
-          pfx += "/";
-        }
-
-        if (!pcpl.getPrincipalRef().startsWith(pfx)) {
-          // Something wrong
-          cardPath = null;
-        } else {
-          sb.append(pcpl.getPrincipalRef().substring(pfx.length()));
-          sb.append(".vcf");
-          cardPath = sb.toString();
-        }
-      }
+      String cardPath = getCardPath(pcpl);
 
       if (getDirInfo && (cardPath != null)) {
         DirHandler cardHandler = getHandler(cardPath);
@@ -389,6 +362,77 @@ public class BwSysIntfImpl implements SysIntf {
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
+  }
+
+  private String getCardPath(final AccessPrincipal pcpl) throws WebdavException {
+    DirHandlerConfig dhc = conf.findDirhandler(pcpl.getPrincipalRef());
+
+    // XXX This is a temp fix to get us a linkage to our vcard
+    // It needs more work
+
+    String cardPathPrefix = null;
+
+    // Try the prefixes
+
+    String cardPathPrefixes = dhc.getCardPathPrefixes();
+
+    /* The dirhandler prefix */
+    String pfx = dhc.getPathPrefix();
+
+    if (!pfx.endsWith("/")) {
+      pfx += "/";
+    }
+
+    if (!pcpl.getPrincipalRef().startsWith(pfx)) {
+      // Something wrong
+      return null;
+    }
+
+    String account = pcpl.getPrincipalRef().substring(pfx.length());
+
+    if (cardPathPrefixes != null) {
+      String[] prefixInfo = cardPathPrefixes.split(",");
+
+      for (String pi: prefixInfo) {
+        if (pi == null) {
+          continue;
+        }
+
+        if (!pi.contains(":")) {
+          // Default
+          cardPathPrefix = pi;
+          continue;
+        }
+
+        String[] pfxPath = pi.split(":");
+
+        if (account.startsWith(pfxPath[0])) {
+          cardPathPrefix = pfxPath[1];
+          account = account.substring(pfxPath[0].length());
+          break;
+        }
+      }
+    }
+
+    if (cardPathPrefix == null) {
+      // Try explicit single path
+      cardPathPrefix = dhc.getCardPathPrefix();
+    }
+
+    if (cardPathPrefix == null) {
+      return null;
+    }
+
+    StringBuilder sb = new StringBuilder(cardPathPrefix);
+
+    if (!cardPathPrefix.endsWith("/")) {
+      sb.append("/");
+    }
+
+    sb.append(account);
+    sb.append(".vcf");
+
+    return sb.toString();
   }
 
   /* (non-Javadoc)
