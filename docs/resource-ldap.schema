@@ -11,8 +11,8 @@ objectIdentifier VcardLDAPattributeType VcardLDAP:0
 objectIdentifier VcardLDAPobjectClass VcardLDAP:1
 
 attributetype ( VcardLDAPattributeType:1
-          NAME 'CalResourceKind'
-          DESC 'Calendar Resource Kind'
+          NAME 'Kind'
+          DESC 'VCard Kind'
           EQUALITY caseIgnoreMatch
           SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
           SINGLE-VALUE )
@@ -171,7 +171,7 @@ objectclass ( VcardLDAPobjectClass:2
           SUP (calEntry $ AdmittanceInfo $ InventoryInfo $
               SchedApprovalInfo $ CalendarResourceCost)
           AUXILIARY
-          MUST (calresourcekind $ uid)
+          MUST (kind $ uid)
           MAY (cn $ nickname $ description $ ou $ categories $ member $
                uniquemember $ accessabilityurl $ capacity $ owner $
                resourcemanager $ 
