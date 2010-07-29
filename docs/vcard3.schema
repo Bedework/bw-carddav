@@ -97,6 +97,6 @@ objectclass (1.2.840.113556.1.5.87
     NAME 'calEntry'
     SUP top AUXILIARY
     MAY (calCalURI calFBURL calOtherCalURIs calOtherFBURLs calCAPURI 
-         calOtherCAPURIs mail)
+         calCalAdrURI calOtherCAPURIs mail)
     )
     
