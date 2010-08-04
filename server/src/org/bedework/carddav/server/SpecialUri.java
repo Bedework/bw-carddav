@@ -84,6 +84,12 @@ public class SpecialUri {
       format = formatVcard;
     }
 
+    if (format.equals(formatVcard)) {
+      resp.setContentType("text/vcard"); // TODO - add version parameter
+    } else if (format.equals(formatJson)) {
+      resp.setContentType("application/json");
+    }
+
     startResponse(resp, format);
     GetResult res = null;
 
