@@ -177,6 +177,10 @@ public class SpecialUri {
                                     final boolean debug) throws WebdavException {
     String text = req.getParameter("q");
 
+    if (text == null) {
+      text = req.getParameter("term");
+    }
+
     boolean orThem = true;
 
     Filter fltr = new Filter(debug);
