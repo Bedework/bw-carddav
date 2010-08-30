@@ -369,6 +369,14 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#rollback()
+   */
+  @Override
+  public void rollback() {
+    // No rollback capability at the moment
+  }
+
+  /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#close()
    */
   @Override
