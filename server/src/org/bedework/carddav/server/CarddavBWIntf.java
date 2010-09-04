@@ -65,11 +65,13 @@ import edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb;
 import edu.rpi.sss.util.OptionsI;
 import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.XmlUtil;
+import edu.rpi.sss.util.xml.XmlEmit.NameSpace;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
 
 import org.w3c.dom.Element;
 
+import java.io.CharArrayReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
@@ -420,7 +422,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     super.addNamespace(xml);
 
     try {
-      xml.addNs(CarddavTags.namespace);
+      xml.addNs(new NameSpace(CarddavTags.namespace, "C"), false);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -571,17 +573,42 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
-  public Reader getContent(final HttpServletRequest req,
-                           final HttpServletResponse resp,
-                           final WebdavNsNode node) throws WebdavException {
+  public Content getContent(final HttpServletRequest req,
+                            final HttpServletResponse resp,
+                            final WebdavNsNode node) throws WebdavException {
     try {
+      String accept = req.getHeader("ACCEPT");
+
+      if (node.isCollection()) {
+        if ((accept == null) || (accept.indexOf("text/html") >= 0)) {
+          if (getDirectoryBrowsingDisallowed()) {
+            throw new WebdavException(HttpServletResponse.SC_FORBIDDEN);
+          }
+
+          Content c = new Content();
+
+          String content = generateHtml(req, node);
+          c.rdr = new CharArrayReader(content.toCharArray());
+          c.contentType = "text/html";
+          c.contentLength = content.getBytes().length;
+
+          return c;
+        }
+
+        return null;
+      }
+
       if (!node.getAllowsGet()) {
         return null;
       }
 
-      CarddavNode bwnode = getBwnode(node);
+      Content c = new Content();
 
-      return bwnode.getContent();
+      c.rdr = node.getContent();
+      c.contentType = node.getContentType();
+      c.contentLength = node.getContentLen();
+
+      return c;
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {
@@ -593,7 +620,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getBinaryContent(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
-  public InputStream getBinaryContent(final WebdavNsNode node) throws WebdavException {
+  public Content getBinaryContent(final WebdavNsNode node) throws WebdavException {
     try {
       if (!node.getAllowsGet()) {
         return null;
@@ -610,7 +637,13 @@ public class CarddavBWIntf extends WebdavNsIntf {
         sysi.getFileContent(r);
       }
 
-      return bwnode.getContentStream();
+      Content c = new Content();
+
+      c.stream = bwnode.getContentStream();
+      c.contentType = node.getContentType();
+      c.contentLength = node.getContentLen();
+
+      return c;
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {
