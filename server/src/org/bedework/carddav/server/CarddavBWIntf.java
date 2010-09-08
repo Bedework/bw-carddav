@@ -594,7 +594,23 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
           return c;
         }
+      }
 
+      /* ===================  Try for address-book fetch ======================= */
+
+      if ((accept != null) &&
+          accept.trim().startsWith("text/vcard")) {
+        SpecialUri.process(req, resp, getResourceUri(req), getSysi(), config,
+                           true, debug);
+
+        Content c = new Content();
+
+        c.written = true; // set content to say it's done
+
+        return c;
+      }
+
+      if (node.isCollection()) {
         return null;
       }
 
@@ -1062,7 +1078,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
   public boolean specialUri(final HttpServletRequest req,
                             final HttpServletResponse resp,
                             final String resourceUri) throws WebdavException {
-    return SpecialUri.process(req, resp, resourceUri, getSysi(), config, debug);
+    return SpecialUri.process(req, resp, resourceUri, getSysi(), config,
+                              false, debug);
   }
 
   /* ====================================================================

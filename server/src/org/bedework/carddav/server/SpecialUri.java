@@ -60,6 +60,7 @@ public class SpecialUri {
    * @param resourceUri
    * @param sysi
    * @param config
+   * @param fromGetAccept - true if this is GET with ACCEPT targeted at address book
    * @param debug
    * @return true for a special uri
    * @throws WebdavException
@@ -69,13 +70,26 @@ public class SpecialUri {
                                 final String resourceUri,
                                 final SysIntf sysi,
                                 final CardDAVConfig config,
+                                final boolean fromGetAccept,
                                 final boolean debug) throws WebdavException {
-    if (config.getWebaddrServiceURI() == null) {
-      return false;
-    }
+    String addrbook = null;
 
-    if (!config.getWebaddrServiceURI().equals(resourceUri)) {
-      return false;
+    if (fromGetAccept) {
+      addrbook = resourceUri;
+    } else {
+      if (config.getWebaddrServiceURI() == null) {
+        return false;
+      }
+
+      if (!config.getWebaddrServiceURI().equals(resourceUri)) {
+        return false;
+      }
+
+      addrbook = req.getParameter("addrbook");
+
+      if (addrbook == null) {
+        addrbook = config.getWebaddrPublicAddrbook();
+      }
     }
 
     String format = Util.checkNull(req.getParameter("format"));
@@ -94,12 +108,6 @@ public class SpecialUri {
     GetResult res = null;
 
     buildResponse: {
-      String addrbook = req.getParameter("addrbook");
-
-      if (addrbook == null) {
-        addrbook = config.getWebaddrPublicAddrbook();
-      }
-
       CarddavCollection col = sysi.getCollection(addrbook);
 
       if (col == null) {
@@ -123,7 +131,7 @@ public class SpecialUri {
       }
 
       if (req.getParameter("list") != null) {
-        if (req.getParameter("addrbook") == null) {
+        if (addrbook == null) {
           throw new WebdavBadRequest("Must specify addressbook");
         }
 
