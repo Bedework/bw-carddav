@@ -61,6 +61,7 @@ public class SpecialUri {
    * @param sysi
    * @param config
    * @param fromGetAccept - true if this is GET with ACCEPT targeted at address book
+   * @param accept - desired format
    * @param debug
    * @return true for a special uri
    * @throws WebdavException
@@ -71,11 +72,14 @@ public class SpecialUri {
                                 final SysIntf sysi,
                                 final CardDAVConfig config,
                                 final boolean fromGetAccept,
+                                final String accept,
                                 final boolean debug) throws WebdavException {
     String addrbook = null;
+    String format;
 
     if (fromGetAccept) {
       addrbook = resourceUri;
+      format = accept;
     } else {
       if (config.getWebaddrServiceURI() == null) {
         return false;
@@ -90,12 +94,12 @@ public class SpecialUri {
       if (addrbook == null) {
         addrbook = config.getWebaddrPublicAddrbook();
       }
-    }
 
-    String format = Util.checkNull(req.getParameter("format"));
+      format = Util.checkNull(req.getParameter("format"));
 
-    if (format == null) {
-      format = formatVcard;
+      if (format == null) {
+        format = formatVcard;
+      }
     }
 
     if (format.equals(formatVcard)) {
