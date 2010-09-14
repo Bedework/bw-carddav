@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Address Book</title>
+    <link href="resources/reset.css" rel="stylesheet" type="text/css"/>
+    <link href="resources/addressbook.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="resources/jquery/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="resources/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $.ajax({
+          type: "get",
+          url: "http://localhost:8080/ucarddav/user/johnsa/addressbook",
+          //data: "format=json&addrbook=/user/johnsa/addressbook",
+          dataType: "xml",
+          beforeSend: function(xhrobj) {
+            xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
+          },
+          success: function(responseData){
+            alert(responseData);            
+          },
+          error: function(msg) {
+            // there was a problem
+            alert(msg.statusText);
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="header">
+      <h1>Bedework Address Book</h1>
+      <p>Test page</p>
+    </div>
+  </body>
+</html>
