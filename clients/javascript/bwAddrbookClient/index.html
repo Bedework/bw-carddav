@@ -8,7 +8,7 @@
     <script type="text/javascript" src="resources/jquery/jquery-ui-1.8.2.custom.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        
+
         $("#auth").click(function() {
           $.ajax({
             type: "get",
@@ -45,11 +45,28 @@
           });
         });
 
+        $("#addFormButton").click(function() {
+          $("#addForm").show();
+        });
+
         $("#add").click(function() {
-          vcData = "BEGIN:VCARD\nFN:Kyla Collings\nUID:myveryhandcodeduid@mysite.edu6754837\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nEMAIL;TYPE=PREF;TYPE=INTERNET:collink@nycap.rr.com\nTEL;TYPE=HOME:+1 518 273-5658\nADR;TYPE=HOME:;;58 Spring Ave;Troy;NY;12180;\nN:Collings;Kyla;;;\nVERSION:4.0\nEND:VCARD";
+          //var vcData = "BEGIN:VCARD\nFN:Venerable Bede\nUID:myveryhandcodeduid@mysite.edu6754841\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nEMAIL;TYPE=PREF;TYPE=INTERNET:vbede@mysite.edu\nTEL;TYPE=HOME:+1 555 555-5555\nADR;TYPE=HOME:;;23 Toadstool Ln;Troy;NY;12180;\nN:Bede;Venerable;;;\nVERSION:4.0\nEND:VCARD";
+          //alert($("#FN").val() + "\n" + $("#UID").val() + "\n" + $("#EMAIL").val() + "\n" + $("#HOMEPHONE").val() + "\n" + $("#ADRHOMESTREET").val());
+
+          var vcData = "BEGIN:VCARD\n"
+          vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
+          vcData += "UID:" + $("#UID").val() + "\n";
+          vcData += "CLASS:PRIVATE\n";
+          vcData += "REV:20100914T041750Z\n";
+          vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
+          vcData += "TEL;TYPE=HOME:" + $("#HOMEPHONE").val() + "\n";  
+          vcData += "ADR;TYPE=HOME:;;" + $("#ADRHOMESTREET").val() + ";" + $("#ADRHOMECITY").val() + ";" +  $("#ADRHOMESTATE").val() + ";" + $("#ADRHOMEPOSTAL").val() + ";\n";
+          vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n"; 
+          vcData += "VERSION:4.0\nEND:VCARD";
+              
           $.ajax({
             type: "put",
-            url: "/ucarddav/user/johnsa/addressbook/myveryhandcodeduid@mysite.edu6754837.vcf",
+            url: "/ucarddav/user/johnsa/addressbook/" + $("#UID").val() + ".vcf",
             data: vcData,
             dataType: "text",
             processData: false,
@@ -73,7 +90,7 @@
         $("#delete").click(function() {
           $.ajax({
             type: "delete",
-            url: "/ucarddav/user/johnsa/addressbook/myveryhandcodeduid@mysite.edu6754837.vcf",
+            url: "/ucarddav/user/johnsa/addressbook/" + $("#DUID").val() + ".vcf",
             dataType: "text",
             beforeSend: function(xhrobj) {
               xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
@@ -97,13 +114,30 @@
     <div id="header">
       <h1>Bedework Address Book</h1>
       <p>Test page</p>
-      <ul>
-        <li><button id="auth" type="button">Authenticate/Test</button></li>
-        <li><button id="report" type="button">Report</button></li>
-        <li><button id="add" type="button">Add a new vcard</button></li>
-        <li><button id="delete" type="button">Delete the new vcard</button></li>
-      </ul>
-      
+      <p>
+        <button id="auth" type="button">Authenticate/Test</button>
+        <button id="report" type="button">Report</button>
+      </p>
+      <hr/>
+      <h3>Add Contact</h3>
+      <form id="addForm">
+        First Name: <input type="text" size="60" value="" id="FIRSTNAME"/><br/>
+        Last Name: <input type="text" size="60" value="" id="LASTNAME"/><br/>
+        UID: <input type="text" size="60" value="" id="UID"/><br/>
+        Email: <input type="text" size="60" value="" id="EMAIL"/><br/>
+        Home Phone: <input type="text" size="60" value="" id="HOMEPHONE"/><br/>
+        Home Address Street: <input type="text" size="60" value="" id="ADRHOMESTREET"/><br/>
+        Home Address City: <input type="text" size="60" value="" id="ADRHOMECITY"/><br/>
+        Home Address State: <input type="text" size="60" value="" id="ADRHOMESTATE"/><br/>
+        Home Address Postal Code: <input type="text" size="60" value="" id="ADRHOMEPOSTAL"/><br/>
+        <button id="add" type="button">Add Contact</button>
+      </form>
+      <hr/>
+      <h3>Delete Contact (by UID)</h3>
+      <form id="deleteForm">
+        UID: <input type="text" size="60" value="" id="DUID"/><br/>
+        <button id="delete" type="button">Delete Contact</button>
+      </form>
     </div>
   </body>
 </html>
