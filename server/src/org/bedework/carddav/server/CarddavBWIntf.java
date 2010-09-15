@@ -598,7 +598,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       /* ===================  Try for address-book fetch ======================= */
 
-      if ((accept != null) &&
+      if (node.isCollection() && (accept != null) &&
           (accept.trim().startsWith("text/vcard") ||
               accept.trim().startsWith("application/json"))) {
         SpecialUri.process(req, resp, getResourceUri(req), getSysi(), config,
@@ -620,10 +620,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
 
       Content c = new Content();
+      c.written = true;
 
-      c.rdr = node.getContent();
-      c.contentType = node.getContentType();
-      c.contentLength = node.getContentLen();
+      node.writeContent(null, resp.getWriter(), accept);
 
       return c;
     } catch (WebdavException we) {
@@ -1297,8 +1296,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           pr = new AddressData(tag, debug);
         }
 
-        AddressData caldata = (AddressData)pr;
-        String content = null;
+        AddressData addrdata = (AddressData)pr;
 
         if (debug) {
           trace("do CalendarData for " + node.getUri());
@@ -1306,24 +1304,18 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         int status = HttpServletResponse.SC_OK;
         try {
-          content = caldata.process(node);
+          xml.openTagSameLine(CarddavTags.addressData);
+          addrdata.process(node, xml);
+          xml.closeTagSameLine(CarddavTags.addressData);
+
+          return true;
         } catch (WebdavException wde) {
           status = wde.getStatusCode();
           if (debug && (status != HttpServletResponse.SC_NOT_FOUND)) {
             error(wde);
           }
-        }
-
-        if (status != HttpServletResponse.SC_OK) {
-          // XXX should be passing status back
           return false;
         }
-
-        /* Output the (transformed) node.
-         */
-
-        xml.cdataProperty(CarddavTags.addressData, content);
-        return true;
       }
 
       if (tag.equals(CarddavTags.maxResourceSize)) {

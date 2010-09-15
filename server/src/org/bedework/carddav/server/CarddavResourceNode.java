@@ -31,11 +31,13 @@ import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.sss.util.DateTimeUtil;
+import edu.rpi.sss.util.xml.XmlEmit;
 
 import org.w3c.dom.Element;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Writer;
 
 import javax.xml.namespace.QName;
 
@@ -290,6 +292,13 @@ public class CarddavResourceNode extends CarddavNode {
   /* ====================================================================
    *                   Required webdav properties
    * ==================================================================== */
+
+  @Override
+  public boolean writeContent(final XmlEmit xml,
+                              final Writer wtr,
+                              final String contentType) throws WebdavException {
+    return false;
+  }
 
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentBinary()

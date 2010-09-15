@@ -44,6 +44,7 @@ import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
 
 import org.w3c.dom.Element;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -230,6 +231,12 @@ public class CarddavColNode extends CarddavNode {
   /* ====================================================================
    *                   Required webdav properties
    * ==================================================================== */
+
+  public boolean writeContent(final XmlEmit xml,
+                              final Writer wtr,
+                              final String contentType) throws WebdavException {
+    return false;
+  }
 
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()

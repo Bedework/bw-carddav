@@ -36,6 +36,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
 import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.sss.util.Util;
+import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 
@@ -44,6 +45,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -188,20 +190,22 @@ public class AddressData extends WebdavProperty {
   }
 
   /** Given the CaldavBwNode, returns the transformed content.
-   *
-   * @param wdnode
-   * @return String content
-   * @throws WebdavException
-   */
-  public String process(final WebdavNsNode wdnode) throws WebdavException {
+  *
+  * @param wdnode
+  * @param xml
+  * @throws WebdavException
+  */
+ public void process(final WebdavNsNode wdnode,
+                     final XmlEmit xml) throws WebdavException {
     if (!(wdnode instanceof CarddavCardNode)) {
-      return null;
+      return;
     }
 
     CarddavCardNode node = (CarddavCardNode)wdnode;
 
     if (allprop || (props == null)) {
-      return node.getContentString();
+      node.writeContent(xml, null, returnContentType);
+      return;
     }
 
     /** Ensure node exists */
@@ -210,7 +214,11 @@ public class AddressData extends WebdavProperty {
       throw new WebdavException(HttpServletResponse.SC_NOT_FOUND);
     }
 
-    return transformVcard(node.getCard(), props);
+    try {
+      xml.cdataValue(transformVcard(node.getCard(), props));
+    } catch (IOException ioe) {
+      throw new WebdavException(ioe);
+    }
   }
 
   /* Transform one or more VCARD objects based on a list of required

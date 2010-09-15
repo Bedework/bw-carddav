@@ -33,10 +33,12 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
+import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 
 import org.w3c.dom.Element;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -249,6 +251,25 @@ public boolean generatePropertyValue(final QName tag,
   /* ====================================================================
    *                   Overridden property methods
    * ==================================================================== */
+
+  @Override
+  public boolean writeContent(final XmlEmit xml,
+                              final Writer wtr,
+                              final String contentType) throws WebdavException {
+    try {
+      if (xml == null) {
+        wtr.write(card.output());
+      } else {
+        xml.cdataValue(card.output());
+      }
+    } catch (WebdavException we) {
+      throw we;
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
+
+    return true;
+  }
 
   @Override
   public CurrentAccess getCurrentAccess() throws WebdavException {
