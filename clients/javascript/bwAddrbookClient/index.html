@@ -13,7 +13,6 @@
           $.ajax({
             type: "get",
             url: "/ucarddav/user/johnsa/addressbook/",
-            //data: "format=json&addrbook=/user/johnsa/addressbook",
             dataType: "html",
             success: function(responseData){
               alert(responseData);            
@@ -33,6 +32,8 @@
             dataType: "xml",
             beforeSend: function(xhrobj) {
               xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
+              xhrobj.setRequestHeader("Depth", "1");
+              xhrobj.setRequestHeader("Authorization", "Basic");
             },
             success: function(responseData){
               alert(responseData);            
@@ -45,16 +46,18 @@
         });
 
         $("#add").click(function() {
-          vcData = "BEGIN:VCARD\nFN:Kyla Collings\nUID:BW:myveryhandcodeduid@mysite.edu:6754836\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nTEL;TYPE=HOME:+1 518 273-5658\nADR;TYPE=HOME:;;58 Spring Ave;Troy;NY;12180;\nN:Collings;Kyla;;;\nVERSION:4.0\nEND:VCARD";
+          vcData = "BEGIN:VCARD\nFN:Kyla Collings\nUID:myveryhandcodeduid@mysite.edu6754837\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nEMAIL;TYPE=PREF;TYPE=INTERNET:collink@nycap.rr.com\nTEL;TYPE=HOME:+1 518 273-5658\nADR;TYPE=HOME:;;58 Spring Ave;Troy;NY;12180;\nN:Collings;Kyla;;;\nVERSION:4.0\nEND:VCARD";
           $.ajax({
             type: "put",
-            url: "/ucarddav/user/johnsa/addressbook/BW:myveryhandcodeduid@mysite.edu:6754836.vcf",
+            url: "/ucarddav/user/johnsa/addressbook/myveryhandcodeduid@mysite.edu6754837.vcf",
             data: vcData,
             dataType: "text",
             processData: false,
             beforeSend: function(xhrobj) {
               xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
               xhrobj.setRequestHeader("If-None-Match", "*");
+              xhrobj.setRequestHeader("Authorization", "Basic");
+              xhrobj.setRequestHeader("Content-Type", "text/vcard");
             },
             success: function(responseData){
               alert(responseData);            
@@ -66,6 +69,26 @@
           });
         });
 
+
+        $("#delete").click(function() {
+          $.ajax({
+            type: "delete",
+            url: "/ucarddav/user/johnsa/addressbook/myveryhandcodeduid@mysite.edu6754837.vcf",
+            dataType: "text",
+            beforeSend: function(xhrobj) {
+              xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
+              xhrobj.setRequestHeader("Authorization", "Basic");
+            },
+            success: function(responseData){
+              alert(responseData);            
+            },
+            error: function(msg) {
+              // there was a problem
+              alert(msg.statusText);
+            }
+          });
+        });
+        
         
       });
     </script>
@@ -78,6 +101,7 @@
         <li><button id="auth" type="button">Authenticate/Test</button></li>
         <li><button id="report" type="button">Report</button></li>
         <li><button id="add" type="button">Add a new vcard</button></li>
+        <li><button id="delete" type="button">Delete the new vcard</button></li>
       </ul>
       
     </div>
