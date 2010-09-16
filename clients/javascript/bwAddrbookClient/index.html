@@ -1,19 +1,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>Address Book</title>
+    <title>Address Book</title>    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="resources/reset.css" rel="stylesheet" type="text/css"/>
     <link href="resources/addressbook.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="resources/jquery/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="resources/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+    <script type="text/javascript" src="resources/Math.uuid.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
+
+        var carddavUrl = "/ucarddav";
+        var userpath = "/user/" +  $("#userid").val();
+        var bookName = "/addressbook/"; 
+        var addrBookUrl = carddavUrl + userpath + bookName;
 
         $("#auth").click(function() {
           $.ajax({
             type: "get",
-            url: "/ucarddav/user/johnsa/addressbook/",
-            dataType: "html",
+            url: "",
+            dataType: addrBookUrl,
             success: function(responseData){
               alert(responseData);            
             },
@@ -27,8 +34,7 @@
         $("#report").click(function() {
           $.ajax({
             type: "report",
-            url: "/ucarddav/user/johnsa/addressbook/",
-            //data: "format=json&addrbook=/user/johnsa/addressbook",
+            url: addrBookUrl,
             dataType: "xml",
             beforeSend: function(xhrobj) {
               xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
@@ -53,9 +59,11 @@
           //var vcData = "BEGIN:VCARD\nFN:Venerable Bede\nUID:myveryhandcodeduid@mysite.edu6754841\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nEMAIL;TYPE=PREF;TYPE=INTERNET:vbede@mysite.edu\nTEL;TYPE=HOME:+1 555 555-5555\nADR;TYPE=HOME:;;23 Toadstool Ln;Troy;NY;12180;\nN:Bede;Venerable;;;\nVERSION:4.0\nEND:VCARD";
           //alert($("#FN").val() + "\n" + $("#UID").val() + "\n" + $("#EMAIL").val() + "\n" + $("#HOMEPHONE").val() + "\n" + $("#ADRHOMESTREET").val());
 
+          var newUUID = "BwABC-" + Math.uuid();
+          
           var vcData = "BEGIN:VCARD\n"
           vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
-          vcData += "UID:" + $("#UID").val() + "\n";
+          vcData += "UID:" + newUUID + "\n";
           vcData += "CLASS:PRIVATE\n";
           vcData += "REV:20100914T041750Z\n";
           vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
@@ -66,7 +74,7 @@
               
           $.ajax({
             type: "put",
-            url: "/ucarddav/user/johnsa/addressbook/" + $("#UID").val() + ".vcf",
+            url: addrBookUrl + newUUID + ".vcf",
             data: vcData,
             dataType: "text",
             processData: false,
@@ -90,7 +98,7 @@
         $("#delete").click(function() {
           $.ajax({
             type: "delete",
-            url: "/ucarddav/user/johnsa/addressbook/" + $("#DUID").val() + ".vcf",
+            url: addrBookUrl + $("#DUID").val() + ".vcf",
             dataType: "text",
             beforeSend: function(xhrobj) {
               xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
@@ -113,17 +121,16 @@
   <body>
     <div id="header">
       <h1>Bedework Address Book</h1>
-      <p>Test page</p>
+      <p>Test page for user <input type="text" id="userid" size="20" value="vbede"/></p>
       <p>
         <button id="auth" type="button">Authenticate/Test</button>
         <button id="report" type="button">Report</button>
       </p>
       <hr/>
       <h3>Add Contact</h3>
-      <form id="addForm">
+      <div id="addForm">
         First Name: <input type="text" size="60" value="" id="FIRSTNAME"/><br/>
         Last Name: <input type="text" size="60" value="" id="LASTNAME"/><br/>
-        UID: <input type="text" size="60" value="" id="UID"/><br/>
         Email: <input type="text" size="60" value="" id="EMAIL"/><br/>
         Home Phone: <input type="text" size="60" value="" id="HOMEPHONE"/><br/>
         Home Address Street: <input type="text" size="60" value="" id="ADRHOMESTREET"/><br/>
@@ -131,13 +138,13 @@
         Home Address State: <input type="text" size="60" value="" id="ADRHOMESTATE"/><br/>
         Home Address Postal Code: <input type="text" size="60" value="" id="ADRHOMEPOSTAL"/><br/>
         <button id="add" type="button">Add Contact</button>
-      </form>
+      </div>
       <hr/>
       <h3>Delete Contact (by UID)</h3>
-      <form id="deleteForm">
+      <div id="deleteForm">
         UID: <input type="text" size="60" value="" id="DUID"/><br/>
         <button id="delete" type="button">Delete Contact</button>
-      </form>
+      </div>
     </div>
   </body>
 </html>
