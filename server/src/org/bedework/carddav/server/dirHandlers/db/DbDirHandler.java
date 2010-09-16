@@ -297,7 +297,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     sb.append(" col where col.parentPath=:path");
 
     sess.createQuery(sb.toString());
-    sess.setString("path", path);
+    sess.setString("path", ensureSlashAtEnd(path));
 
     List<DbCollection> l = sess.getList();
 
@@ -370,7 +370,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     // addressBook     boolean
 
     cdc.setOwner(getPrincipal(col.getOwnerHref()));
-    cdc.setPath(col.getParentPath() + "/" + col.getName());
+    cdc.setPath(ensureSlashAtEnd(col.getParentPath()) + col.getName());
     cdc.setParentPath(col.getParentPath());
 
     return cdc;
