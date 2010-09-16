@@ -12,11 +12,18 @@
       $(document).ready(function() {
 
         var carddavUrl = "/ucarddav";
-        var userpath = "/user/" +  $("#userid").val();
+        var userpath = "/user/";
         var bookName = "/addressbook/"; 
-        var addrBookUrl = carddavUrl + userpath + bookName;
+
+        // set on entry:
+        $("#visitListing").attr("href",carddavUrl + userpath + $("#userid").val() + bookName);
+        // change if the userid is changed:
+        $("#userid").change(function() {
+          $("#visitListing").attr("href",carddavUrl + userpath + $("#userid").val() + bookName);
+        });
 
         $("#auth").click(function() {
+          var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
           $.ajax({
             type: "get",
             url: "",
@@ -32,6 +39,7 @@
         });
 
         $("#report").click(function() {
+          var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
           $.ajax({
             type: "report",
             url: addrBookUrl,
@@ -51,14 +59,11 @@
           });
         });
 
-        $("#addFormButton").click(function() {
-          $("#addForm").show();
-        });
-
         $("#add").click(function() {
           //var vcData = "BEGIN:VCARD\nFN:Venerable Bede\nUID:myveryhandcodeduid@mysite.edu6754841\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nEMAIL;TYPE=PREF;TYPE=INTERNET:vbede@mysite.edu\nTEL;TYPE=HOME:+1 555 555-5555\nADR;TYPE=HOME:;;23 Toadstool Ln;Troy;NY;12180;\nN:Bede;Venerable;;;\nVERSION:4.0\nEND:VCARD";
           //alert($("#FN").val() + "\n" + $("#UID").val() + "\n" + $("#EMAIL").val() + "\n" + $("#HOMEPHONE").val() + "\n" + $("#ADRHOMESTREET").val());
-
+          
+          var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
           var newUUID = "BwABC-" + Math.uuid();
           
           var vcData = "BEGIN:VCARD\n"
@@ -96,6 +101,7 @@
 
 
         $("#delete").click(function() {
+          var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
           $.ajax({
             type: "delete",
             url: addrBookUrl + $("#DUID").val() + ".vcf",
@@ -112,8 +118,7 @@
               alert(msg.statusText);
             }
           });
-        });
-        
+        });       
         
       });
     </script>
@@ -121,7 +126,7 @@
   <body>
     <div id="header">
       <h1>Bedework Address Book</h1>
-      <p>Test page for user <input type="text" id="userid" size="20" value="vbede"/></p>
+      <p>Test page for user <input type="text" id="userid" size="20" value="vbede"/> <a href="#" id="visitListing" target="_blank">Visit Listing</a></p>
       <p>
         <button id="auth" type="button">Authenticate/Test</button>
         <button id="report" type="button">Report</button>
