@@ -43,6 +43,7 @@ import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
+import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
 
 import java.util.Collection;
 
@@ -157,7 +158,13 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    * @see org.bedework.carddav.bwserver.DirHandler#deleteCard(org.bedework.carddav.server.CarddavCardNode)
    */
   public void deleteCard(final CarddavCardNode val) throws WebdavException {
-    throw new WebdavException("unimplemented");
+    DbCard dcd = getDbCard(val.getPath());
+
+    if (dcd == null) {
+      throw new WebdavNotFound();
+    }
+
+    deleteDbCard(dcd);
   }
 
   /* ====================================================================

@@ -25,6 +25,8 @@
 */
 package org.bedework.carddav.server;
 
+import net.fortuna.ical4j.util.CompatibilityHints;
+
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
@@ -183,6 +185,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
           config.addDirhandler((DirHandlerConfig)o);
         }
       }
+
+      /* Set ical4j so that it allows some older constructs */
+      CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING,
+                                        true);
 
       sysi = getSysIntf();
       sysi.init(req, account, config, debug);

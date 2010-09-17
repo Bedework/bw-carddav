@@ -71,7 +71,8 @@ public class CarddavCardNode extends CarddavNode {
    * @param uri
    * @param debug
    */
-  public CarddavCardNode(final SysIntf sysi, final int status, final String uri, final boolean debug) {
+  public CarddavCardNode(final SysIntf sysi, final int status,
+                         final String uri, final boolean debug) {
     super(true, sysi, uri, debug);
     setStatus(status);
     this.uri = uri;
@@ -358,7 +359,7 @@ public boolean generatePropertyValue(final QName tag,
    */
   @Override
   public String getContentType() throws WebdavException {
-    return "text/directory; charset=UTF-8";
+    return "text/vcard; version=\"4.0\"; charset=UTF-8";
   }
 
   /* (non-Javadoc)

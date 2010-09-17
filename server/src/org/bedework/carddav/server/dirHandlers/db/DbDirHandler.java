@@ -320,10 +320,9 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
    *  Protected methods.
    * ==================================================================== */
 
-  protected DbCard getDbCard(final String path, final String name) throws WebdavException {
-    verifyPath(path);
-
-//    openSession();
+  protected DbCard getDbCard(final String parentPath,
+                             final String name) throws WebdavException {
+    verifyPath(parentPath);
 
     StringBuilder sb = new StringBuilder();
 
@@ -333,8 +332,23 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     sb.append(" and card.name=:name");
 
     sess.createQuery(sb.toString());
-    sess.setString("path", path);
+    sess.setString("path", ensureEndSlash(parentPath));
     sess.setString("name", name);
+
+    return (DbCard)sess.getUnique();
+  }
+
+  protected DbCard getDbCard(final String path) throws WebdavException {
+    verifyPath(path);
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("from ");
+    sb.append(DbCard.class.getName());
+    sb.append(" card where card.path=:path");
+
+    sess.createQuery(sb.toString());
+    sess.setString("path", path);
 
     return (DbCard)sess.getUnique();
   }
@@ -399,13 +413,13 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
     sess.createQuery(sb.toString());
 
-    sess.setString("path", path);
+    sess.setString("path", ensureEndSlash(path));
 
     return (DbCollection)sess.getUnique();
   }
 
   /**
-   * @param attrs
+   * @param dbcard
    * @return a Card object
    * @throws WebdavException
    */
@@ -417,6 +431,13 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     card.setName(dbcard.getName());
 
     return card;
+  }
+
+  /**
+   * @throws WebdavException
+   */
+  protected void deleteDbCard(final DbCard dbcard) throws WebdavException {
+    sess.delete(dbcard);
   }
 
   /* ====================================================================
@@ -494,7 +515,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
   protected void beginTransaction() throws WebdavException {
     checkOpen();
-//    sess.close();
+
     if (debug) {
       trace("Begin transaction for " + objTimestamp);
     }

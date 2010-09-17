@@ -26,7 +26,6 @@
 
 package org.bedework.carddav.vcard;
 
-import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.VCard;
@@ -281,8 +280,6 @@ public class Card {
    */
   public void parse(final Reader rdr) throws WebdavException {
     try {
-      CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING,
-                                        true);
       vcard = new VCardBuilder(rdr).build();
     } catch (Throwable t) {
       throw new WebdavException(t);

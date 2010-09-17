@@ -59,8 +59,6 @@ import javax.xml.namespace.QName;
 public class CarddavColNode extends CarddavNode {
   private AccessPrincipal owner;
 
-  private String vfreeBusyString;
-
   private CurrentAccess currentAccess;
 
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
@@ -232,6 +230,7 @@ public class CarddavColNode extends CarddavNode {
    *                   Required webdav properties
    * ==================================================================== */
 
+  @Override
   public boolean writeContent(final XmlEmit xml,
                               final Writer wtr,
                               final String contentType) throws WebdavException {
@@ -251,10 +250,6 @@ public class CarddavColNode extends CarddavNode {
    */
   @Override
   public long getContentLen() throws WebdavException {
-    if (vfreeBusyString != null) {
-      return vfreeBusyString.length();
-    }
-
     return 0;
   }
 
@@ -263,10 +258,6 @@ public class CarddavColNode extends CarddavNode {
    */
   @Override
   public String getContentType() throws WebdavException {
-    if (vfreeBusyString != null) {
-      return "text/calendar; charset=UTF-8";
-    }
-
     return null;
   }
 
@@ -465,8 +456,8 @@ public class CarddavColNode extends CarddavNode {
          */
         xml.openTag(tag);
         xml.startTag(CarddavTags.addressData);
-        xml.attribute("content-type", "text/directory");
-        xml.attribute("version", "3.0");
+        xml.attribute("content-type", "text/vcard");
+        xml.attribute("version", "4.0");
         xml.endEmptyTag();
         xml.newline();
         xml.closeTag(tag);

@@ -35,6 +35,7 @@
               index="bwcdidx_card_parentpath" />
 
     <property name="path" column="bwcd_path" type="string" length="3000"
+              unique="true"
               not-null="true"
               index="bwcdidx_card_path" />
 
