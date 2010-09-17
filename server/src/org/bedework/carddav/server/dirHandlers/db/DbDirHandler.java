@@ -246,7 +246,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     fltr.makeFilter(filter);
 
     sess.createQuery(sb.toString());
-    sess.setString("path", path);
+    sess.setString("path", ensureSlashAtEnd(path));
 
     fltr.parReplace(sess);
 

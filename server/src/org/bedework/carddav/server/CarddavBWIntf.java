@@ -704,6 +704,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
       try {
         card.parse(contentRdr);
       } catch (Throwable t) {
+        if (debug) {
+          error(t);
+        }
         throw new WebdavForbidden(CarddavTags.supportedAddressData,
                                   t.getMessage());
       }

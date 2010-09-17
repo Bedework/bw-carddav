@@ -92,6 +92,9 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     try {
       vc.validate();
     } catch (Throwable t) {
+      if (debug) {
+        error(t);
+      }
       throw new CardDAVBadData(t.getMessage());
     }
 
@@ -102,8 +105,8 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     }
 
     dc.setName(card.getName());
-    dc.setParentPath(path);
-    dc.setPath(path + dc.getName());
+    dc.setParentPath(ensureSlashAtEnd(path));
+    dc.setPath(dc.getParentPath() + dc.getName());
     dc.setOwnerHref(card.getOwner().getPrincipalRef());
     dc.setCreatorHref(dc.getOwnerHref());
 
