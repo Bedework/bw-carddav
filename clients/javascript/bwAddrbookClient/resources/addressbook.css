@@ -20,12 +20,12 @@
 body {
 	font-family: Arial, Helvetica, sans-serif;
 	background-color: #ddd;
-	color: black;
+	color: #333;
 }
 #searchBar {
 	padding: 0.5em;
 	border-bottom: 1px solid #aaf;
-	color: black;
+	color: #333;
 	background-color: white;
 }
 #searchBox {
@@ -33,9 +33,56 @@ body {
 }
 #searchBox input {
   background-color: #eef;
-  color: black;
+  color: #333;
   border: 1px solid #aaf;
   width: 200px;
+}
+ul#add {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  cursor: pointer;
+  border: 1px solid #aaf;
+  background-color: #eef;
+  color: #333;
+  width: 100px;
+  position: relative;
+  white-space: nowrap;
+}
+li.book {
+  list-style-image: url("silk/book.png");
+}
+li.group {
+  list-style-image: url("silk/group.png");
+}
+li.contact {
+  list-style-image: url("silk/user.png");
+}
+ul#add li {
+  background-color: #eef;
+  padding: 0.15em 1em 0.3em 5px;
+}
+ul#add ul {
+  display:  none;
+  position: absolute;
+  left: -1px;
+  width: 100%;
+  margin: 1.2em 0 0 0;
+  padding: 0;
+  border: 1px solid #aaf;
+  list-style: disc inside none;
+}
+ul#add ul li { 
+	padding: 0.25em 0.5em 0.25em 0.5em; 
+}
+ul#add ul li:hover { 
+	background-color: #ff9; 
+	color: #333;
+}
+ul#add li:hover ul { 
+	display:  block; 
+	background-color: #eef;
+	color: #333; 
 }
 ul#booksAndGroups {
 	float: left;
@@ -43,17 +90,11 @@ ul#booksAndGroups {
 	padding-top: 1em;
 	white-space: nowrap;
   list-style: disc outside none;
-  color: black;
+  color: #333;
   background-color: white;
 }
 #booksAndGroups li {
   margin: 0 0 0.25em 2em;
-}
-#booksAndGroups li.book {
-	list-style-image: url("silk/book.png");
-}
-#booksAndGroups li.group {
-  list-style-image: url("silk/group.png");
 }
 #booksAndGroups ul {
 	margin-top: 0.5em;
@@ -61,11 +102,16 @@ ul#booksAndGroups {
 #booksAndGroups ul li {
   margin-bottom: 0.25em;
 }
+#booksAndGroups a.selected {
+	background-color: #ff9;
+	color: #333;
+  border-bottom: 1px solid #eee;
+}
 #content {
   float: left;
 	border-left: 1px solid #aaf;
 	padding: 1em;
-  color: black;
+  color: #333;
   background-color: white;
 }
 h1 {
@@ -82,4 +128,9 @@ p {
 em {
   font-style: italic;
   font-size: 0.9em;
+}
+a {
+  color: #333;
+  background-color: transparent;
+  text-decoration: none;
 }

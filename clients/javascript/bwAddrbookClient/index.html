@@ -34,18 +34,29 @@
   </head>
   <body>
     <div id="searchBar" class="ui-layout-north">
+      <!-- The search and filter box performs a filter on local values and 
+           a search on remote values.  Its behavior depends on what is 
+           selected in the booksAndGroups pane. -->
       <div id="searchBox">
         <input type="text" id="search" value=""/>
-        <button id="searchButton">search...</button>
+        <button id="searchButton">filter...</button>
       </div>
-      <button id="add">add...</button>
+      <ul id="add">
+        <li>
+          <ul>
+            <li class="contact">contact</li>
+            <li class="group">group</li>
+          </ul>
+          add...
+        </li>
+      </ul>
     </div>
     <ul id="booksAndGroups" class="ui-layout-west">
       <li class="book">
         public
       </li>
       <li class="book">
-        personal
+        <a href="#" id="uuid9876543" class="selected">personal</a>
         <ul>
           <li class="group">
             group a

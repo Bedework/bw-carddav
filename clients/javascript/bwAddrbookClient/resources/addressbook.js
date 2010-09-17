@@ -45,8 +45,8 @@ $(document).ready(function() {
   
   // Create the three-panel layout
   myLayout = $('body').layout({
-    //  enable showOverflow on west-pane so popups will overlap north pane
-      west__showOverflowOnHover: true
+    //  enable showOverflow on north-pane so popups will overlap west pane
+      north__showOverflowOnHover: true
 
     //  some resizing/toggling settings
     , north__closable:     false // OVERRIDE the pane-default of closable: true
