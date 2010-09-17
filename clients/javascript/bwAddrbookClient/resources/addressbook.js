@@ -41,7 +41,7 @@ $(document).ready(function() {
       }
   })();
   userid = qsParameters.user;
-  $("#userid").val(userid);
+  $("#mainUserBook").html(userid);
   
   // Create the three-panel layout
   myLayout = $('body').layout({
@@ -53,7 +53,7 @@ $(document).ready(function() {
     , north__resizable:    false // OVERRIDE the pane-default of resizable: true
     , north__slidable:    false // OVERRIDE the pane-default of slidable: true
     //  some pane-size settings
-    , west__minSize:      150
+    , west__minSize:      190
     //, north__minSize:    43 
   });
 
@@ -174,3 +174,15 @@ $(document).ready(function() {
   });       
   
 });
+
+/****************************
+ * GENERIC FUNCTIONS:
+ ****************************/
+
+function changeClass(id, newClass) {
+  var identity = document.getElementById(id);
+  if (identity == null) {
+    alert("No element with id: " + id + " to set to class: " + newClass);
+  }
+  identity.className=newClass;
+}

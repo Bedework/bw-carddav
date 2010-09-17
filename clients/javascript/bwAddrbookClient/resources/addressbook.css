@@ -49,12 +49,17 @@ ul#add {
   position: relative;
   white-space: nowrap;
 }
-li.book {
+ul.books li {
   list-style-image: url("silk/book.png");
 }
+ul.subscriptions li {
+  list-style-image: url("silk/book_link.png");
+}
+ul.groups li,
 li.group {
   list-style-image: url("silk/group.png");
 }
+ul.contacts li,
 li.contact {
   list-style-image: url("silk/user.png");
 }
@@ -84,22 +89,32 @@ ul#add li:hover ul {
 	background-color: #eef;
 	color: #333; 
 }
-ul#booksAndGroups {
-	float: left;
-	margin: 1em 2em 1em 0.5em;
-	padding-top: 1em;
+#booksAndGroups {
+	padding: 0;
 	white-space: nowrap;
-  list-style: disc outside none;
   color: #333;
   background-color: white;
+}
+#booksAndGroups ul {
+  list-style: disc outside none;
 }
 #booksAndGroups li {
   margin: 0 0 0.25em 2em;
 }
-#booksAndGroups ul {
-	margin-top: 0.5em;
+#booksAndGroups h3 {
+  margin: 0 0 0.5em 0;
+  padding: 4px 8px;
+  list-style: none;
+  font-size: 0.9em;
+  font-weight: normal;
+  background-color: #eef;
+  color: #black;
+  border-bottom: 1px solid #ddd;
 }
-#booksAndGroups ul li {
+#booksAndGroups ul ul {
+	margin: 0.5em 0 2em 0;
+}
+#booksAndGroups ul ul li {
   margin-bottom: 0.25em;
 }
 #booksAndGroups a.selected {
@@ -108,8 +123,6 @@ ul#booksAndGroups {
   border-bottom: 1px solid #eee;
 }
 #content {
-  float: left;
-	border-left: 1px solid #aaf;
 	padding: 1em;
   color: #333;
   background-color: white;
@@ -133,4 +146,7 @@ a {
   color: #333;
   background-color: transparent;
   text-decoration: none;
+}
+.invisible {
+  display: none;
 }

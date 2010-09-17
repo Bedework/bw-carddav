@@ -51,52 +51,63 @@
         </li>
       </ul>
     </div>
-    <ul id="booksAndGroups" class="ui-layout-west">
-      <li class="book">
-        public
-      </li>
-      <li class="book">
-        <a href="#" id="uuid9876543" class="selected">personal</a>
-        <ul>
-          <li class="group">
-            group a
-          </li>
-          <li class="group">
-            group b
-          </li>
-        </ul>
-      </li>   
-    </ul>
-    <div id="content" class="ui-layout-center">
+    <div id="booksAndGroups" class="ui-layout-west">
+      <h3>personal address book</h3>
+      <ul class="books">
+        <li>
+          <a href="#" id="mainUserBook" class="selected">personal</a>
+          <ul class="groups">
+            <li>
+              group a
+            </li>
+            <li>
+              group b
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <h3>subscribed address books</h3>
+      <ul class="subscriptions">
+        <li>
+          some public book
+        </li>
+        <li>
+          some user book
+        </li>
+      </ul>
       
-      <p>
-        Test page for user <input type="text" id="userid" size="20" value=""/><button id="setuser" type="button">Set User</button><br/>
-        <em>
-          Note: you must clear your authenticated sessions to switch between users (here OR in the query string).<br/>
-        </em>
-      </p>
-      <p>
-        <button id="auth" type="button">Authenticate/Test</button>
-        <button id="report" type="button">Report</button>
-      </p>
-      <hr/>
-      <h3>Add Contact</h3>
-      <div id="addForm">
-        First Name: <input type="text" size="60" value="" id="FIRSTNAME"/><br/>
-        Last Name: <input type="text" size="60" value="" id="LASTNAME"/><br/>
-        Email: <input type="text" size="60" value="" id="EMAIL"/><br/>
-        Home Phone: <input type="text" size="60" value="" id="HOMEPHONE"/><br/>
-        Home Address Street: <input type="text" size="60" value="" id="ADRHOMESTREET"/><br/>
-        Home Address City: <input type="text" size="60" value="" id="ADRHOMECITY"/><br/>
-        Home Address State: <input type="text" size="60" value="" id="ADRHOMESTATE"/><br/>
-        Home Address Postal Code: <input type="text" size="60" value="" id="ADRHOMEPOSTAL"/><br/>
-        <button id="addContact" type="button">Add Contact</button>
+      <button style="margin: 20em 0 0 2em;" onclick="changeClass('bw-test','visible');"/>show test pane</button>
+    </div>
+    <div id="content" class="ui-layout-center">
+      <div id="bw-list">
+        List would be here
       </div>
-      <hr/>
-      <h3>Delete Contact (by UID)</h3>
-      <div id="deleteForm">
-        UID: <input type="text" size="60" value="" id="DUID"/><br/>
-        <button id="delete" type="button">Delete Contact</button>
+    
+      <!-- TEST PANE -->
+      <div id="bw-test" class="invisible">
+        <p>
+          <button id="auth" type="button">Authenticate/Test</button>
+          <button id="report" type="button">Report</button>
+        </p>
+        <hr/>
+        <h3>Add Contact</h3>
+        <div id="addForm">
+          First Name: <input type="text" size="60" value="" id="FIRSTNAME"/><br/>
+          Last Name: <input type="text" size="60" value="" id="LASTNAME"/><br/>
+          Email: <input type="text" size="60" value="" id="EMAIL"/><br/>
+          Home Phone: <input type="text" size="60" value="" id="HOMEPHONE"/><br/>
+          Home Address Street: <input type="text" size="60" value="" id="ADRHOMESTREET"/><br/>
+          Home Address City: <input type="text" size="60" value="" id="ADRHOMECITY"/><br/>
+          Home Address State: <input type="text" size="60" value="" id="ADRHOMESTATE"/><br/>
+          Home Address Postal Code: <input type="text" size="60" value="" id="ADRHOMEPOSTAL"/><br/>
+          <button id="addContact" type="button">Add Contact</button>
+        </div>
+        <hr/>
+        <h3>Delete Contact (by UID)</h3>
+        <div id="deleteForm">
+          UID: <input type="text" size="60" value="" id="DUID"/><br/>
+          <button id="delete" type="button">Delete Contact</button>
+        </div>
       </div>
     </div>
   </body>
