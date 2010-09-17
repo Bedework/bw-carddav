@@ -1,15 +1,56 @@
+/* 
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+*/
+
 body {
 	font-family: Arial, Helvetica, sans-serif;
 }
-#header {
-	margin: 0;
+#searchBar {
 	padding: 0.5em;
+	border-bottom: 1px solid #aaf;
 }
-#leftnav {
-	
+ul#booksAndGroups {
+	float: left;
+	margin: 1em 2em 1em 0.5em;
+	padding-top: 1em;
+	white-space: nowrap;
+  list-style: disc outside none;
+}
+#booksAndGroups li {
+  margin: 0 0 0.25em 2em;
+}
+#booksAndGroups li.book {
+	list-style-image: url("silk/book.png");
+}
+#booksAndGroups li.group {
+  list-style-image: url("silk/group.png");
+}
+#booksAndGroups ul {
+	margin-top: 0.5em;
+}
+#booksAndGroups ul li {
+  margin-bottom: 0.25em;
 }
 #content {
-	
+  float: left;
+	border-left: 1px solid #aaf;
+	padding: 1em;
+	height: 800px;
 }
 h1 {
   font-size: 1.2em;
@@ -19,9 +60,12 @@ h3 {
 	font-size: 1em;
 	font-weight: bold;
 }
-p {
-	margin: 0 0 1em 0;
+#searchBox {
+  float: right;
 }
-ul {
-  margin-top: 2em;
+#searchBox input {
+  background-color: #eef;
+  color: black;
+  border: 1px solid #aaf;
+  width: 200px;
 }
