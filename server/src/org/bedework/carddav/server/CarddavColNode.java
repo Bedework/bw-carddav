@@ -455,7 +455,7 @@ public class CarddavColNode extends CarddavNode {
          * </A:supported-calendar-data>
          */
         xml.openTag(tag);
-        xml.startTag(CarddavTags.addressData);
+        xml.startTag(CarddavTags.addressDataType);
         xml.attribute("content-type", "text/vcard");
         xml.attribute("version", "4.0");
         xml.endEmptyTag();
