@@ -19,10 +19,23 @@
 
 body {
 	font-family: Arial, Helvetica, sans-serif;
+	background-color: #ddd;
+	color: black;
 }
 #searchBar {
 	padding: 0.5em;
 	border-bottom: 1px solid #aaf;
+	color: black;
+	background-color: white;
+}
+#searchBox {
+  float: right;
+}
+#searchBox input {
+  background-color: #eef;
+  color: black;
+  border: 1px solid #aaf;
+  width: 200px;
 }
 ul#booksAndGroups {
 	float: left;
@@ -30,6 +43,8 @@ ul#booksAndGroups {
 	padding-top: 1em;
 	white-space: nowrap;
   list-style: disc outside none;
+  color: black;
+  background-color: white;
 }
 #booksAndGroups li {
   margin: 0 0 0.25em 2em;
@@ -50,7 +65,8 @@ ul#booksAndGroups {
   float: left;
 	border-left: 1px solid #aaf;
 	padding: 1em;
-	height: 800px;
+  color: black;
+  background-color: white;
 }
 h1 {
   font-size: 1.2em;
@@ -60,12 +76,10 @@ h3 {
 	font-size: 1em;
 	font-weight: bold;
 }
-#searchBox {
-  float: right;
+p {
+	margin-bottom: 1em;
 }
-#searchBox input {
-  background-color: #eef;
-  color: black;
-  border: 1px solid #aaf;
-  width: 200px;
+em {
+  font-style: italic;
+  font-size: 0.9em;
 }

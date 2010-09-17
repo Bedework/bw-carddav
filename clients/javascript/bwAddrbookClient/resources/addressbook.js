@@ -21,44 +21,66 @@ $(document).ready(function() {
 
   var carddavUrl = "/ucarddav";
   var userpath = "/user/";
-  var bookName = "/addressbook/"; 
+  var bookName = "/addressbook/";
+  var userid = "";
   
-  myLayout = $('body').layout({
+  /****************************
+   * SETUP THE DEFAULT STATE:
+   ****************************/ 
+  
+  // Get the user from the query string
+  var qsParameters = {};
+  (function () {
+      var e,
+          d = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); },
+          q = window.location.search.substring(1),
+          r = /([^&=]+)=?([^&]*)/g;
 
+      while (e = r.exec(q)) {
+        qsParameters[d(e[1])] = d(e[2]);
+      }
+  })();
+  userid = qsParameters.user;
+  $("#userid").val(userid);
+  
+  // Create the three-panel layout
+  myLayout = $('body').layout({
     //  enable showOverflow on west-pane so popups will overlap north pane
       west__showOverflowOnHover: true
 
-    //  reference only - these options are NOT required because are already the 'default'
-    , closable:       true  // pane can open & close
-    , resizable:        true  // when open, pane can be resized 
-    , slidable:       true  // when closed, pane can 'slide' open over other panes - closes on mouse-out
-
     //  some resizing/toggling settings
-    , north_resizable:    false // no can do.
-    , north__slidable:    false // OVERRIDE the pane-default of 'slidable=true'
-    , north__togglerLength_closed: '100%' // toggle-button is full-width of resizer-bar
-    , north__spacing_closed:  20    // big resizer-bar when open (zero height)
-    , south__resizable:   false // OVERRIDE the pane-default of 'resizable=true'
+    , north__closable:     false // OVERRIDE the pane-default of closable: true
+    , north__resizable:    false // OVERRIDE the pane-default of resizable: true
+    , north__slidable:    false // OVERRIDE the pane-default of slidable: true
     //  some pane-size settings
     , west__minSize:      150
+    //, north__minSize:    43 
   });
 
+  // Disable the search/filter button until an entity is selected
+  $("#searchButton").attr('disabled', 'disabled');
 
-  // set on entry:
-  $("#visitListing").attr("href",carddavUrl + userpath + $("#userid").val() + bookName);
-  // change if the userid is changed:
-  $("#userid").change(function() {
-    $("#visitListing").attr("href",carddavUrl + userpath + $("#userid").val() + bookName);
+  
+  /****************************
+   * EVENT HANDLERS:
+   ****************************/
+  
+  $("#setuser").click(function() {
+    var newid = $("#userid").val();
+    if (newid != "") {
+      userid = newid;
+      alert("User set to " + userid);
+    }
   });
-
+  
   $("#auth").click(function() {
-    var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + bookName;
     $.ajax({
       type: "get",
       url: addrBookUrl,
       dataType: "html",
-      success: function(responseData){
-        alert(responseData);            
+      success: function(responseData, status){
+        alert(status + "\n" + responseData);            
       },
       error: function(msg) {
         // there was a problem
@@ -67,19 +89,24 @@ $(document).ready(function() {
     });
   });
 
+  // send a REPORT query for all data
   $("#report").click(function() {
-    var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + bookName;
+    var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
     $.ajax({
-      type: "report",
+      type: "post",
       url: addrBookUrl,
       dataType: "xml",
+      processData: false,
+      data: content,
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
         xhrobj.setRequestHeader("Depth", "1");
+        xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
         xhrobj.setRequestHeader("Authorization", "Basic");
       },
-      success: function(responseData){
-        alert(responseData);            
+      success: function(responseData, status){
+        alert(status + "\n" + responseData);            
       },
       error: function(msg) {
         // there was a problem
@@ -88,11 +115,8 @@ $(document).ready(function() {
     });
   });
 
-  $("#add").click(function() {
-    //var vcData = "BEGIN:VCARD\nFN:Venerable Bede\nUID:myveryhandcodeduid@mysite.edu6754841\nCLASS:PRIVATE\nCATEGORIES:Services\nREV:20100211T041750Z\nEMAIL;TYPE=PREF;TYPE=INTERNET:vbede@mysite.edu\nTEL;TYPE=HOME:+1 555 555-5555\nADR;TYPE=HOME:;;23 Toadstool Ln;Troy;NY;12180;\nN:Bede;Venerable;;;\nVERSION:4.0\nEND:VCARD";
-    //alert($("#FN").val() + "\n" + $("#UID").val() + "\n" + $("#EMAIL").val() + "\n" + $("#HOMEPHONE").val() + "\n" + $("#ADRHOMESTREET").val());
-    
-    var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
+  $("#addContact").click(function() {
+    var addrBookUrl = carddavUrl + userpath + userid + bookName;
     var newUUID = "BwABC-" + Math.uuid();
     
     var vcData = "BEGIN:VCARD\n"
@@ -118,8 +142,8 @@ $(document).ready(function() {
         xhrobj.setRequestHeader("Authorization", "Basic");
         xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
-      success: function(responseData){
-        alert(responseData);            
+      success: function(responseData, status){
+        alert(status + "\n" + responseData);            
       },
       error: function(msg) {
         // there was a problem
@@ -130,17 +154,17 @@ $(document).ready(function() {
 
 
   $("#delete").click(function() {
-    var addrBookUrl = carddavUrl + userpath + $("#userid").val() + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + bookName;
     $.ajax({
       type: "delete",
       url: addrBookUrl + $("#DUID").val() + ".vcf",
-      dataType: "text",
+      dataType: "xml",
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
         xhrobj.setRequestHeader("Authorization", "Basic");
       },
-      success: function(responseData){
-        alert(responseData);            
+      success: function(responseData, status){
+        alert(status + "\n" +  + responseData);            
       },
       error: function(msg) {
         // there was a problem

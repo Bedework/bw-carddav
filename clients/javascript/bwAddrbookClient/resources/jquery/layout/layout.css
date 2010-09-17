@@ -12,6 +12,8 @@
  *
  * Last Updated: 2010-02-10
  * NOTE: For best code readability, view this with a fixed-space font and tabs equal to 4-chars
+ *
+ *  Modified by Arlen Johnson for Bedework Calendar Project 2010-09-17
  */
 
 /*
@@ -38,6 +40,7 @@
  */
 .ui-layout-resizer	{ /* all 'resizer-bars' */
 	background:		#DDD;
+	color: inherit;
 	border:			1px solid #BBB;
 	border-width:	0;
 	}
