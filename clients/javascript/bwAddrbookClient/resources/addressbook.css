@@ -50,18 +50,18 @@ ul#add {
   white-space: nowrap;
 }
 ul.books li {
-  list-style-image: url("silk/book.png");
+  list-style-image: url("icons/silk/book.png");
 }
 ul.subscriptions li {
-  list-style-image: url("silk/book_link.png");
+  list-style-image: url("icons/silk/book_link.png");
 }
 ul.groups li,
 li.group {
-  list-style-image: url("silk/group.png");
+  list-style-image: url("icons/silk/group.png");
 }
 ul.contacts li,
 li.contact {
-  list-style-image: url("silk/user.png");
+  list-style-image: url("icons/silk/user.png");
 }
 ul#add li {
   background-color: #eef;
