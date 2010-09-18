@@ -123,9 +123,32 @@ ul#add li:hover ul {
   border-bottom: 1px solid #eee;
 }
 #content {
-	padding: 1em;
+	padding: 0;
   color: #333;
   background-color: white;
+}
+#filterLetters {
+  color: black;
+  background-color: #eef;	
+  width: 100%;
+  height: 22px;
+  font-size: 0.9em;
+  border-bottom: 1px solid #ddd;
+}
+#filterLetters li {
+	display: inline;
+}
+#filterLetters a {
+  display: block;
+  width: 3.8%;
+  padding: 4px 0;
+  margin: 0 0 1em 0;
+  float: left;
+  text-align: center;
+}
+#filterLetters a:hover {
+	color: black;
+	background-color: #ff9;
 }
 h1 {
   font-size: 1.2em;
@@ -136,7 +159,7 @@ h3 {
 	font-weight: bold;
 }
 p {
-	margin-bottom: 1em;
+	margin: 0 1em 1em 1em;
 }
 em {
   font-style: italic;
