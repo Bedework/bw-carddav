@@ -58,7 +58,7 @@ $(document).ready(function() {
   });
 
   // Disable the search/filter button until an entity is selected
-  $("#searchButton").attr('disabled', 'disabled');
+  //$("#searchButton").attr('disabled', 'disabled');
 
   
   /****************************
@@ -103,7 +103,6 @@ $(document).ready(function() {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
         xhrobj.setRequestHeader("Depth", "1");
         xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
-        xhrobj.setRequestHeader("Authorization", "Basic");
       },
       success: function(responseData, status){
         alert(status + "\n" + responseData);            
@@ -139,7 +138,6 @@ $(document).ready(function() {
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
         xhrobj.setRequestHeader("If-None-Match", "*");
-        xhrobj.setRequestHeader("Authorization", "Basic");
         xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
@@ -161,7 +159,6 @@ $(document).ready(function() {
       dataType: "xml",
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
-        xhrobj.setRequestHeader("Authorization", "Basic");
       },
       success: function(responseData, status){
         alert(status + "\n" +  + responseData);            
