@@ -26,6 +26,8 @@
 
 package org.bedework.carddav.vcard;
 
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.VCard;
@@ -86,6 +88,7 @@ public class Card {
    */
   public Card(final VCard vcard) {
     this.vcard = vcard;
+    prevLastmod = getLastmod();
   }
 
   /**
@@ -130,6 +133,15 @@ public class Card {
    */
   public String getCreated() {
     return created;
+  }
+
+  /**
+   * @throws WebdavException
+   */
+  public void setLastmod() throws WebdavException {
+    DateTime dt = new DateTime(true);
+
+    setLastmod(new LastModified(dt).getValue());
   }
 
   /**

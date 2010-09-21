@@ -143,13 +143,16 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     //DbCard dc = new DbCard(vc);
     DbCard dc = getDbCard(path, card.getName());
 
-    if (card == null) {
+    if (dc == null) {
       throw new WebdavException("Card does not exist");
     }
 
-
     dc.setVcard(vc);
     dc.setDtstamps();
+
+    // Rewrite string form
+    dc.setStrForm(null);
+    dc.output();
 
     sess.update(dc);
   }

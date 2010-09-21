@@ -561,6 +561,7 @@ public class BwSysIntfImpl implements SysIntf {
   public void updateCard(final String path,
                          final Card card) throws WebdavException {
     try {
+      //card.setLastmod();
       getHandler(path).updateCard(path, card);
     } catch (WebdavException wde) {
       throw wde;
