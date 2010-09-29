@@ -46,8 +46,15 @@
       <ul id="add">
         <li>
           <ul>
-            <li class="contact">contact</li>
-            <li class="group">group</li>
+            <li class="contact">
+              <a href="#addContact" id="addContact">contact</a>
+            </li>
+            <li class="group">
+              <a href="#addGroup" id="addGroup">group</a>
+            </li>
+            <li class="location">
+              <a href="#addLocation" id="addLocation">location</a>
+            </li>
           </ul>
           add...
         </li>
@@ -78,69 +85,158 @@
         </li>
       </ul>
       
-      <button style="margin: 20em 0 0 2em;" onclick="changeClass('bw-test','visible');"/>show test pane</button>
+      <button style="margin: 20em 0 0 2em;" onclick="showPage('bw-test');"/>show test pane</button>
     </div>
     <div id="content" class="ui-layout-center">
-      <div id="bw-list">
-        <ul id="filterLetters">
-          <li><a href="">A</a></li>
-          <li><a href="">B</a></li>
-          <li><a href="">C</a></li>
-          <li><a href="">D</a></li>
-          <li><a href="">E</a></li>
-          <li><a href="">F</a></li>
-          <li><a href="">G</a></li>
-          <li><a href="">H</a></li>
-          <li><a href="">I</a></li>
-          <li><a href="">J</a></li>
-          <li><a href="">K</a></li>
-          <li><a href="">L</a></li>
-          <li><a href="">M</a></li>
-          <li><a href="">N</a></li>
-          <li><a href="">O</a></li>
-          <li><a href="">P</a></li>
-          <li><a href="">Q</a></li>
-          <li><a href="">R</a></li>
-          <li><a href="">S</a></li>
-          <li><a href="">T</a></li>
-          <li><a href="">U</a></li>
-          <li><a href="">V</a></li>
-          <li><a href="">W</a></li>
-          <li><a href="">X</a></li>
-          <li><a href="">Y</a></li>
-          <li><a href="">Z</a></li>
-        </ul>
-        <p>
-          List would be here
-        </p>
-      </div>
-    
-      <!-- TEST PANE -->
-      <div id="bw-test" class="invisible">
-        <p>
-          <button id="auth" type="button">Authenticate/Test</button>
-          <button id="report" type="button">Report</button>
-        </p>
-        <hr/>
-        <h3>Add Contact</h3>
-        <div id="addForm">
-          First Name: <input type="text" size="60" value="" id="FIRSTNAME"/><br/>
-          Last Name: <input type="text" size="60" value="" id="LASTNAME"/><br/>
-          Email: <input type="text" size="60" value="" id="EMAIL"/><br/>
-          Home Phone: <input type="text" size="60" value="" id="HOMEPHONE"/><br/>
-          Home Address Street: <input type="text" size="60" value="" id="ADRHOMESTREET"/><br/>
-          Home Address City: <input type="text" size="60" value="" id="ADRHOMECITY"/><br/>
-          Home Address State: <input type="text" size="60" value="" id="ADRHOMESTATE"/><br/>
-          Home Address Postal Code: <input type="text" size="60" value="" id="ADRHOMEPOSTAL"/><br/>
-          <button id="addContact" type="button">Add Contact</button>
-        </div>
-        <hr/>
-        <h3>Delete Contact (by UID)</h3>
-        <div id="deleteForm">
-          UID: <input type="text" size="60" value="" id="DUID"/><br/>
-          <button id="delete" type="button">Delete Contact</button>
-        </div>
-      </div>
+      <!-- Each page of the application is modeled below as a list item.
+           We make each visible or invisible as needed using javascript. -->
+      <ul id="bw-pages">
+        <li id="bw-list" class="invisible">
+          <ul id="filterLetters">
+            <li><a href="">A</a></li>
+            <li><a href="">B</a></li>
+            <li><a href="">C</a></li>
+            <li><a href="">D</a></li>
+            <li><a href="">E</a></li>
+            <li><a href="">F</a></li>
+            <li><a href="">G</a></li>
+            <li><a href="">H</a></li>
+            <li><a href="">I</a></li>
+            <li><a href="">J</a></li>
+            <li><a href="">K</a></li>
+            <li><a href="">L</a></li>
+            <li><a href="">M</a></li>
+            <li><a href="">N</a></li>
+            <li><a href="">O</a></li>
+            <li><a href="">P</a></li>
+            <li><a href="">Q</a></li>
+            <li><a href="">R</a></li>
+            <li><a href="">S</a></li>
+            <li><a href="">T</a></li>
+            <li><a href="">U</a></li>
+            <li><a href="">V</a></li>
+            <li><a href="">W</a></li>
+            <li><a href="">X</a></li>
+            <li><a href="">Y</a></li>
+            <li><a href="">Z</a></li>
+          </ul>
+          <p>
+            List would be here
+          </p>
+        </li>
+        <li id="bw-modContact" class="content-block">
+          <h3>Add Contact</h3>
+          <div id="addForm">
+            <fieldset> 
+              <legend>Name</legend>
+              <div class="bwFormData">
+                
+                <div class="bwField">First Name:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="FIRSTNAME"/></div>
+                
+                <div class="bwField">Last Name:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="LASTNAME"/></div>
+                
+                <div class="bwField">Nickname:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="NICKNAME"/></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Contact information</legend>
+              <div class="bwFormData">
+                
+                <div class="bwField">Email:</div>
+                <div class="bwValue">
+                  <select id="EMAILTYPE-01">
+                    <option value="work">work</option>
+                    <option value="home">home</option>
+                  </select>
+                  <input type="text" size="40" value="" id="EMAIL"/>
+                </div>
+                <div class="bwAppend" id="bwAppendEmail"></div>
+                
+                <div class="bwField">Phone:</div>
+                <div class="bwValue">
+                  <select id="PHONETYPE-01">
+                    <option value="work">work</option>
+                    <option value="home">home</option>
+                  </select>
+                  <select id="TELTYPE-01">
+                    <option value="voice">voice</option>
+                    <option value="cell">mobile</option>
+                    <option value="fax">fax</option>
+                    <option value="text">text</option>
+                    <option value="pager">pager</option>
+                  </select>
+                  <input type="text" size="30" value="" id="PHONE-01"/>
+                </div>
+                <div class="bwAppend" id="bwAppendPhone"></div>
+                                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Address</legend>
+              <div class="bwFormData">
+                <div class="bwAddrBlock">
+                  <div class="bwField">Type:</div>
+                  <div class="bwValue">
+                    <select id="ADDRTYPE-01">
+                      <option value="work">work</option>
+                      <option value="home">home</option>
+                    </select>
+                  </div>
+                   
+                  <div class="bwField">Street:</div>
+                  <div class="bwValue"><input type="text" size="60" value="" id="STREET-A-01"/></div>
+                  <div class="bwField"></div>
+                  <div class="bwValue"><input type="text" size="60" value="" id="STREET-B-01"/></div>
+                  
+                  <div class="bwField">City:</div>
+                  <div class="bwValue"><input type="text" size="60" value="" id="CITY-01"/></div>
+                                  
+                  <div class="bwField">State/Province:</div>
+                  <div class="bwValue">
+                    <input type="text" size="20" value="" id="CITY-01"/>
+                    <span class="bwInternalField">Postal Code:</span>
+                    <input type="text" size="20" value="" id="POSTAL-01"/>
+                  </div>
+                  
+                  <div class="bwField">Country:</div>
+                  <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-01"/></div>
+                  <br class="clear"/>
+                </div>
+                <div class="bwAppend bwRightAppend" id="bwAppendAddr"></div>
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Details</legend>
+              <div class="bwFormData">
+                              
+                <div class="bwField">Webpage:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="WEBPAGE"/></div>
+                
+              </div>
+            </fieldset>
+            <button id="submitContact" type="button">Add Contact</button>
+          </div>
+        </li>
+        <li id="bw-modGroup" class="invisible content-block">
+          <h3>Add Group</h3>
+        </li>
+        <li id="bw-test" class="invisible content-block">
+          <p>
+            <button id="auth" type="button">Authenticate/Test</button>
+            <button id="report" type="button">Report</button>
+          </p>
+          <hr/>
+          <h3>Delete Contact (by UID)</h3>
+          <div id="deleteForm">
+            UID: <input type="text" size="60" value="" id="DUID"/><br/>
+            <button id="delete" type="button">Delete Contact</button>
+          </div>
+        </li>
+      </ul>
     </div>
   </body>
 </html>

@@ -63,6 +63,9 @@ ul.contacts li,
 li.contact {
   list-style-image: url("icons/silk/user.png");
 }
+li.location {
+  list-style-image: url("icons/silk/building.png");
+}
 ul#add li {
   background-color: #eef;
   padding: 0.15em 1em 0.3em 5px;
@@ -170,6 +173,72 @@ a {
   background-color: transparent;
   text-decoration: none;
 }
+fieldset {
+	display: block;
+	position: relative;
+  width: 560px;
+	white-space: nowrap;
+	border: 2px solid #eef;
+	padding: 0;
+	margin: 0 0 1.5em 0;
+  font-size: 0.9em;
+}
+legend {
+	position: absolute !important;
+	top: -8px;
+	left: 1em;
+	font-style: italic;
+	color: #99e;
+	background-color: white;
+}
+.bwFormData {
+	margin: 1em;
+}
+.bwField {
+	width: 100px;
+	float: left;
+	clear: left;
+	margin: 0 0 0.5em 0.5em;
+}
+.bwValue {
+	float: left;
+  margin: 0 0 0.5em 0.5em;
+}
+.bwValue input,
+.bwValue select {
+  background-color: #eef;
+  color: #333;
+  border: 1px solid #aaf;
+}
+.bwAppend {
+  float: left;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 0 0.5em 0.5em;
+  background: white url("icons/silk/add.png");
+  color: #333;
+}
+.bwRightAppend {
+	float: right;
+	position: relative;
+	top: -8px;
+}
+.bwAddrBlock {
+	margin: 0;
+	padding: 0.5em;
+	border: 2px solid #eef; 
+}
+.bwInternalField {
+	padding-left: 0.4em;
+}
 .invisible {
   display: none;
+}
+.content-block {
+  margin: 1em;
+}
+.clear {
+  clear: both;
 }

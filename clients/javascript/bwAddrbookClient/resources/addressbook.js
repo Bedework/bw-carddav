@@ -28,7 +28,9 @@ $(document).ready(function() {
    * SETUP THE DEFAULT STATE:
    ****************************/ 
   
-  // Get the user from the query string
+  // Get the user from the query string.
+  // The user id will be used for queries against the address book 
+  // and for display.
   var qsParameters = {};
   (function () {
       var e,
@@ -41,7 +43,9 @@ $(document).ready(function() {
       }
   })();
   userid = qsParameters.user;
+  // display the userid at the root of the personal address book tree
   $("#mainUserBook").html(userid);
+  
   
   // Create the three-panel layout
   myLayout = $('body').layout({
@@ -65,30 +69,6 @@ $(document).ready(function() {
    * EVENT HANDLERS:
    ****************************/
   
-  $("#setuser").click(function() {
-    var newid = $("#userid").val();
-    if (newid != "") {
-      userid = newid;
-      alert("User set to " + userid);
-    }
-  });
-  
-  $("#auth").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + bookName;
-    $.ajax({
-      type: "get",
-      url: addrBookUrl,
-      dataType: "html",
-      success: function(responseData, status){
-        alert(status + "\n" + responseData);            
-      },
-      error: function(msg) {
-        // there was a problem
-        alert(msg.statusText);
-      }
-    });
-  });
-
   // send a REPORT query for all data
   $("#report").click(function() {
     var addrBookUrl = carddavUrl + userpath + userid + bookName;
@@ -113,8 +93,19 @@ $(document).ready(function() {
       }
     });
   });
-
+  
+  // show form for adding/editing a new contact
   $("#addContact").click(function() {
+    showPage("bw-modContact");
+  });
+  
+  // show form for adding/editing a group
+  $("#addGroup").click(function() {
+    showPage("bw-modGroup");
+  });
+
+  // submit a vcard to the server
+  $("#submitContact").click(function() {
     var addrBookUrl = carddavUrl + userpath + userid + bookName;
     var newUUID = "BwABC-" + Math.uuid();
     
@@ -150,7 +141,7 @@ $(document).ready(function() {
     });
   });
 
-
+  // remove a vcard from the address book
   $("#delete").click(function() {
     var addrBookUrl = carddavUrl + userpath + userid + bookName;
     $.ajax({
@@ -170,11 +161,48 @@ $(document).ready(function() {
     });
   });       
   
+  /* Testing Features */
+  // setting the user is for testing
+  $("#setuser").click(function() {
+    var newid = $("#userid").val();
+    if (newid != "") {
+      userid = newid;
+      alert("User set to " + userid);
+    }
+  });
+  
+  // Click to auth is for testing only
+  // In production, the user will likely be already authed.
+  // If not, the server will prompt for auth when the report query is sent on first load of the page.
+  $("#auth").click(function() {
+    var addrBookUrl = carddavUrl + userpath + userid + bookName;
+    $.ajax({
+      type: "get",
+      url: addrBookUrl,
+      dataType: "html",
+      success: function(responseData, status){
+        alert(status + "\n" + responseData);            
+      },
+      error: function(msg) {
+        // there was a problem
+        alert(msg.statusText);
+      }
+    });
+  });
+  
 });
 
 /****************************
  * GENERIC FUNCTIONS:
  ****************************/
+// display the named page
+function showPage(pageId) {
+  // first make all pages invisible
+  $("#bw-pages li").each(function(index){
+    $(this).addClass("invisible");
+  });
+  $("#"+pageId).removeClass("invisible");
+};
 
 function changeClass(id, newClass) {
   var identity = document.getElementById(id);
@@ -182,4 +210,4 @@ function changeClass(id, newClass) {
     alert("No element with id: " + id + " to set to class: " + newClass);
   }
   identity.className=newClass;
-}
+};
