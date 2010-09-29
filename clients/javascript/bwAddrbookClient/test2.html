@@ -95,14 +95,32 @@
 
         function attributeSpecifics (attribute) {
            var returnArray=new Array();
-	   switch (attribute) {
+	   //to add a multipart value, stuff 0 into the first array element, then go from there.
+           switch (attribute) {
                    case "BEGIN":
                    case "END":
                     returnArray[0]=0;
                     break;
                   case "ADR":
 		    returnArray[0]=2;
-                    returnArray[1]="po-box,extended-address,street-address,locality,state,postal-code,country";
+                    returnArray[1]="po-box";
+                    returnArray[2]="extended-address";
+                    returnArray[3]="street-address";
+                    returnArray[4]="locality";
+                    returnArray[5]="state";
+                    returnArray[6]="postal-code,country";
+                    break;
+                  case "TEL":
+		    returnArray[0]=2;
+                    returnArray[1]="number";
+		    returnArray[2]="extension";
+                    break;
+                  case "N":
+                    returnArray[0]=2;
+                    returnArray[1]="family-name";
+                    returnArray[2]="given-names";
+                    returnArray[3]="honorific-prefixes";
+                    returnArray[4]="honorific-suffixes";
                     break;
                   default: 
                     returnArray[0]=1;
@@ -127,7 +145,7 @@
                 attributeInfo = attributeSpecifics(attribute);
                 var attributeType = attributeInfo[0];
 
-                // This takes care of the VCARD:BEGIN and VCARD:END
+                // This takes care of the VCARD:BEGIN and VCARD:END.   Should we pitch VERSION, too?
                 if (attributeType == 0) {
 	          continue;
                 }
@@ -168,6 +186,8 @@
                    for (k=2;k<colonSplit.length;k++) { 
 		    jsonObj += ':' + colonSplit[k];
                   }
+                  //close quote
+		  jsonObj += '"}]';
                 }
                 if (attributeType == 2) {
 
@@ -175,25 +195,29 @@
 
                   //Will need to deal with the possibility of colons in the individual values.
 
-                  var attributeFieldNames = attributeInfo[1].split(',');
                   var attributeFieldValues = colonSplit[1].split(';');
                   jsonObj += '"values": [';
-                  for (y=0;y<attributeFieldNames.length;y++) {
-                     jsonObj += '"' + attributeFieldNames[y] + '": ';
-	             jsonObj += '"' + attributeFieldValues[y]  + '"';
-
+                  //one array goes from 1 to length-1 and the other from 0 to length-1. Hope it's clear.
+                  for (y=1;y<attributeInfo.length;y++) {
+                     jsonObj += '{"' + attributeInfo[y] + '": ';
+                     if (y<attributeFieldValues.length) {
+	               jsonObj += '"' + attributeFieldValues[y-1]  + '"}';
+                     } else {
+                       //avoid undefines
+                       jsonObj += '""}';
+                     }
+          
                      //add a comma between fields (avoid adding at end)
-                     if (y != attributeFieldNames.length - 1) {
+                     if (y != attributeInfo.length - 1) {
                        jsonObj += ',';
                      }
 		  }
               
                   jsonObj += ']';
+                  //close quote
+		  jsonObj += '}]';
                 }
-                //close quote
-		jsonObj += '"}]';
-                ///////////////////////////////////	
-                  
+               
                 //except for last key, value pair, add a comma.
                 if ((i != lines.length - 1) && (lines[i+1] != "")) {
                   jsonObj += ',';
