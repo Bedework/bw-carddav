@@ -134,6 +134,7 @@
            //each line ends in '\n'
             var jsonObj = "{";
             var lines =  blob.split('\n');
+            var lastAttributeName = "";
             for (var i=0;i<lines.sort().length;i++) {
               //each line is in the form of a key[;param;param]:value.  Sometimes the value contains colons, too.
               if (lines[i] != "") {
@@ -151,9 +152,13 @@
 	          continue;
                 }
 
-                
-                //write out key and open array
-                jsonObj += '"' + attribute + '": [ {';
+                if (lastAttributeName == attribute) {
+                   //another member of the array
+                   jsonObj += '{';
+                } else {
+                    //new one, so write out its name and open a new array.
+                   jsonObj += '"' + attribute + '": [ {';
+                }
 
                 //locate any parameters in the key and write out the parameter array
                 jsonObj += '"params": [' 
@@ -187,8 +192,7 @@
                    for (k=2;k<colonSplit.length;k++) { 
 		    jsonObj += ':' + colonSplit[k];
                   }
-                  //close quote
-		  jsonObj += '"}]';
+		  jsonObj += '"}';
                 }
                 if (attributeType == 2) {
 
@@ -213,17 +217,21 @@
                        jsonObj += ',';
                      }
 		  }
-              
-                  jsonObj += ']';
-                  //close quote
-		  jsonObj += '}]';
+                  jsonObj += ']}';
+                  
                 }
-               
-                //except for last key, value pair, add a comma.
-                if ((i != lines.length - 1) && (lines[i+1] != "")) {
-                  jsonObj += ',';
+                if (lastAttributeName == attribute) {
+                     jsonObj += ',';
+                } else { 
+		     jsonObj += ']';
+                     //except for last key, value pair, add a comma.
+                     if ((i != lines.length - 1) && (lines[i+1] != "")) {
+                        jsonObj += ',';
+                     }
                 }
-              }
+                lastAttributeName=attribute;
+              }   
+	      
             }
             jsonObj += "}";
             $("#listOut").append(jsonObj);
