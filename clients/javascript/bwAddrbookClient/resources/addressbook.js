@@ -120,7 +120,7 @@ $(document).ready(function() {
     vcData += "REV:" + revDate + "\n";
     vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
-    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":;" + $("#STREET-A-01").val() + ";" + $("#STREET-B-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";\n";
+    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";\n";
     vcData += "VERSION:4.0\nEND:VCARD";
         
     $.ajax({
