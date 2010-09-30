@@ -108,16 +108,19 @@ $(document).ready(function() {
   $("#submitContact").click(function() {
     var addrBookUrl = carddavUrl + userpath + userid + bookName;
     var newUUID = "BwABC-" + Math.uuid();
+    var now = new Date();
+    var revDate = now.getUTCFullYear() + now.getUTCMonthFull() + now.getUTCDateFull() + "T" + now.getUTCHoursFull() + now.getUTCMinutesFull() + now.getUTCSecondsFull() + "Z"; 
     
     var vcData = "BEGIN:VCARD\n"
-    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
     vcData += "UID:" + newUUID + "\n";
+    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
+    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
-    vcData += "REV:20100914T041750Z\n";
+    vcData += "REV:" + revDate + "\n";
     vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":;" + $("#STREET-A-01").val() + ";" + $("#STREET-B-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";\n";
-    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n"; 
     vcData += "VERSION:4.0\nEND:VCARD";
         
     $.ajax({
@@ -210,4 +213,48 @@ function changeClass(id, newClass) {
     alert("No element with id: " + id + " to set to class: " + newClass);
   }
   identity.className=newClass;
+};
+
+
+/* UTC FORMATTERS */
+
+// return a formatted UTC month, prepended with zero if needed
+Date.prototype.getUTCMonthFull = function() {
+  var monthFull = this.getUTCMonth() + 1;
+  if (monthFull < 10) {
+    return "0" + monthFull;
+  }  
+  return monthFull;
+};
+// return a formatted UTC day date, prepended with zero if needed
+Date.prototype.getUTCDateFull = function() {
+  var dateFull = this.getUTCDate();
+  if (dateFull < 10) {
+    return "0" + dateFull;
+  }  
+  return dateFull;
+};
+// return formatted UTC hours, prepended with zero if needed
+Date.prototype.getUTCHoursFull = function() {
+  var hoursFull = this.getUTCHours();
+  if (hoursFull < 10) {
+    return "0" + hoursFull;
+  }  
+  return hoursFull;
+};
+// return formatted UTC minutes, prepended with zero if needed
+Date.prototype.getUTCMinutesFull = function() {
+  var minutesFull = this.getUTCMinutes();
+  if (minutesFull < 10) {
+    return "0" + minutesFull;
+  }  
+  return minutesFull;
+};
+//return formatted UTC seconds, prepended with zero if needed
+Date.prototype.getUTCSecondsFull = function() {
+  var secondsFull = this.getUTCSeconds();
+  if (secondsFull < 10) {
+    return "0" + secondsFull;
+  }  
+  return secondsFull;
 };
