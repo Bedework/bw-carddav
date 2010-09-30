@@ -115,8 +115,8 @@ $(document).ready(function() {
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:20100914T041750Z\n";
     vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
-    vcData += "TEL;TYPE=HOME:" + $("#HOMEPHONE").val() + "\n";  
-    vcData += "ADR;TYPE=HOME:;;" + $("#ADRHOMESTREET").val() + ";" + $("#ADRHOMECITY").val() + ";" +  $("#ADRHOMESTATE").val() + ";" + $("#ADRHOMEPOSTAL").val() + ";\n";
+    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
+    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":;" + $("#STREET-A-01").val() + ";" + $("#STREET-B-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";\n";
     vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n"; 
     vcData += "VERSION:4.0\nEND:VCARD";
         
