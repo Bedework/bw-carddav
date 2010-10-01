@@ -27,8 +27,8 @@
   var bwAddressBook = function() {
     this.books = new Array();
     
-    this.init = function(books) {
-      bwAddressBook.books = books;
+    this.init = function(bookTemplate) {
+      bwAddressBook.books = bookTemplate;
       for(var i=0; i < bwAddressBook.books.length; i++) {
         var book = bwAddressBook.books[i];
         
@@ -40,6 +40,7 @@
         }
         addrBookUrl += book.bookName;
         
+        // perform a report query on the address book
         var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
         $.ajax({
           type: "post",

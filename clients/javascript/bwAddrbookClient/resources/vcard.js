@@ -174,7 +174,5 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
   }
   bwJsonObj += "}";
   vcardsArray.push(bwJsonObj);
-  //$("#listOut").append(bwJsonObj);
-  //$("#listOut").append("<hr />");
 }
 
