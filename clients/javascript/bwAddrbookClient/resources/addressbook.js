@@ -113,8 +113,15 @@ $(document).ready(function() {
   $("#submitContact").click(function() {
     var addrBookUrl = carddavUrl + userpath + userid + bookName;
     var newUUID = "BwABC-" + Math.uuid();
+    
+    // build the revision date
     var now = new Date();
-    var revDate = now.getUTCFullYear() + now.getUTCMonthFull() + now.getUTCDateFull() + "T" + now.getUTCHoursFull() + now.getUTCMinutesFull() + now.getUTCSecondsFull() + "Z"; 
+    var revDate = String(now.getUTCFullYear());
+        revDate += String(now.getUTCMonthFull());
+        revDate += String(now.getUTCDateFull()) + "T";
+        revDate += String(now.getUTCHoursFull());
+        revDate += String(now.getUTCMinutesFull());
+        revDate += String(now.getUTCSecondsFull()) + "Z"; 
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "UID:" + newUUID + "\n";
@@ -125,14 +132,15 @@ $(document).ready(function() {
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + revDate + "\n";
-    vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
+    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
-    vcData += "GEO;TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
+    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
     vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
     vcData += "NOTE:" + $("#NOTE").val() + "\n";
     vcData += "VERSION:4.0\nEND:VCARD";
+    alert(vcData);
         
     $.ajax({
       type: "put",
