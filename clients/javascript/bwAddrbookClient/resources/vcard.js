@@ -19,12 +19,12 @@
 
 
 
-function parsexml(xml) {
+function parsexml(xml,vcardsArray) {
   $(xml).find("response").each(function() {
     $(this).find("propstat").each(function() {
       $(this).find("prop").each(function() {
         $(this).find("[nodeName=C:address-data]").each(function() {
-          parseVCardBlobIntoJson($(this).text());
+          parseVCardBlobIntoJson($(this).text(),vcardsArray);
         });
       });
     });
@@ -69,7 +69,7 @@ function attributeSpecifics (attribute) {
 }
 
 
-function parseVCardBlobIntoJson(blob) {
+function parseVCardBlobIntoJson(blob,vcardsArray) {
   //each line ends in '\n'
   var bwJsonObj = "{";
   var lines =  blob.split('\n');
@@ -173,6 +173,7 @@ function parseVCardBlobIntoJson(blob) {
 
   }
   bwJsonObj += "}";
+  vcardsArray.push(bwJsonObj);
   //$("#listOut").append(bwJsonObj);
   //$("#listOut").append("<hr />");
 }

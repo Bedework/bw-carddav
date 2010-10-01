@@ -17,12 +17,57 @@
     under the License.
 */
     
+  var userid = "";
+
+  /****************************
+   * ADDRESS BOOK OBJECT:
+   ****************************/
+  // holds the address books and their vcard contents
+  
+  var bwAddressBook = function() {
+    this.books = new Array();
+    
+    this.init = function(books) {
+      bwAddressBook.books = books;
+      for(var i=0; i < bwAddressBook.books.length; i++) {
+        var book = bwAddressBook.books[i];
+        
+        // build the address book URL
+        var addrBookUrl = book.carddavUrl + book.path;
+        if (book.personal) {
+          // we only need the userid if the book is personal
+          addrBookUrl += userid;
+        }
+        addrBookUrl += book.bookName;
+        
+        var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
+        $.ajax({
+          type: "post",
+          url: addrBookUrl,
+          dataType: "xml",
+          processData: false,
+          data: content,
+          beforeSend: function(xhrobj) {
+            xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
+            xhrobj.setRequestHeader("Depth", "1");
+            xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
+          },
+          success: function(responseData) {
+            // send the response and the vcards array to be loaded
+            parsexml(responseData,book.vcards);
+          },
+          error: function(msg) {
+            // there was a problem
+            alert(msg.statusText);
+          }
+        });
+      }
+    }
+  };
+
 $(document).ready(function() {
 
-  var carddavUrl = "/ucarddav";
-  var userpath = "/user/";
-  var bookName = "/addressbook/";
-  var userid = "";
+  var bwAddrBook = new bwAddressBook();
   
   /****************************
    * SETUP THE DEFAULT STATE:
@@ -43,14 +88,14 @@ $(document).ready(function() {
       }
   })();
   userid = qsParameters.user;
-  // display the userid at the root of the personal address book tree
+    // display the userid at the root of the personal address book tree
   $("#mainUserBook").html(userid);
   
   
   // Create the three-panel layout
   myLayout = $('body').layout({
     //  enable showOverflow on north-pane so popups will overlap west pane
-      north__showOverflowOnHover: true
+    north__showOverflowOnHover: true
 
     //  some resizing/toggling settings
     , north__closable:     false // OVERRIDE the pane-default of closable: true
@@ -61,17 +106,22 @@ $(document).ready(function() {
     //, north__minSize:    43 
   });
 
-  // Disable the search/filter button until an entity is selected
-  //$("#searchButton").attr('disabled', 'disabled');
-
+  // we have a userid, now load the vcards!
+  // bwBooks is defined in addressbookProps.js
+  bwAddrBook.init(bwBooks);
+  
   
   /****************************
    * EVENT HANDLERS:
    ****************************/
   
   // send a REPORT query for all data
+  // SOON TO BE DEPRECATED - this is just a test function
+  var carddavUrl = "/ucarddav";
+  var userpath = "/user/";
+  var userBookName = "/addressbook/";
   $("#report").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
     var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
     $.ajax({
       type: "post",
@@ -109,7 +159,7 @@ $(document).ready(function() {
 
   // submit a vcard to the server
   $("#submitContact").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
     var newUUID = "BwABC-" + Math.uuid();
     
     // build the revision date
@@ -164,7 +214,7 @@ $(document).ready(function() {
 
   // remove a vcard from the address book
   $("#delete").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
     $.ajax({
       type: "delete",
       url: addrBookUrl + $("#DUID").val() + ".vcf",
@@ -206,7 +256,7 @@ $(document).ready(function() {
   // In production, the user will likely be already authed.
   // If not, the server will prompt for auth when the report query is sent on first load of the page.
   $("#auth").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + bookName;
+    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
     $.ajax({
       type: "get",
       url: addrBookUrl,
