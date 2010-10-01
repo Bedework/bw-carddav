@@ -84,9 +84,7 @@ $(document).ready(function() {
         xhrobj.setRequestHeader("Depth", "1");
         xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
       },
-      success: function(responseData, status){
-        alert(status + "\n" + responseData);            
-      },
+      success: parsexml,
       error: function(msg) {
         // there was a problem
         alert(msg.statusText);
@@ -124,6 +122,7 @@ $(document).ready(function() {
         revDate += String(now.getUTCSecondsFull()) + "Z"; 
     
     var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
     vcData += "UID:" + newUUID + "\n";
     vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
     vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
@@ -139,7 +138,7 @@ $(document).ready(function() {
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
     vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
     vcData += "NOTE:" + $("#NOTE").val() + "\n";
-    vcData += "VERSION:4.0\nEND:VCARD";
+    vcData += "END:VCARD";
     alert(vcData);
         
     $.ajax({
