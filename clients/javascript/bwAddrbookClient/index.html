@@ -46,14 +46,14 @@
       <ul id="add">
         <li>
           <ul>
-            <li class="contact">
-              <a href="#addContact" id="addContact">contact</a>
+            <li class="contact" id="addContact">
+              contact
             </li>
-            <li class="group">
-              <a href="#addGroup" id="addGroup">group</a>
+            <li class="group" id="addGroup">
+              group
             </li>
-            <li class="location">
-              <a href="#addLocation" id="addLocation">location</a>
+            <li class="location" id="addLocation">
+              location
             </li>
           </ul>
           add...
@@ -137,6 +137,12 @@
                 <div class="bwField">Last Name:</div>
                 <div class="bwValue"><input type="text" size="60" value="" id="LASTNAME"/></div>
                 
+                <div class="bwField">Title:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="TITLE"/></div>
+                
+                <div class="bwField">Organization:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="ORG"/></div>
+                
                 <div class="bwField">Nickname:</div>
                 <div class="bwValue"><input type="text" size="60" value="" id="NICKNAME"/></div>
                 
@@ -206,6 +212,19 @@
                   
                   <div class="bwField">Country:</div>
                   <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-01"/></div>
+                  
+                  <!-- GEO gets its type (work or home) from this address block;
+                       GEO-01 corresponds with ADDRTYPE-01 -->
+                  <div class="bwField">GEO:</div>
+                  <div class="bwValue"><input type="text" size="60" value="" id="GEO-01"/></div>
+                  <div class="bwHelpLink">
+                    ?
+                    <div class="bwHelp">
+                      Geographic coordinates<br/>
+                      Example: 47.251056,-68.594527
+                    </div>
+                  </div>
+                  
                   <br class="clear"/>
                 </div>
                 <div class="bwAppend bwRightAppend" id="bwAppendAddr"></div>
@@ -217,6 +236,11 @@
                               
                 <div class="bwField">Webpage:</div>
                 <div class="bwValue"><input type="text" size="60" value="" id="WEBPAGE"/></div>
+                <div class="bwField">Photo URL:</div>
+                <div class="bwValue"><input type="text" size="60" value="" id="PHOTOURL"/></div>
+                <div class="bwField">Note:</div>
+                <div class="bwValue"><textarea cols="47" rows="4" id="NOTE"></textarea></div>
+                
                 
               </div>
             </fieldset>
@@ -225,6 +249,9 @@
         </li>
         <li id="bw-modGroup" class="invisible content-block">
           <h3>Add Group</h3>
+        </li>
+        <li id="bw-modLocation" class="invisible content-block">
+          <h3>Add Location</h3>
         </li>
         <li id="bw-test" class="invisible content-block">
           <p>

@@ -205,10 +205,30 @@ legend {
   margin: 0 0 0.5em 0.5em;
 }
 .bwValue input,
-.bwValue select {
+.bwValue select,
+.bwValue textarea {
   background-color: #eef;
   color: #333;
   border: 1px solid #aaf;
+}
+.bwHelpLink {
+	position: relative;
+  float: left;
+	font-size: 0.8em;
+	color: #999;
+	background-color: transparent;
+	padding: 4px 0 0 4px;
+}
+.bwHelp {
+	display: none;
+	position: absolute;
+	top: 1em;
+	z-index: 100;
+	padding: 0.5em;
+	border: 1px solid #ccc;
+	background-color: #ffe;
+	color: #666;
+	line-height: 16px;
 }
 .bwAppend {
   float: left;
