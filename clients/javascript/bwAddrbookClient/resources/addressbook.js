@@ -128,7 +128,7 @@ $(document).ready(function() {
     vcData += "EMAIL;TYPE=PREF;TYPE=INTERNET:" + $("#EMAIL").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
-    vcData += "GEO;TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" $("#GEO-01").val() + "\n";;
+    vcData += "GEO;TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
     vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
     vcData += "NOTE:" + $("#NOTE").val() + "\n";

@@ -111,7 +111,7 @@ ul#add li:hover ul {
   font-size: 0.9em;
   font-weight: normal;
   background-color: #eef;
-  color: #black;
+  color: black;
   border-bottom: 1px solid #ddd;
 }
 #booksAndGroups ul ul {
