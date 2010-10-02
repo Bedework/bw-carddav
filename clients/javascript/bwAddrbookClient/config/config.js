@@ -17,6 +17,12 @@
     under the License.
 */
 
+
+/** Bedework Address Book configuration settings
+ *
+ * @author Arlen Johnson       johnsa - rpi.edu
+ */
+
 /* Define address books for inclusion in the client.
  * Note that when vcard subscriptions are supported, they will 
  * appear dynamically.  This listing allows us to specify
@@ -25,7 +31,7 @@
  * 
  * carddavUrl:    String - root of the carddav server; may be a full
  *                         URL and may include first part of the path
- *                         information (e.g. the context as we do) 
+ *                         information (e.g. the context, as we do) 
  * path:          String - more path information
  * bookName:      String - last part of the path information.  If we
  *                         are using a personal book the userid will
@@ -33,10 +39,14 @@
  * personal:      Boolean - if this is a personal address book.
  *                         For the present this client assumes books 
  *                         that are not personal are read-only. 
+ * default:       Boolean - if this is the default address book.
+ *                         There should be only one of these, but
+ *                         if more than one is defined, the client
+ *                         will take the first in the array.                        
  * label:         String - the display title for the book
- * vcards:        Array  - an empty array; this will be filled when
- *                         the client connects to the server on 
- *                         page load.
+ * vcards:        Array  - an empty array; this will be filled with
+ *                         vcard objects when the client connects to 
+ *                         the server on page load.
  */
 var bwBooks = [
    {
@@ -44,6 +54,7 @@ var bwBooks = [
        "path" : "/user/",
        "bookName" : "/addressbook/",
        "personal" : true,
+       "default" : true,
        "label" : "personal",
        "vcards" : [
            
@@ -54,6 +65,7 @@ var bwBooks = [
        "path" : "/public",
        "bookName" : "/people/",
        "personal" : false,
+       "default" : false,
        "label" : "public people",
        "vcards" : [
              
@@ -64,6 +76,7 @@ var bwBooks = [
        "path" : "/public",
        "bookName" : "/locations/",
        "personal" : false,
+       "default" : false,
        "label" : "public locations",
        "vcards" : [
              
@@ -71,3 +84,25 @@ var bwBooks = [
    }
    
  ];
+
+/*  
+ * If we find we need to load js language files, 
+ * the following method seems to work well.
+ * We also need only translate the index.html
+ * file.  We should keep a copy of translations in the
+ * repository as they are made available.  
+ */
+
+// Define the language file to be used in the client
+var langfile = "config/lang/en_US.js";
+
+// load the language file dynamically so we 
+// need only change the langfile variable to 
+// load the correct language strings
+$.ajax({
+  async: false,
+  type: "GET",
+  url: langfile,
+  data: null,
+  dataType: 'script'
+});

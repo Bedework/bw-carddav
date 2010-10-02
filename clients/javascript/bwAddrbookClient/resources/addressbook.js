@@ -16,56 +16,145 @@
     specific language governing permissions and limitations
     under the License.
 */
-    
-  var userid = "";
 
-  /****************************
-   * ADDRESS BOOK OBJECT:
-   ****************************/
-  // holds the address books and their vcard contents
+/** Bedework Address Book javascript client functions
+ *
+ * @author Arlen Johnson       johnsa - rpi.edu
+ */
+
+var userid = "";
+
+/****************************
+ * ADDRESS BOOK OBJECT:
+ ****************************/
+
+// holds the address books and their vcard contents
+var bwAddressBook = function() {
+  this.books = new Array();
   
-  var bwAddressBook = function() {
-    this.books = new Array();
-    
-    this.init = function(bookTemplate) {
-      bwAddressBook.books = bookTemplate;
-      for(var i=0; i < bwAddressBook.books.length; i++) {
-        var book = bwAddressBook.books[i];
-        
-        // build the address book URL
-        var addrBookUrl = book.carddavUrl + book.path;
-        if (book.personal) {
-          // we only need the userid if the book is personal
-          addrBookUrl += userid;
-        }
-        addrBookUrl += book.bookName;
-        
-        // perform a report query on the address book
-        var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
-        $.ajax({
-          type: "post",
-          url: addrBookUrl,
-          dataType: "xml",
-          processData: false,
-          async: false,
-          data: content,
-          beforeSend: function(xhrobj) {
-            xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
-            xhrobj.setRequestHeader("Depth", "1");
-            xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
-          },
-          success: function(responseData) {
-            // send the response and the vcards array to be loaded
-            parsexml(responseData,book.vcards);
-          },
-          error: function(msg) {
-            // there was a problem
-            alert(msg.statusText);
-          }
-        });
+  this.init = function(bookTemplate) {
+    bwAddressBook.books = bookTemplate;
+    for(var i=0; i < bwAddressBook.books.length; i++) {
+      var book = bwAddressBook.books[i];
+      
+      // build the address book URL
+      var addrBookUrl = book.carddavUrl + book.path;
+      if (book.personal) {
+        // we only need the userid if the book is personal
+        addrBookUrl += userid;
       }
+      addrBookUrl += book.bookName;
+      
+      // perform a report query on the address book
+      var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
+      $.ajax({
+        type: "post",
+        url: addrBookUrl,
+        dataType: "xml",
+        processData: false,
+        async: false,
+        data: content,
+        beforeSend: function(xhrobj) {
+          xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
+          xhrobj.setRequestHeader("Depth", "1");
+          xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
+        },
+        success: function(responseData) {
+          // send the response and the vcards array to be loaded
+          parsexml(responseData,book.vcards);
+        },
+        error: function(msg) {
+          // there was a problem
+          alert(msg.statusText);
+        }
+      });
     }
   };
+  
+  this.displayList = function(bookIndex) {
+    var book = new Array();
+    var index = bookIndex;
+    var listing = "";
+    
+    if (index == null) {
+      // we have no index; find the default book
+      for (var i=0; i < bwAddressBook.books.length; i++) {
+        if (bwAddressBook.books[i].default) {
+          index = i;
+          break;
+        }
+      }
+    }
+    
+    // select the current book
+    book = bwAddressBook.books[index];
+    
+    // Create a tabular listing for display - we can use
+    // innerHtml here for speed and simplicity.
+    // Display strings are set in the language file 
+    // specified in config.js
+    listing += "<table id=\"bwAddrBookTable\">";
+    listing += "<tr>";
+    listing += "<th>" + bwAbDispListName + "</th>";
+    listing += "<th>" + bwAbDispListPhone + "</th>";
+    listing += "<th>" + bwAbDispListEmail + "</th>";
+    listing += "<th>" + bwAbDispListTitle + "</th>";
+    listing += "<th>" + bwAbDispListOrg + "</th>";
+    listing += "<th>" + bwAbDispListUrl + "</th>";
+    listing += "</tr>";
+    for (var i=0; i < book.vcards.length; i++) {
+      var curCard = jQuery.parseJSON(book.vcards[i]);
+      var rowClass = "";
+      if (i%2 == 1) {
+        rowClass = "odd"; 
+      }
+      // determine the kind of vcard - if not available, assume "individual"
+      var kind = "individual";
+      var kindIcon = "resources/icons/silk/user.png";
+      if (curCard.KIND != undefined && curCard.KIND.value != "") {
+        kind = curCard.KIND.value;
+        switch(kind) {
+          case "group" :  
+            kindIcon = "resources/icons/silk/group.png";
+            break;
+          case "location" :
+            kindIcon = "resources/icons/silk/building.png";
+            break;
+        }
+      }
+      
+      // check for the existence of other properties (will need to do all)
+      var title = "";
+      if(curCard.TITLE != undefined) { 
+        title = curCard.TITLE[0].value; 
+      }
+      var org = "";
+      if(curCard.ORG != undefined) { 
+        org = curCard.ORG[0].value; 
+      }
+      var url = "";
+      if(curCard.URL != undefined) { 
+        url = curCard.URL[0].value; 
+      }
+      
+      listing += "<tr class=\"" + rowClass + "\">"
+      listing += "<td><img src=\"" + kindIcon + "\" width=\"16\" height=\"16\" alt=\"" + kind + "\"/>";
+      listing += curCard.FN[0].value + "</td>";
+      listing += "<td>" + curCard.TEL[0].values[0].number + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
+      listing += "<td><a href=\"mailto:" + curCard.EMAIL[0].value + "\">" + curCard.EMAIL[0].value + "</a></td>";
+      listing += "<td>" + title + "</td>";
+      listing += "<td>" + org + "</td>";
+      listing += "<td>" + url + "</td>";
+      listing += "</tr>"
+    }
+    listing += "</table>"
+      
+    // replace the output and show the page
+    $("#bwAddrBookOutputList").html(listing);
+    showPage("bw-list");
+    
+  }
+};
 
 $(document).ready(function() {
 
@@ -108,9 +197,16 @@ $(document).ready(function() {
     //, north__minSize:    43 
   });
 
+  /****************************
+   * INITIALIZE AND DISPLAY
+   ****************************/ 
+  
   // we have a userid, now load the vcards!
   // bwBooks is defined in addressbookProps.js
   bwAddrBook.init(bwBooks);
+  
+  // display the default listing
+  bwAddrBook.displayList();
   
   
   /****************************
@@ -159,6 +255,10 @@ $(document).ready(function() {
     showPage("bw-modLocation");
   });
 
+  $("#mainUserBook").click(function() {
+    bwAddrBook.displayList(0);
+  });
+  
   // submit a vcard to the server
   $("#submitContact").click(function() {
     var addrBookUrl = carddavUrl + userpath + userid + userBookName;
@@ -272,7 +372,7 @@ $(document).ready(function() {
       }
     });
   });
-  
+    
 });
 
 /****************************

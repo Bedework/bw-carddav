@@ -17,6 +17,8 @@
     KIND, either express or implied. See the License for the
     specific language governing permissions and limitations
     under the License.
+    
+    @author Arlen Johnson       johnsa - rpi.edu
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -32,7 +34,7 @@
     <script type="text/javascript" src="resources/jquery/layout/jquery.layout.min-1.2.0.js"></script>
     <link href="resources/jquery/layout/layout.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="resources/Math.uuid.js"></script>
-    <script type="text/javascript" src="resources/addressbookProps.js"></script>
+    <script type="text/javascript" src="config/config.js"></script>
     <script type="text/javascript" src="resources/addressbook.js"></script>
     <script type="text/javascript" src="resources/vcard.js"></script>
   </head>
@@ -93,7 +95,7 @@
       <!-- Each page of the application is modeled below as a list item.
            We make each visible or invisible as needed using javascript. -->
       <ul id="bw-pages">
-        <li id="bw-list" class="invisible">
+        <li id="bw-list">
           <ul id="filterLetters">
             <li><a href="">A</a></li>
             <li><a href="">B</a></li>
@@ -122,11 +124,9 @@
             <li><a href="">Y</a></li>
             <li><a href="">Z</a></li>
           </ul>
-          <p>
-            List would be here
-          </p>
+          <div id="bwAddrBookOutputList"></div>
         </li>
-        <li id="bw-modContact" class="content-block">
+        <li id="bw-modContact" class="content-block invisible">
           <h3>Add Contact</h3>
           <div id="addForm">
             <fieldset> 

@@ -17,7 +17,10 @@
     under the License.
 */
 
-
+/** Bedework Address Book vcard parsing functions
+ *
+ * @author Barry Leibson
+ */
 
 function parsexml(xml,vcardsArray) {
   $(xml).find("response").each(function() {

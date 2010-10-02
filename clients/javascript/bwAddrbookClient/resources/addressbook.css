@@ -15,6 +15,8 @@
     KIND, either express or implied. See the License for the
     specific language governing permissions and limitations
     under the License.
+    
+    @author Arlen Johnson       johnsa - rpi.edu
 */
 
 body {
@@ -145,7 +147,7 @@ ul#add li:hover ul {
   display: block;
   width: 3.8%;
   padding: 4px 0;
-  margin: 0 0 1em 0;
+  margin: 0;
   float: left;
   text-align: center;
 }
@@ -153,11 +155,44 @@ ul#add li:hover ul {
 	color: black;
 	background-color: #ff9;
 }
+#bwAddrBookOutputList {
+	margin: 0;
+	padding: 0;
+}
+#bwAddrBookTable {
+  float: left;
+  font-size: 0.9em;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+#bwAddrBookTable th {
+  padding: 0.5em 0 0.5em 1em;
+  background-color: #eee;
+  color: #999;
+  border-right: 1px solid #ddd;
+  white-space: nowrap;
+}
+#bwAddrBookTable td {
+	padding: 0.5em 1em;
+  background-color: #f6f6f6;
+  color: black;
+  border-right: 1px solid #eee;
+  white-space: nowrap;
+  width: 100px;
+}
+#bwAddrBookTable tr.odd td {
+	background-color: white;
+	color: black;
+}
+#bwAddrBookTable img {
+	margin: 0 1em 0 0;
+	vertical-align: middle;
+}
 h1 {
   font-size: 1.2em;
 }
 h3 {
-	margin: 1em 0;
+	margin: 2em 0 1em 0;
 	font-size: 1em;
 	font-weight: bold;
 }
