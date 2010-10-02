@@ -17,35 +17,57 @@
     under the License.
 */
 
+/* Define address books for inclusion in the client.
+ * Note that when vcard subscriptions are supported, they will 
+ * appear dynamically.  This listing allows us to specify
+ * the user carddav path and any other public paths we
+ * want present for all users.
+ * 
+ * carddavUrl:    String - root of the carddav server; may be a full
+ *                         URL and may include first part of the path
+ *                         information (e.g. the context as we do) 
+ * path:          String - more path information
+ * bookName:      String - last part of the path information.  If we
+ *                         are using a personal book the userid will
+ *                         be placed between the path and bookname.
+ * personal:      Boolean - if this is a personal address book.
+ *                         For the present this client assumes books 
+ *                         that are not personal are read-only. 
+ * label:         String - the display title for the book
+ * vcards:        Array  - an empty array; this will be filled when
+ *                         the client connects to the server on 
+ *                         page load.
+ */
 var bwBooks = [
-    {
-         "carddavUrl" : "/ucarddav",
-         "path" : "/user/",
-         "bookName" : "/addressbook/",
-         "personal" : true,
-         "label" : "personal",
-         "vcards" : [
+   {
+       "carddavUrl" : "/ucarddav",
+       "path" : "/user/",
+       "bookName" : "/addressbook/",
+       "personal" : true,
+       "label" : "personal",
+       "vcards" : [
+           
+       ] 
+   },
+   {
+       "carddavUrl" : "/ucarddav",
+       "path" : "/public",
+       "bookName" : "/people/",
+       "personal" : false,
+       "label" : "public people",
+       "vcards" : [
              
-         ] 
-     },
-     {
-         "carddavUrl" : "/ucarddav",
-         "path" : "/public",
-         "bookName" : "/people/",
-         "personal" : false,
-         "label" : "public people",
-         "vcards" : [
+       ] 
+   },
+   {
+       "carddavUrl" : "/ucarddav",
+       "path" : "/public",
+       "bookName" : "/locations/",
+       "personal" : false,
+       "label" : "public locations",
+       "vcards" : [
              
-         ] 
-     },
-     {
-         "carddavUrl" : "/ucarddav",
-         "path" : "/public",
-         "bookName" : "/locations/",
-         "personal" : false,
-         "label" : "public locations",
-         "vcards" : [
-             
-         ] 
-     }
+       ] 
+   }
+   
  ];

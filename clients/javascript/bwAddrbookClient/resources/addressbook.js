@@ -47,6 +47,7 @@
           url: addrBookUrl,
           dataType: "xml",
           processData: false,
+          async: false,
           data: content,
           beforeSend: function(xhrobj) {
             xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
