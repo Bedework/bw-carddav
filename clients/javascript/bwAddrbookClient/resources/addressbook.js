@@ -130,7 +130,11 @@ var bwAddressBook = function() {
       }
       var org = "";
       if(curCard.ORG != undefined) { 
-        org = curCard.ORG[0].value; 
+        org = curCard.ORG[0].values[0].organization_name; 
+      }
+      var tel = "";
+      if(curCard.TEL != undefined) { 
+        tel = curCard.TEL[0].values[0].number; 
       }
       var url = "";
       if(curCard.URL != undefined) { 
@@ -140,7 +144,7 @@ var bwAddressBook = function() {
       listing += "<tr class=\"" + rowClass + "\">"
       listing += "<td><img src=\"" + kindIcon + "\" width=\"16\" height=\"16\" alt=\"" + kind + "\"/>";
       listing += curCard.FN[0].value + "</td>";
-      listing += "<td>" + curCard.TEL[0].values[0].number + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
+      listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
       listing += "<td><a href=\"mailto:" + curCard.EMAIL[0].value + "\">" + curCard.EMAIL[0].value + "</a></td>";
       listing += "<td>" + title + "</td>";
       listing += "<td>" + org + "</td>";
