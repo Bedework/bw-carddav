@@ -274,7 +274,8 @@ var bwAddressBook = function() {
       },
       success: function(responseData, status){
         alert(status + "\n" + responseData);
-        window.location.reload(); // this is temporary - for now, just refetch the data from the server to redisplay the cards.
+        clearFields("#addForm");
+        window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
       },
       error: function(msg) {
         // there was a problem
@@ -282,6 +283,7 @@ var bwAddressBook = function() {
       }
     });
   };
+  
 };
 
 $(document).ready(function() {
@@ -454,7 +456,14 @@ function changeClass(id, newClass) {
   }
   identity.className=newClass;
 };
-
+function clearFields(formId) {
+  $(formId + " input").each(function(index){
+    $(this).val("");
+  });
+  $(formId + " textarea").each(function(index){
+    $(this).val("");
+  });
+}
 
 /* UTC FORMATTERS */
 
