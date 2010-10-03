@@ -30,20 +30,29 @@ var userid = "";
 
 // holds the address books and their vcard contents
 var bwAddressBook = function() {
-  this.books = new Array();
+  this.books = new Array(); // our address books, loaded on init
+  this.userid = ""; // our default personal user, loaded on init
+  this.defPersBookUrl = ""; // URL of our default personal book, built at init
   
-  this.init = function(bookTemplate) {
+  this.init = function(bookTemplate,userid) {
     bwAddressBook.books = bookTemplate;
+    bwAddressBook.userid = userid;
+    
     for(var i=0; i < bwAddressBook.books.length; i++) {
       var book = bwAddressBook.books[i];
       
       // build the address book URL
       var addrBookUrl = book.carddavUrl + book.path;
-      if (book.personal) {
+      if (book.type == "personal-default" || book.type == "personal") {
         // we only need the userid if the book is personal
         addrBookUrl += userid;
       }
       addrBookUrl += book.bookName;
+      
+      // set the default personal book url
+      if (book.type == "personal-default") {
+        bwAddressBook.defPersBookUrl = book.carddavUrl + book.path + bwAddressBook.userid + book.bookName;
+      } 
       
       // perform a report query on the address book
       var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
@@ -80,15 +89,20 @@ var bwAddressBook = function() {
     for (var i=0; i < bwAddressBook.books.length; i++) {
       var book = bwAddressBook.books[i];
       var bookId = "bwBook-" + i;
-      if (book.personal) {
-        if (book.defaultbk) {
+      switch(book.type) {
+        case "personal-default" :
           // this is the default book; mark it as such.  We will replace the title with the user's id
-          personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#" class="selected">' + book.label + '</a></li>';
-        } else {
+          personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#" class="selected defaultUserBook">' + bwAddressBook.userid + '</a></li>';
+          break;
+        case "personal" :
           personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
-        }
-      } else {
-        subscriptions += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
+          break;
+        case "subscription" :
+          // this is a subscription
+          subscriptions += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
+          break;
+        default :
+          alert(book.label + ':\n' + bwAbDispBookType + ' "' + book.type + '" ' + bwAbDispUnsupported);
       }
     }
     
@@ -112,9 +126,9 @@ var bwAddressBook = function() {
     var listing = "";
     
     if (index == null) {
-      // we have no index; find the default book
+      // we have no index; use the personal default book
       for (var i=0; i < bwAddressBook.books.length; i++) {
-        if (bwAddressBook.books[i].defaultbk) {
+        if (bwAddressBook.books[i].type = "personal-default") {
           index = i;
           break;
         }
@@ -207,7 +221,67 @@ var bwAddressBook = function() {
     $("#bwAddrBookOutputList").html(listing);
     showPage("bw-list");
     
-  }
+  };
+   
+  this.addContact = function() {
+    
+    // For now, we'll assume there is only one book to which we can write.
+    // In the future, we'll want to check to see if there is more than 
+    // one personal book, and check which is selected.
+    var addrBookUrl = bwAddressBook.defPersBookUrl;
+    
+    // Create the UUID
+    var newUUID = "BwABC-" + Math.uuid();
+    
+    // build the revision date
+    var now = new Date();
+    var revDate = String(now.getUTCFullYear());
+        revDate += String(now.getUTCMonthFull());
+        revDate += String(now.getUTCDateFull()) + "T";
+        revDate += String(now.getUTCHoursFull());
+        revDate += String(now.getUTCMinutesFull());
+        revDate += String(now.getUTCSecondsFull()) + "Z"; 
+    
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    vcData += "UID:" + newUUID + "\n";
+    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
+    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    vcData += "ORG:" + $("#ORG").val() + ";;\n";
+    vcData += "TITLE:" + $("#TITLE").val() + "\n";
+    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + revDate + "\n";
+    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL").val() + "\n";
+    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
+    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
+    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
+    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
+    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
+    vcData += "NOTE:" + $("#NOTE").val() + "\n";
+    vcData += "END:VCARD";
+    
+    $.ajax({
+      type: "put",
+      url: addrBookUrl + newUUID + ".vcf",
+      data: vcData,
+      dataType: "text",
+      processData: false,
+      beforeSend: function(xhrobj) {
+        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
+        xhrobj.setRequestHeader("If-None-Match", "*");
+        xhrobj.setRequestHeader("Content-Type", "text/vcard");
+      },
+      success: function(responseData, status){
+        alert(status + "\n" + responseData);
+        window.location.reload(); // this is temporary - for now, just refetch the data from the server to redisplay the cards.
+      },
+      error: function(msg) {
+        // there was a problem
+        alert(msg.statusText);
+      }
+    });
+  };
 };
 
 $(document).ready(function() {
@@ -233,8 +307,6 @@ $(document).ready(function() {
       }
   })();
   userid = qsParameters.user;
-    // display the userid at the root of the personal address book tree
-  $("#mainUserBook").html(userid);
   
   
   // Create the three-panel layout
@@ -255,9 +327,9 @@ $(document).ready(function() {
    * INITIALIZE AND DISPLAY
    ****************************/ 
   
-  // we have a userid, now load the vcards!
+  // we have a userid, now load the vcards, build the menus, and display the list!
   // bwBooks is defined in addressbookProps.js
-  bwAddrBook.init(bwBooks);
+  bwAddrBook.init(bwBooks,userid);
   
   // generate the personal and subscribed books menus
   bwAddrBook.buildMenus();
@@ -328,57 +400,7 @@ $(document).ready(function() {
   
   // submit a vcard to the server
   $("#submitContact").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
-    var newUUID = "BwABC-" + Math.uuid();
-    
-    // build the revision date
-    var now = new Date();
-    var revDate = String(now.getUTCFullYear());
-        revDate += String(now.getUTCMonthFull());
-        revDate += String(now.getUTCDateFull()) + "T";
-        revDate += String(now.getUTCHoursFull());
-        revDate += String(now.getUTCMinutesFull());
-        revDate += String(now.getUTCSecondsFull()) + "Z"; 
-    
-    var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
-    vcData += "UID:" + newUUID + "\n";
-    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
-    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
-    vcData += "ORG:" + $("#ORG").val() + ";;\n";
-    vcData += "TITLE:" + $("#TITLE").val() + "\n";
-    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
-    vcData += "CLASS:PRIVATE\n";
-    vcData += "REV:" + revDate + "\n";
-    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL").val() + "\n";
-    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
-    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
-    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
-    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
-    vcData += "NOTE:" + $("#NOTE").val() + "\n";
-    vcData += "END:VCARD";
-    alert(vcData);
-        
-    $.ajax({
-      type: "put",
-      url: addrBookUrl + newUUID + ".vcf",
-      data: vcData,
-      dataType: "text",
-      processData: false,
-      beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
-        xhrobj.setRequestHeader("If-None-Match", "*");
-        xhrobj.setRequestHeader("Content-Type", "text/vcard");
-      },
-      success: function(responseData, status){
-        alert(status + "\n" + responseData);            
-      },
-      error: function(msg) {
-        // there was a problem
-        alert(msg.statusText);
-      }
-    });
+    bwAddrBook.addContact(userid);
   });
 
   // remove a vcard from the address book

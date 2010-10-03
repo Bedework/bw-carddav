@@ -29,4 +29,8 @@ var bwAbDispListEmail = "Email";
 var bwAbDispListTitle = "Title";
 var bwAbDispListOrg = "Organization";
 var bwAbDispListUrl = "Webpage";
-var bwAbDispListNone = "none";
+var bwAbDispListNone = "no contacts";
+
+// error and status messages
+var bwAbDispBookType = "Book type";
+var bwAbDispUnsupported = "unsupported";

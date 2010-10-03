@@ -60,6 +60,9 @@ ul.books li {
 ul.subscriptions li {
   list-style-image: url("icons/silk/book_link.png");
 }
+li.empty {
+	list-style: none !important;
+}
 ul.groups li,
 li.group {
   list-style-image: url("icons/silk/group.png");

@@ -24,6 +24,11 @@
  */
 
 /* Define address books for inclusion in the client.
+ * We will assume for now that there is only one writable
+ * personal address book.  It is indicated by setting
+ * "type".  We will likewise assume for now that all 
+ * subscribed books are read-only.
+ * 
  * Note that when vcard subscriptions are supported, they will 
  * appear dynamically.  This listing allows us to specify
  * the user carddav path and any other public paths we
@@ -36,12 +41,12 @@
  * bookName:      String - last part of the path information.  If we
  *                         are using a personal book the userid will
  *                         be placed between the path and bookname.
- * personal:      Boolean - if this is a personal address book.
- *                         For the present this client assumes books 
- *                         that are not personal are read-only. 
- * default:       Boolean - if this is the default address book.
- *                         There should be only one of these and 
- *                         it is only used on the personal books.                        
+ * type:          String - takes the following values:
+ *                         personal-default  - the default personal book: there may be only one
+ *                         personal          - another personal book
+ *                         subscription      - a subscribed address book
+ *                                             For the present this client assumes books 
+ *                                             that are not personal are read-only.                         
  * label:         String - the display title for the book
  * vcards:        Array  - an empty array; this will be filled with
  *                         vcard objects when the client connects to 
@@ -52,8 +57,7 @@ var bwBooks = [
        "carddavUrl" : "/ucarddav",
        "path" : "/user/",
        "bookName" : "/addressbook/",
-       "personal" : true,
-       "defaultbk" : true,
+       "type" : "personal-default",
        "label" : "personal",
        "vcards" : [
            
@@ -63,8 +67,7 @@ var bwBooks = [
        "carddavUrl" : "/ucarddav",
        "path" : "/public",
        "bookName" : "/people/",
-       "personal" : false,
-       "defaultbk" : false,
+       "type" : "subscription",
        "label" : "public people",
        "vcards" : [
              
@@ -74,8 +77,7 @@ var bwBooks = [
        "carddavUrl" : "/ucarddav",
        "path" : "/public",
        "bookName" : "/locations/",
-       "personal" : false,
-       "defaultbk" : false,
+       "type" : "subscription",
        "label" : "public locations",
        "vcards" : [
              
@@ -85,19 +87,19 @@ var bwBooks = [
  ];
 
 /*  
- * If we find we need to load js language files, 
- * the following method seems to work well.
- * We also need only translate the index.html
- * file.  We should keep a copy of translations in the
- * repository as they are made available.  
+ * Load language file for javascript functions.  
+ * To internationalize, you must also translate 
+ * the index.html file (or swap in a translated
+ * copy).  We will keep a copy of 
+ * translations in the repository  
+ * as they are made available.  
  */
 
 // Define the language file to be used in the client
+// for javascript functions that generate textual output
 var langfile = "config/lang/en_US.js";
 
-// load the language file dynamically so we 
-// need only change the langfile variable to 
-// load the correct language strings
+// load the language file
 $.ajax({
   async: false,
   type: "GET",
