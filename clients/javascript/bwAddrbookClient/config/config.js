@@ -53,7 +53,7 @@ var bwBooks = [
        "path" : "/user/",
        "bookName" : "/addressbook/",
        "personal" : true,
-       "default" : true,
+       "defaultbk" : true,
        "label" : "personal",
        "vcards" : [
            
@@ -64,7 +64,7 @@ var bwBooks = [
        "path" : "/public",
        "bookName" : "/people/",
        "personal" : false,
-       "default" : false,
+       "defaultbk" : false,
        "label" : "public people",
        "vcards" : [
              
@@ -75,7 +75,7 @@ var bwBooks = [
        "path" : "/public",
        "bookName" : "/locations/",
        "personal" : false,
-       "default" : false,
+       "defaultbk" : false,
        "label" : "public locations",
        "vcards" : [
              

@@ -81,7 +81,7 @@ var bwAddressBook = function() {
       var book = bwAddressBook.books[i];
       var bookId = "bwBook-" + i;
       if (book.personal) {
-        if (book.default) {
+        if (book.defaultbk) {
           // this is the default book; mark it as such.  We will replace the title with the user's id
           personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#" class="selected">' + book.label + '</a></li>';
         } else {
@@ -114,7 +114,7 @@ var bwAddressBook = function() {
     if (index == null) {
       // we have no index; find the default book
       for (var i=0; i < bwAddressBook.books.length; i++) {
-        if (bwAddressBook.books[i].default) {
+        if (bwAddressBook.books[i].defaultbk) {
           index = i;
           break;
         }
