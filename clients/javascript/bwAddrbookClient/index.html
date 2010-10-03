@@ -66,27 +66,14 @@
     </div>
     <div id="booksAndGroups" class="ui-layout-west">
       <h3>personal address book</h3>
-      <ul class="books">
-        <li>
-          <a href="#" id="mainUserBook" class="selected">personal</a>
-          <ul class="groups">
-            <li>
-              group a
-            </li>
-            <li>
-              group b
-            </li>
-          </ul>
-        </li>
+      <ul class="books" id="bwBooks">
+        <!-- Books will be built here if any exist  -->
+        <li>loading...</li>
       </ul>
       <h3>subscribed address books</h3>
-      <ul class="subscriptions">
-        <li>
-          some public book
-        </li>
-        <li>
-          some user book
-        </li>
+      <ul class="subscriptions" id="bwSubscriptions">
+        <!-- Books will be built here if any exist -->
+        <li>loading...</li>
       </ul>
       
       <button style="margin: 20em 0 0 2em;" onclick="showPage('bw-test');">show test pane</button>
@@ -256,11 +243,6 @@
           <h3>Add Location</h3>
         </li>
         <li id="bw-test" class="invisible content-block">
-          <p>
-            <button id="auth" type="button">Authenticate/Test</button>
-            <button id="report" type="button">Report</button>
-          </p>
-          <hr/>
           <h3>Delete Contact (by UID)</h3>
           <div id="deleteForm">
             UID: <input type="text" size="60" value="" id="DUID"/><br/>

@@ -71,6 +71,41 @@ var bwAddressBook = function() {
     }
   };
   
+  this.buildMenus = function() {
+    var personalBooks = "";
+    var subscriptions = "";
+    
+    // iterate over the books and build up the menus
+    // We need to iterate over groups within the books and add them as children
+    for (var i=0; i < bwAddressBook.books.length; i++) {
+      var book = bwAddressBook.books[i];
+      var bookId = "bwBook-" + i;
+      if (book.personal) {
+        if (book.default) {
+          // this is the default book; mark it as such.  We will replace the title with the user's id
+          personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#" class="selected">' + book.label + '</a></li>';
+        } else {
+          personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
+        }
+      } else {
+        subscriptions += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
+      }
+    }
+    
+    // check for empty menus
+    if (personalBooks == "") {
+      personalBooks = '<li class="empty">no books found</li>'; 
+    }
+    if (subscriptions == "") {
+      subscriptions = '<li class="empty">no books found</li>'; 
+    }
+    
+    // write the menus back to the browser
+    $("#bwBooks").html(personalBooks);
+    $("#bwSubscriptions").html(subscriptions);
+    
+  };
+  
   this.displayList = function(bookIndex) {
     var book = new Array();
     var index = bookIndex;
@@ -102,54 +137,69 @@ var bwAddressBook = function() {
     listing += "<th>" + bwAbDispListOrg + "</th>";
     listing += "<th>" + bwAbDispListUrl + "</th>";
     listing += "</tr>";
-    for (var i=0; i < book.vcards.length; i++) {
-      var curCard = jQuery.parseJSON(book.vcards[i]);
-      var rowClass = "";
-      if (i%2 == 1) {
-        rowClass = "odd"; 
-      }
-      // determine the kind of vcard - if not available, assume "individual"
-      var kind = "individual";
-      var kindIcon = "resources/icons/silk/user.png";
-      if (curCard.KIND != undefined && curCard.KIND.value != "") {
-        kind = curCard.KIND.value;
-        switch(kind) {
-          case "group" :  
-            kindIcon = "resources/icons/silk/group.png";
-            break;
-          case "location" :
-            kindIcon = "resources/icons/silk/building.png";
-            break;
+    
+    // if we have no cards, tell the user
+    if (book.vcards.length == 0) {
+      listing += '<tr class="none"><td>' +  bwAbDispListNone + '</td><td></td><td></td><td></td><td></td><td></td></tr>'; 
+    } else {
+    // we have cards: build the list
+      for (var i=0; i < book.vcards.length; i++) {
+        var curCard = jQuery.parseJSON(book.vcards[i]);
+        var rowClass = "";
+        if (i%2 == 1) {
+          rowClass = "odd"; 
         }
+        // determine the kind of vcard - if not available, assume "individual"
+        var kind = "individual";
+        var kindIcon = "resources/icons/silk/user.png";
+        if (curCard.KIND != undefined && curCard.KIND.value != "") {
+          kind = curCard.KIND.value;
+          switch(kind) {
+            case "group" :  
+              kindIcon = "resources/icons/silk/group.png";
+              break;
+            case "location" :
+              kindIcon = "resources/icons/silk/building.png";
+              break;
+          }
+        }
+        
+        // check for the existence of the properties
+        var fn ="";
+        if(curCard.FN != undefined) { 
+          fn = curCard.FN[0].value; 
+        }
+        var tel ="";
+        if(curCard.TEL != undefined) { 
+          tel = curCard.TEL[0].values[0].number; 
+        }
+        var email ="";
+        if(curCard.EMAIL != undefined) { 
+          email = curCard.EMAIL[0].value; 
+        }
+        var title = "";
+        if(curCard.TITLE != undefined) { 
+          title = curCard.TITLE[0].value; 
+        }
+        var org = "";
+        if(curCard.ORG != undefined) { 
+          org = curCard.ORG[0].values[0].organization_name; 
+        }
+        var url = "";
+        if(curCard.URL != undefined) { 
+          url = curCard.URL[0].value; 
+        }
+        
+        listing += "<tr class=\"" + rowClass + "\">"
+        listing += "<td><img src=\"" + kindIcon + "\" width=\"16\" height=\"16\" alt=\"" + kind + "\"/>";
+        listing += fn + "</td>";
+        listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
+        listing += "<td><a href=\"mailto:" + email + "\">" + email + "</a></td>";
+        listing += "<td>" + title + "</td>";
+        listing += "<td>" + org + "</td>";
+        listing += "<td>" + url + "</td>";
+        listing += "</tr>"
       }
-      
-      // check for the existence of other properties (will need to do all)
-      var title = "";
-      if(curCard.TITLE != undefined) { 
-        title = curCard.TITLE[0].value; 
-      }
-      var org = "";
-      if(curCard.ORG != undefined) { 
-        org = curCard.ORG[0].values[0].organization_name; 
-      }
-      var tel = "";
-      if(curCard.TEL != undefined) { 
-        tel = curCard.TEL[0].values[0].number; 
-      }
-      var url = "";
-      if(curCard.URL != undefined) { 
-        url = curCard.URL[0].value; 
-      }
-      
-      listing += "<tr class=\"" + rowClass + "\">"
-      listing += "<td><img src=\"" + kindIcon + "\" width=\"16\" height=\"16\" alt=\"" + kind + "\"/>";
-      listing += curCard.FN[0].value + "</td>";
-      listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
-      listing += "<td><a href=\"mailto:" + curCard.EMAIL[0].value + "\">" + curCard.EMAIL[0].value + "</a></td>";
-      listing += "<td>" + title + "</td>";
-      listing += "<td>" + org + "</td>";
-      listing += "<td>" + url + "</td>";
-      listing += "</tr>"
     }
     listing += "</table>"
       
@@ -209,6 +259,9 @@ $(document).ready(function() {
   // bwBooks is defined in addressbookProps.js
   bwAddrBook.init(bwBooks);
   
+  // generate the personal and subscribed books menus
+  bwAddrBook.buildMenus();
+  
   // display the default listing
   bwAddrBook.displayList();
   
@@ -259,8 +312,18 @@ $(document).ready(function() {
     showPage("bw-modLocation");
   });
 
-  $("#mainUserBook").click(function() {
-    bwAddrBook.displayList(0);
+  $(".bwBook").click(function() {
+    // extract the book array index from the id
+    var bookIndex = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
+    
+    // remove highlighting from all books
+    $(".bwBook a").each(function(index){
+      $(this).removeClass("selected");
+    });
+    // now highlight the one just selected
+    $(this).find("a:first-child").addClass("selected");
+    
+    bwAddrBook.displayList(bookIndex);
   });
   
   // submit a vcard to the server
@@ -348,35 +411,6 @@ $(document).ready(function() {
     }  
   );
   
-  /* Testing Features */
-  // setting the user is for testing
-  $("#setuser").click(function() {
-    var newid = $("#userid").val();
-    if (newid != "") {
-      userid = newid;
-      alert("User set to " + userid);
-    }
-  });
-  
-  // Click to auth is for testing only
-  // In production, the user will likely be already authed.
-  // If not, the server will prompt for auth when the report query is sent on first load of the page.
-  $("#auth").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
-    $.ajax({
-      type: "get",
-      url: addrBookUrl,
-      dataType: "html",
-      success: function(responseData, status){
-        alert(status + "\n" + responseData);            
-      },
-      error: function(msg) {
-        // there was a problem
-        alert(msg.statusText);
-      }
-    });
-  });
-    
 });
 
 /****************************

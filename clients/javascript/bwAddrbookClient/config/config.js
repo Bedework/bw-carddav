@@ -40,9 +40,8 @@
  *                         For the present this client assumes books 
  *                         that are not personal are read-only. 
  * default:       Boolean - if this is the default address book.
- *                         There should be only one of these, but
- *                         if more than one is defined, the client
- *                         will take the first in the array.                        
+ *                         There should be only one of these and 
+ *                         it is only used on the personal books.                        
  * label:         String - the display title for the book
  * vcards:        Array  - an empty array; this will be filled with
  *                         vcard objects when the client connects to 

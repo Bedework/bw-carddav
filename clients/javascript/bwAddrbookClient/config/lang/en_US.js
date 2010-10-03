@@ -29,3 +29,4 @@ var bwAbDispListEmail = "Email";
 var bwAbDispListTitle = "Title";
 var bwAbDispListOrg = "Organization";
 var bwAbDispListUrl = "Webpage";
+var bwAbDispListNone = "none";

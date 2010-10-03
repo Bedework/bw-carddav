@@ -51,6 +51,9 @@ ul#add {
   position: relative;
   white-space: nowrap;
 }
+ul.books {
+	margin-bottom: 1em;
+}
 ul.books li {
   list-style-image: url("icons/silk/book.png");
 }
@@ -166,7 +169,7 @@ ul#add li:hover ul {
   border-bottom: 1px solid #eee;
 }
 #bwAddrBookTable th {
-  padding: 0.5em 0 0.5em 1em;
+  padding: 0.5em 1em;
   background-color: #eee;
   color: #999;
   border-right: 1px solid #ddd;
@@ -183,6 +186,11 @@ ul#add li:hover ul {
 #bwAddrBookTable tr.odd td {
 	background-color: white;
 	color: black;
+}
+#bwAddrBookTable tr.none td {
+  background-color: white;
+  color: black;
+  border: none;
 }
 #bwAddrBookTable img {
 	margin: 0 1em 0 0;
