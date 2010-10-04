@@ -22,6 +22,10 @@
  * @author Barry Leibson
  */
 
+function escapeDoubleQuotes(str) {
+    return str.replace(/"/g,'\\\"'); 
+}
+
 function parsexml(xml,vcardsArray) {
   $(xml).find("response").each(function() {
     $(this).find("propstat").each(function() {
@@ -97,7 +101,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
     if (lines[i] != "") {
       var colonSplit = lines[i].split(':');
 
-      //split out the key and the paramaters
+      //split out the key and the parameters
       var semiColonSplit = colonSplit[0].split(';');
       var attribute = semiColonSplit[0];
       var attributeInfo = new Array();
@@ -143,11 +147,11 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
           bwJsonObj += '"value": ';
 
           //write out part of value before the first colon -- generally all of it.
-          bwJsonObj += '"' + colonSplit[1]
+          bwJsonObj += '"' + escapeDoubleQuotes(colonSplit[1]);
 
           //put back colon(s) and write out what's past the first colon
           for (k=2;k<colonSplit.length;k++) { 
-            bwJsonObj += ':' + colonSplit[k];
+            bwJsonObj += ':' + escapeDoubleQuotes(colonSplit[k]);
           }
           bwJsonObj += '"}';
       }
@@ -163,7 +167,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
         for (y=1;y<attributeInfo.length;y++) {
           bwJsonObj += '{"' + attributeInfo[y] + '": ';
           if (y<=attributeFieldValues.length) {
-            bwJsonObj += '"' + attributeFieldValues[y-1]  + '"}';
+            bwJsonObj += '"' + escapeDoubleQuotes(attributeFieldValues[y-1])  + '"}';
           } else {
             //avoid undefines
             bwJsonObj += '""}';
