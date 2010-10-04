@@ -118,6 +118,11 @@ var bwAddressBook = function() {
     $("#bwBooks").html(personalBooks);
     $("#bwSubscriptions").html(subscriptions);
     
+    $(".defaultUserBook").droppable({ 
+      accept: '#bwAddrBookOutputList td.name',  
+      drop:   function () { alert("We'll post it next!"); } 
+    }); 
+
   };
   
   this.displayList = function(bookIndex) {
@@ -204,11 +209,11 @@ var bwAddressBook = function() {
           url = curCard.URL[0].value; 
         }
         
-        listing += "<tr class=\"" + rowClass + "\">"
-        listing += "<td><img src=\"" + kindIcon + "\" width=\"16\" height=\"16\" alt=\"" + kind + "\"/>";
+        listing += '<tr class="' + rowClass + '">'
+        listing += '<td class="name" id="' + book.id + "-" + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>';
         listing += fn + "</td>";
         listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
-        listing += "<td><a href=\"mailto:" + email + "\">" + email + "</a></td>";
+        listing += '<td><a href="mailto:' + email + '\">' + email + '</a></td>';
         listing += "<td>" + title + "</td>";
         listing += "<td>" + org + "</td>";
         listing += "<td>" + url + "</td>";
@@ -220,6 +225,17 @@ var bwAddressBook = function() {
     // replace the output and show the page
     $("#bwAddrBookOutputList").html(listing);
     showPage("bw-list");
+    
+    // make the list items draggable
+    $("#bwAddrBookOutputList td.name").draggable({ 
+      opacity: 0.5,
+      // create a clone & append it to 'body' 
+      helper: function (e,ui) {
+         return $(this).clone().appendTo('body').css('zIndex',5).show();
+      } 
+    }) 
+
+    
     
   };
    

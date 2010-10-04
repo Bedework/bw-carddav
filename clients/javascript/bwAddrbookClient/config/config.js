@@ -34,6 +34,7 @@
  * the user carddav path and any other public paths we
  * want present for all users.
  * 
+ * id:            String - a simple identifier
  * carddavUrl:    String - root of the carddav server; may be a full
  *                         URL and may include first part of the path
  *                         information (e.g. the context, as we do) 
@@ -54,6 +55,7 @@
  */
 var bwBooks = [
    {
+       "id" : "bwbook001",
        "carddavUrl" : "/ucarddav",
        "path" : "/user/",
        "bookName" : "/addressbook/",
@@ -64,6 +66,7 @@ var bwBooks = [
        ] 
    },
    {
+       "id" : "bwbook002",
        "carddavUrl" : "/ucarddav",
        "path" : "/public",
        "bookName" : "/people/",
@@ -74,6 +77,7 @@ var bwBooks = [
        ] 
    },
    {
+       "id" : "bwbook003",
        "carddavUrl" : "/ucarddav",
        "path" : "/public",
        "bookName" : "/locations/",
