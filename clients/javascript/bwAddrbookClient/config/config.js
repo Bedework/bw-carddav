@@ -34,7 +34,7 @@
  * the user carddav path and any other public paths we
  * want present for all users.
  * 
- * id:            String - a simple identifier
+ * label:         String - the display title for the book
  * carddavUrl:    String - root of the carddav server; may be a full
  *                         URL and may include first part of the path
  *                         information (e.g. the context, as we do) 
@@ -47,15 +47,16 @@
  *                         personal          - another personal book
  *                         subscription      - a subscribed address book
  *                                             For the present this client assumes books 
- *                                             that are not personal are read-only.                         
- * label:         String - the display title for the book
+ *                                             that are not personal are read-only.      
+ * listDisp       Object - list of fields to display (or not) in the address book list
+ * detailDisp     Object - list of fields to display (or not) in a contact's detail view                                                               
  * vcards:        Array  - an empty array; this will be filled with
  *                         vcard objects when the client connects to 
  *                         the server on page load.
  */
 var bwBooks = [
    {
-       "id" : "bwbook001",
+       "label" : "personal",
        "carddavUrl" : "/ucarddav",
        "path" : "/user/",
        "bookName" : "/addressbook/",
@@ -74,13 +75,12 @@ var bwBooks = [
           "org" : true,
           "url" : true
        },
-       "label" : "personal",
        "vcards" : [
            
        ] 
    },
    {
-       "id" : "bwbook002",
+       "label" : "public people",
        "carddavUrl" : "/ucarddav",
        "path" : "/public",
        "bookName" : "/people/",
@@ -99,13 +99,12 @@ var bwBooks = [
          "org" : true,
          "url" : true
        },
-       "label" : "public people",
        "vcards" : [
              
        ] 
    },
    {
-       "id" : "bwbook003",
+       "label" : "public locations",
        "carddavUrl" : "/ucarddav",
        "path" : "/public",
        "bookName" : "/locations/",
@@ -126,7 +125,6 @@ var bwBooks = [
          "org" : true,
          "url" : true
        },
-       "label" : "public locations",
        "vcards" : [
              
        ] 

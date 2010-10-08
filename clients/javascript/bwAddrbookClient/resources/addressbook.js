@@ -34,6 +34,8 @@ var bwAddressBook = function() {
   this.userid = ""; // our default personal user, loaded on init
   this.defPersBookUrl = ""; // URL of our default personal book, built at init
   this.kindToAdd = "individual"; // the vcard KIND of the contact we wish to add
+  this.book; // the currently selected book
+  this.card; // the currently selected card
   
   this.init = function(bookTemplate,userid) {
     bwAddressBook.books = bookTemplate;
@@ -80,10 +82,6 @@ var bwAddressBook = function() {
       });
     }
   };
-  
-  this.setKindToAdd = function(kind) {
-    bwAddressBook.kindToAdd = kind; 
-  }
   
   this.buildMenus = function() {
     var personalBooks = "";
@@ -218,23 +216,23 @@ var bwAddressBook = function() {
           url = curCard.URL[0].value; 
         }
         
-        listing += '<tr class="' + rowClass + '">'
-        listing += '<td class="name" id="' + book.id + "-" + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>';
-        listing += fn + "</td>";
+        listing += '<tr id="bwBookRow-' + index + '-' + i + '" class="' + rowClass + '">'
+        listing += '<td id="bwBookName-' + index + '-' + i + '" class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>';
+        listing += fn + '</td>';
         if (book.listDisp.phone) {
-          listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
+          listing += '<td>' + tel + /*'<span class="typeNote">(kind)</span>' + */ '</td>';
         }
         if (book.listDisp.email) {
-          listing += '<td><a href="mailto:' + email + '\">' + email + '</a></td>';
+          listing += '<td><a href="mailto:' + email + '">' + email + '</a></td>';
         }
         if (book.listDisp.title) {
-          listing += "<td>" + title + "</td>";
+          listing += '<td>' + title + '</td>';
         }
         if (book.listDisp.org) {
-          listing += "<td>" + org + "</td>";
+          listing += '<td>' + org + '</td>';
         }
         if (book.listDisp.url) {
-          listing += "<td>" + url + "</td>";
+          listing += '<td><a href="' + url + '">' + url + '</a></td>';
         }
         listing += "</tr>"
       }
@@ -316,8 +314,48 @@ var bwAddressBook = function() {
     });
   };
   
-  this.display = function(listId) {
-    var index = listId;
+  this.deleteContact = function() {
+    // For now, we'll assume there is only one book from which we can delete cards.
+    // If we try to delete from another at the moment, we'll either have no access or get  
+    // a 404 for not having the uuid in the book
+    if(confirm('You wish to delete this contact?\n(This action cannot be undone.)')) {
+      // probably want to replace this confirm with a better dialog, but will certainly do for now.
+      var addrBookUrl = bwAddressBook.defPersBookUrl;
+      var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+      
+      $.ajax({
+        type: "delete",
+        url: addrBookUrl + curCard.UID[0].value + ".vcf",
+        dataType: "xml",
+        beforeSend: function(xhrobj) {
+          xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
+        },
+        success: function(responseData, status){
+          //alert(status + "\n" +  + responseData);     
+          // toss out the card from our local array and from our table
+          bwAddressBook.books[bwAddressBook.book].vcards.splice(bwAddressBook.card,1);
+          $("#bwBookRow-" + bwAddressBook.book + "-" + bwAddressBook.card).remove();
+          showPage("bw-list");
+        },
+        error: function(msg) {
+          // if the message is a 204 No Content, we've actually got the correct response from the server so...
+          // treat it like a success:
+          if (msg.status == "204") {
+            // toss out the card from our local array and from our table
+            bwAddressBook.books[bwAddressBook.book].vcards.splice(bwAddressBook.card,1);
+            $("#bwBookRow-" + bwAddressBook.book + "-" + bwAddressBook.card).remove();
+            showPage("bw-list");
+          } else {
+          // there was a problem
+            alert("Error: " + msg.status + " " + msg.statusText);
+          }
+        }
+      });
+    }
+  }
+  
+  this.display = function() {
+    var index = bwAddressBook.book;
     
     if (index == null) {
       // we have no index; use the personal default book
@@ -331,6 +369,63 @@ var bwAddressBook = function() {
     
     showList(index);
     showPage("bw-list");
+  }
+  
+  this.showDetails = function() {
+    var details = "";
+    var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    
+    // check for the existence of the properties
+    var fn = "";
+    if(curCard.FN != undefined) { 
+      fn = curCard.FN[0].value; 
+    }
+    var tel = "";
+    if(curCard.TEL != undefined) { 
+      tel = curCard.TEL[0].values[0].number; 
+    }
+    var email = "";
+    if(curCard.EMAIL != undefined) { 
+      email = curCard.EMAIL[0].value; 
+    }
+    var title = "";
+    if(curCard.TITLE != undefined) { 
+      title = curCard.TITLE[0].value; 
+    }
+    var org = "";
+    if(curCard.ORG != undefined) { 
+      org = curCard.ORG[0].values[0].organization_name; 
+    }
+    var url = "";
+    if(curCard.URL != undefined) { 
+      url = curCard.URL[0].value; 
+    }
+    
+    // build the details
+    details += '<h1>' + fn + '</h1>';
+    details += '<table id="bwDetailsTable">';
+    details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + title + '</td></tr>';
+    details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + org + '</td></tr>';
+    details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsPhone + '</td><td>' + tel + '</td></tr>';
+    details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><a href="mailto:' + email + '">' + email + '</a></td></tr>';
+    details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + url + '">' + url + '</a></td></tr>';
+    details += '</table>';
+    
+    $("#bwAddrBookOutputDetails").html(details);
+    showPage("bw-details");
+  }
+  
+  // Getters and Setters
+  this.setKindToAdd = function(val) {
+    bwAddressBook.kindToAdd = val; 
+  }
+  
+  this.setBook = function(val) {
+    bwAddressBook.book = val; 
+  }
+  
+  this.setCard = function(val) {
+    bwAddressBook.card = val; 
   }
   
 };
@@ -393,31 +488,31 @@ $(document).ready(function() {
    * EVENT HANDLERS:
    ****************************/
   
-  // send a REPORT query for all data
-  // SOON TO BE DEPRECATED - this is just a test function
-  var carddavUrl = "/ucarddav";
-  var userpath = "/user/";
-  var userBookName = "/addressbook/";
-  $("#report").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
-    var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
-    $.ajax({
-      type: "post",
-      url: addrBookUrl,
-      dataType: "xml",
-      processData: false,
-      data: content,
-      beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
-        xhrobj.setRequestHeader("Depth", "1");
-        xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
-      },
-      success: parsexml,
-      error: function(msg) {
-        // there was a problem
-        alert(msg.statusText);
-      }
+  // select a book to display
+  $(".bwBook").click(function() {
+    // extract the book array index from the id
+    bwAddrBook.setBook($(this).attr("id").substr($(this).attr("id").indexOf("-")+1));
+    
+    // remove highlighting from all books
+    $(".bwBook a").each(function(index){
+      $(this).removeClass("selected");
     });
+    // now highlight the one just selected
+    $(this).find("a:first-child").addClass("selected");
+    
+    bwAddrBook.display();
+  });
+
+  // display vcard details
+  $(".bwAddrBookTable tr").click(function() {
+    // get the part of the id that holds the indices
+    var indices = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
+    // extract the book array index from the id
+    bwAddrBook.setBook(indices.substr(0,indices.indexOf("-")));
+    // extract the item index from the id
+    bwAddrBook.setCard(indices.substr(indices.indexOf("-")+1));
+    
+    bwAddrBook.showDetails();
   });
   
   // show form for adding/editing a new contact
@@ -432,55 +527,26 @@ $(document).ready(function() {
     showPage("bw-modGroup");
   });
   
-  //show form for adding/editing a location
+  // show form for adding/editing a location
   $("#addLocation").click(function() {
     bwAddrBook.setKindToAdd("location"); // vcard 4 kind
     showPage("bw-modLocation");
   });
   
-  //show form for adding/editing a resource
+  // show form for adding/editing a resource (not yet available)
   $("#addResource").click(function() {
     bwAddrBook.setKindToAdd("thing"); // vcard 4 kind
     showPage("bw-modResource");
-  });
-
-  $(".bwBook").click(function() {
-    // extract the book array index from the id
-    var bookIndex = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
-    
-    // remove highlighting from all books
-    $(".bwBook a").each(function(index){
-      $(this).removeClass("selected");
-    });
-    // now highlight the one just selected
-    $(this).find("a:first-child").addClass("selected");
-    
-    bwAddrBook.display(bookIndex);
   });
   
   // submit a vcard to the server
   $("#submitContact").click(function() {
     bwAddrBook.addContact();
   });
-
-  // remove a vcard from the address book
-  $("#delete").click(function() {
-    var addrBookUrl = carddavUrl + userpath + userid + userBookName;
-    $.ajax({
-      type: "delete",
-      url: addrBookUrl + $("#DUID").val() + ".vcf",
-      dataType: "xml",
-      beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
-      },
-      success: function(responseData, status){
-        alert(status + "\n" +  + responseData);            
-      },
-      error: function(msg) {
-        // there was a problem
-        alert(msg.statusText);
-      }
-    });
+  
+  // delete a vcard from the address book
+  $("#deleteContact").click(function() {
+    bwAddrBook.deleteContact();
   });
   
   // contextual help

@@ -75,8 +75,6 @@
         <!-- Books will be built here if any exist -->
         <li>loading...</li>
       </ul>
-      
-      <button style="margin: 20em 0 0 2em;" onclick="showPage('bw-test');">show test pane</button>
     </div>
     <div id="content" class="ui-layout-center">
       <!-- Each page of the application is modeled below as a list item.
@@ -236,18 +234,15 @@
             <button id="submitContact" type="button">Add Contact</button>
           </div>
         </li>
+        <li id="bw-details" class="invisible content-block">
+          <button id="deleteContact" type="button">delete</button>
+          <div id="bwAddrBookOutputDetails"></div>
+        </li>
         <li id="bw-modGroup" class="invisible content-block">
           <h3>Add Group</h3>
         </li>
         <li id="bw-modLocation" class="invisible content-block">
           <h3>Add Location</h3>
-        </li>
-        <li id="bw-test" class="invisible content-block">
-          <h3>Delete Contact (by UID)</h3>
-          <div id="deleteForm">
-            UID: <input type="text" size="60" value="" id="DUID"/><br/>
-            <button id="delete" type="button">Delete Contact</button>
-          </div>
         </li>
       </ul>
     </div>

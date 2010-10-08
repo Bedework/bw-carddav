@@ -199,6 +199,23 @@ ul#add li:hover ul {
 	margin: 0 1em 0 0;
 	vertical-align: middle;
 }
+#bwDetailsTable {
+	margin: 1em 0 0 0;
+}
+#bwDetailsTable td.field {
+	text-align: right;
+	padding: 0 1em 0.5em 0; 
+}
+#bwDetailsTable tr.newGrouping td {
+	padding-top: 1em;
+}
+#bwDetailsTable a {
+	color: blue;
+	background-color: transparent;
+}
+#deleteContact {
+	float: right;
+}
 h1 {
   font-size: 1.2em;
 }

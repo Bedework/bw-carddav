@@ -31,6 +31,15 @@ var bwAbDispListOrg = "Organization";
 var bwAbDispListUrl = "Webpage";
 var bwAbDispListNone = "no contacts";
 
+// detail field names
+var bwAbDispDetailsName = "Name";
+var bwAbDispDetailsPhone = "Phone";
+var bwAbDispDetailsEmail = "Email";
+var bwAbDispDetailsTitle = "Title";
+var bwAbDispDetailsOrg = "Organization";
+var bwAbDispDetailsUrl = "Webpage";
+var bwAbDispDetailsDelete = "delete";
+
 // error and status messages
 var bwAbDispBookType = "Book type";
 var bwAbDispUnsupported = "unsupported";
