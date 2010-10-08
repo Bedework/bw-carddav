@@ -60,6 +60,20 @@ var bwBooks = [
        "path" : "/user/",
        "bookName" : "/addressbook/",
        "type" : "personal-default",
+       "listDisp" : {
+          "phone" : true,
+          "email" : true,
+          "title" : true,
+          "org" : true,
+          "url" : true
+       },
+       "detailDisp" : {
+          "phone" : true,
+          "email" : true,
+          "title" : true,
+          "org" : true,
+          "url" : true
+       },
        "label" : "personal",
        "vcards" : [
            
@@ -71,6 +85,20 @@ var bwBooks = [
        "path" : "/public",
        "bookName" : "/people/",
        "type" : "subscription",
+       "listDisp" : {
+         "phone" : true,
+         "email" : true,
+         "title" : true,
+         "org" : true,
+         "url" : true
+       },
+       "detailDisp" : {
+         "phone" : true,
+         "email" : true,
+         "title" : true,
+         "org" : true,
+         "url" : true
+       },
        "label" : "public people",
        "vcards" : [
              
@@ -82,6 +110,22 @@ var bwBooks = [
        "path" : "/public",
        "bookName" : "/locations/",
        "type" : "subscription",
+       "listDisp" : {
+         "name" : true,
+         "phone" : true,
+         "email" : false,
+         "title" : false,
+         "org" : false,
+         "url" : true
+       },
+       "detailDisp" : {
+         "name" : true,
+         "phone" : true,
+         "email" : true,
+         "title" : true,
+         "org" : true,
+         "url" : true
+       },
        "label" : "public locations",
        "vcards" : [
              

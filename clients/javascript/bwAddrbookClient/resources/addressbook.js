@@ -33,6 +33,7 @@ var bwAddressBook = function() {
   this.books = new Array(); // our address books, loaded on init
   this.userid = ""; // our default personal user, loaded on init
   this.defPersBookUrl = ""; // URL of our default personal book, built at init
+  this.kindToAdd = "individual"; // the vcard KIND of the contact we wish to add
   
   this.init = function(bookTemplate,userid) {
     bwAddressBook.books = bookTemplate;
@@ -79,6 +80,10 @@ var bwAddressBook = function() {
       });
     }
   };
+  
+  this.setKindToAdd = function(kind) {
+    bwAddressBook.kindToAdd = kind; 
+  }
   
   this.buildMenus = function() {
     var personalBooks = "";
@@ -133,17 +138,6 @@ var bwAddressBook = function() {
     var index = bookIndex;
     var listing = "";
     
-    /* no longer needed?
-    if (index == null) {
-      // we have no index; use the personal default book
-      for (var i=0; i < bwAddressBook.books.length; i++) {
-        if (bwAddressBook.books[i].type = "personal-default") {
-          index = i;
-          break;
-        }
-      }
-    }*/
-    
     // select the current book
     book = bwAddressBook.books[index];
     
@@ -153,12 +147,23 @@ var bwAddressBook = function() {
     // specified in config.js
     listing += '<table class="bwAddrBookTable invisible" id="bwAddrBookTable-'+ index +'">';
     listing += "<tr>";
-    listing += "<th>" + bwAbDispListName + "</th>";
-    listing += "<th>" + bwAbDispListPhone + "</th>";
-    listing += "<th>" + bwAbDispListEmail + "</th>";
-    listing += "<th>" + bwAbDispListTitle + "</th>";
-    listing += "<th>" + bwAbDispListOrg + "</th>";
-    listing += "<th>" + bwAbDispListUrl + "</th>";
+    listing += "<th>" + bwAbDispListName + "</th>"; // always show name
+    // test the other fields to see if the config allows us to display them
+    if (book.listDisp.phone) {
+      listing += "<th>" + bwAbDispListPhone + "</th>";
+    }
+    if (book.listDisp.email) {
+      listing += "<th>" + bwAbDispListEmail + "</th>";
+    }
+    if (book.listDisp.title) {
+      listing += "<th>" + bwAbDispListTitle + "</th>";
+    }
+    if (book.listDisp.org) {
+      listing += "<th>" + bwAbDispListOrg + "</th>";
+    }
+    if (book.listDisp.url) {
+      listing += "<th>" + bwAbDispListUrl + "</th>";
+    }
     listing += "</tr>";
     
     // if we have no cards, tell the user
@@ -175,8 +180,8 @@ var bwAddressBook = function() {
         // determine the kind of vcard - if not available, assume "individual"
         var kind = "individual";
         var kindIcon = "resources/icons/silk/user.png";
-        if (curCard.KIND != undefined && curCard.KIND.value != "") {
-          kind = curCard.KIND.value;
+        if (curCard.KIND != undefined && curCard.KIND[0].value != "") {
+          kind = curCard.KIND[0].value;
           switch(kind) {
             case "group" :  
               kindIcon = "resources/icons/silk/group.png";
@@ -216,11 +221,21 @@ var bwAddressBook = function() {
         listing += '<tr class="' + rowClass + '">'
         listing += '<td class="name" id="' + book.id + "-" + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>';
         listing += fn + "</td>";
-        listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
-        listing += '<td><a href="mailto:' + email + '\">' + email + '</a></td>';
-        listing += "<td>" + title + "</td>";
-        listing += "<td>" + org + "</td>";
-        listing += "<td>" + url + "</td>";
+        if (book.listDisp.phone) {
+          listing += "<td>" + tel + /*"<span class=\"typeNote\">(kind)</span>" + */ "</td>";
+        }
+        if (book.listDisp.email) {
+          listing += '<td><a href="mailto:' + email + '\">' + email + '</a></td>';
+        }
+        if (book.listDisp.title) {
+          listing += "<td>" + title + "</td>";
+        }
+        if (book.listDisp.org) {
+          listing += "<td>" + org + "</td>";
+        }
+        if (book.listDisp.url) {
+          listing += "<td>" + url + "</td>";
+        }
         listing += "</tr>"
       }
     }
@@ -241,7 +256,6 @@ var bwAddressBook = function() {
   };
    
   this.addContact = function() {
-    
     // For now, we'll assume there is only one book to which we can write.
     // In the future, we'll want to check to see if there is more than 
     // one personal book, and check which is selected.
@@ -264,6 +278,7 @@ var bwAddressBook = function() {
     vcData += "UID:" + newUUID + "\n";
     vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
     vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    vcData += "KIND:" + bwAddressBook.kindToAdd + "\n";
     vcData += "ORG:" + $("#ORG").val() + ";;\n";
     vcData += "TITLE:" + $("#TITLE").val() + "\n";
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
@@ -302,7 +317,19 @@ var bwAddressBook = function() {
   };
   
   this.display = function(listId) {
-    showList(listId);
+    var index = listId;
+    
+    if (index == null) {
+      // we have no index; use the personal default book
+      for (var i=0; i < bwAddressBook.books.length; i++) {
+        if (bwAddressBook.books[i].type = "personal-default") {
+          index = i;
+          break;
+        }
+      }
+    }
+    
+    showList(index);
     showPage("bw-list");
   }
   
@@ -395,17 +422,26 @@ $(document).ready(function() {
   
   // show form for adding/editing a new contact
   $("#addContact").click(function() {
+    bwAddrBook.setKindToAdd("individual"); // vcard 4 kind
     showPage("bw-modContact");
   });
   
   // show form for adding/editing a group
   $("#addGroup").click(function() {
+    bwAddrBook.setKindToAdd("group"); // vcard 4 kind
     showPage("bw-modGroup");
   });
   
-  //show form for adding/editing a group
+  //show form for adding/editing a location
   $("#addLocation").click(function() {
+    bwAddrBook.setKindToAdd("location"); // vcard 4 kind
     showPage("bw-modLocation");
+  });
+  
+  //show form for adding/editing a resource
+  $("#addResource").click(function() {
+    bwAddrBook.setKindToAdd("thing"); // vcard 4 kind
+    showPage("bw-modResource");
   });
 
   $(".bwBook").click(function() {
@@ -424,7 +460,7 @@ $(document).ready(function() {
   
   // submit a vcard to the server
   $("#submitContact").click(function() {
-    bwAddrBook.addContact(userid);
+    bwAddrBook.addContact();
   });
 
   // remove a vcard from the address book
