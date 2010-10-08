@@ -165,20 +165,20 @@ ul#add li:hover ul {
 	margin: 0;
 	padding: 0;
 }
-#bwAddrBookTable {
+.bwAddrBookTable {
   float: left;
   font-size: 0.9em;
   width: 100%;
   border-bottom: 1px solid #eee;
 }
-#bwAddrBookTable th {
+.bwAddrBookTable th {
   padding: 0.5em 1em;
   background-color: #eee;
   color: #999;
   border-right: 1px solid #ddd;
   white-space: nowrap;
 }
-#bwAddrBookTable td {
+.bwAddrBookTable td {
 	padding: 0.5em 1em;
   background-color: #f6f6f6;
   color: black;
@@ -186,16 +186,16 @@ ul#add li:hover ul {
   white-space: nowrap;
   width: 100px;
 }
-#bwAddrBookTable tr.odd td {
+.bwAddrBookTable tr.odd td {
 	background-color: white;
 	color: black;
 }
-#bwAddrBookTable tr.none td {
+.bwAddrBookTable tr.none td {
   background-color: white;
   color: black;
   border: none;
 }
-#bwAddrBookTable img {
+.bwAddrBookTable img {
 	margin: 0 1em 0 0;
 	vertical-align: middle;
 }

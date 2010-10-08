@@ -92,7 +92,7 @@ var bwAddressBook = function() {
       switch(book.type) {
         case "personal-default" :
           // this is the default book; mark it as such.  We will replace the title with the user's id
-          personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#" class="selected defaultUserBook">' + bwAddressBook.userid + '</a></li>';
+          personalBooks += '<li class="bwBook defaultUserBook" id="' + bookId + '"><a href="#" class="selected">' + bwAddressBook.userid + '</a></li>';
           break;
         case "personal" :
           personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
@@ -104,6 +104,9 @@ var bwAddressBook = function() {
         default :
           alert(book.label + ':\n' + bwAbDispBookType + ' "' + book.type + '" ' + bwAbDispUnsupported);
       }
+      
+      // create the listings
+      this.buildList(i);
     }
     
     // check for empty menus
@@ -125,11 +128,12 @@ var bwAddressBook = function() {
 
   };
   
-  this.displayList = function(bookIndex) {
+  this.buildList = function(bookIndex) {
     var book = new Array();
     var index = bookIndex;
     var listing = "";
     
+    /* no longer needed?
     if (index == null) {
       // we have no index; use the personal default book
       for (var i=0; i < bwAddressBook.books.length; i++) {
@@ -138,7 +142,7 @@ var bwAddressBook = function() {
           break;
         }
       }
-    }
+    }*/
     
     // select the current book
     book = bwAddressBook.books[index];
@@ -147,7 +151,7 @@ var bwAddressBook = function() {
     // innerHtml here for speed and simplicity.
     // Display strings are set in the language file 
     // specified in config.js
-    listing += "<table id=\"bwAddrBookTable\">";
+    listing += '<table class="bwAddrBookTable invisible" id="bwAddrBookTable-'+ index +'">';
     listing += "<tr>";
     listing += "<th>" + bwAbDispListName + "</th>";
     listing += "<th>" + bwAbDispListPhone + "</th>";
@@ -222,9 +226,8 @@ var bwAddressBook = function() {
     }
     listing += "</table>"
       
-    // replace the output and show the page
-    $("#bwAddrBookOutputList").html(listing);
-    showPage("bw-list");
+    // add the output to the page
+    $("#bwAddrBookOutputList").append(listing);
     
     // make the list items draggable
     $("#bwAddrBookOutputList td.name").draggable({ 
@@ -235,8 +238,6 @@ var bwAddressBook = function() {
       } 
     }) 
 
-    
-    
   };
    
   this.addContact = function() {
@@ -300,6 +301,11 @@ var bwAddressBook = function() {
     });
   };
   
+  this.display = function(listId) {
+    showList(listId);
+    showPage("bw-list");
+  }
+  
 };
 
 $(document).ready(function() {
@@ -353,7 +359,7 @@ $(document).ready(function() {
   bwAddrBook.buildMenus();
   
   // display the default listing
-  bwAddrBook.displayList();
+  bwAddrBook.display();
   
   
   /****************************
@@ -413,7 +419,7 @@ $(document).ready(function() {
     // now highlight the one just selected
     $(this).find("a:first-child").addClass("selected");
     
-    bwAddrBook.displayList(bookIndex);
+    bwAddrBook.display(bookIndex);
   });
   
   // submit a vcard to the server
@@ -463,6 +469,15 @@ function showPage(pageId) {
     $(this).addClass("invisible");
   });
   $("#"+pageId).removeClass("invisible");
+};
+
+//display the named list
+function showList(listId) {
+  // first make all pages invisible
+  $(".bwAddrBookTable").each(function(index){
+    $(this).addClass("invisible");
+  });
+  $("#bwAddrBookTable-"+listId).removeClass("invisible");
 };
 
 function changeClass(id, newClass) {
