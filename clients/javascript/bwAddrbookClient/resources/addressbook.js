@@ -77,7 +77,7 @@ var bwAddressBook = function() {
         },
         error: function(msg) {
           // there was a problem
-          alert(msg.statusText);
+          showError(msg.statusText);
         }
       });
     }
@@ -126,7 +126,10 @@ var bwAddressBook = function() {
     
     $(".defaultUserBook").droppable({ 
       accept: '#bwAddrBookOutputList td.name',  
-      drop:   function () { alert("We'll post it next!"); } 
+      drop:   function () { 
+        showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+        return false; 
+      } 
     }); 
 
   };
@@ -303,13 +306,14 @@ var bwAddressBook = function() {
         xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
-        alert(status + "\n" + responseData);
+        var serverMsg = "\n" + status + ": " + responseData;
+        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulAdd + serverMsg,true);
         clearFields("#addForm");
         window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
       },
       error: function(msg) {
         // there was a problem
-        alert(msg.statusText);
+        showError(msg.status + " " + msg.statusText);
       }
     });
   };
@@ -318,7 +322,7 @@ var bwAddressBook = function() {
     // For now, we'll assume there is only one book from which we can delete cards.
     // If we try to delete from another at the moment, we'll either have no access or get  
     // a 404 for not having the uuid in the book
-    if(confirm('You wish to delete this contact?\n(This action cannot be undone.)')) {
+    if(confirm(bwAbDispDeleteConfirm)) {
       // probably want to replace this confirm with a better dialog, but will certainly do for now.
       var addrBookUrl = bwAddressBook.defPersBookUrl;
       var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
@@ -348,7 +352,7 @@ var bwAddressBook = function() {
             showPage("bw-list");
           } else {
           // there was a problem
-            alert("Error: " + msg.status + " " + msg.statusText);
+            showError(msg.status + " " + msg.statusText);
           }
         }
       });
@@ -562,22 +566,14 @@ $(document).ready(function() {
   
   // letter filters 
   $("#filterLetters a").click(function() {
-    $dialogUnimplemented.dialog('open');
-    // prevent the default action, e.g., following a link
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
     return false;
   });
   
-  /****************************
-   * GLOBAL DIALOG BOXES:
-   ****************************/
- 
-  var $dialogUnimplemented = $('<div></div>')
-    .html(bwAbDispUnimplemented)
-    .dialog({
-    autoOpen: false,
-    title: bwAbDispUnimplementedTitle
+  $("#searchButton").click(function() {
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+    return false;
   });
-
   
 });
 
@@ -619,9 +615,47 @@ function clearFields(formId) {
   });
 }
 
-// display unimplemented message
-function bwUnimplemented() {
-  alert(bwAbDispUnimplemented);
+function showError(err) {
+  var $dialog = $('<div></div>')
+  .html(err)
+  .dialog({
+    autoOpen: false,
+    title: bwAbDispErrorTitle,
+    modal: true
+  });
+  $dialog.dialog('open');
+}
+
+function showMessage(title,msg,modality) {
+  var $dialog = $('<div></div>')
+  .html(msg)
+  .dialog({
+    autoOpen: false,
+    title: title,
+    modal: modality
+  });
+  $dialog.dialog('open');
+}
+
+function showConfirm(title,msg) {
+  var $dialog = $('<div></div>')
+  .html(msg)
+  .dialog({
+    resizable: false,
+    title: title,
+    modal: true,
+    buttons: {
+      "Delete" : function() { // internationalize? I need to pass in the buttons.
+        $( this ).dialog( "close" );
+        return true;
+      },
+      "Cancel" : function() {
+        $( this ).dialog( "close" );
+        return false;
+      }
+    }
+  });
+  $dialog.dialog('open');
 }
 
 /* UTC FORMATTERS */

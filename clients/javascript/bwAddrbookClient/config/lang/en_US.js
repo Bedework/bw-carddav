@@ -44,4 +44,14 @@ var bwAbDispDetailsDelete = "delete";
 var bwAbDispBookType = "Book type";
 var bwAbDispUnsupported = "unsupported";
 var bwAbDispUnimplementedTitle = "Unimplemented";
-var bwAbDispUnimplemented = "This feature unimplemented";
+var bwAbDispUnimplemented = "Feature is currently unimplemented.";
+var bwAbDispErrorTitle = "Error";
+
+// add/update messages
+var bwAbDispSuccessTitle = "Success";
+var bwAbDispSuccessfulAdd = "Your contact was successfully added.";
+
+// delete
+var bwAbDispDelete = "Delete";
+var bwAbDispDeleteConfirmTitle = "Delete Contact";
+var bwAbDispDeleteConfirm = "You wish to delete this contact?\n(This action cannot be undone.)";
