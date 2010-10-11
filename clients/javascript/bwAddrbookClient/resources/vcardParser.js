@@ -159,9 +159,9 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
         bwJsonObj += '"values": {';
         //one array goes from 1 to length-1 and the other from 0 to length-1. Hope it's clear.
         for (y=1;y<attributeInfo.length;y++) {
-          bwJsonObj += attributeInfo[y] + '": ';
+          bwJsonObj += '"' + attributeInfo[y] + '" : ';
           if (y<=attributeFieldValues.length) {
-            bwJsonObj += '"' + attributeFieldValues[y-1];
+            bwJsonObj += '"' + attributeFieldValues[y-1] + '"';
           } else {
             //avoid undefines
             bwJsonObj += '""';
@@ -172,7 +172,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
             bwJsonObj += ',';
           }
         }
-        bwJsonObj += '}';
+        bwJsonObj += '}}';
 
       }
       if (lastAttributeName == attribute) {

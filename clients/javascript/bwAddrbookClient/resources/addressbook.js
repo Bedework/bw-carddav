@@ -207,19 +207,19 @@ var bwAddressBook = function() {
         }
         var familyName ="";
         if(curCard.N != undefined) { 
-          if(curCard.N[0].values[0].family_name != undefined) { 
-            familyName = curCard.N[0].values[0].family_name; 
+          if(curCard.N[0].values.family_name != undefined) { 
+            familyName = curCard.N[0].values.family_name; 
           }
         }
         var givenNames ="";
         if(curCard.N != undefined) { 
-          if(curCard.N[0].values[1].given_names != undefined) { 
-            givenNames = curCard.N[0].values[1].given_names; 
+          if(curCard.N[0].values.given_names != undefined) { 
+            givenNames = curCard.N[0].values.given_names; 
           }
         }
         var tel ="";
         if(curCard.TEL != undefined) { 
-          tel = curCard.TEL[0].values[0].number; 
+          tel = curCard.TEL[0].values.number; 
         }
         var email ="";
         if(curCard.EMAIL != undefined) { 
@@ -231,7 +231,7 @@ var bwAddressBook = function() {
         }
         var org = "";
         if(curCard.ORG != undefined) { 
-          org = curCard.ORG[0].values[0].organization_name; 
+          org = curCard.ORG[0].values.organization_name; 
         }
         var url = "";
         if(curCard.URL != undefined) { 
@@ -421,7 +421,7 @@ var bwAddressBook = function() {
     }
     var tel = "";
     if(curCard.TEL != undefined) { 
-      tel = curCard.TEL[0].values[0].number; 
+      tel = curCard.TEL[0].values.number; 
     }
     var email = "";
     if(curCard.EMAIL != undefined) { 
@@ -433,7 +433,7 @@ var bwAddressBook = function() {
     }
     var org = "";
     if(curCard.ORG != undefined) { 
-      org = curCard.ORG[0].values[0].organization_name; 
+      org = curCard.ORG[0].values.organization_name; 
     }
     var url = "";
     if(curCard.URL != undefined) { 
