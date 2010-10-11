@@ -297,6 +297,7 @@ legend {
   float: left;
   width: 16px;
   height: 16px;
+  cursor: pointer;
   text-align: center;
   vertical-align: middle;
   margin: 0 0 0.5em 0.5em;

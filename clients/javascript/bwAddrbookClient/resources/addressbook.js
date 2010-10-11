@@ -570,7 +570,26 @@ $(document).ready(function() {
     return false;
   });
   
+  // search and filter box
   $("#searchButton").click(function() {
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+    return false;
+  });
+  
+  // add a set of address fields to the add contact form
+  $("#bwAppendAddr").click(function() {
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+    return false;
+  });
+  
+  // add a new email address field to the add contact form
+  $("#bwAppendEmail").click(function() {
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+    return false;
+  });
+  
+  // add a new phone field to the add contact form
+  $("#bwAppendPhone").click(function() {
     showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
     return false;
   });

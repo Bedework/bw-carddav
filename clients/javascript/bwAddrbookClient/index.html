@@ -114,24 +114,24 @@
         </li>
         <li id="bw-modContact" class="content-block invisible">
           <h3>Add Contact</h3>
-          <div id="addForm">
+          <form id="addForm" action="#add" method="post">
             <fieldset> 
               <legend>Name</legend>
               <div class="bwFormData">
                               
-                <div class="bwField">First Name:</div>
+                <label class="bwField" for="FIRSTNAME">First Name:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="FIRSTNAME"/></div>
                 
-                <div class="bwField">Last Name:</div>
+                <label class="bwField" for="LASTNAME">Last Name:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="LASTNAME"/></div>
                 
-                <div class="bwField">Title:</div>
+                <label class="bwField" for="TITLE">Title:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="TITLE"/></div>
                 
-                <div class="bwField">Organization:</div>
+                <label class="bwField" for="ORG">Organization:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="ORG"/></div>
                 
-                <div class="bwField">Nickname:</div>
+                <label class="bwField" for="NICKNAME">Nickname:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="NICKNAME"/></div>
                 
               </div>
@@ -140,7 +140,7 @@
               <legend>Contact information</legend>
               <div class="bwFormData">
                 
-                <div class="bwField">Email:</div>
+                <label class="bwField"  for="EMAIL">Email:</label>
                 <div class="bwValue">
                   <select id="EMAILTYPE-01">
                     <option value="work">work</option>
@@ -150,7 +150,7 @@
                 </div>
                 <div class="bwAppend" id="bwAppendEmail"></div>
                 
-                <div class="bwField">Phone:</div>
+                <label class="bwField" for="PHONE-01">Phone:</label>
                 <div class="bwValue">
                   <select id="PHONETYPE-01">
                     <option value="work">work</option>
@@ -173,7 +173,7 @@
               <legend>Address</legend>
               <div class="bwFormData">
                 <div class="bwAddrBlock">
-                  <div class="bwField">Type:</div>
+                  <label class="bwField"  for="ADDRTYPE-01">Type:</label>
                   <div class="bwValue">
                     <select id="ADDRTYPE-01">
                       <option value="work">work</option>
@@ -181,35 +181,36 @@
                     </select>
                   </div>
                    
-                  <div class="bwField">P.O. Box:</div>
+                  <label class="bwField"  for="POBOX-01">P.O. Box:</label>
                   <div class="bwValue"><input type="text" size="60" value="" id="POBOX-01"/></div>
-                  <div class="bwField">Apt/Suite:</div>
+                  <label class="bwField"  for="EXTADDR-01">Apt/Suite:</label>
                   <div class="bwValue"><input type="text" size="60" value="" id="EXTADDR-01"/></div>
-                  <div class="bwField">Street:</div>
+                  <label class="bwField"  for="STREET-01">Street:</label>
                   <div class="bwValue"><input type="text" size="60" value="" id="STREET-01"/></div>
                   
-                  <div class="bwField">City:</div>
+                  <label class="bwField"  for="CITY-01">City:</label>
                   <div class="bwValue"><input type="text" size="60" value="" id="CITY-01"/></div>
                                   
-                  <div class="bwField">State/Province:</div>
+                  <label class="bwField"  for="STATE-01">State/Province:</label>
                   <div class="bwValue">
                     <input type="text" size="20" value="" id="STATE-01"/>
-                    <span class="bwInternalField">Postal Code:</span>
+                    <label class="bwInternalField" for="POSTAL-01">Postal Code:</label>
                     <input type="text" size="20" value="" id="POSTAL-01"/>
                   </div>
                   
-                  <div class="bwField">Country:</div>
+                  <label class="bwField"  for="COUNTRY-01">Country:</label>
                   <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-01"/></div>
                   
                   <!-- GEO gets its type (work or home) from this address block;
                        GEO-01 corresponds with ADDRTYPE-01 -->
-                  <div class="bwField">GEO:</div>
-                  <div class="bwValue"><input type="text" size="60" value="" id="GEO-01"/></div>
+                  <label class="bwField"  for="GEO-01">GEO:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="GEO-01" disabled="disabled"/></div>
                   <div class="bwHelpLink">
                     ?
                     <div class="bwHelp">
                       Geographic coordinates<br/>
-                      Example: 47.251056,-68.594527
+                      Example: 47.251056,-68.594527<br/>
+                      (unimeplemented)
                     </div>
                   </div>
                   
@@ -222,18 +223,20 @@
               <legend>Details</legend>
               <div class="bwFormData">
                               
-                <div class="bwField">Webpage:</div>
+                <label class="bwField"  for="WEBPAGE">Webpage:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="WEBPAGE"/></div>
-                <div class="bwField">Photo URL:</div>
+                <label class="bwField"  for="PHOTOURL">Photo URL:</label>
                 <div class="bwValue"><input type="text" size="60" value="" id="PHOTOURL"/></div>
-                <div class="bwField">Note:</div>
+                <label class="bwField"  for="NOTE">Note:</label>
                 <div class="bwValue"><textarea cols="47" rows="4" id="NOTE"></textarea></div>
                 
                 
               </div>
             </fieldset>
-            <button id="submitContact" type="button">Add Contact</button>
-          </div>
+            <div class="submitBlock">
+              <button id="submitContact" type="button">Add Contact</button>
+            </div>
+          </form>
         </li>
         <li id="bw-details" class="invisible content-block">
           <button id="deleteContact" type="button">delete</button>
