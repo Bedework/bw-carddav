@@ -118,15 +118,13 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
       }
 
       //locate any parameters in the key and write out the parameter array
-      bwJsonObj += '"params": [' 
+      bwJsonObj += '"params": {' 
       for (var n=1;n<semiColonSplit.length;n++) {
-          bwJsonObj += '{';
           var equalsSplit = semiColonSplit[n].split('=');
 
           // THIS ISN'T COMPLETE -- NEED to split on comma, too.
           bwJsonObj += '"parameter-name": "' + equalsSplit[0] + '",'
           bwJsonObj += '"parameter-value": "' + equalsSplit[1] + '"'
-          bwJsonObj += '}';
 
           //add a comma between parameters (avoid adding at end)
           if (n != semiColonSplit.length - 1) {
@@ -134,7 +132,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
           }
       }
 
-      bwJsonObj += '],'
+      bwJsonObj += '},'
 
       if (attributeType == 1) {
 
@@ -158,15 +156,15 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
         //Will need to deal with the possibility of colons in the individual values.
 
         var attributeFieldValues = colonSplit[1].split(';');
-        bwJsonObj += '"values": [';
+        bwJsonObj += '"values": {';
         //one array goes from 1 to length-1 and the other from 0 to length-1. Hope it's clear.
         for (y=1;y<attributeInfo.length;y++) {
-          bwJsonObj += '{"' + attributeInfo[y] + '": ';
+          bwJsonObj += attributeInfo[y] + '": ';
           if (y<=attributeFieldValues.length) {
-            bwJsonObj += '"' + attributeFieldValues[y-1]  + '"}';
+            bwJsonObj += '"' + attributeFieldValues[y-1];
           } else {
             //avoid undefines
-            bwJsonObj += '""}';
+            bwJsonObj += '""';
           }
 
           //add a comma between fields (avoid adding at end)
@@ -174,7 +172,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
             bwJsonObj += ',';
           }
         }
-        bwJsonObj += ']}';
+        bwJsonObj += '}';
 
       }
       if (lastAttributeName == attribute) {
