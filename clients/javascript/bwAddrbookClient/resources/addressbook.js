@@ -147,9 +147,16 @@ var bwAddressBook = function() {
     // Display strings are set in the language file 
     // specified in config.js
     listing += '<table class="bwAddrBookTable invisible" id="bwAddrBookTable-'+ index +'">';
-    listing += "<tr>";
-    listing += "<th>" + bwAbDispListName + "</th>"; // always show name
-    // test the other fields to see if the config allows us to display them
+    // test fields to see if the config allows us to display them
+    if (book.listDisp.name) {
+      listing += "<th>" + bwAbDispListName + "</th>";
+    }
+    if (book.listDisp.familyName) {
+      listing += "<th>" + bwAbDispListFamilyName + "</th>";
+    }
+    if (book.listDisp.givenNames) {
+      listing += "<th>" + bwAbDispListGivenNames + "</th>";
+    }
     if (book.listDisp.phone) {
       listing += "<th>" + bwAbDispListPhone + "</th>";
     }
@@ -198,6 +205,18 @@ var bwAddressBook = function() {
         if(curCard.FN != undefined) { 
           fn = curCard.FN[0].value; 
         }
+        var familyName ="";
+        if(curCard.N != undefined) { 
+          if(curCard.N[0].values[0].family_name != undefined) { 
+            familyName = curCard.N[0].values[0].family_name; 
+          }
+        }
+        var givenNames ="";
+        if(curCard.N != undefined) { 
+          if(curCard.N[0].values[1].given_names != undefined) { 
+            givenNames = curCard.N[0].values[1].given_names; 
+          }
+        }
         var tel ="";
         if(curCard.TEL != undefined) { 
           tel = curCard.TEL[0].values[0].number; 
@@ -220,8 +239,15 @@ var bwAddressBook = function() {
         }
         
         listing += '<tr id="bwBookRow-' + index + '-' + i + '" class="' + rowClass + '">'
-        listing += '<td id="bwBookName-' + index + '-' + i + '" class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>';
-        listing += fn + '</td>';
+        if (book.listDisp.name) {
+          listing += '<td class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
+        }
+        if (book.listDisp.familyName) {
+          listing += '<td class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
+        }
+        if (book.listDisp.givenNames) {
+          listing += '<td class="name">' + givenNames + '</td>';
+        }
         if (book.listDisp.phone) {
           listing += '<td>' + tel + /*'<span class="typeNote">(kind)</span>' + */ '</td>';
         }
@@ -253,6 +279,14 @@ var bwAddressBook = function() {
          return $(this).clone().appendTo('body').css('zIndex',5).show();
       } 
     }) 
+    // make the list items draggable by icon too
+    $("#bwAddrBookOutputList td.kind").draggable({ 
+      opacity: 0.5,
+      // create a clone & append it to 'body' 
+      helper: function (e,ui) {
+         return $(this).clone().appendTo('body').css('zIndex',5).show();
+      } 
+    })
 
   };
    

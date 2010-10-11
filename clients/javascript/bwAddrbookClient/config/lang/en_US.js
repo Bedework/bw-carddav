@@ -24,6 +24,8 @@
 
 // list headings
 var bwAbDispListName = "Name";
+var bwAbDispListFamilyName = "Last name";
+var bwAbDispListGivenNames = "First name";
 var bwAbDispListPhone = "Phone";
 var bwAbDispListEmail = "Email";
 var bwAbDispListTitle = "Title";

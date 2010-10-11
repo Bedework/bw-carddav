@@ -62,6 +62,10 @@ var bwBooks = [
        "bookName" : "/addressbook/",
        "type" : "personal-default",
        "listDisp" : {
+          "name" : false,
+          "familyName" : true,
+          "givenNames" : true,
+          "phone" : true,
           "phone" : true,
           "email" : true,
           "title" : true,
@@ -69,6 +73,9 @@ var bwBooks = [
           "url" : true
        },
        "detailDisp" : {
+          "name" : false,
+          "familyName" : true,
+          "givenNames" : true,
           "phone" : true,
           "email" : true,
           "title" : true,
@@ -86,6 +93,9 @@ var bwBooks = [
        "bookName" : "/people/",
        "type" : "subscription",
        "listDisp" : {
+         "name" : false,
+         "familyName" : true,
+         "givenNames" : true,
          "phone" : true,
          "email" : true,
          "title" : true,
@@ -111,6 +121,8 @@ var bwBooks = [
        "type" : "subscription",
        "listDisp" : {
          "name" : true,
+         "familyName" : false,
+         "givenNames" : false,
          "phone" : true,
          "email" : false,
          "title" : false,
@@ -119,6 +131,8 @@ var bwBooks = [
        },
        "detailDisp" : {
          "name" : true,
+         "familyName" : false,
+         "givenNames" : false,
          "phone" : true,
          "email" : true,
          "title" : true,
