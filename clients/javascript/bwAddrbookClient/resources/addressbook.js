@@ -342,6 +342,7 @@ var bwAddressBook = function() {
           // treat it like a success:
           if (msg.status == "204") {
             // toss out the card from our local array and from our table
+            // need to recolor the table rows...
             bwAddressBook.books[bwAddressBook.book].vcards.splice(bwAddressBook.card,1);
             $("#bwBookRow-" + bwAddressBook.book + "-" + bwAddressBook.card).remove();
             showPage("bw-list");
@@ -559,6 +560,25 @@ $(document).ready(function() {
     }  
   );
   
+  // letter filters 
+  $("#filterLetters a").click(function() {
+    $dialogUnimplemented.dialog('open');
+    // prevent the default action, e.g., following a link
+    return false;
+  });
+  
+  /****************************
+   * GLOBAL DIALOG BOXES:
+   ****************************/
+ 
+  var $dialogUnimplemented = $('<div></div>')
+    .html(bwAbDispUnimplemented)
+    .dialog({
+    autoOpen: false,
+    title: bwAbDispUnimplementedTitle
+  });
+
+  
 });
 
 /****************************
@@ -589,6 +609,7 @@ function changeClass(id, newClass) {
   }
   identity.className=newClass;
 };
+
 function clearFields(formId) {
   $(formId + " input").each(function(index){
     $(this).val("");
@@ -596,6 +617,11 @@ function clearFields(formId) {
   $(formId + " textarea").each(function(index){
     $(this).val("");
   });
+}
+
+// display unimplemented message
+function bwUnimplemented() {
+  alert(bwAbDispUnimplemented);
 }
 
 /* UTC FORMATTERS */

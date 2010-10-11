@@ -43,3 +43,5 @@ var bwAbDispDetailsDelete = "delete";
 // error and status messages
 var bwAbDispBookType = "Book type";
 var bwAbDispUnsupported = "unsupported";
+var bwAbDispUnimplementedTitle = "Unimplemented";
+var bwAbDispUnimplemented = "This feature unimplemented";
