@@ -140,12 +140,17 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
 
           bwJsonObj += '"value": ';
 
-          //write out part of value before the first colon -- generally all of it.
-          bwJsonObj += '"' + colonSplit[1]
+          if (colonSplit.length = 1) {
+            //write out empty string
+	    bwJsonObj += '"';
+          } else {
+            //write out part of value before the first colon -- generally all of it.
+            bwJsonObj += '"' + colonSplit[1].replace(/\\,/g,",");
+          }
 
           //put back colon(s) and write out what's past the first colon
           for (k=2;k<colonSplit.length;k++) { 
-            bwJsonObj += ':' + colonSplit[k];
+            bwJsonObj += ':' + colonSplit[k].replace(/\\,/g,",");
           }
           bwJsonObj += '"}';
       }
