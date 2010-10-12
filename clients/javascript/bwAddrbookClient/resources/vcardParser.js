@@ -140,7 +140,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray) {
 
           bwJsonObj += '"value": ';
 
-          if (colonSplit.length = 1) {
+          if (colonSplit.length == 1) {
             //write out empty string
 	    bwJsonObj += '"';
           } else {
