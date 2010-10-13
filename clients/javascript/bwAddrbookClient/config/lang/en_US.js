@@ -48,6 +48,9 @@ var bwAbDispUnsupported = "unsupported";
 var bwAbDispUnimplementedTitle = "Unimplemented";
 var bwAbDispUnimplemented = "This feature is unimplemented.";
 var bwAbDispErrorTitle = "Error";
+var bwAbDispError404 = "<h3>You cannot access the current address book.</h3><p>It is likely that you are still authenticated as another user.  You must invalidate your HTTP authentication or close your browser and try again.</p>"; 
+var bwAbDispError500 = '<h3>Internal Server Error</h3><p>We\'re still in development. Please try <a href="javascript:window.location.reload();">reloading</a> your browser.</p>';
+var bwAbDispErrorAccessDenied = "Access Denied";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";

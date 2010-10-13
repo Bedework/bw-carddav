@@ -326,3 +326,10 @@ legend {
 .clear {
   clear: both;
 }
+/* dialog boxes */
+.ui-widget-content h3 {
+  margin-top: 0.5em;
+}
+.ui-widget-content a {
+  text-decoration: underline;
+}

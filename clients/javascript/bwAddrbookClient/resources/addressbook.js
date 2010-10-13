@@ -77,7 +77,15 @@ var bwAddressBook = function() {
         },
         error: function(msg) {
           // there was a problem
-          showError(msg.statusText);
+          var error = msg.statusText;
+          if (msg.status == "404") {
+            error = bwAbDispError404;
+            bwAddressBook.userid = bwAbDispErrorAccessDenied;
+          }
+          if (msg.status == "500") {
+            error = bwAbDispError500;
+          }
+          showError(error);
         }
       });
     }
