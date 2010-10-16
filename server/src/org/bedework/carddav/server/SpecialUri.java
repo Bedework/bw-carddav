@@ -218,7 +218,13 @@ public class SpecialUri {
 
       if (val != null) {
         hadTerm = true;
-        fltr.addPropFilter(new PropFilter(wsp, new TextMatch(val)));
+        fltr.addPropFilter(new PropFilter(wsp,
+                                          //new TextMatch(val)));
+                                          new TextMatch(true,
+                                                        TextMatch.matchTypeContains,
+                                                        false,
+                                                        val)));
+
       }
     }
 
