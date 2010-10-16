@@ -854,7 +854,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
     } else if (create) {
       /* Resource already exists */
 
-      throw new WebdavException(HttpServletResponse.SC_PRECONDITION_FAILED);
+      throw new WebdavException(HttpServletResponse.SC_PRECONDITION_FAILED,
+                                CarddavTags.noUidConflict);
     } else {
       if (!entityName.equals(oldCard.getName())) {
         throw new WebdavBadRequest("Mismatched names");

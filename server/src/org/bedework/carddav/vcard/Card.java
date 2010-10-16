@@ -72,7 +72,7 @@ public class Card {
 
   private String prevLastmod;
 
-  private static VCardOutputter cardOut = new VCardOutputter();
+  private static VCardOutputter cardOut = new VCardOutputter(false);
 
   /** Create Card with a new embedded VCard
    *
