@@ -283,7 +283,7 @@
     </copy>
 	</target>
 	
-  <target name="deploy" depends="deploy-init,build-all"
+  <target name="deploy" depends="deploy-init,build-all,deploy-addrbook"
   	      description="Deploy carddav">
     <ant antfile="deploy.xml" target="deployFiles" inheritRefs="true" />
   	<!--
