@@ -73,36 +73,6 @@
 
     <echo message="*** Options file: ${org.bedework.carddav.options}" />
 
-    <delete dir="${lib.dir}" />
-    <mkdir dir="${lib.dir}" />
-
-    <property name="org.bedework.getjar.property.prefix"
-              value="org.bedework.appjar" />
-
-    <getJar name="commons-codec" version="1.3" />
-    <getJar name="commons-httpclient" version="3.0" />
-    <getJar name="gdata-calendar" version="1.0" />
-    <getJar name="gdata-client" version="1.0" />
-    <getJar name="ejb3-persistence" version="3.4.0.GA" />
-    <getJar name="hibernate" version="3.3.1.ga" />
-    <getJar name="hibernate-annotations" version="3.4.0.GA" />
-    <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
-    <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
-    <getJar name="log4j" version="1.2.8" />
-    <getJar name="servletapi" version="2.4" />
-
-    <getJar name="rpiaccess" version="3.6" project="access"
-            projecthome="${project.home}/../bedework/projects/access" />
-
-    <getJar name="rpiutil" version="3.6" project="rpiutil"
-            projecthome="${project.home}/../bedework/projects/rpiutil" />
-  	
-    <getJar name="bw-davio" version="3.6" project="davutil" 
-            projecthome="${project.home}/../bedework/projects/davutil" />
-
-    <getJar name="bw-webdavserver" version="3.6" project="webdav"
-            projecthome="${project.home}/../bedework/projects/webdav" />
-
     <property name="org.bedework.carddav.server.base"
               location="${project.home}/server" />
 
@@ -136,6 +106,38 @@
 
     <property name="tools.jar"
               location="${dist.home}/${edu.rpi.cmt.carddav.tools.jar}-${project.version}.jar" />
+  </target>
+	
+  <target name="build-init" depends="init">
+    <delete dir="${lib.dir}" />
+    <mkdir dir="${lib.dir}" />
+
+    <property name="org.bedework.getjar.property.prefix"
+              value="org.bedework.appjar" />
+
+    <getJar name="commons-codec" version="1.3" />
+    <getJar name="commons-httpclient" version="3.0" />
+    <getJar name="gdata-calendar" version="1.0" />
+    <getJar name="gdata-client" version="1.0" />
+    <getJar name="ejb3-persistence" version="3.4.0.GA" />
+    <getJar name="hibernate" version="3.3.1.ga" />
+    <getJar name="hibernate-annotations" version="3.4.0.GA" />
+    <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
+    <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
+    <getJar name="log4j" version="1.2.8" />
+    <getJar name="servletapi" version="2.4" />
+
+    <getJar name="rpiaccess" version="3.6" project="access"
+            projecthome="${project.home}/../bedework/projects/access" />
+
+    <getJar name="rpiutil" version="3.6" project="rpiutil"
+            projecthome="${project.home}/../bedework/projects/rpiutil" />
+    
+    <getJar name="bw-davio" version="3.6" project="davutil" 
+            projecthome="${project.home}/../bedework/projects/davutil" />
+
+    <getJar name="bw-webdavserver" version="3.6" project="webdav"
+            projecthome="${project.home}/../bedework/projects/webdav" />
 
     <!-- ==================== Compilation Classpath ==================== -->
 
@@ -148,9 +150,8 @@
       </fileset>
     </path>
   </target>
-	
+    
 	<target name="deploy-init" depends="init">
-
     <!-- ========= Stuff in main bedework deployment build file =========   -->
     <!-- Where we put ear stuff -->
     <if>
@@ -256,23 +257,32 @@
   <target name="clean-build-all" depends="clean,build-all"
           description="Clean and compile carddav classes"/>
 
-  <target name="build" depends="init,build-source,cleanup"
+  <target name="build" depends="build-source,cleanup"
           description="Compile carddav classes"/>
 
   <!-- ===================== build.all Target ===============================
      This target builds jar files ready for the deploy target.
      =================================================================== -->
 
-  <target name="build-all" depends="init,build-source,cleanup"
+  <target name="build-all" depends="build-source,cleanup"
           description="Compile carddav classes"/>
 
   <target name="build-source" 
-  	      depends="bld.auth.server,bld.unauth.server,bld.dumpres,bld.tools" />
+  	      depends="build-init,bld.auth.server,bld.unauth.server,bld.dumpres,bld.tools" />
 
   <!-- ===================== deploy Target ===============================
      Deploy if an application server is defined.
      =================================================================== -->
 
+  <target name="deploy-addrbook" depends="init"
+          description="Deploy address book client">
+  	<delete dir="${org.bedework.appserver.dir}/${org.bedework.server.resource.root.dir}/bwAddrbookClient" />
+  	
+  	<copy todir="${org.bedework.appserver.dir}/${org.bedework.server.resource.root.dir}/bwAddrbookClient" >
+  		<fileset dir="clients/javascript/bwAddrbookClient"/>
+    </copy>
+	</target>
+	
   <target name="deploy" depends="deploy-init,build-all"
   	      description="Deploy carddav">
     <ant antfile="deploy.xml" target="deployFiles" inheritRefs="true" />
