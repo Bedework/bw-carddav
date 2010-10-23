@@ -18,9 +18,22 @@
 */
 
 
-/** Bedework Address Book configuration settings
+/** Bedework Address Book extended configuration settings
  *
  * @author Arlen Johnson       johnsa - rpi.edu
+ * 
+ * This config file demonstrates how to include subscriptions
+ * to other carddav accounts in the client.
+ * This example includes a subscription to two public 
+ * accounts that are part of Bedework 3.7.  Such subscriptions are 
+ * probably not practical in a production environment as they'd 
+ * likely be too large.
+ * 
+ * To use this config, 
+ * 1. change the reference to config.js to configExtended.js in the 
+ *    index.html file
+ * 2. uncomment the subscriptions menu div in index.html
+ * 
  */
 
 /* Define address books for inclusion in the client.
@@ -84,6 +97,63 @@ var bwBooks = [
        },
        "vcards" : [
            
+       ] 
+   },
+   {
+       "label" : "public people",
+       "carddavUrl" : "/ucarddav",
+       "path" : "/public",
+       "bookName" : "/people/",
+       "type" : "subscription",
+       "listDisp" : {
+         "name" : false,
+         "familyName" : true,
+         "givenNames" : true,
+         "phone" : true,
+         "email" : true,
+         "title" : true,
+         "org" : true,
+         "url" : true
+       },
+       "detailDisp" : {
+         "phone" : true,
+         "email" : true,
+         "title" : true,
+         "org" : true,
+         "url" : true
+       },
+       "vcards" : [
+             
+       ] 
+   },
+   {
+       "label" : "public locations",
+       "carddavUrl" : "/ucarddav",
+       "path" : "/public",
+       "bookName" : "/locations/",
+       "type" : "subscription",
+       "listDisp" : {
+         "name" : true,
+         "familyName" : false,
+         "givenNames" : false,
+         "phone" : true,
+         "email" : false,
+         "title" : false,
+         "org" : false,
+         "url" : true
+       },
+       "detailDisp" : {
+         "name" : true,
+         "familyName" : false,
+         "givenNames" : false,
+         "phone" : true,
+         "email" : true,
+         "title" : true,
+         "org" : true,
+         "url" : true
+       },
+       "vcards" : [
+             
        ] 
    }
    

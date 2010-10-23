@@ -499,7 +499,7 @@ $(document).ready(function() {
         qsParameters[d(e[1])] = d(e[2]);
       }
   })();
-  userid = qsParameters.user;
+  userid = stripHtml(qsParameters.user);
   
   
   // Create the three-panel layout
@@ -717,6 +717,10 @@ function showConfirm(title,msg) {
     }
   });
   $dialog.dialog('open');
+}
+
+function stripHtml(stringVal) {
+  return stringVal.replace(/<(.|\n)*?>/g, '');
 }
 
 /* UTC FORMATTERS */
