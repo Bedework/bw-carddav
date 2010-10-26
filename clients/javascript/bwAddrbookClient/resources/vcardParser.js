@@ -24,10 +24,12 @@
 
 function parsexml(xml,vcardsArray) {
   $(xml).find("response").each(function() {
+    var href = $(this).find("href").text();
     $(this).find("propstat").each(function() {
       $(this).find("prop").each(function() {
+        var etag = $(this).find("getetag").text();
         $(this).find("[nodeName=C:address-data]").each(function() {
-          parseVCardBlobIntoJson($(this).text(),vcardsArray);
+          parseVCardBlobIntoJson($(this).text(),vcardsArray,href,etag);
         });
       });
     });
@@ -87,9 +89,12 @@ function attributeSpecifics (attribute) {
 }
 
 
-function parseVCardBlobIntoJson(blob,vcardsArray) {
+function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   //each line ends in '\n'
   var bwJsonObj = "{";
+  bwJsonObj += '"href" : "' + href + '",';
+  //the etag comes quoted; need to check if this is always so across platforms
+  bwJsonObj += '"etag" : ' + etag + ','; 
   var lines =  blob.split('\n');
   var lastAttributeName = "";
   for (var i=0;i<lines.sort().length;i++) {

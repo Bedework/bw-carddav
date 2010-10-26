@@ -33,7 +33,8 @@ var bwAddressBook = function() {
   this.books = new Array(); // our address books, loaded on init
   this.userid = ""; // our default personal user, loaded on init
   this.defPersBookUrl = ""; // URL of our default personal book, built at init
-  this.kindToAdd = "individual"; // the vcard KIND of the contact we wish to add
+  this.kind = "individual"; // the vcard KIND of the contact we are adding or modifying
+  this.creating = true; // are we creating or editing an item?
   this.book; // the currently selected book
   this.card; // the currently selected card
   
@@ -321,7 +322,7 @@ var bwAddressBook = function() {
     vcData += "UID:" + newUUID + "\n";
     vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
     vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
-    vcData += "KIND:" + bwAddressBook.kindToAdd + "\n";
+    vcData += "KIND:" + bwAddressBook.kind + "\n";
     vcData += "ORG:" + $("#ORG").val() + ";;\n";
     vcData += "TITLE:" + $("#TITLE").val() + "\n";
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
@@ -345,6 +346,64 @@ var bwAddressBook = function() {
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
         xhrobj.setRequestHeader("If-None-Match", "*");
+        xhrobj.setRequestHeader("Content-Type", "text/vcard");
+      },
+      success: function(responseData, status){
+        var serverMsg = "\n" + status + ": " + responseData;
+        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulAdd + serverMsg,true);
+        clearFields("#addForm");
+        window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
+      },
+      error: function(msg) {
+        // there was a problem
+        showError(msg.status + " " + msg.statusText);
+      }
+    });
+  };
+  
+  this.updateContact = function() {
+    // For now, we'll assume there is only one book to which we can write.
+    var addrBookUrl = bwAddressBook.defPersBookUrl;
+    var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    
+    // build the revision date
+    var now = new Date();
+    var revDate = String(now.getUTCFullYear());
+        revDate += String(now.getUTCMonthFull());
+        revDate += String(now.getUTCDateFull()) + "T";
+        revDate += String(now.getUTCHoursFull());
+        revDate += String(now.getUTCMinutesFull());
+        revDate += String(now.getUTCSecondsFull()) + "Z"; 
+    
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    vcData += "UID:" + curCard.UID[0].value + "\n";
+    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
+    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    vcData += "KIND:" + bwAddressBook.kind + "\n";
+    vcData += "ORG:" + $("#ORG").val() + ";;\n";
+    vcData += "TITLE:" + $("#TITLE").val() + "\n";
+    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + revDate + "\n";
+    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL").val() + "\n";
+    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
+    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
+    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
+    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
+    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
+    vcData += "NOTE:" + $("#NOTE").val() + "\n";
+    vcData += "END:VCARD";
+    
+    $.ajax({
+      type: "put",
+      url: addrBookUrl + curCard.UID[0].value + ".vcf",
+      data: vcData,
+      dataType: "text",
+      processData: false,
+      beforeSend: function(xhrobj) {
+        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
+        xhrobj.setRequestHeader("If-Match", "*");
         xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
@@ -461,10 +520,10 @@ var bwAddressBook = function() {
     $("#bwAddrBookOutputDetails").html(details);
     showPage("bw-details");
   }
-  
+    
   // Getters and Setters
-  this.setKindToAdd = function(val) {
-    bwAddressBook.kindToAdd = val; 
+  this.setKind = function(val) {
+    bwAddressBook.kind = val; 
   }
   
   this.setBook = function(val) {
@@ -562,33 +621,61 @@ $(document).ready(function() {
     bwAddrBook.showDetails();
   });
   
-  // show form for adding/editing a new contact
+  // show form for adding a new contact
   $("#addContact").click(function() {
-    bwAddrBook.setKindToAdd("individual"); // vcard 4 kind
+    bwAddrBook.setKind("individual"); // vcard 4 kind
+    $("#bw-modContact h3").text(bwAbDispAddContact);
+    $("#submitContact").attr("class","add");
+    $("#submitContact").text(bwAbDispAddContact);
     showPage("bw-modContact");
   });
   
-  // show form for adding/editing a group
+  //show form for editing a contact
+  $("#editContact").click(function() {
+    bwAddrBook.setKind("individual"); // vcard 4 kind
+    $("#bw-modContact h3").text(bwAbDispUpdateContact);
+    $("#submitContact").attr("class","update");
+    $("#submitContact").text(bwAbDispUpdateContact);
+    showPage("bw-modContact");
+  });
+  
+  // show form for adding a group
   $("#addGroup").click(function() {
-    bwAddrBook.setKindToAdd("group"); // vcard 4 kind
+    bwAddrBook.setKind("group"); // vcard 4 kind
+    showPage("bw-modGroup");
+  });
+
+  // show form for editing a group
+  $("#editGroup").click(function() {
+    bwAddrBook.setKind("group"); // vcard 4 kind
     showPage("bw-modGroup");
   });
   
-  // show form for adding/editing a location
+  // show form for adding\ a location
   $("#addLocation").click(function() {
-    bwAddrBook.setKindToAdd("location"); // vcard 4 kind
+    bwAddrBook.setKind("location"); // vcard 4 kind
+    showPage("bw-modLocation");
+  });
+  
+  //show form for editing a location
+  $("#addLocation").click(function() {
+    bwAddrBook.setKind("location"); // vcard 4 kind
     showPage("bw-modLocation");
   });
   
   // show form for adding/editing a resource (not yet available)
   $("#addResource").click(function() {
-    bwAddrBook.setKindToAdd("thing"); // vcard 4 kind
+    bwAddrBook.setKind("thing"); // vcard 4 kind
     showPage("bw-modResource");
   });
   
   // submit a vcard to the server
-  $("#submitContact").click(function() {
+  $("#submitContact.add").click(function() {
     bwAddrBook.addContact();
+  });
+  
+  $("#submitContact.update").click(function() {
+    bwAddrBook.updateContact();
   });
   
   // delete a vcard from the address book

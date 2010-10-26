@@ -42,6 +42,11 @@ var bwAbDispDetailsOrg = "Organization";
 var bwAbDispDetailsUrl = "Webpage";
 var bwAbDispDetailsDelete = "delete";
 
+// form titles and submit buttons
+var bwAbDispAddContact = "Add Contact";
+var bwAbDispUpdateContact = "Update Contact";
+
+
 // error and status messages
 var bwAbDispBookType = "Book type";
 var bwAbDispUnsupported = "unsupported";

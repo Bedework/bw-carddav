@@ -87,7 +87,9 @@ var bwBooks = [
        ] 
    }
    
- ];
+];
+
+
 
 /*  
  * Load language file for javascript functions.  
