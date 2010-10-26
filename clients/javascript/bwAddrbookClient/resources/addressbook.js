@@ -584,9 +584,8 @@ $(document).ready(function() {
   bwAddrBook.display();
   
   // make our list tables sortable
-  $("#bwAddrBookOutputList table").tablesorter({sortList: [[0,0], [1,0]]});
-  $("#bwAddrBookOutputList table tr:odd").addClass("odd");
-  
+  $("#bwAddrBookOutputList table").tablesorter({sortList: [[0,0], [1,0]],widgets: ['zebra']});
+   
   
   /****************************
    * EVENT HANDLERS:
