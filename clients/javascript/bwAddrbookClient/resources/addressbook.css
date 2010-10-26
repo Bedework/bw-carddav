@@ -178,17 +178,34 @@ ul#add li:hover ul {
   border-right: 1px solid #ddd;
   white-space: nowrap;
 }
+.bwAddrBookTable thead tr .header {
+  background-image: url("jquery/tablesorter/bg.gif");
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+.bwAddrBookTable thead tr .headerSortUp {
+  background-image: url("jquery/tablesorter/asc.gif");
+}
+.bwAddrBookTable thead tr .headerSortDown {
+  background-image: url("jquery/tablesorter/desc.gif");
+}
+.bwAddrBookTable thead tr .headerSortDown, 
+.bwAddrBookTable thead tr .headerSortUp {
+  background-color: #dde;
+  color: #666;
+}
 .bwAddrBookTable td {
 	padding: 0.5em 1em;
-  background-color: #f6f6f6;
+  background-color: #fff;
   color: black;
   border-right: 1px solid #eee;
   white-space: nowrap;
   width: 100px;
   cursor: pointer;
 }
-.bwAddrBookTable tr.odd td {
-	background-color: white;
+.bwAddrBookTable tbody tr.odd td {
+	background-color: #f6f6f6;
 	color: black;
 }
 .bwAddrBookTable tr.none td {

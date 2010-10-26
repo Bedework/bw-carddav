@@ -156,6 +156,7 @@ var bwAddressBook = function() {
     // Display strings are set in the language file 
     // specified in config.js
     listing += '<table class="bwAddrBookTable invisible" id="bwAddrBookTable-'+ index +'">';
+    listing += '<thead><tr>';
     // test fields to see if the config allows us to display them
     if (book.listDisp.name) {
       listing += "<th>" + bwAbDispListName + "</th>";
@@ -182,7 +183,7 @@ var bwAddressBook = function() {
       listing += "<th>" + bwAbDispListUrl + "</th>";
     }
     listing += "</tr>";
-    
+    listing += "</thead><tbody>";
     // if we have no cards, tell the user
     if (book.vcards.length == 0) {
       listing += '<tr class="none"><td>' +  bwAbDispListNone + '</td><td></td><td></td><td></td><td></td><td></td></tr>'; 
@@ -190,10 +191,7 @@ var bwAddressBook = function() {
     // we have cards: build the list
       for (var i=0; i < book.vcards.length; i++) {
         var curCard = jQuery.parseJSON(book.vcards[i]);
-        var rowClass = "";
-        if (i%2 == 1) {
-          rowClass = "odd"; 
-        }
+        
         // determine the kind of vcard - if not available, assume "individual"
         var kind = "individual";
         var kindIcon = "resources/icons/silk/user.png";
@@ -247,7 +245,7 @@ var bwAddressBook = function() {
           url = curCard.URL[0].value; 
         }
         
-        listing += '<tr id="bwBookRow-' + index + '-' + i + '" class="' + rowClass + '">'
+        listing += '<tr id="bwBookRow-' + index + '-' + i + '">'
         if (book.listDisp.name) {
           listing += '<td class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
         }
@@ -275,7 +273,7 @@ var bwAddressBook = function() {
         listing += "</tr>"
       }
     }
-    listing += "</table>"
+    listing += "</tbody></table>"
       
     // add the output to the page
     $("#bwAddrBookOutputList").append(listing);
@@ -445,13 +443,8 @@ var bwAddressBook = function() {
           // response from the server so...treat it like a success:
           if (msg.status == "204") {
             // This is our success.
-            // Toss out the card from our local array and from our table
-            bwAddressBook.books[bwAddressBook.book].vcards.splice(bwAddressBook.card,1);
-            $("#bwBookRow-" + bwAddressBook.book + "-" + bwAddressBook.card).remove();
-            // reset the row colors
-            $("#bwAddrBookTable-" + bwAddressBook.book + " tr").removeClass("odd");
-            $("#bwAddrBookTable-" + bwAddressBook.book + " tr:odd").addClass("odd");
-            showPage("bw-list");
+            // To make this compatible with the table sorter, just round-trip the data
+            window.location.reload();
           } else {
           // there was a problem
             showError(msg.status + " " + msg.statusText);
@@ -590,6 +583,10 @@ $(document).ready(function() {
   // display the default listing
   bwAddrBook.display();
   
+  // make our list tables sortable
+  $("#bwAddrBookOutputList table").tablesorter({sortList: [[0,0], [1,0]]});
+  $("#bwAddrBookOutputList table tr:odd").addClass("odd");
+  
   
   /****************************
    * EVENT HANDLERS:
@@ -621,6 +618,7 @@ $(document).ready(function() {
     
     bwAddrBook.showDetails();
   });
+
   
   // show form for adding a new contact
   $("#addContact").click(function() {
