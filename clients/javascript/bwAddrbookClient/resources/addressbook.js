@@ -404,7 +404,7 @@ var bwAddressBook = function() {
       processData: false,
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
-        xhrobj.setRequestHeader("If-Match", curCard.etag);
+        xhrobj.setRequestHeader("If-Match", '"' + curCard.etag + '"'); // restore the etag dquotes
         xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
@@ -701,12 +701,12 @@ $(document).ready(function() {
   });
   
   // submit a vcard to the server
-  $("#submitContact.add").click(function() {
-    bwAddrBook.addContact();
-  });
-  
-  $("#submitContact.update").click(function() {
-    bwAddrBook.updateContact();
+  $("#submitContact").click(function() {
+    if ($("#submitContact").hasClass('update')) {
+      bwAddrBook.updateContact();
+    } else {
+      bwAddrBook.addContact();
+    }
   });
   
   // delete a vcard from the address book

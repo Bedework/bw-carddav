@@ -93,7 +93,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   //each line ends in '\n'
   var bwJsonObj = "{";
   bwJsonObj += '"href" : "' + href + '",';
-  //the etag comes quoted; need to check if this is always so across platforms
+  //the etag comes quoted; remember to put the quotes back when writing the headers
   bwJsonObj += '"etag" : ' + etag + ','; 
   var lines =  blob.split('\n');
   var lastAttributeName = "";
