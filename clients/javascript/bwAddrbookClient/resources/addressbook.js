@@ -432,26 +432,25 @@ var bwAddressBook = function() {
       
       $.ajax({
         type: "delete",
-        url: addrBookUrl + curCard.UID[0].value + ".vcf",
+        url: curCard.href,
         dataType: "xml",
         beforeSend: function(xhrobj) {
           xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
         },
         success: function(responseData, status){
-          //alert(status + "\n" +  + responseData);     
-          // toss out the card from our local array and from our table
-          bwAddressBook.books[bwAddressBook.book].vcards.splice(bwAddressBook.card,1);
-          $("#bwBookRow-" + bwAddressBook.book + "-" + bwAddressBook.card).remove();
-          showPage("bw-list");
+          // A SUCCESS IS A "204 No Content" which is trapped in the error block below
         },
         error: function(msg) {
-          // if the message is a 204 No Content, we've actually got the correct response from the server so...
-          // treat it like a success:
+          // if the message is a 204 No Content, we've actually got the correct 
+          // response from the server so...treat it like a success:
           if (msg.status == "204") {
-            // toss out the card from our local array and from our table
-            // need to recolor the table rows...
+            // This is our success.
+            // Toss out the card from our local array and from our table
             bwAddressBook.books[bwAddressBook.book].vcards.splice(bwAddressBook.card,1);
             $("#bwBookRow-" + bwAddressBook.book + "-" + bwAddressBook.card).remove();
+            // reset the row colors
+            $("#bwAddrBookTable-" + bwAddressBook.book + " tr").removeClass("odd");
+            $("#bwAddrBookTable-" + bwAddressBook.book + " tr:odd").addClass("odd");
             showPage("bw-list");
           } else {
           // there was a problem

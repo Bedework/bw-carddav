@@ -185,6 +185,7 @@ ul#add li:hover ul {
   border-right: 1px solid #eee;
   white-space: nowrap;
   width: 100px;
+  cursor: pointer;
 }
 .bwAddrBookTable tr.odd td {
 	background-color: white;
