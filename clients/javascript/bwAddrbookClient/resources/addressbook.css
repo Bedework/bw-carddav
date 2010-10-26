@@ -179,16 +179,16 @@ ul#add li:hover ul {
   white-space: nowrap;
 }
 .bwAddrBookTable thead tr .header {
-  background-image: url("jquery/tablesorter/bg.gif");
+  background-image: url("jquery/tablesorter/bg.png");
   background-repeat: no-repeat;
   background-position: center right;
   cursor: pointer;
 }
 .bwAddrBookTable thead tr .headerSortUp {
-  background-image: url("jquery/tablesorter/asc.gif");
+  background-image: url("jquery/tablesorter/asc.png");
 }
 .bwAddrBookTable thead tr .headerSortDown {
-  background-image: url("jquery/tablesorter/desc.gif");
+  background-image: url("jquery/tablesorter/desc.png");
 }
 .bwAddrBookTable thead tr .headerSortDown, 
 .bwAddrBookTable thead tr .headerSortUp {
