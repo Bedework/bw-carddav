@@ -227,9 +227,18 @@ ul#add li:hover ul {
 #bwDetailsTable tr.newGrouping td {
 	padding-top: 1em;
 }
-#bwDetailsTable a {
-	color: blue;
+#bwDetailsTable a,
+.bwAddrBookTable a {
+	color: #55f;
 	background-color: transparent;
+}
+#bwDetailsTable a:hover,
+.bwAddrBookTable a:hover {
+  color: #11f;
+  background-color: transparent;
+}
+#backToList {
+	margin-top: 3em;
 }
 .bwActionButtons {
 	float: right;
@@ -271,6 +280,14 @@ legend {
 	font-style: italic;
 	color: #99e;
 	background-color: white;
+}
+input:focus, 
+textarea:focus {
+	background-color: #ffe !important;
+	color: black !important;
+}
+button {
+	cursor: pointer;
 }
 .bwFormData {
 	margin: 1em;

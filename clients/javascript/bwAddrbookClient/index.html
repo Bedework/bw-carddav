@@ -117,7 +117,7 @@
         </li>
         <li id="bw-modContact" class="content-block invisible">
           <h3>Add Contact</h3>
-          <form id="addForm" action="#add" method="post">
+          <form id="contactForm" action="#add" method="post">
             <fieldset> 
               <legend>Name</legend>
               <div class="bwFormData">
@@ -233,26 +233,122 @@
                 <label class="bwField"  for="NOTE">Note:</label>
                 <div class="bwValue"><textarea cols="47" rows="4" id="NOTE"></textarea></div>
                 
-                
               </div>
             </fieldset>
             <div class="submitBlock">
               <button id="submitContact" class="add" type="button">Add Contact</button>
+              <button id="cancelContact" class="cancel" type="button">Cancel</button>
             </div>
           </form>
         </li>
         <li id="bw-details" class="invisible content-block">
           <div class="bwActionButtons">
-            <button id="editContact" type="button">edit</button>
-            <button id="deleteContact" type="button">delete</button>
+            <button id="editEntry" class="contact" type="button">edit</button>
+            <button id="deleteEntry" type="button">delete</button>
           </div>
           <div id="bwAddrBookOutputDetails"></div>
+          <button id="backToList" type="button">return to list</button>
         </li>
         <li id="bw-modGroup" class="invisible content-block">
           <h3>Add Group</h3>
         </li>
         <li id="bw-modLocation" class="invisible content-block">
           <h3>Add Location</h3>
+          <form id="locationForm" action="#add" method="post">
+            <fieldset> 
+              <legend>Name</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="LOCATION-NAME">Name:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-NAME"/></div>
+                
+                <label class="bwField" for="LOCATION-ORG">Organization:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-ORG"/></div>
+                
+                <label class="bwField" for="LOCATION-NICKNAME">Nickname:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-NICKNAME"/></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Address</legend>
+              <div class="bwFormData">
+                <div class="bwAddrBlock">
+                  <label class="bwField"  for="LOCATION-EXTADDR">Room/Suite:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-EXTADDR"/></div>
+                  <label class="bwField"  for="LOCATION-STREET">Street:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-STREET"/></div>
+                  
+                  <label class="bwField"  for="LOCATION-CITY">City:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-CITY"/></div>
+                                  
+                  <label class="bwField"  for="LOCATION-STATE">State/Province:</label>
+                  <div class="bwValue">
+                    <input type="text" size="20" value="" id="LOCATION-STATE"/>
+                    <label class="bwInternalField" for="LOCATION-POSTAL">Postal Code:</label>
+                    <input type="text" size="20" value="" id="LOCATION-POSTAL"/>
+                  </div>
+                  
+                  <label class="bwField"  for="LOCATION-COUNTRY">Country:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-COUNTRY"/></div>
+                  
+                  <label class="bwField"  for="LOCATION-GEO">GEO:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-GEO" disabled="disabled"/></div>
+                  <div class="bwHelpLink">
+                    ?
+                    <div class="bwHelp">
+                      Geographic coordinates<br/>
+                      Example: 47.251056,-68.594527<br/>
+                      (unimeplemented)
+                    </div>
+                  </div>
+                  
+                  <br class="clear"/>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Contact information</legend>
+              <div class="bwFormData">
+                
+                <label class="bwField"  for="LOCATION-EMAIL">Email:</label>
+                <div class="bwValue">
+                  <input type="text" size="60" value="" id="LOCATION-EMAIL"/>
+                </div>
+                
+                <label class="bwField" for="LOCATION-PHONE">Phone:</label>
+                <div class="bwValue">
+                  <select id="LOCATION-TELTYPE">
+                    <option value="voice">voice</option>
+                    <option value="cell">mobile</option>
+                    <option value="fax">fax</option>
+                    <option value="text">text</option>
+                    <option value="pager">pager</option>
+                  </select>
+                  <input type="text" size="30" value="" id="LOCATION-PHONE"/>
+                </div>
+                                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Details</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField"  for="LOCATION-WEBPAGE">Webpage:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-WEBPAGE"/></div>
+                <label class="bwField"  for="LOCATION-PHOTOURL">Photo URL:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-PHOTOURL" disabled="disabled"/></div>
+                <label class="bwField"  for="LOCATION-NOTE">Note:</label>
+                <div class="bwValue"><textarea cols="47" rows="4" id="LOCATION-NOTE"></textarea></div>
+                
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitLocation" class="add" type="button">Add Location</button>
+              <button id="cancelLocation" class="cancel" type="button">Cancel</button>
+            </div>
+          </form>
         </li>
       </ul>
     </div>

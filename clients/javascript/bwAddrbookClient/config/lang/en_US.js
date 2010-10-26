@@ -45,6 +45,8 @@ var bwAbDispDetailsDelete = "delete";
 // form titles and submit buttons
 var bwAbDispAddContact = "Add Contact";
 var bwAbDispUpdateContact = "Update Contact";
+var bwAbDispAddLocation = "Add Location";
+var bwAbDispUpdateLocation = "Update Location";
 
 // error and status messages
 var bwAbDispBookType = "Book type";
@@ -58,10 +60,10 @@ var bwAbDispErrorAccessDenied = "Access Denied";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";
-var bwAbDispSuccessfulAdd = "Contact was successfully added.";
-var bwAbDispSuccessfulUpdate = "Contact was successfully updated.";
+var bwAbDispSuccessfulAdd = "Entry was successfully added.";
+var bwAbDispSuccessfulUpdate = "Entry was successfully updated.";
 
 // delete
 var bwAbDispDelete = "Delete";
-var bwAbDispDeleteConfirmTitle = "Delete Contact";
-var bwAbDispDeleteConfirm = "You wish to delete this contact?\n(This action cannot be undone.)";
+var bwAbDispDeleteConfirmTitle = "Delete Entry";
+var bwAbDispDeleteConfirm = "You wish to delete this entry?\n(This action cannot be undone.)";
