@@ -46,7 +46,6 @@ var bwAbDispDetailsDelete = "delete";
 var bwAbDispAddContact = "Add Contact";
 var bwAbDispUpdateContact = "Update Contact";
 
-
 // error and status messages
 var bwAbDispBookType = "Book type";
 var bwAbDispUnsupported = "unsupported";
@@ -59,7 +58,8 @@ var bwAbDispErrorAccessDenied = "Access Denied";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";
-var bwAbDispSuccessfulAdd = "Your contact was successfully added.";
+var bwAbDispSuccessfulAdd = "Contact was successfully added.";
+var bwAbDispSuccessfulUpdate = "Contact was successfully updated.";
 
 // delete
 var bwAbDispDelete = "Delete";

@@ -328,7 +328,7 @@ var bwAddressBook = function() {
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + revDate + "\n";
-    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL").val() + "\n";
+    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
@@ -386,7 +386,7 @@ var bwAddressBook = function() {
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + revDate + "\n";
-    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL").val() + "\n";
+    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
@@ -397,20 +397,22 @@ var bwAddressBook = function() {
     
     $.ajax({
       type: "put",
-      url: addrBookUrl + curCard.UID[0].value + ".vcf",
+      //url: addrBookUrl + curCard.UID[0].value + ".vcf",
+      url: curCard.href,
       data: vcData,
       dataType: "text",
       processData: false,
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
-        xhrobj.setRequestHeader("If-Match", "*");
+        xhrobj.setRequestHeader("If-Match", curCard.etag);
         xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
         var serverMsg = "\n" + status + ": " + responseData;
-        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulAdd + serverMsg,true);
+        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulUpdate + serverMsg,true);
         clearFields("#addForm");
         window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
+        
       },
       error: function(msg) {
         // there was a problem
@@ -636,6 +638,35 @@ $(document).ready(function() {
     $("#bw-modContact h3").text(bwAbDispUpdateContact);
     $("#submitContact").attr("class","update");
     $("#submitContact").text(bwAbDispUpdateContact);
+    
+    // Setup the form fields.  This is dependent on 
+    // calling this function from the details view
+    // where we have a current card loaded.
+    var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    $("#FIRSTNAME").val(curCard.N[0].values.given_names);
+    $("#LASTNAME").val(curCard.N[0].values.family_name);
+    $("#ORG").val(curCard.ORG[0].values.organization_name);
+    $("#TITLE").val(curCard.TITLE[0].value);
+    $("#NICKNAME").val(curCard.NICKNAME[0].value);
+    $("#TITLE").val(curCard.TITLE[0].value);
+    $("#EMAILTYPE-01").val(curCard.EMAIL[0].params['parameter-value']); // this won't do
+    $("#EMAIL-01").val(curCard.EMAIL[0].value);
+    $("#PHONETYPE-01").val(curCard.TEL[0].params['parameter-value']); // this won't do
+    $("#PHONE-01").val(curCard.TEL[0].values.number);
+    $("#ADDRTYPE-01").val(curCard.ADR[0].params['parameter-value']); // also won't do
+    $("#POBOX-01").val(curCard.ADR[0].values.po_box);
+    $("#EXTADDR-01").val(curCard.ADR[0].values.extended_address);
+    $("#STREET-01").val(curCard.ADR[0].values.street_address);
+    $("#CITY-01").val(curCard.ADR[0].values.locality);
+    $("#STATE-01").val(curCard.ADR[0].values.state);
+    $("#POSTAL-01").val(curCard.ADR[0].values.postal_code);
+    $("#COUNTRY-01").val(curCard.ADR[0].values.country);
+    //$("#GEO-01").val(curCard.URL[0].value); -- set when we have geo working
+    $("#WEBPAGE").val(curCard.URL[0].value);
+    $("#PHOTOURL").val(curCard.PHOTO[0].value);
+    $("#NOTE").val(curCard.NOTE[0].value);
+    
+    // now show the page
     showPage("bw-modContact");
   });
   
