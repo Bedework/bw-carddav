@@ -36,6 +36,7 @@ var bwAddressBook = function() {
   this.creating = true; // are we creating or editing an item?
   this.book; // the currently selected book
   this.card; // the currently selected card
+  this.groupMenus = new Array(); // a place to store groups when building menus
   
   this.init = function(bookTemplate,userid) {
     bwAddressBook.books = bookTemplate;
@@ -103,7 +104,10 @@ var bwAddressBook = function() {
       switch(book.type) {
         case "personal-default" :
           // this is the default book; mark it as such.  We will replace the title with the user's id
-          personalBooks += '<li class="bwBook defaultUserBook" id="' + bookId + '"><a href="#" class="selected">' + bwAddressBook.userid + '</a></li>';
+          personalBooks += '<li class="bwBook defaultUserBook" id="' + bookId + '">';
+          personalBooks += '<a href="#" class="selected">' + bwAddressBook.userid + '</a>';
+          personalBooks += '<ul class="bwGroups"></ul>';
+          personalBooks += '</li>';
           break;
         case "personal" :
           personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
@@ -132,6 +136,11 @@ var bwAddressBook = function() {
     $("#bwBooks").html(personalBooks);
     $("#bwSubscriptions").html(subscriptions);
     
+    // got groups? put them with the correct books
+    for (var j=0; j<this.groupMenus.length; j++) {
+      $("#bwBook-" + j + " ul").html(this.groupMenus[j]);
+    }
+    
     $(".defaultUserBook").droppable({ 
       accept: '#bwAddrBookOutputList td.name',  
       drop:   function () { 
@@ -145,7 +154,8 @@ var bwAddressBook = function() {
   this.buildList = function(bookIndex) {
     var book = new Array();
     var index = bookIndex;
-    var listing = "";
+    var listing = ""; // for tabular listing
+    var groups = ""; // for listing of groups in the menu
     
     // select the current book
     book = bwAddressBook.books[index];
@@ -244,7 +254,7 @@ var bwAddressBook = function() {
           url = curCard.URL[0].value; 
         }
         
-        listing += '<tr id="bwBookRow-' + index + '-' + i + '">'
+        listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
         if (book.listDisp.name) {
           listing += '<td class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
         }
@@ -270,9 +280,18 @@ var bwAddressBook = function() {
           listing += '<td><a href="' + url + '">' + url + '</a></td>';
         }
         listing += "</tr>"
+          
+        // if we have a group, we need to add it to the groups list that belongs in the menu tree
+        if (kind == "group") {
+          groups += '<li id="bwBookGroup-' + index + '-' + i + '" class="group">' + fn + '</li>';
+        }
+          
       }
     }
     listing += "</tbody></table>"
+      
+    // write the groups to an array for later use building the menus
+    this.groupMenus[index] = groups;
       
     // add the output to the page
     $("#bwAddrBookOutputList").append(listing);
