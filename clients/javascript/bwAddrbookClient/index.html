@@ -115,6 +115,14 @@
           </ul>
           <div id="bwAddrBookOutputList"></div>
         </li>
+        <li id="bw-details" class="invisible content-block">
+          <div class="bwActionButtons">
+            <button id="editEntry" class="contact" type="button">edit</button>
+            <button id="deleteEntry" type="button">delete</button>
+          </div>
+          <div id="bwAddrBookOutputDetails"></div>
+          <button id="backToList" type="button">return to list</button>
+        </li>
         <li id="bw-modContact" class="content-block invisible">
           <h3>Add Contact</h3>
           <form id="contactForm" action="#add" method="post">
@@ -241,16 +249,39 @@
             </div>
           </form>
         </li>
-        <li id="bw-details" class="invisible content-block">
-          <div class="bwActionButtons">
-            <button id="editEntry" class="contact" type="button">edit</button>
-            <button id="deleteEntry" type="button">delete</button>
-          </div>
-          <div id="bwAddrBookOutputDetails"></div>
-          <button id="backToList" type="button">return to list</button>
-        </li>
         <li id="bw-modGroup" class="invisible content-block">
           <h3>Add Group</h3>
+          
+          <form id="groupForm" action="#add" method="post">
+            <fieldset> 
+              <legend>Name</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="GROUP-NAME">Name:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="GROUP-NAME"/></div>
+                
+                <label class="bwField" for="GROUP-ORG">Organization:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="GROUP-ORG"/></div>
+                
+                <label class="bwField" for="GROUP-NICKNAME">Nickname:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="GROUP-NICKNAME"/></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Details</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField"  for="GROUP-NOTE">Note:</label>
+                <div class="bwValue"><textarea cols="47" rows="4" id="GROUP-NOTE"></textarea></div>
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitGroup" class="add" type="button">Add Group</button>
+              <button id="cancelGroup" class="cancel" type="button">Cancel</button>
+            </div>
+          </form>
         </li>
         <li id="bw-modLocation" class="invisible content-block">
           <h3>Add Location</h3>

@@ -300,43 +300,12 @@ var bwAddressBook = function() {
   // CONTACT FORM HANDLING
   // *********************
   
-  this.addContact = function() {
+  // add an entry to the vcard server
+  this.addEntry = function(vcData,newUUID,formId) {
     // For now, we'll assume there is only one book to which we can write.
     // In the future, we'll want to check to see if there is more than 
     // one personal book, and check which is selected.
     var addrBookUrl = bwAddressBook.defPersBookUrl;
-    
-    // Create the UUID
-    var newUUID = "BwABC-" + Math.uuid();
-    
-    // build the revision date
-    var now = new Date();
-    var revDate = String(now.getUTCFullYear());
-        revDate += String(now.getUTCMonthFull());
-        revDate += String(now.getUTCDateFull()) + "T";
-        revDate += String(now.getUTCHoursFull());
-        revDate += String(now.getUTCMinutesFull());
-        revDate += String(now.getUTCSecondsFull()) + "Z"; 
-    
-    var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
-    vcData += "UID:" + newUUID + "\n";
-    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
-    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
-    vcData += "KIND:individual\n";
-    vcData += "ORG:" + $("#ORG").val() + ";;\n";
-    vcData += "TITLE:" + $("#TITLE").val() + "\n";
-    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
-    vcData += "CLASS:PRIVATE\n";
-    vcData += "REV:" + revDate + "\n";
-    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
-    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
-    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
-    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
-    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
-    vcData += "NOTE:" + $("#NOTE").val() + "\n";
-    vcData += "END:VCARD";
     
     $.ajax({
       type: "put",
@@ -352,7 +321,7 @@ var bwAddressBook = function() {
       success: function(responseData, status){
         var serverMsg = "\n" + status + ": " + responseData;
         showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulAdd + serverMsg,true);
-        clearFields("#contactForm");
+        clearFields(formId);
         window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
       },
       error: function(msg) {
@@ -360,21 +329,67 @@ var bwAddressBook = function() {
         showError(msg.status + " " + msg.statusText);
       }
     });
+  }
+  
+  // update an entry on the vcard server
+  this.updateEntry = function(vcData,cardHref,cardEtag,formId) {
+    $.ajax({
+      type: "put",
+      url: cardHref,
+      data: vcData,
+      dataType: "text",
+      processData: false,
+      beforeSend: function(xhrobj) {
+        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
+        xhrobj.setRequestHeader("If-Match", '"' + cardEtag + '"'); // restore the etag dquotes
+        xhrobj.setRequestHeader("Content-Type", "text/vcard");
+      },
+      success: function(responseData, status){
+        var serverMsg = "\n" + status + ": " + responseData;
+        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulUpdate + serverMsg,true);
+        clearFields(formId);
+        window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
+        
+      },
+      error: function(msg) {
+        // there was a problem
+        showError(msg.status + " " + msg.statusText);
+      }
+    });
+  }
+  
+  this.addContact = function() {
+    // create the UUID
+    var newUUID = "BwABC-" + Math.uuid();
+    
+    // build the vcard
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    vcData += "UID:" + newUUID + "\n";
+    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
+    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    vcData += "KIND:individual\n";
+    vcData += "ORG:" + $("#ORG").val() + ";;\n";
+    vcData += "TITLE:" + $("#TITLE").val() + "\n";
+    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + getRevDate() + "\n";
+    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
+    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
+    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
+    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
+    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
+    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
+    vcData += "NOTE:" + $("#NOTE").val() + "\n";
+    vcData += "END:VCARD";
+    
+    this.addEntry(vcData,newUUID,"#contactForm");
   };
   
   this.updateContact = function() {
     // For now, we'll assume there is only one book to which we can write.
     var addrBookUrl = bwAddressBook.defPersBookUrl;
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
-    
-    // build the revision date
-    var now = new Date();
-    var revDate = String(now.getUTCFullYear());
-        revDate += String(now.getUTCMonthFull());
-        revDate += String(now.getUTCDateFull()) + "T";
-        revDate += String(now.getUTCHoursFull());
-        revDate += String(now.getUTCMinutesFull());
-        revDate += String(now.getUTCSecondsFull()) + "Z"; 
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
@@ -386,7 +401,7 @@ var bwAddressBook = function() {
     vcData += "TITLE:" + $("#TITLE").val() + "\n";
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
-    vcData += "REV:" + revDate + "\n";
+    vcData += "REV:" + getRevDate() + "\n";
     vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
@@ -396,35 +411,58 @@ var bwAddressBook = function() {
     vcData += "NOTE:" + $("#NOTE").val() + "\n";
     vcData += "END:VCARD";
     
-    $.ajax({
-      type: "put",
-      //url: addrBookUrl + curCard.UID[0].value + ".vcf",
-      url: curCard.href,
-      data: vcData,
-      dataType: "text",
-      processData: false,
-      beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
-        xhrobj.setRequestHeader("If-Match", '"' + curCard.etag + '"'); // restore the etag dquotes
-        xhrobj.setRequestHeader("Content-Type", "text/vcard");
-      },
-      success: function(responseData, status){
-        var serverMsg = "\n" + status + ": " + responseData;
-        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulUpdate + serverMsg,true);
-        clearFields("#contactForm");
-        window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
-        
-      },
-      error: function(msg) {
-        // there was a problem
-        showError(msg.status + " " + msg.statusText);
-      }
-    });
+    this.updateEntry(vcData,curCard.href,curCard.etag,"#contactForm");
   };
 
   // *******************
   // GROUP FORM HANDLING
   // *******************
+
+  this.addGroup = function() {
+    // For now, we'll assume there is only one book to which we can write.
+    // In the future, we'll want to check to see if there is more than 
+    // one personal book, and check which is selected.
+    var addrBookUrl = bwAddressBook.defPersBookUrl;
+    
+    // Create the UUID
+    var newUUID = "BwABC-" + Math.uuid();
+    
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    vcData += "UID:" + newUUID + "\n";
+    vcData += "FN:" + $("#GROUP-NAME").val() + "\n";
+    vcData += "N:" + $("#GROUP-NAME").val() + ";;;;\n";
+    vcData += "KIND:group\n";
+    vcData += "ORG:" + $("#GROUP-ORG").val() + ";;\n";
+    vcData += "NICKNAME:" + $("#GROUP-NICKNAME").val() + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + getRevDate() + "\n";
+    vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
+    vcData += "END:VCARD";
+    
+    this.addEntry(vcData,newUUID,"#groupForm");
+  };
+  
+  this.updateGroup = function() {
+    // For now, we'll assume there is only one book to which we can write.
+    var addrBookUrl = bwAddressBook.defPersBookUrl;
+    var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    vcData += "UID:" + curCard.UID[0].value + "\n";
+    vcData += "FN:" + $("#GROUP-NAME").val() + "\n";
+    vcData += "N:" + $("#GROUP-NAME").val() + ";;;;\n";
+    vcData += "KIND:group\n";
+    vcData += "ORG:" + $("#GROUP-ORG").val() + ";;\n";
+    vcData += "NICKNAME:" + $("#GROUP-NICKNAME").val() + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + getRevDate() + "\n";
+    vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
+    vcData += "END:VCARD";
+    
+    this.updateEntry(vcData,curCard.href,curCard.etag,"#groupForm");
+  };  
   
   
   // **********************
@@ -439,16 +477,7 @@ var bwAddressBook = function() {
     
     // Create the UUID
     var newUUID = "BwABC-" + Math.uuid();
-    
-    // build the revision date
-    var now = new Date();
-    var revDate = String(now.getUTCFullYear());
-        revDate += String(now.getUTCMonthFull());
-        revDate += String(now.getUTCDateFull()) + "T";
-        revDate += String(now.getUTCHoursFull());
-        revDate += String(now.getUTCMinutesFull());
-        revDate += String(now.getUTCSecondsFull()) + "Z"; 
-    
+        
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
     vcData += "UID:" + newUUID + "\n";
@@ -458,7 +487,7 @@ var bwAddressBook = function() {
     vcData += "ORG:" + $("#LOCATION-ORG").val() + ";;\n";
     vcData += "NICKNAME:" + $("#LOCATION-NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
-    vcData += "REV:" + revDate + "\n";
+    vcData += "REV:" + getRevDate() + "\n";
     vcData += "EMAIL:" + $("#LOCATION-EMAIL").val() + "\n";
     vcData += "TEL:" + $("#LOCATION-PHONE").val() + "\n";  
     vcData += "ADR:" + $("#LOCATION-POBOX").val() + ";" + $("#LOCATION-EXTADDR").val() + ";" + $("#LOCATION-STREET").val() + ";" + $("#LOCATION-CITY").val() + ";" +  $("#LOCATION-STATE").val() + ";" + $("#LOCATION-POSTAL").val() + ";" + $("#LOCATION-COUNTRY").val() + "\n";
@@ -468,43 +497,13 @@ var bwAddressBook = function() {
     vcData += "NOTE:" + $("#LOCATION-NOTE").val() + "\n";
     vcData += "END:VCARD";
     
-    $.ajax({
-      type: "put",
-      url: addrBookUrl + newUUID + ".vcf",
-      data: vcData,
-      dataType: "text",
-      processData: false,
-      beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
-        xhrobj.setRequestHeader("If-None-Match", "*");
-        xhrobj.setRequestHeader("Content-Type", "text/vcard");
-      },
-      success: function(responseData, status){
-        var serverMsg = "\n" + status + ": " + responseData;
-        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulAdd + serverMsg,true);
-        clearFields("#contactForm");
-        window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
-      },
-      error: function(msg) {
-        // there was a problem
-        showError(msg.status + " " + msg.statusText);
-      }
-    });
+    this.addEntry(vcData,newUUID,"#locationForm");
   };
   
   this.updateLocation = function() {
     // For now, we'll assume there is only one book to which we can write.
     var addrBookUrl = bwAddressBook.defPersBookUrl;
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
-    
-    // build the revision date
-    var now = new Date();
-    var revDate = String(now.getUTCFullYear());
-        revDate += String(now.getUTCMonthFull());
-        revDate += String(now.getUTCDateFull()) + "T";
-        revDate += String(now.getUTCHoursFull());
-        revDate += String(now.getUTCMinutesFull());
-        revDate += String(now.getUTCSecondsFull()) + "Z"; 
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
@@ -515,7 +514,7 @@ var bwAddressBook = function() {
     vcData += "ORG:" + $("#LOCATION-ORG").val() + ";;\n";
     vcData += "NICKNAME:" + $("#LOCATION-NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
-    vcData += "REV:" + revDate + "\n";
+    vcData += "REV:" + getRevDate() + "\n";
     vcData += "EMAIL:" + $("#LOCATION-EMAIL").val() + "\n";
     vcData += "TEL:" + $("#LOCATION-PHONE").val() + "\n";  
     vcData += "ADR:" + $("#LOCATION-POBOX").val() + ";" + $("#LOCATION-EXTADDR").val() + ";" + $("#LOCATION-STREET").val() + ";" + $("#LOCATION-CITY").val() + ";" +  $("#LOCATION-STATE").val() + ";" + $("#LOCATION-POSTAL").val() + ";" + $("#LOCATION-COUNTRY").val() + "\n";
@@ -525,29 +524,7 @@ var bwAddressBook = function() {
     vcData += "NOTE:" + $("#LOCATION-NOTE").val() + "\n";
     vcData += "END:VCARD";
     
-    $.ajax({
-      type: "put",
-      url: curCard.href,
-      data: vcData,
-      dataType: "text",
-      processData: false,
-      beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
-        xhrobj.setRequestHeader("If-Match", '"' + curCard.etag + '"'); // restore the etag dquotes
-        xhrobj.setRequestHeader("Content-Type", "text/vcard");
-      },
-      success: function(responseData, status){
-        var serverMsg = "\n" + status + ": " + responseData;
-        showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulUpdate + serverMsg,true);
-        clearFields("#contactForm");
-        window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
-        
-      },
-      error: function(msg) {
-        // there was a problem
-        showError(msg.status + " " + msg.statusText);
-      }
-    });
+    this.updateEntry(vcData,curCard.href,curCard.etag,"#locationForm");
   };  
   
   
@@ -555,8 +532,8 @@ var bwAddressBook = function() {
   // DELETE AN ITEM
   // *********************
   
-  // Note: deleteContact works for contacts, locations, groups, and resources
-  this.deleteContact = function() {
+  // Note: deleteEntry works for contacts, locations, groups, and resources
+  this.deleteEntry = function() {
     // For now, we'll assume there is only one book from which we can delete cards.
     // If we try to delete from another at the moment, we'll either have no access or get  
     // a 404 for not having the uuid in the book
@@ -680,6 +657,7 @@ var bwAddressBook = function() {
   
 };
 
+// Now build it
 $(document).ready(function() {
 
   var bwAddrBook = new bwAddressBook();
@@ -772,10 +750,22 @@ $(document).ready(function() {
     bwAddrBook.showDetails();
   });
   
+  // button to return to list from detail view
   $("#backToList").click(function() {
     showPage("bw-list");
   });
 
+  // contextual help
+  $(".bwHelpLink").hover(
+    function(){
+      $(this).find(".bwHelp").css("display","block");
+    }, 
+    function(){
+      $(this).find(".bwHelp").css("display","none");
+    }  
+  );
+
+  
   // *****************
   //  FORM HANDLING
   // *****************
@@ -795,7 +785,13 @@ $(document).ready(function() {
   
   // show form for adding a group
   $("#addGroup").click(function() {
+    clearFields("#groupForm");
+    $("#bw-modGroup h3").text(bwAbDispAddGroup);
+    $("#submitGroup").attr("class","add");
+    $("#groupForm").attr("action","#add");
+    $("#submitGroup").text(bwAbDispAddGroup);
     showPage("bw-modGroup");
+    $("#GROUP-NAME").focus();
   });
   
   // show form for adding a location
@@ -840,11 +836,18 @@ $(document).ready(function() {
         $("#submitLocation").attr("class","update");
         $("#locationForm").attr("action","#update");
         $("#submitLocation").text(bwAbDispUpdateLocation);
-        
+        // now show the page
         showPage("bw-modLocation");
         $("#LOCATION-NAME").focus();
         break;
       case "group":
+        $("#bw-modGroup h3").text(bwAbDispUpdateGroup);
+        $("#submitGroup").attr("class","update");
+        $("#groupForm").attr("action","#update");
+        $("#submitGroup").text(bwAbDispUpdateGroup);
+        // now show the page
+        showPage("bw-modGroup");
+        $("#GROUP-NAME").focus();
         break;
       case "thing":
         break;
@@ -853,7 +856,6 @@ $(document).ready(function() {
         $("#submitContact").attr("class","update");
         $("#contactForm").attr("action","#update");
         $("#submitContact").text(bwAbDispUpdateContact);
-                
         // now show the page
         showPage("bw-modContact");
         $("#FIRSTNAME").focus();
@@ -876,7 +878,21 @@ $(document).ready(function() {
     clearFields("#contactForm");
     showPage("bw-list");
   });
-
+  
+  //submit a group to the server
+  $("#submitGroup").click(function() {
+    if ($("#submitGroup").hasClass('update')) {
+      bwAddrBook.updateGroup();
+    } else {
+      bwAddrBook.addGroup();
+    }
+  });
+  
+  $("#cancelGroup").click(function() {
+    clearFields("#groupForm");
+    showPage("bw-list");
+  });
+  
   //submit a location to the server
   $("#submitLocation").click(function() {
     if ($("#submitLocation").hasClass('update')) {
@@ -891,22 +907,14 @@ $(document).ready(function() {
     showPage("bw-list");
   });
   
+  
   // DELETING
   
-  // delete a vcard from the address book
-  $("#deleteContact").click(function() {
-    bwAddrBook.deleteContact();
+  // delete a vcard (individual, group, location, or thing) from the address book
+  $("#deleteEntry").click(function() {
+    bwAddrBook.deleteEntry();
   });
   
-  // contextual help
-  $(".bwHelpLink").hover(
-    function(){
-      $(this).find(".bwHelp").css("display","block");
-    }, 
-    function(){
-      $(this).find(".bwHelp").css("display","none");
-    }  
-  );
   
   // SEARCHING AND FILTERING
   
@@ -921,6 +929,7 @@ $(document).ready(function() {
     showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
     return false;
   });
+  
   
   // FORM APPENDERS
   
@@ -970,6 +979,11 @@ function setupFormFields(curCard,kind) {
       if (curCard.PHOTO != undefined) $("#LOCATION-PHOTOURL").val(curCard.PHOTO[0].value);
       if (curCard.NOTE != undefined) $("#LOCATION-NOTE").val(curCard.NOTE[0].value);
       break;
+    case "group" :
+      if (curCard.FN != undefined) $("#GROUP-NAME").val(curCard.FN[0].value);
+      if (curCard.ORG != undefined) $("#GROUP-ORG").val(curCard.ORG[0].values.organization_name);
+      if (curCard.NICKNAME != undefined) $("#GROUP-NICKNAME").val(curCard.NICKNAME[0].value);
+      break;
     default: // this is the "individual" KIND
       if (curCard.N != undefined) {
         $("#FIRSTNAME").val(curCard.N[0].values.given_names);
@@ -1002,6 +1016,19 @@ function setupFormFields(curCard,kind) {
       if (curCard.PHOTO != undefined) $("#PHOTOURL").val(curCard.PHOTO[0].value);
       if (curCard.NOTE != undefined) $("#NOTE").val(curCard.NOTE[0].value);
   }
+}
+
+function getRevDate() {
+  //build the revision date
+  var now = new Date();
+  var revDate = String(now.getUTCFullYear());
+  revDate += String(now.getUTCMonthFull());
+  revDate += String(now.getUTCDateFull()) + "T";
+  revDate += String(now.getUTCHoursFull());
+  revDate += String(now.getUTCMinutesFull());
+  revDate += String(now.getUTCSecondsFull()) + "Z";
+   
+  return revDate;
 }
 
 /****************************

@@ -47,6 +47,8 @@ var bwAbDispAddContact = "Add Contact";
 var bwAbDispUpdateContact = "Update Contact";
 var bwAbDispAddLocation = "Add Location";
 var bwAbDispUpdateLocation = "Update Location";
+var bwAbDispAddGroup = "Add Group";
+var bwAbDispUpdateGroup = "Update Group";
 
 // error and status messages
 var bwAbDispBookType = "Book type";
