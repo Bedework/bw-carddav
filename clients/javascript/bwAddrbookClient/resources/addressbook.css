@@ -51,30 +51,21 @@ ul#add {
   position: relative;
   white-space: nowrap;
 }
-ul.books {
-	margin-bottom: 1em;
-}
-ul.books li {
-  list-style-image: url("icons/silk/book.png");
-}
-ul.subscriptions li {
-  list-style-image: url("icons/silk/book_link.png");
-}
 li.empty {
 	list-style: none !important;
 }
-ul.books li.group,
-ul.subscriptions li.group,
-ul.groups li,
 li.group {
   list-style-image: url("icons/silk/group.png");
 }
-ul.contacts li,
 li.contact {
   list-style-image: url("icons/silk/user.png");
 }
 li.location {
   list-style-image: url("icons/silk/building.png");
+}
+.droppableHighlight {
+	background-color: #eef !important;
+	color: black;
 }
 ul#add li {
   background-color: #eef;
@@ -112,7 +103,8 @@ ul#add li:hover ul {
   list-style: disc outside none;
 }
 #booksAndGroups li {
-  margin: 0 0 0.25em 2em;
+  margin: 0 0 0.25em 0.5em;
+  list-style: none;
 }
 #booksAndGroups h3 {
   margin: 0 0 0.5em 0;
@@ -128,7 +120,28 @@ ul#add li:hover ul {
 	margin: 0.5em 0 2em 0;
 }
 #booksAndGroups ul ul li {
-  margin-bottom: 0.25em;
+  margin: 0 0 0.5em 1em;
+}
+#booksAndGroups ul.books {
+  margin-bottom: 1em;
+}
+#booksAndGroups a.bwBook {
+  background: white url("icons/silk/book.png") left no-repeat;
+  color: #333;
+  display: block;
+  padding-left: 20px;
+}
+#booksAndGroups a.bwSubscription {
+  background: white url("icons/silk/book_link.png") left no-repeat;
+  color: #333;
+  display: block;
+  padding-left: 20px;
+}
+#booksAndGroups a.bwGroup {
+  background: white url("icons/silk/group.png") left no-repeat;
+  color: #333;
+  display: block;
+  padding-left: 22px;
 }
 #booksAndGroups a.selected {
 	background-color: #ff9;

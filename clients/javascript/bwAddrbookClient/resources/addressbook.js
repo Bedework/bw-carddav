@@ -36,6 +36,7 @@ var bwAddressBook = function() {
   this.creating = true; // are we creating or editing an item?
   this.book; // the currently selected book
   this.card; // the currently selected card
+  this.selectedMenuId = $.cookie("selectedMenuId"); // the currently selected menu item; might be null
   this.groupMenus = new Array(); // a place to store groups when building menus
   
   this.init = function(bookTemplate,userid) {
@@ -101,20 +102,21 @@ var bwAddressBook = function() {
     for (var i=0; i < bwAddressBook.books.length; i++) {
       var book = bwAddressBook.books[i];
       var bookId = "bwBook-" + i;
+      var bookLinkId = "bwBookLink-" + i;
       switch(book.type) {
         case "personal-default" :
           // this is the default book; mark it as such.  We will replace the title with the user's id
-          personalBooks += '<li class="bwBook defaultUserBook" id="' + bookId + '">';
-          personalBooks += '<a href="#" class="selected">' + bwAddressBook.userid + '</a>';
+          personalBooks += '<li id="' + bookId + '">';
+          personalBooks += '<a href="#" class="bwBook bwBookLink defaultUserBook selected" id="' + bookLinkId + '">' + bwAddressBook.userid + '</a>';
           personalBooks += '<ul class="bwGroups"></ul>';
           personalBooks += '</li>';
           break;
         case "personal" :
-          personalBooks += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
+          personalBooks += '<li id="' + bookId + '"><a href="#" class="bwBook bwBookLink" id="' + bookLinkId + '">' + book.label + '</a></li>';
           break;
         case "subscription" :
           // this is a subscription
-          subscriptions += '<li class="bwBook" id="' + bookId + '"><a href="#">' + book.label + '</a></li>';
+          subscriptions += '<li id="' + bookId + '"><a href="#" class="bwSubscription bwBookLink" id="' + bookLinkId + '">' + book.label + '</a></li>';
           break;
         default :
           alert(book.label + ':\n' + bwAbDispBookType + ' "' + book.type + '" ' + bwAbDispUnsupported);
@@ -136,25 +138,18 @@ var bwAddressBook = function() {
     $("#bwBooks").html(personalBooks);
     $("#bwSubscriptions").html(subscriptions);
     
-    // got groups? put them with the correct books
+    // Got groups? put them with the correct books.
+    // We've gathered the group menu items in an array when we built the listing (below).
     for (var j=0; j<this.groupMenus.length; j++) {
       $("#bwBook-" + j + " ul").html(this.groupMenus[j]);
     }
-    
-    $(".defaultUserBook").droppable({ 
-      accept: '#bwAddrBookOutputList td.name',  
-      drop:   function () { 
-        showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-        return false; 
-      } 
-    }); 
 
   };
   
   this.buildList = function(bookIndex) {
     var book = new Array();
     var index = bookIndex;
-    var listing = ""; // for tabular listing
+    var listing = ""; // for tabular listing of book members
     var groups = ""; // for listing of groups in the menu
     
     // select the current book
@@ -256,10 +251,10 @@ var bwAddressBook = function() {
         
         listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
         if (book.listDisp.name) {
-          listing += '<td class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
+          listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
         }
         if (book.listDisp.familyName) {
-          listing += '<td class="name"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
+          listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
         }
         if (book.listDisp.givenNames) {
           listing += '<td class="name">' + givenNames + '</td>';
@@ -283,7 +278,7 @@ var bwAddressBook = function() {
           
         // if we have a group, we need to add it to the groups list that belongs in the menu tree
         if (kind == "group") {
-          groups += '<li id="bwBookGroup-' + index + '-' + i + '" class="group">' + fn + '</li>';
+          groups += '<li id="bwBookGroup-' + index + '-' + i + '"><a href="#" id="bwBookGroupLink-' + index + '-' + i + '" class="bwGroup">' + fn + '</a></li>';
         }
           
       }
@@ -303,7 +298,9 @@ var bwAddressBook = function() {
       helper: function (e,ui) {
          return $(this).clone().appendTo('body').css('zIndex',5).show();
       } 
-    }) 
+    })
+    
+    /* uncomment if we choose to separate icons from the name field
     // make the list items draggable by icon too
     $("#bwAddrBookOutputList td.kind").draggable({ 
       opacity: 0.5,
@@ -312,6 +309,7 @@ var bwAddressBook = function() {
          return $(this).clone().appendTo('body').css('zIndex',5).show();
       } 
     })
+    */
 
   };
    
@@ -406,8 +404,6 @@ var bwAddressBook = function() {
   };
   
   this.updateContact = function() {
-    // For now, we'll assume there is only one book to which we can write.
-    var addrBookUrl = bwAddressBook.defPersBookUrl;
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
@@ -438,11 +434,6 @@ var bwAddressBook = function() {
   // *******************
 
   this.addGroup = function() {
-    // For now, we'll assume there is only one book to which we can write.
-    // In the future, we'll want to check to see if there is more than 
-    // one personal book, and check which is selected.
-    var addrBookUrl = bwAddressBook.defPersBookUrl;
-    
     // Create the UUID
     var newUUID = "BwABC-" + Math.uuid();
     
@@ -463,8 +454,6 @@ var bwAddressBook = function() {
   };
   
   this.updateGroup = function() {
-    // For now, we'll assume there is only one book to which we can write.
-    var addrBookUrl = bwAddressBook.defPersBookUrl;
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
@@ -478,10 +467,74 @@ var bwAddressBook = function() {
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
     vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
+    if (curCard.MEMBER != undefined) {
+      $(curGroup.MEMBER).each(function() {
+        vcData += "MEMBER:mailto:" + $(this).value + "\n";
+      }); 
+    }
     vcData += "END:VCARD";
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#groupForm");
-  };  
+  };
+  
+  // group is a json object
+  // memberMailTo is a mailto address -- we won't arrive here without it
+  this.addMemberToGroup = function(bookIndex,groupIndex,memberBookIndex,memberIndex) {
+    // get the current member to be added
+    var curMember = jQuery.parseJSON(bwAddressBook.books[memberBookIndex].vcards[memberIndex]);
+    
+    if (curMember.KIND[0].value == "group"){
+      // can't add groups to groups
+      showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddGroup,true);
+    } else if (curMember.EMAIL == undefined) {
+      // the member has no email (mailto) address, so disallow adding it to a group
+      showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddEmail,true);
+    } else {
+      // get the group
+      var curGroup = jQuery.parseJSON(bwAddressBook.books[bookIndex].vcards[groupIndex]);
+      
+      // check for the existence of the properties (UID must be ok or we should simply fail out)
+      var fn ="";
+      if(curGroup.FN != undefined) { 
+        fn = curGroup.FN[0].value; 
+      }
+      var nickname ="";
+      if(curGroup.NICKNAME != undefined) { 
+        fn = curGroup.NICKNAME[0].value; 
+      }
+      var org = "";
+      if(curGroup.ORG != undefined) { 
+        org = curGroup.ORG[0].values.organization_name; 
+      }
+      var note = "";
+      if(curGroup.NOTE != undefined) { 
+        url = curGroup.NOTE[0].value; 
+      } 
+      
+      // now let's build the vcard
+      var vcData = "BEGIN:VCARD\n"
+      vcData += "VERSION:4.0\n";
+      vcData += "UID:" + curGroup.UID[0].value + "\n";
+      vcData += "FN:" + fn + "\n";
+      vcData += "N:" + fn + ";;;;\n";
+      vcData += "KIND:group\n";
+      vcData += "ORG:" + org + ";;\n";
+      vcData += "NICKNAME:" + nickname + "\n";
+      vcData += "CLASS:PRIVATE\n";
+      vcData += "REV:" + getRevDate() + "\n";
+      vcData += "NOTE:" + note + "\n";
+      if (curGroup.MEMBER != undefined) {
+        $(curGroup.MEMBER).each(function() {
+          vcData += "MEMBER:mailto:" + $(this).value + "\n";
+        }); 
+      }
+      // now tag on the new member:
+      vcData += "MEMBER:mailto:" + curMember.EMAIL[0].value + "\n";
+      vcData += "END:VCARD";
+      
+      this.updateEntry(vcData,curGroup.href,curGroup.etag,"#groupForm");
+    };
+  };
   
   
   // **********************
@@ -489,11 +542,6 @@ var bwAddressBook = function() {
   // **********************
 
   this.addLocation = function() {
-    // For now, we'll assume there is only one book to which we can write.
-    // In the future, we'll want to check to see if there is more than 
-    // one personal book, and check which is selected.
-    var addrBookUrl = bwAddressBook.defPersBookUrl;
-    
     // Create the UUID
     var newUUID = "BwABC-" + Math.uuid();
         
@@ -520,8 +568,6 @@ var bwAddressBook = function() {
   };
   
   this.updateLocation = function() {
-    // For now, we'll assume there is only one book to which we can write.
-    var addrBookUrl = bwAddressBook.defPersBookUrl;
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
@@ -587,6 +633,10 @@ var bwAddressBook = function() {
     }
   }
   
+  // *******************
+  // DISPLAY HANDLING
+  // *******************
+ 
   this.display = function() {
     var index = bwAddressBook.book;
     
@@ -664,8 +714,19 @@ var bwAddressBook = function() {
     $("#bwAddrBookOutputDetails").html(details);
     showPage("bw-details");
   }
+  
+  // *******************
+  // FILTERING
+  // *******************
+
+  this.filterByGroup = function(bookIndex,groupIndex) {
+    alert("We will filter by book " + bookIndex + " vcard " + groupIndex);
+  }
     
-  // Getters and Setters
+  // *******************
+  // GETTERS AND SETTERS
+  // *******************
+
   this.setBook = function(val) {
     bwAddressBook.book = val; 
   }
@@ -742,21 +803,52 @@ $(document).ready(function() {
   // DISPLAY HANDLERS
   // *****************
   
-  // select a book to display
-  $(".bwBook").click(function() {
+  // select a book or subscription to display
+  $(".bwBookLink").click(function() {
     // extract the book array index from the id
     bwAddrBook.setBook($(this).attr("id").substr($(this).attr("id").indexOf("-")+1));
     
-    // remove highlighting from all books
-    $(".bwBook a").each(function(index){
+    // remove highlighting from all menu items
+    $("#booksAndGroups a").each(function(index){
       $(this).removeClass("selected");
     });
     // now highlight the one just selected
-    $(this).find("a:first-child").addClass("selected");
+    $(this).addClass("selected");
     
     bwAddrBook.display();
+    
+    // set a cookie so we can hold on to the current menu item
+    // between page refreshes
+    //$.cookie("selectedMenuId",$(this).attr("id"));
+    //alert($.cookie("selectedMenuId"));
   });
-
+  
+  //select a group to display
+  $(".bwGroup").click(function() {
+    // Extract the book array index from the id
+    // Though we are only filtering, we have to set the book (as there may be more than one)
+    var groupRef = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
+    var bookIndex = groupRef.substring(0,groupRef.indexOf("-"));
+    var groupIndex = groupRef.substr(groupRef.indexOf("-")+1);
+    
+    bwAddrBook.setBook(bookIndex);
+    
+    // remove highlighting from all menu items
+    $("#booksAndGroups a").each(function(index){
+      $(this).removeClass("selected");
+    });
+    // now highlight the one just selected
+    $(this).addClass("selected");
+    
+    bwAddrBook.display();
+    bwAddrBook.filterByGroup(bookIndex,groupIndex);
+    
+    // set a cookie so we can hold on to the current menu item
+    // between page refreshes
+    //$.cookie("selectedMenuId",$(this).attr("id"));
+    //alert($.cookie("selectedMenuId"));
+  });
+  
   // display vcard details
   $(".bwAddrBookTable tr").click(function() {
     // get the part of the id that holds the indices
@@ -828,6 +920,42 @@ $(document).ready(function() {
   $("#addResource").click(function() {
     showPage("bw-modResource");
   });
+  
+  /* disable book droppables for now - while we have only one assumed 
+   * droppable book, additions will be made directly from 
+   * search results     
+   $("#booksAndGroups a.bwBook").droppable({ 
+    accept: '#bwAddrBookOutputList td.name',
+    greedy: true,
+    hoverClass: 'droppableHighlight',  
+    drop:   function () { 
+      showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+      return false; 
+    } 
+  });
+  */ 
+  
+  // add a member to group by dragging and dropping
+  $("#booksAndGroups a.bwGroup").droppable({ 
+    accept: '#bwAddrBookOutputList td.name', 
+    greedy: true,
+    hoverClass: 'droppableHighlight',
+    drop:   function (event, ui) { 
+      // get the group indices
+      var groupRef = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
+      var bookIndex = groupRef.substring(0,groupRef.indexOf("-"));
+      var groupIndex = groupRef.substr(groupRef.indexOf("-")+1);
+      
+      // get the member indices
+      var memberRef = ui.draggable.attr("id").substr(ui.draggable.attr("id").indexOf("-")+1);
+      var memberBookIndex = memberRef.substring(0,memberRef.indexOf("-"));
+      var memberIndex = memberRef.substr(memberRef.indexOf("-")+1);
+      
+      // pass them to the update method
+      bwAddrBook.addMemberToGroup(bookIndex,groupIndex,memberBookIndex,memberIndex);
+      return false; 
+    } 
+  }); 
   
   
   // EDITING
