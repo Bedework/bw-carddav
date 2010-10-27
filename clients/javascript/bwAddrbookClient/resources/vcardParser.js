@@ -116,9 +116,13 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
 
       if (lastAttributeName == attribute) {
         //another member of the array
-        bwJsonObj += '{';
+        bwJsonObj += ',{';
       } else {
-        //new one, so write out its name and open a new array.
+	if (lastAttributeName != "") {
+          //new one, so close the last array, 
+          bwJsonObj += '],';
+        }
+        // write out attribute name and open a new array.
         bwJsonObj += '"' + attribute + '": [ {';
       }
 
@@ -185,20 +189,10 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
         bwJsonObj += '}}';
 
       }
-      if (lastAttributeName == attribute) {
-        bwJsonObj += ',';
-      } else { 
-        bwJsonObj += ']';
-        //except for last key, value pair, add a comma.
-        if ((i != lines.length - 1) && (lines[i+1] != "")) {
-          bwJsonObj += ',';
-        }
-      }
       lastAttributeName=attribute;
     }   
-
   }
-  bwJsonObj += "}";
+  bwJsonObj += "]}";
   vcardsArray.push(bwJsonObj);
 }
 
