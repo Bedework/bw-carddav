@@ -377,6 +377,9 @@ button {
   clear: both;
 }
 /* dialog boxes */
+.ui-widget-content {
+	line-height: 1.2em;
+}
 .ui-widget-content h3 {
   margin-top: 0.5em;
 }

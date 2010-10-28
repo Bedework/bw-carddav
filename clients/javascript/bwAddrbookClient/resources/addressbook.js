@@ -467,11 +467,12 @@ var bwAddressBook = function() {
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
     vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
-    if (curCard.MEMBER != undefined) {
-      $(curGroup.MEMBER).each(function() {
-        vcData += "MEMBER:mailto:" + $(this).value + "\n";
-      }); 
-    }
+    if (curGroup.MEMBER != undefined) {
+      for (var i=0; i<curGroup.MEMBER.length; i++) {
+        // no need for mailto: here - it's in the value
+        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+      }; 
+    };
     vcData += "END:VCARD";
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#groupForm");
@@ -524,10 +525,11 @@ var bwAddressBook = function() {
       vcData += "REV:" + getRevDate() + "\n";
       vcData += "NOTE:" + note + "\n";
       if (curGroup.MEMBER != undefined) {
-        $(curGroup.MEMBER).each(function() {
-          vcData += "MEMBER:mailto:" + $(this).value + "\n";
-        }); 
-      }
+        for (var i=0; i<curGroup.MEMBER.length; i++) {
+          // no need for mailto: here - it's in the value
+          vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+        }; 
+      };
       // now tag on the new member:
       vcData += "MEMBER:mailto:" + curMember.EMAIL[0].value + "\n";
       vcData += "END:VCARD";
