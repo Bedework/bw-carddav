@@ -237,7 +237,10 @@ ul#add li:hover ul {
 }
 #bwDetailsTable td.field {
 	text-align: right;
-	padding: 0 1em 0.5em 0; 
+	padding: 0 1em 0.5em 0;
+	color: #666;
+	background-color: transparent; 
+	font-size: 0.9em;
 }
 #bwDetailsTable tr.newGrouping td {
 	padding-top: 1em;
@@ -259,7 +262,21 @@ ul#add li:hover ul {
 	float: right;
 }
 h1 {
-  font-size: 1.2em;
+  font-size: 1.3em;
+  font-weight: bold;
+  padding-left: 25px;
+}
+h1.individual {
+  background: white url("icons/silk/user.png") left no-repeat;
+  color: #333;
+}
+h1.group {
+  background: white url("icons/silk/group.png") left no-repeat;
+  color: #333;
+}
+h1.location {
+  background: white url("icons/silk/building.png") left no-repeat;
+  color: #333;
 }
 h3 {
 	margin: 2em 0 1em 0;

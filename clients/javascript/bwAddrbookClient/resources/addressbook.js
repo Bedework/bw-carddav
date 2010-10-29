@@ -202,7 +202,10 @@ var bwAddressBook = function() {
         if (curCard.KIND != undefined && curCard.KIND[0].value != "") {
           kind = curCard.KIND[0].value;
           switch(kind) {
-            case "group" :  
+            case "group" :
+              // NOTE: showing groups in the list is now deprecated,
+              // in ff
+              // but we will leave this here in case we choose to restore them
               kindIcon = "resources/icons/silk/group.png";
               break;
             case "location" :
@@ -396,7 +399,7 @@ var bwAddressBook = function() {
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
+    vcData += "PHOTO;VALUE=uri:" + $("#PHOTOURL").val() + "\n";
     vcData += "NOTE:" + $("#NOTE").val() + "\n";
     vcData += "END:VCARD";
     
@@ -422,7 +425,7 @@ var bwAddressBook = function() {
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $("#PHOTOURL").val() + "\n";
+    vcData += "PHOTO;VALUE=uri:" + $("#PHOTOURL").val() + "\n";
     vcData += "NOTE:" + $("#NOTE").val() + "\n";
     vcData += "END:VCARD";
     
@@ -659,59 +662,97 @@ var bwAddressBook = function() {
   this.showDetails = function() {
     var details = "";
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
-    // Get the current kind for branching.
+    
+    // Get the current kind.
     // If no kind, attempt to use "individual".
     var curKind = "individual";
     if (curCard.KIND != undefined) {
       curKind = curCard.KIND[0].value;
     } 
-
-    // branch to different display types based on kind
-    switch(curKind) {
-      case "location":
-        break;
-      case "group":
-        break;
-      case "thing":
-        break;
-      default:  // this is the "individual" kind
-    }
-
-    // check for the existence of the properties
-    var fn = "";
-    if(curCard.FN != undefined) { 
-      fn = curCard.FN[0].value; 
-    }
-    var tel = "";
-    if(curCard.TEL != undefined) { 
-      tel = curCard.TEL[0].values.number; 
-    }
-    var email = "";
-    if(curCard.EMAIL != undefined) { 
-      email = curCard.EMAIL[0].value; 
-    }
-    var title = "";
-    if(curCard.TITLE != undefined) { 
-      title = curCard.TITLE[0].value; 
-    }
-    var org = "";
-    if(curCard.ORG != undefined) { 
-      org = curCard.ORG[0].values.organization_name; 
-    }
-    var url = "";
-    if(curCard.URL != undefined) { 
-      url = curCard.URL[0].value; 
-    }
     
-    // build the details
-    details += '<h1>' + fn + '</h1>';
+    // build the details    
+    // full name
+    details += '<h1 class="' + curKind + '">';
+    if(curCard.FN != undefined) { 
+      details += curCard.FN[0].value; 
+    }
+    details += '</h1>';
+    
     details += '<table id="bwDetailsTable">';
-    details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + title + '</td></tr>';
-    details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + org + '</td></tr>';
-    details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsPhone + '</td><td>' + tel + '</td></tr>';
-    details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><a href="mailto:' + email + '">' + email + '</a></td></tr>';
-    details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + url + '">' + url + '</a></td></tr>';
+    // title
+    if (curCard.TITLE != undefined && curCard.TITLE[0].value != "") {
+      details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + curCard.TITLE[0].value + '</td></tr>';
+    }
+    // organization
+    if(curCard.ORG != undefined && curCard.ORG[0].values.organization_name != "") {
+      details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + curCard.ORG[0].values.organization_name + '</td></tr>';
+    }
+    // nickname
+    if(curCard.NICKNAME != undefined && curCard.NICKNAME[0].value != "") {
+      details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.NICKNAME[0].value + '</td></tr>';
+    }
+    // telephone number(s)
+    if (curCard.TEL != undefined) {
+      for (var i=0; i < curCard.TEL.length; i++) {
+        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsPhone + '</td><td>' + curCard.TEL[i].values.number + '</td></tr>';
+      }
+    }
+    // email address(es)
+    if(curCard.EMAIL != undefined) { 
+      for (var i=0; i < curCard.EMAIL.length; i++) {
+        details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + curCard.EMAIL[i].value + '">' + curCard.EMAIL[i].value + '</a></td></tr>';
+      }
+    }
+    // url
+    if (curCard.URL != undefined && curCard.URL[0].value != "") {
+      details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + curCard.URL[0].value + '">' + curCard.URL[0].value + '</a></td></tr>';
+    }
+    // address(es)
+    if(curCard.ADR != undefined) { 
+      for (var i=0; i < curCard.ADR.length; i++) {
+        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsAddress + '</td><td>';
+        // output the address details:
+        if (curCard.ADR[i].values.po_box != undefined && curCard.ADR[i].values.po_box != "") {
+          details += curCard.ADR[i].values.po_box + "<br/>";
+        }
+        if (curCard.ADR[i].values.extended_address != undefined && curCard.ADR[i].values.extended_address != "") {
+          details += curCard.ADR[i].values.extended_address + "<br/>";
+        }
+        if (curCard.ADR[i].values.street_address != undefined && curCard.ADR[i].values.street_address != "") {
+          details += curCard.ADR[i].values.street_address + "<br/>";
+        }
+        if (curCard.ADR[i].values.locality != undefined && curCard.ADR[i].values.locality != "") {
+          details += curCard.ADR[i].values.locality;
+        }
+        if (curCard.ADR[i].values.state != undefined && curCard.ADR[i].values.state != "") {
+          details += ", " + curCard.ADR[i].values.state + " ";
+        }
+        if (curCard.ADR[i].values.postal_code != undefined && curCard.ADR[i].values.postal_code != "") {
+          details += curCard.ADR[i].values.postal_code + "<br/>";
+        }
+        if (curCard.ADR[i].values.country != undefined && curCard.ADR[i].values.country != "") {
+          details += curCard.ADR[i].values.country;
+        }
+        details += '</td></tr>';
+      }
+    }
+    // nickname
+    if(curCard.NOTE != undefined && curCard.NOTE[0].value != "") {
+      details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + curCard.NOTE[0].value + '</td></tr>';
+    }
     details += '</table>';
+    
+    // if a group, output the members
+    if (curKind == "group") {
+      if (curCard.MEMBER != undefined) {
+        details += '<h3>' + bwAbDispDetailsGroupMembers + '</h3>';
+        details += '<ul>';
+        for (var i=0; i < curCard.MEMBER.length; i++) {
+          details += '<li>' + curCard.MEMBER[i].value + '</li>';
+        }
+        details += '</ul>';
+      }
+    }
     
     $("#bwAddrBookOutputDetails").html(details);
     showPage("bw-details");
@@ -825,15 +866,14 @@ $(document).ready(function() {
     //alert($.cookie("selectedMenuId"));
   });
   
-  //select a group to display
+  // display group details
   $(".bwGroup").click(function() {
-    // Extract the book array index from the id
-    // Though we are only filtering, we have to set the book (as there may be more than one)
-    var groupRef = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
-    var bookIndex = groupRef.substring(0,groupRef.indexOf("-"));
-    var groupIndex = groupRef.substr(groupRef.indexOf("-")+1);
-    
-    bwAddrBook.setBook(bookIndex);
+    // get the part of the id that holds the indices
+    var indices = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
+    // extract the book array index from the id
+    bwAddrBook.setBook(indices.substr(0,indices.indexOf("-")));
+    // extract the item index from the id
+    bwAddrBook.setCard(indices.substr(indices.indexOf("-")+1));
     
     // remove highlighting from all menu items
     $("#booksAndGroups a").each(function(index){
@@ -842,8 +882,7 @@ $(document).ready(function() {
     // now highlight the one just selected
     $(this).addClass("selected");
     
-    bwAddrBook.display();
-    bwAddrBook.filterByGroup(bookIndex,groupIndex);
+    bwAddrBook.showDetails();
     
     // set a cookie so we can hold on to the current menu item
     // between page refreshes
@@ -1186,7 +1225,7 @@ function getRevDate() {
 // display the named page
 function showPage(pageId) {
   // first make all pages invisible
-  $("#bw-pages li").each(function(index){
+  $("#bw-pages > li").each(function(index){
     $(this).addClass("invisible");
   });
   $("#"+pageId).removeClass("invisible");

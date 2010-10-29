@@ -29,17 +29,22 @@ var bwAbDispListGivenNames = "First name";
 var bwAbDispListPhone = "Phone";
 var bwAbDispListEmail = "Email";
 var bwAbDispListTitle = "Title";
+var bwAbDispDetailsNoTitle = "No Title";
 var bwAbDispListOrg = "Organization";
 var bwAbDispListUrl = "Webpage";
 var bwAbDispListNone = "no contacts";
 
 // detail field names
 var bwAbDispDetailsName = "Name";
+var bwAbDispDetailsNickname = "Nickname"
 var bwAbDispDetailsPhone = "Phone";
 var bwAbDispDetailsEmail = "Email";
 var bwAbDispDetailsTitle = "Title";
 var bwAbDispDetailsOrg = "Organization";
 var bwAbDispDetailsUrl = "Webpage";
+var bwAbDispDetailsAddress = "Address";
+var bwAbDispDetailsNote = "Note";
+var bwAbDispDetailsGroupMembers = "Members";
 var bwAbDispDetailsDelete = "delete";
 
 // form titles and submit buttons

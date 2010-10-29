@@ -118,7 +118,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
         //another member of the array
         bwJsonObj += ',{';
       } else {
-	if (lastAttributeName != "") {
+        if (lastAttributeName != "") {
           //new one, so close the last array, 
           bwJsonObj += '],';
         }
