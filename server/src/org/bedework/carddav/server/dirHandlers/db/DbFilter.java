@@ -191,14 +191,28 @@ public class DbFilter {
   private void makePropFilterExpr(final String name, final TextMatch tm) {
     PField pf = pfields.get(name.toLowerCase());
 
+    boolean caseless = tm.getCaseless();
+
     if (pf != null) {
       // Use the column value
+
+      if (caseless) {
+        sb.append("upper(");
+      }
       sb.append("card.");
       sb.append(pf.col);
+      if (caseless) {
+        sb.append(")");
+      }
     } else {
       sb.append("props.name=");
       addPar(sb, name);
-      sb.append(" and props.value");
+
+      if (caseless) {
+        sb.append(" and upper(props.value)");
+      } else {
+        sb.append(" and props.value");
+      }
     }
 
     int mt = tm.getMatchType();
