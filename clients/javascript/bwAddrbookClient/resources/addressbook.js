@@ -470,10 +470,10 @@ var bwAddressBook = function() {
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
     vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
-    if (curGroup.MEMBER != undefined) {
-      for (var i=0; i<curGroup.MEMBER.length; i++) {
+    if (curCard.MEMBER != undefined) {
+      for (var i=0; i<curCard.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
-        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+        vcData += "MEMBER:" + curCard.MEMBER[i].value + "\n";
       }; 
     };
     vcData += "END:VCARD";
@@ -736,23 +736,24 @@ var bwAddressBook = function() {
         details += '</td></tr>';
       }
     }
-    // nickname
+    // group members, if a group
+    if (curKind == "group") {
+      if (curCard.MEMBER != undefined) {
+        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsGroupMembers + '</td><td>';
+        details += '<ul class="groupMembers">';
+        for (var i=0; i < curCard.MEMBER.length; i++) {
+          details += '<li>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1) + '</li>';
+        }
+        details += '</ul></td></tr>';
+      }
+    }
+    // note
     if(curCard.NOTE != undefined && curCard.NOTE[0].value != "") {
       details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + curCard.NOTE[0].value + '</td></tr>';
     }
     details += '</table>';
     
-    // if a group, output the members
-    if (curKind == "group") {
-      if (curCard.MEMBER != undefined) {
-        details += '<h3>' + bwAbDispDetailsGroupMembers + '</h3>';
-        details += '<ul>';
-        for (var i=0; i < curCard.MEMBER.length; i++) {
-          details += '<li>' + curCard.MEMBER[i].value + '</li>';
-        }
-        details += '</ul>';
-      }
-    }
+    
     
     $("#bwAddrBookOutputDetails").html(details);
     showPage("bw-details");

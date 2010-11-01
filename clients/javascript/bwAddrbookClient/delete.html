@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!-- 
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Bedework Address Book Client: Manual Delete</title>    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="resources/reset.css" rel="stylesheet" type="text/css"/>
+    
+    <script type="text/javascript" src="resources/jquery/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="resources/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+    <script type="text/javascript" src="config/config.js"></script>
+    
+    <style type="text/css">
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      #header {
+        margin: 0;
+        padding: 0.5em;
+      }
+      #leftnav {
+        
+      }
+      #content {
+        
+      }
+      h1 {
+        font-size: 1.2em;
+      }
+      h3 {
+        margin: 1em 0;
+        font-size: 1em;
+        font-weight: bold;
+      }
+      p {
+        margin: 0 0 1em 0;
+      }
+      ul {
+        margin-top: 2em;
+      }
+      em {
+        font-style: italic;
+        font-size: 0.9em;
+      }
+    </style>
+    
+    <script type="text/javascript">
+    // *********************
+    // DELETE BY UUID
+    // *********************
+    
+    // Note: deleteEntry works for contacts, locations, groups, and resources
+    function deleteEntry() {
+      // For now, we'll assume there is only one book from which we can delete cards.
+      // If we try to delete from another at the moment, we'll either have no access or get  
+      // a 404 for not having the uuid in the book
+      if(confirm(bwAbDispDeleteConfirm)) {
+        // probably want to replace this confirm with a better dialog, but will certainly do for now.
+        $.ajax({
+          type: "delete",
+          url: bwBooks[0].carddavUrl + bwBooks[0].path + $("#userId").val() + bwBooks[0].bookName + $("#vcard").val(),
+          dataType: "xml",
+          beforeSend: function(xhrobj) {
+            xhrobj.setRequestHeader("X-HTTP-Method-Override", "DELETE");
+          },
+          success: function(responseData, status){
+            // A SUCCESS IS A "204 No Content" which is trapped in the error block below
+            alert(status);
+          },
+          error: function(msg) {
+            // if the message is a 204 No Content, we've actually got the correct 
+            // response from the server so...treat it like a success:
+            if (msg.status == "204") {
+              // This is our success.
+              // To make this compatible with the table sorter, just round-trip the data
+              alert("Success: " + msg.status + " " + msg.statusText);
+            } else {
+            // there was a problem
+              alert(msg.status + " " + msg.statusText);
+            }
+          }
+        });
+      }
+    }
+
+    $(document).ready(function() {
+      $("#delete").click(function() {
+        deleteEntry();
+      });
+    });
+    </script>
+  </head>
+  <body>
+    <div id="header">
+      <h1>Bedework Address Book: Delete vCard</h1>
+      
+      <p>
+        UserId: <input type="text" id="userId"/><br/>
+        vCard Name: <input type="text" id="vcard"/> <em>e.g. BwABC-CEEBFB93-7BB6-4309-B025-978F0A0404AF.vcf</em><br/>
+        <button type="button" id="delete">Delete</button>
+      </p>
+    </div>
+  </body>
+</html>

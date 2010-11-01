@@ -255,6 +255,13 @@ ul#add li:hover ul {
   color: #11f;
   background-color: transparent;
 }
+ul.groupMembers {
+  margin-left: 2em;
+}
+ul.groupMembers li {
+	list-style-type: circle;
+	margin-bottom: 0.5em;
+}
 #backToList {
 	margin-top: 3em;
 }
