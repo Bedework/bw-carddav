@@ -23,6 +23,7 @@
  */
 
 var userid = "";
+var bwAddrBook = "";
 
 /****************************
  * ADDRESS BOOK OBJECT:
@@ -36,7 +37,7 @@ var bwAddressBook = function() {
   this.creating = true; // are we creating or editing an item?
   this.book; // the currently selected book
   this.card; // the currently selected card
-  this.selectedMenuId = $.cookie("selectedMenuId"); // the currently selected menu item; might be null
+  //this.selectedMenuId = $.cookie("selectedMenuId"); // the currently selected menu item; might be null
   this.groupMenus = new Array(); // a place to store groups when building menus
   
   this.init = function(bookTemplate,userid) {
@@ -456,8 +457,14 @@ var bwAddressBook = function() {
     this.addEntry(vcData,newUUID,"#groupForm");
   };
   
-  this.updateGroup = function() {
-    var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+  // accepts either a card object or will pick out the current card from the address book
+  this.updateGroup = function(card) {
+    var curCard = "";
+    if (card != undefined && card != null) {
+      curCard = card;
+    } else {
+      var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    }
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
@@ -497,6 +504,17 @@ var bwAddressBook = function() {
       // get the group
       var curGroup = jQuery.parseJSON(bwAddressBook.books[bookIndex].vcards[groupIndex]);
       
+      // check to see if the entry is already in the group and abort if so
+      if (curGroup.MEMBER != undefined) {
+        for(var i=0; i<curGroup.MEMBER.length; i++) {
+          if(curGroup.MEMBER[i].value == "mailto:" + curMember.EMAIL[0].value) {
+            showMessage(bwAbDispAlreadyAMemberTitle,bwAbDispAlreadyAMember,true);
+            return;
+          }
+        }
+      }
+      
+      // add the member to the group
       // check for the existence of the properties (UID must be ok or we should simply fail out)
       var fn ="";
       if(curGroup.FN != undefined) { 
@@ -736,15 +754,19 @@ var bwAddressBook = function() {
         details += '</td></tr>';
       }
     }
-    // group members, if a group
+    // group members, if a group 
     if (curKind == "group") {
       if (curCard.MEMBER != undefined) {
         details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsGroupMembers + '</td><td>';
-        details += '<ul class="groupMembers">';
+        details += '<table id="groupMembers">';
         for (var i=0; i < curCard.MEMBER.length; i++) {
-          details += '<li>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1) + '</li>';
+          details += '<tr><td>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1) + '</td>';
+          details += '<td><a href="#" class="bwRemoveMember" id="bwRemoveMember-' + i + '">' + bwAbDispDetailsRemoveMember + '</a></td></tr>';
         }
-        details += '</ul></td></tr>';
+        details += '<tr id="memberRemovalRow"><td></td><td>';
+        details += '<button id="commitMemberRemoval">' + bwAbDispDetailsCommitMemberRemoval + '</button> ';
+        details += '<button id="cancelMemberRemoval">' + bwAbDispDetailsCancel + '</button></td></tr>';
+        details += '</table></td></tr>';
       }
     }
     // note
@@ -752,10 +774,38 @@ var bwAddressBook = function() {
       details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + curCard.NOTE[0].value + '</td></tr>';
     }
     details += '</table>';
-    
-    
-    
+            
+    // write out the output
     $("#bwAddrBookOutputDetails").html(details);
+    
+    // if a group, now bind onclick events to the elements that need it 
+    // (remove member, commit removal, cancel)
+    if (curKind == "group") {
+      // remove a member
+      $(".bwRemoveMember").click(function() {
+        // get the id of the table cell for parsing
+        var memberId = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
+        curCard.MEMBER.splice(memberId,1);
+        // hide the current row
+        $(this).parent().parent().fadeTo(350, 0, function () { 
+          $(this).remove();
+        });
+        // display the commit buttons
+        $("#memberRemovalRow").show();
+      });
+      
+      //commit member removals to server
+      $("#commitMemberRemoval").click(function() {
+        bwAddrBook.updateGroup(curCard);    
+      });
+
+      //cancel member removals
+      $("#cancelMemberRemoval").click(function() {
+        // for now, just round trip to restore original state
+        window.location.reload();    
+      });
+    }
+    
     showPage("bw-details");
   }
   
@@ -763,9 +813,7 @@ var bwAddressBook = function() {
   // FILTERING
   // *******************
 
-  this.filterByGroup = function(bookIndex,groupIndex) {
-    alert("We will filter by book " + bookIndex + " vcard " + groupIndex);
-  }
+  
     
   // *******************
   // GETTERS AND SETTERS
@@ -784,7 +832,7 @@ var bwAddressBook = function() {
 // Now build it
 $(document).ready(function() {
 
-  var bwAddrBook = new bwAddressBook();
+  bwAddrBook = new bwAddressBook();
   
   /****************************
    * SETUP THE DEFAULT STATE:
@@ -1204,9 +1252,10 @@ function setupFormFields(curCard,kind) {
       if (curCard.URL != undefined) $("#WEBPAGE").val(curCard.URL[0].value);
       if (curCard.PHOTO != undefined) $("#PHOTOURL").val(curCard.PHOTO[0].value);
       if (curCard.NOTE != undefined) $("#NOTE").val(curCard.NOTE[0].value);
-  }
-}
+  };
+};
 
+// return the revision date
 function getRevDate() {
   //build the revision date
   var now = new Date();

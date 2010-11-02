@@ -46,6 +46,9 @@ var bwAbDispDetailsAddress = "Address";
 var bwAbDispDetailsNote = "Note";
 var bwAbDispDetailsGroupMembers = "Members";
 var bwAbDispDetailsDelete = "delete";
+var bwAbDispDetailsRemoveMember = "remove";
+var bwAbDispDetailsCommitMemberRemoval = "commit changes";
+var bwAbDispDetailsCancel = "cancel";
 
 // form titles and submit buttons
 var bwAbDispAddContact = "Add Contact";
@@ -62,11 +65,13 @@ var bwAbDispUnimplementedTitle = "Unimplemented";
 var bwAbDispUnimplemented = "This feature is unimplemented.";
 var bwAbDispErrorTitle = "Error";
 var bwAbDispError404 = "<h3>You cannot access the current address book.</h3><p>It is likely that you are still authenticated as another user.  You must invalidate your HTTP authentication or close your browser and try again.</p>"; 
-var bwAbDispError500 = '<h3>Internal Server Error</h3><p>We\'re still in development.<p><p>If you do not see an address book listing and expect one, please try <a href="javascript:window.location.reload();">reloading</a> your browser.</p><p>(You may otherwise ignore and close this message.)</p>';
+var bwAbDispError500 = '<h3>Internal Server Error</h3><p>If you do not see an address book listing and expect one, please try <a href="javascript:window.location.reload();">reloading</a> your browser.</p><p>(You may otherwise ignore and close this message.)</p>';
 var bwAbDispErrorAccessDenied = "Access Denied";
 var bwAbDispDisallowed = "Not Allowed";
 var bwAbDispNoMemberAddEmail = "Entries without an email address may not be added to groups.";
 var bwAbDispNoMemberAddGroup = "You may not add groups to groups.";
+var bwAbDispAlreadyAMemberTitle = "Already a Member";
+var bwAbDispAlreadyAMember = "This entry is already a member of this group";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";

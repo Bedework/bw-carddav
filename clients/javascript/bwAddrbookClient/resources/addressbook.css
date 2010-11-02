@@ -255,12 +255,14 @@ ul#add li:hover ul {
   color: #11f;
   background-color: transparent;
 }
-ul.groupMembers {
-  margin-left: 2em;
+#bwDetailsTable #groupMembers {
+  font-size: 0.9em;
 }
-ul.groupMembers li {
-	list-style-type: circle;
-	margin-bottom: 0.5em;
+#bwDetailsTable #groupMembers td {
+	padding: 0 1em 0.5em 0;
+}
+#bwDetailsTable #memberRemovalRow {
+	display: none;
 }
 #backToList {
 	margin-top: 3em;
