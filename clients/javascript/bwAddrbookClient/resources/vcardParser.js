@@ -97,7 +97,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   bwJsonObj += '"etag" : ' + etag + ','; 
   var lines =  blob.split('\n');
   var lastAttributeName = "";
-  for (var i=0;i<lines.sort().length;i++) {
+  for (var i=0;i<lines.length;i++) {
     //each line is in the form of a key[;param;param]:value.  Sometimes the value contains colons, too.
     if (lines[i] != "") {
       var colonSplit = lines[i].split(':');
@@ -160,6 +160,19 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
           //put back colon(s) and write out what's past the first colon
           for (k=2;k<colonSplit.length;k++) { 
             bwJsonObj += ':' + colonSplit[k].replace(/\\,/g,",");
+          }
+
+          //look ahead and see if there's more in the next line. Continuation lines begin with a space.
+          while (i + 1 < lines.length) {
+            var rawline = lines[i + 1];
+            if (rawline.substring(0,1) == ' ') {
+              //append this line and avoid processing it the next time through the loop
+              bwJsonObj += rawline;
+              i++;
+            } else {
+              //if the next line doesn't begin with space, move on.
+              break;
+            }
           }
           bwJsonObj += '"}';
       }
