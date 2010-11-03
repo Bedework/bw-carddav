@@ -205,7 +205,6 @@ var bwAddressBook = function() {
           switch(kind) {
             case "group" :
               // NOTE: showing groups in the list is now deprecated,
-              // in ff
               // but we will leave this here in case we choose to restore them
               kindIcon = "resources/icons/silk/group.png";
               break;
@@ -215,82 +214,85 @@ var bwAddressBook = function() {
           }
         }
         
-        // check for the existence of the properties
+        // get the fn - needed for both groups and other entries
         var fn ="";
         if(curCard.FN != undefined) { 
           fn = curCard.FN[0].value; 
         }
-        var familyName ="";
-        if(curCard.N != undefined) { 
-          if(curCard.N[0].values.family_name != undefined) { 
-            familyName = curCard.N[0].values.family_name; 
-          }
-        }
-        var givenNames ="";
-        if(curCard.N != undefined) { 
-          if(curCard.N[0].values.given_names != undefined) { 
-            givenNames = curCard.N[0].values.given_names; 
-          }
-        }
-        var tel ="";
-        if(curCard.TEL != undefined) { 
-          tel = curCard.TEL[0].values.number; 
-        }
-        var email ="";
-        if(curCard.EMAIL != undefined) { 
-          email = curCard.EMAIL[0].value; 
-        }
-        var title = "";
-        if(curCard.TITLE != undefined) { 
-          title = curCard.TITLE[0].value; 
-        }
-        var org = "";
-        if(curCard.ORG != undefined) { 
-          org = curCard.ORG[0].values.organization_name; 
-        }
-        var url = "";
-        if(curCard.URL != undefined) { 
-          url = curCard.URL[0].value; 
-        }
         
-        listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
-        if (book.listDisp.name) {
-          listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
-        }
-        if (book.listDisp.familyName) {
-          listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
-        }
-        if (book.listDisp.givenNames) {
-          listing += '<td class="name">' + givenNames + '</td>';
-        }
-        if (book.listDisp.phone) {
-          listing += '<td>' + tel + /*'<span class="typeNote">(kind)</span>' + */ '</td>';
-        }
-        if (book.listDisp.email) {
-          listing += '<td><a href="mailto:' + email + '">' + email + '</a></td>';
-        }
-        if (book.listDisp.title) {
-          listing += '<td>' + title + '</td>';
-        }
-        if (book.listDisp.org) {
-          listing += '<td>' + org + '</td>';
-        }
-        if (book.listDisp.url) {
-          listing += '<td><a href="' + url + '">' + url + '</a></td>';
-        }
-        listing += "</tr>"
-          
-        // if we have a group, we need to add it to the groups list that belongs in the menu tree
-        if (kind == "group") {
+        if (kind == "group") { 
+          // we have a group: add it to the groups list that belongs in the menu tree
           groups += '<li id="bwBookGroup-' + index + '-' + i + '"><a href="#" id="bwBookGroupLink-' + index + '-' + i + '" class="bwGroup">' + fn + '</a></li>';
-        }
           
+          // write the groups to an array for later use building the menus
+          this.groupMenus[index] = groups;
+          
+        } else { 
+          // we have an individual, location, or thing
+          // check for the existence of the remaining properties
+          var familyName ="";
+          if(curCard.N != undefined) { 
+            if(curCard.N[0].values.family_name != undefined) { 
+              familyName = curCard.N[0].values.family_name; 
+            }
+          }
+          var givenNames ="";
+          if(curCard.N != undefined) { 
+            if(curCard.N[0].values.given_names != undefined) { 
+              givenNames = curCard.N[0].values.given_names; 
+            }
+          }
+          var tel ="";
+          if(curCard.TEL != undefined) { 
+            tel = curCard.TEL[0].values.number; 
+          }
+          var email ="";
+          if(curCard.EMAIL != undefined) { 
+            email = curCard.EMAIL[0].value; 
+          }
+          var title = "";
+          if(curCard.TITLE != undefined) { 
+            title = curCard.TITLE[0].value; 
+          }
+          var org = "";
+          if(curCard.ORG != undefined) { 
+            org = curCard.ORG[0].values.organization_name; 
+          }
+          var url = "";
+          if(curCard.URL != undefined) { 
+            url = curCard.URL[0].value; 
+          }
+          
+          listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
+          if (book.listDisp.name) {
+            listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
+          }
+          if (book.listDisp.familyName) {
+            listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
+          }
+          if (book.listDisp.givenNames) {
+            listing += '<td class="name">' + givenNames + '</td>';
+          }
+          if (book.listDisp.phone) {
+            listing += '<td>' + tel + /*'<span class="typeNote">(kind)</span>' + */ '</td>';
+          }
+          if (book.listDisp.email) {
+            listing += '<td><a href="mailto:' + email + '">' + email + '</a></td>';
+          }
+          if (book.listDisp.title) {
+            listing += '<td>' + title + '</td>';
+          }
+          if (book.listDisp.org) {
+            listing += '<td>' + org + '</td>';
+          }
+          if (book.listDisp.url) {
+            listing += '<td><a href="' + url + '">' + url + '</a></td>';
+          }
+          listing += "</tr>";
+        }
       }
     }
     listing += "</tbody></table>"
-      
-    // write the groups to an array for later use building the menus
-    this.groupMenus[index] = groups;
       
     // add the output to the page
     $("#bwAddrBookOutputList").append(listing);
@@ -368,7 +370,9 @@ var bwAddressBook = function() {
       success: function(responseData, status){
         var serverMsg = "\n" + status + ": " + responseData;
         showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulUpdate + serverMsg,true);
-        clearFields(formId);
+        if (formId != null) {
+          clearFields(formId);
+        }
         window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
         
       },
@@ -457,14 +461,8 @@ var bwAddressBook = function() {
     this.addEntry(vcData,newUUID,"#groupForm");
   };
   
-  // accepts either a card object or will pick out the current card from the address book
-  this.updateGroup = function(card) {
-    var curCard = "";
-    if (card != undefined && card != null) {
-      curCard = card;
-    } else {
-      var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
-    }
+  this.updateGroup = function() {
+    var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
@@ -522,7 +520,7 @@ var bwAddressBook = function() {
       }
       var nickname ="";
       if(curGroup.NICKNAME != undefined) { 
-        fn = curGroup.NICKNAME[0].value; 
+        nickname = curGroup.NICKNAME[0].value; 
       }
       var org = "";
       if(curGroup.ORG != undefined) { 
@@ -555,11 +553,60 @@ var bwAddressBook = function() {
       vcData += "MEMBER:mailto:" + curMember.EMAIL[0].value + "\n";
       vcData += "END:VCARD";
       
-      this.updateEntry(vcData,curGroup.href,curGroup.etag,"#groupForm");
+      this.updateEntry(vcData,curGroup.href,curGroup.etag);
     };
   };
   
-  
+  //accepts either a card object or will pick out the current card from the address book
+  this.updateGroupMembers = function(group) {
+    var curGroup = "";
+    if (group != undefined && group != null) {
+      curGroup = group;
+    } else {
+      var curGroup = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    }
+    
+    // check for the existence of the properties (UID must be ok or we should simply fail out)
+    var fn ="";
+    if(curGroup.FN != undefined) { 
+      fn = curGroup.FN[0].value; 
+    }
+    var nickname ="";
+    if(curGroup.NICKNAME != undefined) { 
+      nickname = curGroup.NICKNAME[0].value; 
+    }
+    var org = "";
+    if(curGroup.ORG != undefined) { 
+      org = curGroup.ORG[0].values.organization_name; 
+    }
+    var note = "";
+    if(curGroup.NOTE != undefined) { 
+      url = curGroup.NOTE[0].value; 
+    } 
+    
+    // now let's build the vcard
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    vcData += "UID:" + curGroup.UID[0].value + "\n";
+    vcData += "FN:" + fn + "\n";
+    vcData += "N:" + fn + ";;;;\n";
+    vcData += "KIND:group\n";
+    vcData += "ORG:" + org + ";;\n";
+    vcData += "NICKNAME:" + nickname + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + getRevDate() + "\n";
+    vcData += "NOTE:" + note + "\n";
+    if (curGroup.MEMBER != undefined) {
+      for (var i=0; i<curGroup.MEMBER.length; i++) {
+        // no need for mailto: here - it's in the value
+        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+      }; 
+    };
+    vcData += "END:VCARD";
+    
+    this.updateEntry(vcData,curGroup.href,curGroup.etag);
+  };
+    
   // **********************
   // LOCATION FORM HANDLING
   // **********************
@@ -761,7 +808,7 @@ var bwAddressBook = function() {
         details += '<table id="groupMembers">';
         for (var i=0; i < curCard.MEMBER.length; i++) {
           details += '<tr><td>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1) + '</td>';
-          details += '<td><a href="#" class="bwRemoveMember" id="bwRemoveMember-' + i + '">' + bwAbDispDetailsRemoveMember + '</a></td></tr>';
+          details += '<td><a href="#" class="bwRemoveMember">' + bwAbDispDetailsRemoveMember + '</a></td></tr>';
         }
         details += '<tr id="memberRemovalRow"><td></td><td>';
         details += '<button id="commitMemberRemoval">' + bwAbDispDetailsCommitMemberRemoval + '</button> ';
@@ -783,9 +830,10 @@ var bwAddressBook = function() {
     if (curKind == "group") {
       // remove a member
       $(".bwRemoveMember").click(function() {
-        // get the id of the table cell for parsing
-        var memberId = $(this).attr("id").substr($(this).attr("id").indexOf("-")+1);
-        curCard.MEMBER.splice(memberId,1);
+        // get the position of the current table row - it is the same as the object in the json object
+        var position = $(this).parents("tr").index()-1;
+        // remove the member
+        curCard.MEMBER.splice(position,1);
         // hide the current row
         $(this).parent().parent().fadeTo(350, 0, function () { 
           $(this).remove();
@@ -794,12 +842,12 @@ var bwAddressBook = function() {
         $("#memberRemovalRow").show();
       });
       
-      //commit member removals to server
+      // commit member removals to server
       $("#commitMemberRemoval").click(function() {
-        bwAddrBook.updateGroup(curCard);    
+        bwAddrBook.updateGroupMembers(curCard);    
       });
 
-      //cancel member removals
+      // cancel member removals
       $("#cancelMemberRemoval").click(function() {
         // for now, just round trip to restore original state
         window.location.reload();    
