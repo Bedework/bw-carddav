@@ -167,7 +167,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
             var rawline = lines[i + 1];
             if (rawline.substring(0,1) == ' ') {
               //append this line and avoid processing it the next time through the loop
-              bwJsonObj += rawline;
+              bwJsonObj += rawline.replace(/\\,/g,",");
               i++;
             } else {
               //if the next line doesn't begin with space, move on.
@@ -188,7 +188,8 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
         for (y=1;y<attributeInfo.length;y++) {
           bwJsonObj += '"' + attributeInfo[y] + '" : ';
           if (y<=attributeFieldValues.length) {
-            bwJsonObj += '"' + attributeFieldValues[y-1] + '"';
+            // replace \, with ,  
+            bwJsonObj += '"' + attributeFieldValues[y-1].replace(/\\,/g,",") + '"';
           } else {
             //avoid undefines
             bwJsonObj += '""';
