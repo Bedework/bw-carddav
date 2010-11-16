@@ -400,6 +400,9 @@ button {
 .bwInternalField {
 	padding-left: 0.4em;
 }
+#bwImportText {
+	margin-bottom: 1em;
+}
 .invisible {
   display: none;
 }

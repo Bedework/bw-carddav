@@ -20,6 +20,7 @@
 /** Bedework Address Book javascript client functions
  *
  * @author Arlen Johnson       johnsa - rpi.edu
+ * 
  */
 
 var userid = "";
@@ -344,7 +345,9 @@ var bwAddressBook = function() {
       success: function(responseData, status){
         var serverMsg = "\n" + status + ": " + responseData;
         showMessage(bwAbDispSuccessTitle,bwAbDispSuccessfulAdd + serverMsg,true);
-        clearFields(formId);
+        if (formId) {
+          clearFields(formId);
+        }
         window.location.reload(); // this is temporary - for now, just re-fetch the data from the server to redisplay the cards.
       },
       error: function(msg) {
@@ -442,16 +445,54 @@ var bwAddressBook = function() {
   // ********************
   
   this.importVcards = function() {
-    var fileName = $("#bwImportFilename").val();
-    var currVcards = new Array();
+    var vcardData = $("#bwImportText").val();
+    var currCards = new Array();
+    var successMessages = "";
+    currCards = separateIntoCards(vcardData);
     
-    $.get(fileName, function(data) {
-        currVcards = separateIntoCards(data);
-        for (var i=0;i<vcards.length;i++) {    
-          var newUUID = "BwABC-" + Math.uuid();      
-          this.addEntry(currVcards[i],newUUID,"#importForm");
+    for (var i=0; i < currCards.length; i++) {    
+      // get the UUID
+      var UUID = getUUID(currCards[i]);
+      // is it new?
+      var isNew = true;
+      
+      // no UID?  Make one.
+      if (!UUID) {
+        UUID = "BwABC-Imp-" + Math.uuid();
+      } else {
+        // see if we already have one with this UUID
+        // isNew = false;
+      }
+            
+      var addrBookUrl = bwAddressBook.defPersBookUrl;
+      
+      $.ajax({
+        type: "put",
+        url: addrBookUrl + UUID + ".vcf",
+        data: currCards[i],
+        dataType: "text",
+        processData: false,
+        beforeSend: function(xhrobj) {
+          if (isNew) {
+            xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
+            xhrobj.setRequestHeader("If-None-Match", "*");
+            xhrobj.setRequestHeader("Content-Type", "text/vcard");
+          }
+        },
+        success: function(responseData, status){
+          successMessages += status + " " + responseData + "<br/>";
+          showMessage(bwAbDispImportStatus,successMessages,true); 
+          clearFields("#importForm");
+          window.location.reload();
+        },
+        error: function(msg) {
+          // there was a problem
+          successMessages += status + " " + responseData + "<br/>";
+          showError(msg.status + " " + msg.statusText);
         }
-     });
+      });
+    };
+    
   };
 
   // *******************
@@ -1354,6 +1395,18 @@ function getRevDate() {
   revDate += String(now.getUTCSecondsFull()) + "Z";
    
   return revDate;
+}
+
+//return the UUID of a vcard
+function getUUID(vcard) {
+  var lines = vcard.split('\n');
+  for (var i=0;i<lines.length;i++) {
+   var line = $.trim(lines[i]);
+   if(line.indexOf("UID:")!= -1) {
+     return line.substring(line.indexOf(":")+1);
+   }
+  }   
+  return false;
 }
 
 /****************************

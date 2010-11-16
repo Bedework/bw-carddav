@@ -62,6 +62,10 @@ function clearFields(formId) {
   });
 }
 
+/****************************
+ * MESSAGE AND ERROR BOXES:
+ ****************************/
+
 function showError(err) {
   var $dialog = $('<div></div>')
   .html(err)
@@ -103,10 +107,6 @@ function showConfirm(title,msg) {
     }
   });
   $dialog.dialog('open');
-}
-
-function stripHtml(stringVal) {
-  return stringVal.replace(/<(.|\n)*?>/g, '');
 }
 
 /****************************
@@ -163,29 +163,5 @@ Date.prototype.getUTCSecondsFull = function() {
 // see also the ESAPI library included with this project
 String.prototype.stripTags = function () {
   return this.replace(/<([^>]+)>/g,'');
-}
-
-//temporary holding
-function separateIntoCards(data) {
-  var lines = data.split('\n');
-  var buffer = "";
-  vcardsIndex = 0; 
-  for (var i=0;i<lines.length;i++) {
-    var line = $.trim(lines[i]);
-    switch (line) {
-      case 'BEGIN:VCARD':
-         buffer = line + '\n'; 
-         // $("#filediv").append(buffer);
-         break;
-      case 'END:VCARD':
-         buffer += line + '\n';
-         vcards[vcardsIndex] = buffer;
-         vcardsIndex++;
-         break;
-      default:
-         buffer += line + '\n';
-         // $("#filediv").append("***" + line + "***<br>")
-    }
-  }
 }
 

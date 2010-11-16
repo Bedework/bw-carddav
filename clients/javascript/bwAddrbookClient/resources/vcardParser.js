@@ -20,6 +20,7 @@
 /** Bedework Address Book vcard parsing functions
  *
  * @author Barry Leibson
+ * 
  */
 
 function parsexml(xml,vcardsArray) {
@@ -214,3 +215,26 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   vcardsArray.push(bwJsonObj);
 }
 
+// return an array of vcards from a list of vcards
+function separateIntoCards(data) {
+  var vcards = new Array();
+  var lines = data.split('\n');
+  var buffer = "";
+  var vcardsIndex = 0; 
+  for (var i=0;i<lines.length;i++) {
+    var line = $.trim(lines[i]);
+    switch (line) {
+      case 'BEGIN:VCARD':
+         buffer = line + '\n'; 
+         break;
+      case 'END:VCARD':
+         buffer += line + '\n';
+         vcards[vcardsIndex] = buffer;
+         vcardsIndex++;
+         break;
+      default:
+         buffer += line + '\n';
+    }
+  }
+  return vcards;
+}

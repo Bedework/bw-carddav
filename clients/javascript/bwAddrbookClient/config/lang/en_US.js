@@ -72,6 +72,7 @@ var bwAbDispNoMemberAddEmail = "Entries without an email address may not be adde
 var bwAbDispNoMemberAddGroup = "You may not add groups to groups.";
 var bwAbDispAlreadyAMemberTitle = "Already a Member";
 var bwAbDispAlreadyAMember = "This entry is already a member of this group";
+var bwAbDispImportStatus = "Import Status";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";

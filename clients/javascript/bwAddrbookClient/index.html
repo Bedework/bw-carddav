@@ -400,12 +400,14 @@
           <h3>Import Contacts</h3>
           <form id="importForm" action="#import" method="post">
             <fieldset> 
-              <legend>Contacts must be in vCard format</legend>
+              <legend>vCard Data</legend>
               <div class="bwFormData">
                               
-                <label class="bwField" for="bwImportFilename">vCard File:</label>
+                <label class="bwField" for="bwImportFilename">
+                  Copy the contents of a vCard file into the box and click "import".
+                </label>
                 <div class="bwValue">
-                  <input type="file" size="45" value="" id="bwImportFilename"/>
+                  <textarea rows="12" cols="60" id="bwImportText"></textarea>
                 </div>
                 
               </div>
@@ -414,6 +416,7 @@
               <button id="submitImport" class="add" type="button">Import</button>
               <button id="cancelImport" class="cancel" type="button">Cancel</button>
             </div>
+            <p>Note: at the moment this will balk on vcards you already have in the system (update will work shortly)</p>
           </form>
         </li>
       </ul>
