@@ -165,3 +165,27 @@ String.prototype.stripTags = function () {
   return this.replace(/<([^>]+)>/g,'');
 }
 
+//temporary holding
+function separateIntoCards(data) {
+  var lines = data.split('\n');
+  var buffer = "";
+  vcardsIndex = 0; 
+  for (var i=0;i<lines.length;i++) {
+    var line = $.trim(lines[i]);
+    switch (line) {
+      case 'BEGIN:VCARD':
+         buffer = line + '\n'; 
+         // $("#filediv").append(buffer);
+         break;
+      case 'END:VCARD':
+         buffer += line + '\n';
+         vcards[vcardsIndex] = buffer;
+         vcardsIndex++;
+         break;
+      default:
+         buffer += line + '\n';
+         // $("#filediv").append("***" + line + "***<br>")
+    }
+  }
+}
+

@@ -320,7 +320,7 @@ var bwAddressBook = function() {
   };
    
   // *********************
-  // CONTACT FORM HANDLING
+  // FORM HANDLING
   // *********************
   
   // add an entry to the vcard server
@@ -383,8 +383,8 @@ var bwAddressBook = function() {
     });
   }
   
-  this.addContact = function() {
-    // create the UUID
+  this.addContact = function() { 
+    // Create the UUID
     var newUUID = "BwABC-" + Math.uuid();
     
     // build the vcard
@@ -435,6 +435,23 @@ var bwAddressBook = function() {
     vcData += "END:VCARD";
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#contactForm");
+  };
+
+  // ********************
+  // IMPORT FORM HANDLING
+  // ********************
+  
+  this.importVcards = function() {
+    var fileName = $("#bwImportFilename").val();
+    var currVcards = new Array();
+    
+    $.get(fileName, function(data) {
+        currVcards = separateIntoCards(data);
+        for (var i=0;i<vcards.length;i++) {    
+          var newUUID = "BwABC-" + Math.uuid();      
+          this.addEntry(currVcards[i],newUUID,"#importForm");
+        }
+     });
   };
 
   // *******************
@@ -614,7 +631,7 @@ var bwAddressBook = function() {
   this.addLocation = function() {
     // Create the UUID
     var newUUID = "BwABC-" + Math.uuid();
-        
+   
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
     vcData += "UID:" + newUUID + "\n";
@@ -1069,6 +1086,7 @@ $(document).ready(function() {
     showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
     return false;
   });
+  
   /* disable book droppables for now - while we have only one assumed 
    * droppable book, additions will be made directly from 
    * search results     
@@ -1199,6 +1217,17 @@ $(document).ready(function() {
   
   $("#cancelLocation").click(function() {
     clearFields("#locationForm");
+    showPage("bw-list");
+  });
+  
+  
+  // import vcards
+  $("#submitImport").click(function() {
+    bwAddrBook.importVcards();
+  });
+  
+  $("#cancelImport").click(function() {
+    clearFields("#importForm");
     showPage("bw-list");
   });
   
