@@ -39,8 +39,9 @@ body {
   border: 1px solid #aaf;
   width: 200px;
 }
-ul#add {
-  margin: 0;
+ul.topMenu {
+	float: left;
+  margin: 0 0.5em 0 0;
   padding: 0;
   list-style: none;
   cursor: pointer;
@@ -63,15 +64,21 @@ li.contact {
 li.location {
   list-style-image: url("icons/silk/building.png");
 }
+li.import {
+  list-style-image: url("icons/silk/arrow_in.png");
+}
+li.export {
+  list-style-image: url("icons/silk/arrow_out.png");
+}
 .droppableHighlight {
 	background-color: #eef !important;
 	color: black;
 }
-ul#add li {
+ul.topMenu li {
   background-color: #eef;
   padding: 0.15em 1em 0.3em 5px;
 }
-ul#add ul {
+ul.topMenu ul {
   display:  none;
   position: absolute;
   left: -1px;
@@ -81,14 +88,14 @@ ul#add ul {
   border: 1px solid #aaf;
   list-style: disc inside none;
 }
-ul#add ul li { 
+ul.topMenu ul li { 
 	padding: 0.25em 0.5em 0.25em 0.5em; 
 }
-ul#add ul li:hover { 
+ul.topMenu ul li:hover { 
 	background-color: #ff9; 
 	color: #333;
 }
-ul#add li:hover ul { 
+ul.topMenu li:hover ul { 
 	display:  block; 
 	background-color: #eef;
 	color: #333; 

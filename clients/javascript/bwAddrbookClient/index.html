@@ -39,6 +39,7 @@
     <script type="text/javascript" src="resources/Math.uuid.js"></script>
     <script type="text/javascript" src="config/config.js"></script>
     <script type="text/javascript" src="resources/addressbook.js"></script>
+    <script type="text/javascript" src="resources/addressbookUtil.js"></script>
     <script type="text/javascript" src="resources/vcardParser.js"></script>
   </head>
   <body>
@@ -50,7 +51,7 @@
         <input type="text" id="search" value=""/>
         <button id="searchButton">filter...</button>
       </div>
-      <ul id="add">
+      <ul id="add" class="topMenu">
         <li>
           <ul>
             <li class="contact" id="addContact">
@@ -64,6 +65,19 @@
             </li>
           </ul>
           add...
+        </li>
+      </ul>
+      <ul id="import" class="topMenu">
+        <li>
+          <ul>
+            <li class="import" id="importContacts">
+              import
+            </li>
+            <li class="export" id="exportContacts">
+              export
+            </li>
+          </ul>
+          tools...
         </li>
       </ul>
     </div>
@@ -379,6 +393,26 @@
             <div class="submitBlock">
               <button id="submitLocation" class="add" type="button">Add Location</button>
               <button id="cancelLocation" class="cancel" type="button">Cancel</button>
+            </div>
+          </form>
+        </li>
+        <li id="bw-import"  class="invisible content-block">
+          <h3>Import Contacts</h3>
+          <form id="importForm" action="#import" method="post">
+            <fieldset> 
+              <legend>Contacts must be in vCard format</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="bwImportFilename">vCard File:</label>
+                <div class="bwValue">
+                  <input type="file" size="45" value="" id="bwImportFilename"/>
+                </div>
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitImport" class="add" type="button">Import</button>
+              <button id="cancelImport" class="cancel" type="button">Cancel</button>
             </div>
           </form>
         </li>

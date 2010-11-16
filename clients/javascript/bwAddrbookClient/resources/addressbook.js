@@ -201,7 +201,7 @@ var bwAddressBook = function() {
         var kind = "individual";
         var kindIcon = "resources/icons/silk/user.png";
         if (curCard.KIND != undefined && curCard.KIND[0].value != "") {
-          kind = curCard.KIND[0].value;
+          kind = curCard.KIND[0].value.stripTags();
           switch(kind) {
             case "group" :
               // NOTE: showing groups in the list is now deprecated,
@@ -217,7 +217,7 @@ var bwAddressBook = function() {
         // get the fn - needed for both groups and other entries
         var fn ="";
         if(curCard.FN != undefined) { 
-          fn = curCard.FN[0].value; 
+          fn = curCard.FN[0].value.stripTags(); 
         }
         
         if (kind == "group") { 
@@ -233,34 +233,34 @@ var bwAddressBook = function() {
           var familyName ="";
           if(curCard.N != undefined) { 
             if(curCard.N[0].values.family_name != undefined) { 
-              familyName = curCard.N[0].values.family_name; 
+              familyName = curCard.N[0].values.family_name.stripTags(); 
             }
           }
           var givenNames ="";
           if(curCard.N != undefined) { 
             if(curCard.N[0].values.given_names != undefined) { 
-              givenNames = curCard.N[0].values.given_names; 
+              givenNames = curCard.N[0].values.given_names.stripTags(); 
             }
           }
           var tel ="";
           if(curCard.TEL != undefined) { 
-            tel = curCard.TEL[0].values.number; 
+            tel = curCard.TEL[0].values.number.stripTags(); 
           }
           var email ="";
           if(curCard.EMAIL != undefined) { 
-            email = curCard.EMAIL[0].value; 
+            email = curCard.EMAIL[0].value.stripTags(); 
           }
           var title = "";
           if(curCard.TITLE != undefined) { 
-            title = curCard.TITLE[0].value; 
+            title = curCard.TITLE[0].value.stripTags(); 
           }
           var org = "";
           if(curCard.ORG != undefined) { 
-            org = curCard.ORG[0].values.organization_name; 
+            org = curCard.ORG[0].values.organization_name.stripTags(); 
           }
           var url = "";
           if(curCard.URL != undefined) { 
-            url = curCard.URL[0].value; 
+            url = curCard.URL[0].value.stripTags(); 
           }
           
           listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
@@ -505,7 +505,7 @@ var bwAddressBook = function() {
       // check to see if the entry is already in the group and abort if so
       if (curGroup.MEMBER != undefined) {
         for(var i=0; i<curGroup.MEMBER.length; i++) {
-          if(curGroup.MEMBER[i].value == "mailto:" + curMember.EMAIL[0].value) {
+          if(curGroup.MEMBER[i].value.stripTags() == "mailto:" + curMember.EMAIL[0].value.stripTags()) {
             showMessage(bwAbDispAlreadyAMemberTitle,bwAbDispAlreadyAMember,true);
             return;
           }
@@ -516,19 +516,19 @@ var bwAddressBook = function() {
       // check for the existence of the properties (UID must be ok or we should simply fail out)
       var fn ="";
       if(curGroup.FN != undefined) { 
-        fn = curGroup.FN[0].value; 
+        fn = curGroup.FN[0].value.stripTags(); 
       }
       var nickname ="";
       if(curGroup.NICKNAME != undefined) { 
-        nickname = curGroup.NICKNAME[0].value; 
+        nickname = curGroup.NICKNAME[0].value.stripTags(); 
       }
       var org = "";
       if(curGroup.ORG != undefined) { 
-        org = curGroup.ORG[0].values.organization_name; 
+        org = curGroup.ORG[0].values.organization_name.stripTags(); 
       }
       var note = "";
       if(curGroup.NOTE != undefined) { 
-        url = curGroup.NOTE[0].value; 
+        url = curGroup.NOTE[0].value.stripTags(); 
       } 
       
       // now let's build the vcard
@@ -546,11 +546,11 @@ var bwAddressBook = function() {
       if (curGroup.MEMBER != undefined) {
         for (var i=0; i<curGroup.MEMBER.length; i++) {
           // no need for mailto: here - it's in the value
-          vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+          vcData += "MEMBER:" + curGroup.MEMBER[i].value.stripTags() + "\n";
         }; 
       };
       // now tag on the new member:
-      vcData += "MEMBER:mailto:" + curMember.EMAIL[0].value + "\n";
+      vcData += "MEMBER:mailto:" + curMember.EMAIL[0].value.stripTags() + "\n";
       vcData += "END:VCARD";
       
       this.updateEntry(vcData,curGroup.href,curGroup.etag);
@@ -569,19 +569,19 @@ var bwAddressBook = function() {
     // check for the existence of the properties (UID must be ok or we should simply fail out)
     var fn ="";
     if(curGroup.FN != undefined) { 
-      fn = curGroup.FN[0].value; 
+      fn = curGroup.FN[0].value.stripTags(); 
     }
     var nickname ="";
     if(curGroup.NICKNAME != undefined) { 
-      nickname = curGroup.NICKNAME[0].value; 
+      nickname = curGroup.NICKNAME[0].value.stripTags(); 
     }
     var org = "";
     if(curGroup.ORG != undefined) { 
-      org = curGroup.ORG[0].values.organization_name; 
+      org = curGroup.ORG[0].values.organization_name.stripTags(); 
     }
     var note = "";
     if(curGroup.NOTE != undefined) { 
-      url = curGroup.NOTE[0].value; 
+      url = curGroup.NOTE[0].value.stripTags(); 
     } 
     
     // now let's build the vcard
@@ -732,45 +732,45 @@ var bwAddressBook = function() {
     // If no kind, attempt to use "individual".
     var curKind = "individual";
     if (curCard.KIND != undefined) {
-      curKind = curCard.KIND[0].value;
+      curKind = curCard.KIND[0].value.stripTags();
     } 
     
     // build the details    
     // full name
     details += '<h1 class="' + curKind + '">';
     if(curCard.FN != undefined) { 
-      details += curCard.FN[0].value; 
+      details += curCard.FN[0].value.stripTags(); 
     }
     details += '</h1>';
     
     details += '<table id="bwDetailsTable">';
     // title
     if (curCard.TITLE != undefined && curCard.TITLE[0].value != "") {
-      details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + curCard.TITLE[0].value + '</td></tr>';
+      details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + curCard.TITLE[0].value.stripTags() + '</td></tr>';
     }
     // organization
     if(curCard.ORG != undefined && curCard.ORG[0].values.organization_name != "") {
-      details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + curCard.ORG[0].values.organization_name + '</td></tr>';
+      details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + curCard.ORG[0].values.organization_name.stripTags() + '</td></tr>';
     }
     // nickname
     if(curCard.NICKNAME != undefined && curCard.NICKNAME[0].value != "") {
-      details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.NICKNAME[0].value + '</td></tr>';
+      details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.NICKNAME[0].value.stripTags() + '</td></tr>';
     }
     // telephone number(s)
     if (curCard.TEL != undefined) {
       for (var i=0; i < curCard.TEL.length; i++) {
-        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsPhone + '</td><td>' + curCard.TEL[i].values.number + '</td></tr>';
+        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsPhone.stripTags() + '</td><td>' + curCard.TEL[i].values.number.stripTags() + '</td></tr>';
       }
     }
     // email address(es)
     if(curCard.EMAIL != undefined) { 
       for (var i=0; i < curCard.EMAIL.length; i++) {
-        details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + curCard.EMAIL[i].value + '">' + curCard.EMAIL[i].value + '</a></td></tr>';
+        details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + curCard.EMAIL[i].value.stripTags() + '">' + curCard.EMAIL[i].value.stripTags() + '</a></td></tr>';
       }
     }
     // url
     if (curCard.URL != undefined && curCard.URL[0].value != "") {
-      details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + curCard.URL[0].value + '">' + curCard.URL[0].value + '</a></td></tr>';
+      details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + curCard.URL[0].value.stripTags() + '">' + curCard.URL[0].value.stripTags() + '</a></td></tr>';
     }
     // address(es)
     if(curCard.ADR != undefined) { 
@@ -778,25 +778,25 @@ var bwAddressBook = function() {
         details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsAddress + '</td><td>';
         // output the address details:
         if (curCard.ADR[i].values.po_box != undefined && curCard.ADR[i].values.po_box != "") {
-          details += curCard.ADR[i].values.po_box + "<br/>";
+          details += curCard.ADR[i].values.po_box.stripTags() + "<br/>";
         }
         if (curCard.ADR[i].values.extended_address != undefined && curCard.ADR[i].values.extended_address != "") {
-          details += curCard.ADR[i].values.extended_address + "<br/>";
+          details += curCard.ADR[i].values.extended_address.stripTags() + "<br/>";
         }
         if (curCard.ADR[i].values.street_address != undefined && curCard.ADR[i].values.street_address != "") {
-          details += curCard.ADR[i].values.street_address + "<br/>";
+          details += curCard.ADR[i].values.street_address.stripTags() + "<br/>";
         }
         if (curCard.ADR[i].values.locality != undefined && curCard.ADR[i].values.locality != "") {
-          details += curCard.ADR[i].values.locality;
+          details += curCard.ADR[i].values.locality.stripTags();
         }
         if (curCard.ADR[i].values.state != undefined && curCard.ADR[i].values.state != "") {
-          details += ", " + curCard.ADR[i].values.state + " ";
+          details += ", " + curCard.ADR[i].values.state.stripTags() + " ";
         }
         if (curCard.ADR[i].values.postal_code != undefined && curCard.ADR[i].values.postal_code != "") {
-          details += curCard.ADR[i].values.postal_code + "<br/>";
+          details += curCard.ADR[i].values.postal_code.stripTags() + "<br/>";
         }
         if (curCard.ADR[i].values.country != undefined && curCard.ADR[i].values.country != "") {
-          details += curCard.ADR[i].values.country;
+          details += curCard.ADR[i].values.country.stripTags();
         }
         details += '</td></tr>';
       }
@@ -807,7 +807,7 @@ var bwAddressBook = function() {
         details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsGroupMembers + '</td><td>';
         details += '<table id="groupMembers">';
         for (var i=0; i < curCard.MEMBER.length; i++) {
-          details += '<tr><td>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1) + '</td>';
+          details += '<tr><td>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1).stripTags() + '</td>';
           details += '<td><a href="#" class="bwRemoveMember">' + bwAbDispDetailsRemoveMember + '</a></td></tr>';
         }
         details += '<tr id="memberRemovalRow"><td></td><td>';
@@ -818,7 +818,7 @@ var bwAddressBook = function() {
     }
     // note
     if(curCard.NOTE != undefined && curCard.NOTE[0].value != "") {
-      details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + curCard.NOTE[0].value + '</td></tr>';
+      details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + curCard.NOTE[0].value.stripTags() + '</td></tr>';
     }
     details += '</table>';
             
@@ -900,7 +900,7 @@ $(document).ready(function() {
         qsParameters[d(e[1])] = d(e[2]);
       }
   })();
-  userid = stripHtml(qsParameters.user);
+  userid = qsParameters.user.stripTags();
   
   
   // Create the three-panel layout
@@ -1059,6 +1059,16 @@ $(document).ready(function() {
     showPage("bw-modResource");
   });
   
+  // show form for import
+  $("#importContacts").click(function() {
+    showPage("bw-import");
+  });
+  
+  // do a global export
+  $("#exportContacts").click(function() {
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
+    return false;
+  });
   /* disable book droppables for now - while we have only one assumed 
    * droppable book, additions will be made directly from 
    * search results     
@@ -1245,61 +1255,61 @@ function setupFormFields(curCard,kind) {
   // branch on the KIND of vcard to fill the correct form
   switch(kind) {
     case "location" :
-      if (curCard.FN != undefined) $("#LOCATION-NAME").val(curCard.FN[0].value);
-      if (curCard.ORG != undefined) $("#LOCATION-ORG").val(curCard.ORG[0].values.organization_name);
-      if (curCard.NICKNAME != undefined) $("#LOCATION-NICKNAME").val(curCard.NICKNAME[0].value);
-      if (curCard.EMAIL != undefined) $("#LOCATION-EMAIL").val(curCard.EMAIL[0].value);
-      if (curCard.TEL != undefined) $("#LOCATION-PHONE").val(curCard.TEL[0].values.number);
+      if (curCard.FN != undefined) $("#LOCATION-NAME").val(curCard.FN[0].value.stripTags());
+      if (curCard.ORG != undefined) $("#LOCATION-ORG").val(curCard.ORG[0].values.organization_name.stripTags());
+      if (curCard.NICKNAME != undefined) $("#LOCATION-NICKNAME").val(curCard.NICKNAME[0].value.stripTags());
+      if (curCard.EMAIL != undefined) $("#LOCATION-EMAIL").val(curCard.EMAIL[0].value.stripTags());
+      if (curCard.TEL != undefined) $("#LOCATION-PHONE").val(curCard.TEL[0].values.number.stripTags());
       if (curCard.ADR != undefined) {
-        $("#LOCATION-POBOX").val(curCard.ADR[0].values.po_box);
-        $("#LOCATION-EXTADDR").val(curCard.ADR[0].values.extended_address);
-        $("#LOCATION-STREET").val(curCard.ADR[0].values.street_address);
-        $("#LOCATION-CITY").val(curCard.ADR[0].values.locality);
-        $("#LOCATION-STATE").val(curCard.ADR[0].values.state);
-        $("#LOCATION-POSTAL").val(curCard.ADR[0].values.postal_code);
-        $("#LOCATION-COUNTRY").val(curCard.ADR[0].values.country);
+        $("#LOCATION-POBOX").val(curCard.ADR[0].values.po_box.stripTags());
+        $("#LOCATION-EXTADDR").val(curCard.ADR[0].values.extended_address.stripTags());
+        $("#LOCATION-STREET").val(curCard.ADR[0].values.street_address.stripTags());
+        $("#LOCATION-CITY").val(curCard.ADR[0].values.locality.stripTags());
+        $("#LOCATION-STATE").val(curCard.ADR[0].values.state.stripTags());
+        $("#LOCATION-POSTAL").val(curCard.ADR[0].values.postal_code.stripTags());
+        $("#LOCATION-COUNTRY").val(curCard.ADR[0].values.country.stripTags());
         // $("#GEO-01").val(curCard.URL[0].value); -- set when we have geo working
       }
-      if (curCard.URL != undefined) $("#LOCATION-WEBPAGE").val(curCard.URL[0].value);
-      if (curCard.PHOTO != undefined) $("#LOCATION-PHOTOURL").val(curCard.PHOTO[0].value);
-      if (curCard.NOTE != undefined) $("#LOCATION-NOTE").val(curCard.NOTE[0].value);
+      if (curCard.URL != undefined) $("#LOCATION-WEBPAGE").val(curCard.URL[0].value.stripTags());
+      if (curCard.PHOTO != undefined) $("#LOCATION-PHOTOURL").val(curCard.PHOTO[0].value.stripTags());
+      if (curCard.NOTE != undefined) $("#LOCATION-NOTE").val(curCard.NOTE[0].value.stripTags());
       break;
     case "group" :
-      if (curCard.FN != undefined) $("#GROUP-NAME").val(curCard.FN[0].value);
-      if (curCard.ORG != undefined) $("#GROUP-ORG").val(curCard.ORG[0].values.organization_name);
-      if (curCard.NICKNAME != undefined) $("#GROUP-NICKNAME").val(curCard.NICKNAME[0].value);
+      if (curCard.FN != undefined) $("#GROUP-NAME").val(curCard.FN[0].value.stripTags());
+      if (curCard.ORG != undefined) $("#GROUP-ORG").val(curCard.ORG[0].values.organization_name.stripTags());
+      if (curCard.NICKNAME != undefined) $("#GROUP-NICKNAME").val(curCard.NICKNAME[0].value.stripTags());
       break;
     default: // this is the "individual" KIND
       if (curCard.N != undefined) {
-        $("#FIRSTNAME").val(curCard.N[0].values.given_names);
-        $("#LASTNAME").val(curCard.N[0].values.family_name);
+        $("#FIRSTNAME").val(curCard.N[0].values.given_names.stripTags());
+        $("#LASTNAME").val(curCard.N[0].values.family_name.stripTags());
       }
-      if (curCard.ORG != undefined) $("#ORG").val(curCard.ORG[0].values.organization_name);
-      if (curCard.TITLE != undefined) $("#TITLE").val(curCard.TITLE[0].value);
-      if (curCard.NICKNAME != undefined) $("#NICKNAME").val(curCard.NICKNAME[0].value);
-      if (curCard.TITLE != undefined) $("#TITLE").val(curCard.TITLE[0].value);
+      if (curCard.ORG != undefined) $("#ORG").val(curCard.ORG[0].values.organization_name.stripTags());
+      if (curCard.TITLE != undefined) $("#TITLE").val(curCard.TITLE[0].value.stripTags());
+      if (curCard.NICKNAME != undefined) $("#NICKNAME").val(curCard.NICKNAME[0].value.stripTags());
+      if (curCard.TITLE != undefined) $("#TITLE").val(curCard.TITLE[0].value.stripTags());
       if (curCard.EMAIL != undefined) {
-        $("#EMAILTYPE-01").val(curCard.EMAIL[0].params['parameter-value']); // this won't do
-        $("#EMAIL-01").val(curCard.EMAIL[0].value);
+        $("#EMAILTYPE-01").val(curCard.EMAIL[0].params['parameter-value'].stripTags()); // this won't do
+        $("#EMAIL-01").val(curCard.EMAIL[0].value.stripTags());
       }
       if (curCard.TEL != undefined) {
-        $("#PHONETYPE-01").val(curCard.TEL[0].params['parameter-value']); // this won't do
-        $("#PHONE-01").val(curCard.TEL[0].values.number);
+        $("#PHONETYPE-01").val(curCard.TEL[0].params['parameter-value'].stripTags()); // this won't do
+        $("#PHONE-01").val(curCard.TEL[0].values.number.stripTags());
       }
       if (curCard.ADR != undefined) {
-        $("#ADDRTYPE-01").val(curCard.ADR[0].params['parameter-value']); // also won't do
-        $("#POBOX-01").val(curCard.ADR[0].values.po_box);
-        $("#EXTADDR-01").val(curCard.ADR[0].values.extended_address);
-        $("#STREET-01").val(curCard.ADR[0].values.street_address);
-        $("#CITY-01").val(curCard.ADR[0].values.locality);
-        $("#STATE-01").val(curCard.ADR[0].values.state);
-        $("#POSTAL-01").val(curCard.ADR[0].values.postal_code);
-        $("#COUNTRY-01").val(curCard.ADR[0].values.country);
+        $("#ADDRTYPE-01").val(curCard.ADR[0].params['parameter-value'].stripTags()); // also won't do
+        $("#POBOX-01").val(curCard.ADR[0].values.po_box.stripTags());
+        $("#EXTADDR-01").val(curCard.ADR[0].values.extended_address.stripTags());
+        $("#STREET-01").val(curCard.ADR[0].values.street_address.stripTags());
+        $("#CITY-01").val(curCard.ADR[0].values.locality.stripTags());
+        $("#STATE-01").val(curCard.ADR[0].values.state.stripTags());
+        $("#POSTAL-01").val(curCard.ADR[0].values.postal_code.stripTags());
+        $("#COUNTRY-01").val(curCard.ADR[0].values.country.stripTags());
         //$("#GEO-01").val(curCard.URL[0].value); -- set when we have geo working
       }
-      if (curCard.URL != undefined) $("#WEBPAGE").val(curCard.URL[0].value);
-      if (curCard.PHOTO != undefined) $("#PHOTOURL").val(curCard.PHOTO[0].value);
-      if (curCard.NOTE != undefined) $("#NOTE").val(curCard.NOTE[0].value);
+      if (curCard.URL != undefined) $("#WEBPAGE").val(curCard.URL[0].value.stripTags());
+      if (curCard.PHOTO != undefined) $("#PHOTOURL").val(curCard.PHOTO[0].value.stripTags());
+      if (curCard.NOTE != undefined) $("#NOTE").val(curCard.NOTE[0].value.stripTags());
   };
 };
 
@@ -1396,10 +1406,6 @@ function showConfirm(title,msg) {
     }
   });
   $dialog.dialog('open');
-}
-
-function stripHtml(stringVal) {
-  return stringVal.replace(/<(.|\n)*?>/g, '');
 }
 
 /* UTC FORMATTERS */
