@@ -277,6 +277,11 @@ ul.topMenu li:hover ul {
 #bwDetailsTable #memberRemovalRow {
 	display: none;
 }
+.detailPhoto {
+	float: right;
+	clear: right;
+	margin: 1em 0 0 0;
+}
 #backToList {
 	margin-top: 3em;
 }

@@ -894,6 +894,7 @@ var bwAddressBook = function() {
   this.showDetails = function() {
     var details = "";
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
+    var fullName = "";
     
     // Get the current kind.
     // If no kind, attempt to use "individual".
@@ -904,11 +905,16 @@ var bwAddressBook = function() {
     
     // build the details    
     // full name
-    details += '<h1 class="' + curKind + '">';
     if(curCard.FN != undefined) { 
-      details += curCard.FN[0].value.stripTags(); 
+      fullName = curCard.FN[0].value.stripTags(); 
     }
-    details += '</h1>';
+    
+    details += '<h1 class="' + curKind + '">' + fullName + '</h1>';
+    
+    // picture
+    if(curCard.PHOTO != undefined) { 
+      details += '<div class="detailPhoto"><img src="' + curCard.PHOTO[0].value.stripTags() + '" alt="' + bwAbDispDetailsPhoto + fullName + '"/></div>'; 
+    }
     
     details += '<table id="bwDetailsTable">';
     // title
