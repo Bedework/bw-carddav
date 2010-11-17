@@ -447,8 +447,10 @@ var bwAddressBook = function() {
   this.importVcards = function() {
     var vcardData = $("#bwImportText").val();
     var curCards = new Array();
-    var successMessages = "";
+    var importMessages = "";
     curCards = separateIntoCards(vcardData);
+    
+    showMessage(bwAbDispImportProcessingTitle,bwAbDispImportProcessing,true); 
     
     for (var i=0; i < curCards.length; i++) {    
       // get the UUID
@@ -462,10 +464,10 @@ var bwAddressBook = function() {
         UUID = "BwABC-Imp-" + Math.uuid();
       } else {
         // see if we already have a card with this UUID
-        for (var i=0; i < bwAddressBook.books.length; i++) {
-          var book = bwAddressBook.books[i];
-          for (var j=0; j < book.vcards.length; j++) {
-            var existingCard = jQuery.parseJSON(book.vcards[j]);
+        for (var j=0; j < bwAddressBook.books.length; j++) {
+          var book = bwAddressBook.books[j];
+          for (var k=0; k < book.vcards.length; k++) {
+            var existingCard = jQuery.parseJSON(book.vcards[k]);
             if (existingCard.UID[0].value == UUID) {
               isNew = false;
               etag = existingCard.etag;
@@ -479,12 +481,13 @@ var bwAddressBook = function() {
       }
             
       var addrBookUrl = bwAddressBook.defPersBookUrl;
-      
+
       $.ajax({
         type: "put",
         url: addrBookUrl + UUID + ".vcf",
         data: curCards[i],
         dataType: "text",
+        async: false,
         processData: false,
         beforeSend: function(xhrobj) {
           xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
@@ -496,18 +499,19 @@ var bwAddressBook = function() {
           xhrobj.setRequestHeader("Content-Type", "text/vcard");
         },
         success: function(responseData, status){
-          successMessages += status + " " + responseData + "<br/>";
-          showMessage(bwAbDispImportStatus,successMessages,true); 
-          clearFields("#importForm");
-          window.location.reload();
+          importMessages += i + ". " + status + " " + responseData + "<br/>";
         },
         error: function(msg) {
           // there was a problem
-          successMessages += status + " " + responseData + "<br/>";
-          showError(msg.status + " " + msg.statusText);
+          importMessages += i + ". " + msg.status + " " + msg.statusText + "<br/>";
         }
       });
     };
+
+    // we can show all messages at the end because we are synchronous 
+    importMessages += '<div style="text-align: center; margin-top: 2em;"><button type="button" onclick="window.location.reload();">' + bwAbDispImportDoneButton + '</button>';
+    showMessage(bwAbDispImportStatus,importMessages,true); 
+    clearFields("#importForm");
     
   };
   
@@ -565,7 +569,15 @@ var bwAddressBook = function() {
         showError(error);
       }
     });
-  }
+  };
+  
+  // ******************************
+  // VIEW VCARD SERVER ADDRESS BOOK
+  // ******************************
+
+  this.viewBookUrl = function() {
+    var viewBookWindow = window.open(bwAddressBook.defPersBookUrl,"cardDAVBook");
+  };
 
   // *******************
   // GROUP FORM HANDLING
@@ -578,14 +590,14 @@ var bwAddressBook = function() {
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
     vcData += "UID:" + newUUID + "\n";
-    vcData += "FN:" + $("#GROUP-NAME").val() + "\n";
-    vcData += "N:" + $("#GROUP-NAME").val() + ";;;;\n";
+    vcData += "FN:" + $.trim($("#GROUP-NAME").val()) + "\n";
+    vcData += "N:" + $.trim($("#GROUP-NAME").val()) + ";;;;\n";
     vcData += "KIND:group\n";
-    vcData += "ORG:" + $("#GROUP-ORG").val() + ";;\n";
-    vcData += "NICKNAME:" + $("#GROUP-NICKNAME").val() + "\n";
+    vcData += "ORG:" + $.trim($("#GROUP-ORG").val()) + ";;\n";
+    vcData += "NICKNAME:" + $.trim($("#GROUP-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
+    vcData += "NOTE:" + $.trim($("#GROUP-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.addEntry(vcData,newUUID,"#groupForm");
@@ -597,14 +609,14 @@ var bwAddressBook = function() {
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
     vcData += "UID:" + curCard.UID[0].value + "\n";
-    vcData += "FN:" + $("#GROUP-NAME").val() + "\n";
-    vcData += "N:" + $("#GROUP-NAME").val() + ";;;;\n";
+    vcData += "FN:" + $.trim($("#GROUP-NAME").val()) + "\n";
+    vcData += "N:" + $.trim($("#GROUP-NAME").val()) + ";;;;\n";
     vcData += "KIND:group\n";
-    vcData += "ORG:" + $("#GROUP-ORG").val() + ";;\n";
-    vcData += "NICKNAME:" + $("#GROUP-NICKNAME").val() + "\n";
+    vcData += "ORG:" + $.trim($("#GROUP-ORG").val()) + ";;\n";
+    vcData += "NICKNAME:" + $.trim($("#GROUP-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "NOTE:" + $("#GROUP-NOTE").val() + "\n";
+    vcData += "NOTE:" + $.trim($("#GROUP-NOTE").val()) + "\n";
     if (curCard.MEMBER != undefined) {
       for (var i=0; i<curCard.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
@@ -680,7 +692,7 @@ var bwAddressBook = function() {
         }; 
       };
       // now tag on the new member:
-      vcData += "MEMBER:mailto:" + curMember.EMAIL[0].value.stripTags() + "\n";
+      vcData += "MEMBER:mailto:" + $.trim(curMember.EMAIL[0].value.stripTags()) + "\n";
       vcData += "END:VCARD";
       
       this.updateEntry(vcData,curGroup.href,curGroup.etag);
@@ -748,20 +760,20 @@ var bwAddressBook = function() {
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
     vcData += "UID:" + newUUID + "\n";
-    vcData += "FN:" + $("#LOCATION-NAME").val() + "\n";
-    vcData += "N:" + $("#LOCATION-NAME").val() + ";;;;\n";
+    vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
+    vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
     vcData += "KIND:location\n";
-    vcData += "ORG:" + $("#LOCATION-ORG").val() + ";;\n";
-    vcData += "NICKNAME:" + $("#LOCATION-NICKNAME").val() + "\n";
+    vcData += "ORG:" + $.trim($("#LOCATION-ORG").val()) + ";;\n";
+    vcData += "NICKNAME:" + $.trim($("#LOCATION-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "EMAIL:" + $("#LOCATION-EMAIL").val() + "\n";
-    vcData += "TEL:" + $("#LOCATION-PHONE").val() + "\n";  
-    vcData += "ADR:" + $("#LOCATION-POBOX").val() + ";" + $("#LOCATION-EXTADDR").val() + ";" + $("#LOCATION-STREET").val() + ";" + $("#LOCATION-CITY").val() + ";" +  $("#LOCATION-STATE").val() + ";" + $("#LOCATION-POSTAL").val() + ";" + $("#LOCATION-COUNTRY").val() + "\n";
-    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
-    vcData += "URL:" + $("#LOCATION-WEBPAGE").val() + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $("#LOCATION-PHOTOURL").val() + "\n";
-    vcData += "NOTE:" + $("#LOCATION-NOTE").val() + "\n";
+    vcData += "EMAIL:" + $.trim($("#LOCATION-EMAIL").val()) + "\n";
+    vcData += "TEL:" + $.trim($("#LOCATION-PHONE").val()) + "\n";  
+    vcData += "ADR:" + $.trim($("#LOCATION-POBOX").val()) + ";" + $.trim($("#LOCATION-EXTADDR").val()) + ";" + $.trim($("#LOCATION-STREET").val()) + ";" + $.trim($("#LOCATION-CITY").val()) + ";" +  $.trim($("#LOCATION-STATE").val()) + ";" + $.trim($("#LOCATION-POSTAL").val()) + ";" + $.trim($("#LOCATION-COUNTRY").val()) + "\n";
+    //vcData += "GEO:TYPE=" + $.trim($("#ADDRTYPE-01").val()) + ":geo:" + $.trim($("#GEO-01").val()) + "\n";;
+    vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
+    vcData += "PHOTO:VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
+    vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.addEntry(vcData,newUUID,"#locationForm");
@@ -773,20 +785,20 @@ var bwAddressBook = function() {
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
     vcData += "UID:" + curCard.UID[0].value + "\n";
-    vcData += "FN:" + $("#LOCATION-NAME").val() + "\n";
-    vcData += "N:" + $("#LOCATION-NAME").val() + ";;;;\n";
+    vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
+    vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
     vcData += "KIND:location\n";
-    vcData += "ORG:" + $("#LOCATION-ORG").val() + ";;\n";
-    vcData += "NICKNAME:" + $("#LOCATION-NICKNAME").val() + "\n";
+    vcData += "ORG:" + $.trim($("#LOCATION-ORG").val()) + ";;\n";
+    vcData += "NICKNAME:" + $.trim($("#LOCATION-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "EMAIL:" + $("#LOCATION-EMAIL").val() + "\n";
-    vcData += "TEL:" + $("#LOCATION-PHONE").val() + "\n";  
-    vcData += "ADR:" + $("#LOCATION-POBOX").val() + ";" + $("#LOCATION-EXTADDR").val() + ";" + $("#LOCATION-STREET").val() + ";" + $("#LOCATION-CITY").val() + ";" +  $("#LOCATION-STATE").val() + ";" + $("#LOCATION-POSTAL").val() + ";" + $("#LOCATION-COUNTRY").val() + "\n";
-    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
-    vcData += "URL:" + $("#LOCATION-WEBPAGE").val() + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $("#LOCATION-PHOTOURL").val() + "\n";
-    vcData += "NOTE:" + $("#LOCATION-NOTE").val() + "\n";
+    vcData += "EMAIL:" + $.trim($("#LOCATION-EMAIL").val()) + "\n";
+    vcData += "TEL:" + $.trim($("#LOCATION-PHONE").val()) + "\n";  
+    vcData += "ADR:" + $.trim($("#LOCATION-POBOX").val()) + ";" + $.trim($("#LOCATION-EXTADDR").val()) + ";" + $.trim($("#LOCATION-STREET").val()) + ";" + $.trim($("#LOCATION-CITY").val()) + ";" +  $.trim($("#LOCATION-STATE").val()) + ";" + $.trim($("#LOCATION-POSTAL").val()) + ";" + $.trim($("#LOCATION-COUNTRY").val()) + "\n";
+    //vcData += "GEO:TYPE=" + $.trim($("#ADDRTYPE-01").val()) + ":geo:" + $.trim($("#GEO-01").val()) + "\n";;
+    vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
+    vcData += "PHOTO:VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
+    vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#locationForm");
@@ -1197,6 +1209,11 @@ $(document).ready(function() {
   // do a global export
   $("#exportContacts").click(function() {
     bwAddrBook.exportVcards();
+  });
+  
+  //do a global export
+  $("#viewBookUrl").click(function() {
+    bwAddrBook.viewBookUrl();
   });
   
   /* disable book droppables for now - while we have only one assumed 

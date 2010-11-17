@@ -52,6 +52,9 @@ ul.topMenu {
   position: relative;
   white-space: nowrap;
 }
+ul#tools {
+	width: 140px;
+}
 li.empty {
 	list-style: none !important;
 }
@@ -69,6 +72,9 @@ li.import {
 }
 li.export {
   list-style-image: url("icons/silk/arrow_out.png");
+}
+li.viewUrl {
+  list-style-image: url("icons/silk/world_go.png");
 }
 .droppableHighlight {
 	background-color: #eef !important;
