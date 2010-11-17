@@ -446,22 +446,36 @@ var bwAddressBook = function() {
   
   this.importVcards = function() {
     var vcardData = $("#bwImportText").val();
-    var currCards = new Array();
+    var curCards = new Array();
     var successMessages = "";
-    currCards = separateIntoCards(vcardData);
+    curCards = separateIntoCards(vcardData);
     
-    for (var i=0; i < currCards.length; i++) {    
+    for (var i=0; i < curCards.length; i++) {    
       // get the UUID
-      var UUID = getUUID(currCards[i]);
+      var UUID = getUUID(curCards[i]);
       // is it new?
       var isNew = true;
+      var etag = "";
       
       // no UID?  Make one.
       if (!UUID) {
         UUID = "BwABC-Imp-" + Math.uuid();
       } else {
-        // see if we already have one with this UUID
-        // isNew = false;
+        // see if we already have a card with this UUID
+        for (var i=0; i < bwAddressBook.books.length; i++) {
+          var book = bwAddressBook.books[i];
+          for (var j=0; j < book.vcards.length; j++) {
+            var existingCard = jQuery.parseJSON(book.vcards[j]);
+            if (existingCard.UID[0].value == UUID) {
+              isNew = false;
+              etag = existingCard.etag;
+              break;
+            }
+          }
+          if (!isNew) {
+            break;
+          }
+        }
       }
             
       var addrBookUrl = bwAddressBook.defPersBookUrl;
@@ -469,15 +483,17 @@ var bwAddressBook = function() {
       $.ajax({
         type: "put",
         url: addrBookUrl + UUID + ".vcf",
-        data: currCards[i],
+        data: curCards[i],
         dataType: "text",
         processData: false,
         beforeSend: function(xhrobj) {
+          xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
           if (isNew) {
-            xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
             xhrobj.setRequestHeader("If-None-Match", "*");
-            xhrobj.setRequestHeader("Content-Type", "text/vcard");
+          } else {
+            xhrobj.setRequestHeader("If-Match", '"' + etag + '"');
           }
+          xhrobj.setRequestHeader("Content-Type", "text/vcard");
         },
         success: function(responseData, status){
           successMessages += status + " " + responseData + "<br/>";
