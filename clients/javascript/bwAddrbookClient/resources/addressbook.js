@@ -419,7 +419,12 @@ var bwAddressBook = function() {
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
-    vcData += "UID:" + curCard.UID[0].value + "\n";
+    if (curCard.UID == undefined) {
+      // if the card doesn't have a UID (probably because it was imported), give it one
+      vcData+= "UID:BwABC-" + Math.uuid() + "\n";
+    } else {
+      vcData += "UID:" + curCard.UID[0].value + "\n";
+    } 
     vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
     vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
     vcData += "KIND:individual\n";
@@ -608,7 +613,12 @@ var bwAddressBook = function() {
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
-    vcData += "UID:" + curCard.UID[0].value + "\n";
+    if (curCard.UID == undefined) {
+      // if the card doesn't have a UID (probably because it was imported), give it one
+      vcData+= "UID:BwABC-" + Math.uuid() + "\n";
+    } else {
+      vcData += "UID:" + curCard.UID[0].value + "\n";
+    }
     vcData += "FN:" + $.trim($("#GROUP-NAME").val()) + "\n";
     vcData += "N:" + $.trim($("#GROUP-NAME").val()) + ";;;;\n";
     vcData += "KIND:group\n";
@@ -676,7 +686,12 @@ var bwAddressBook = function() {
       // now let's build the vcard
       var vcData = "BEGIN:VCARD\n"
       vcData += "VERSION:4.0\n";
-      vcData += "UID:" + curGroup.UID[0].value + "\n";
+      if (curGroup.UID == undefined) {
+        // if the card doesn't have a UID (probably because it was imported), give it one
+        vcData+= "UID:BwABC-" + Math.uuid() + "\n";
+      } else {
+        vcData += "UID:" + curGroup.UID[0].value + "\n";
+      } 
       vcData += "FN:" + fn + "\n";
       vcData += "N:" + fn + ";;;;\n";
       vcData += "KIND:group\n";
@@ -729,7 +744,12 @@ var bwAddressBook = function() {
     // now let's build the vcard
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
-    vcData += "UID:" + curGroup.UID[0].value + "\n";
+    if (curGroup.UID == undefined) {
+      // if the card doesn't have a UID (probably because it was imported), give it one
+      vcData+= "UID:BwABC-" + Math.uuid() + "\n";
+    } else {
+      vcData += "UID:" + curGroup.UID[0].value + "\n";
+    } 
     vcData += "FN:" + fn + "\n";
     vcData += "N:" + fn + ";;;;\n";
     vcData += "KIND:group\n";
@@ -784,7 +804,12 @@ var bwAddressBook = function() {
     
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:4.0\n";
-    vcData += "UID:" + curCard.UID[0].value + "\n";
+    if (curCard.UID == undefined) {
+      // if the card doesn't have a UID (probably because it was imported), give it one
+      vcData+= "UID:BwABC-" + Math.uuid() + "\n";
+    } else {
+      vcData += "UID:" + curCard.UID[0].value + "\n";
+    } 
     vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
     vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
     vcData += "KIND:location\n";
