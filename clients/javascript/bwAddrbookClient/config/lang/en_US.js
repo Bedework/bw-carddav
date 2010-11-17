@@ -73,6 +73,8 @@ var bwAbDispNoMemberAddGroup = "You may not add groups to groups.";
 var bwAbDispAlreadyAMemberTitle = "Already a Member";
 var bwAbDispAlreadyAMember = "This entry is already a member of this group";
 var bwAbDispImportStatus = "Import Status";
+var bwAbDispExportTitle = "Export";
+var bwAbDispExported = "Your data has opened in a new window or tab.  Select \"view source\" from that window and save your vcard export.";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";

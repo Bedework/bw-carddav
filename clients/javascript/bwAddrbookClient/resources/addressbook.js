@@ -510,6 +510,62 @@ var bwAddressBook = function() {
     };
     
   };
+  
+  // ********************
+  // EXPORT HANDLING
+  // ********************
+  
+  // Should only export the currently selected book.
+  // For now, that's the single personal book
+  this.exportVcards = function() {
+    
+    // perform a report query on the address book
+    var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
+    $.ajax({
+      type: "post",
+      url: bwAddressBook.defPersBookUrl,
+      dataType: "xml",
+      processData: false,
+      async: false,
+      data: content,
+      beforeSend: function(xhrobj) {
+        xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
+        xhrobj.setRequestHeader("Depth", "1");
+        xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
+      },
+      success: function(responseData) {
+        var vcardText = "";
+        // extract the vcards
+        $(responseData).find("response").each(function() {
+          var href = $(this).find("href").text();
+          $(this).find("propstat").each(function() {
+            $(this).find("prop").each(function() {
+              var etag = $(this).find("getetag").text();
+              $(this).find("[nodeName=C:address-data]").each(function() {
+                vcardText += $(this).text();
+              });
+            });
+          });
+        });
+        showMessage(bwAbDispExportTitle,bwAbDispExported,true);
+        var exportWindow = window.open();
+        exportWindow.document.write(vcardText);
+        exportWindow.document.close();
+      },
+      error: function(msg) {
+        // there was a problem
+        var error = msg.statusText;
+        if (msg.status == "404") {
+          error = bwAbDispError404;
+          bwAddressBook.userid = bwAbDispErrorAccessDenied;
+        }
+        if (msg.status == "500") {
+          error = bwAbDispError500;
+        }
+        showError(error);
+      }
+    });
+  }
 
   // *******************
   // GROUP FORM HANDLING
@@ -1140,8 +1196,7 @@ $(document).ready(function() {
   
   // do a global export
   $("#exportContacts").click(function() {
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-    return false;
+    bwAddrBook.exportVcards();
   });
   
   /* disable book droppables for now - while we have only one assumed 
