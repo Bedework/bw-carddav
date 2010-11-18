@@ -78,7 +78,7 @@ var bwAbDispImportDoneButton = "Refresh List";
 var bwAbDispImportProcessingTitle = "Processing Import";
 var bwAbDispImportProcessing = "We are processing the import (this may take a moment...)";
 var bwAbDispExportTitle = "Export";
-var bwAbDispExported = "Your data has opened in a new window or tab.  Select \"view source\" from that window and save your vcard export.";
+var bwAbDispExported = "Your data has been exported.";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";

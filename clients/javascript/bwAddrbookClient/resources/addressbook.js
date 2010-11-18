@@ -249,7 +249,7 @@ var bwAddressBook = function() {
           }
           var email ="";
           if(curCard.EMAIL != undefined) { 
-            email = curCard.EMAIL[0].value.stripTags(); 
+            email = $ESAPI.encoder().encodeForHTML(curCard.EMAIL[0].value); 
           }
           var title = "";
           if(curCard.TITLE != undefined) { 
@@ -531,19 +531,20 @@ var bwAddressBook = function() {
     // perform a report query on the address book
     var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
     $.ajax({
-      type: "post",
+      type: "get",
       url: bwAddressBook.defPersBookUrl,
-      dataType: "xml",
+      dataType: "text",
       processData: false,
       async: false,
-      data: content,
+      //data: content,
       beforeSend: function(xhrobj) {
-        xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
+        //xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
         xhrobj.setRequestHeader("Depth", "1");
-        xhrobj.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
+        xhrobj.setRequestHeader("Content-Type", "text/vcard;charset=UTF-8");
+        xhrobj.setRequestHeader("Accept", "text/vcard");
       },
       success: function(responseData) {
-        var vcardText = "";
+        /*var vcardText = "";
         // extract the vcards
         $(responseData).find("response").each(function() {
           var href = $(this).find("href").text();
@@ -555,11 +556,12 @@ var bwAddressBook = function() {
               });
             });
           });
-        });
+        });*/
         showMessage(bwAbDispExportTitle,bwAbDispExported,true);
         var exportWindow = window.open();
-        exportWindow.document.write(vcardText);
+        exportWindow.document.write(String(responseData));
         exportWindow.document.close();
+        
       },
       error: function(msg) {
         // there was a problem
@@ -703,11 +705,11 @@ var bwAddressBook = function() {
       if (curGroup.MEMBER != undefined) {
         for (var i=0; i<curGroup.MEMBER.length; i++) {
           // no need for mailto: here - it's in the value
-          vcData += "MEMBER:" + curGroup.MEMBER[i].value.stripTags() + "\n";
+          vcData += "MEMBER:" + $ESAPI.encoder().encodeForJavaScript(curGroup.MEMBER[i].value) + "\n";
         }; 
       };
       // now tag on the new member:
-      vcData += "MEMBER:mailto:" + $.trim(curMember.EMAIL[0].value.stripTags()) + "\n";
+      vcData += "MEMBER:mailto:" + $ESAPI.encoder().encodeForJavaScript($.trim(curMember.EMAIL[0].value)) + "\n";
       vcData += "END:VCARD";
       
       this.updateEntry(vcData,curGroup.href,curGroup.etag);
@@ -761,7 +763,7 @@ var bwAddressBook = function() {
     if (curGroup.MEMBER != undefined) {
       for (var i=0; i<curGroup.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
-        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+        vcData += "MEMBER:" + $ESAPI.encoder().encodeForJavaScript(curGroup.MEMBER[i].value) + "\n";
       }; 
     };
     vcData += "END:VCARD";
@@ -938,7 +940,7 @@ var bwAddressBook = function() {
     // email address(es)
     if(curCard.EMAIL != undefined) { 
       for (var i=0; i < curCard.EMAIL.length; i++) {
-        details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + curCard.EMAIL[i].value.stripTags() + '">' + curCard.EMAIL[i].value.stripTags() + '</a></td></tr>';
+        details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + $ESAPI.encoder().encodeForHTML(curCard.EMAIL[i].value) + '">' + $ESAPI.encoder().encodeForHTML(curCard.EMAIL[i].value) + '</a></td></tr>';
       }
     }
     // url
@@ -1073,7 +1075,9 @@ $(document).ready(function() {
         qsParameters[d(e[1])] = d(e[2]);
       }
   })();
-  userid = qsParameters.user.stripTags();
+  
+  // assign the userid after stripping and encoding
+  userid = $ESAPI.encoder().encodeForHTML(qsParameters.user.stripTags());
   
   
   // Create the three-panel layout
@@ -1242,7 +1246,7 @@ $(document).ready(function() {
     bwAddrBook.exportVcards();
   });
   
-  //do a global export
+  // view the address book from the vCard server
   $("#viewBookUrl").click(function() {
     bwAddrBook.viewBookUrl();
   });

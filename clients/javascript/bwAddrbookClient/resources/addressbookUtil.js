@@ -109,6 +109,7 @@ function showConfirm(title,msg) {
   $dialog.dialog('open');
 }
 
+
 /****************************
  * UTC FORMATTERS:
  ****************************/
@@ -159,9 +160,13 @@ Date.prototype.getUTCSecondsFull = function() {
  * OUTPUT ENCODING:
  ****************************/
 
+//Initialize ESAPI
+org.owasp.esapi.ESAPI.initialize();
+
 // strip all html tags from a string
 // see also the ESAPI library included with this project
 String.prototype.stripTags = function () {
   return this.replace(/<([^>]+)>/g,'');
 }
+
 
