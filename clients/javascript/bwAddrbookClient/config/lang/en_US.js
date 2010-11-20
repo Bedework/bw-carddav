@@ -77,6 +77,8 @@ var bwAbDispImportStatus = "Import Status";
 var bwAbDispImportDoneButton = "Refresh List";
 var bwAbDispImportProcessingTitle = "Processing Import";
 var bwAbDispImportProcessing = "We are processing the import (this may take a moment...)";
+var bwAbDispImportNew = "(new)";
+var bwAbDispImportUpdate = "(update)";
 var bwAbDispExportTitle = "Export";
 var bwAbDispExported = "Your data has been exported.";
 

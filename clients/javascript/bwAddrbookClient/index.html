@@ -77,9 +77,11 @@
             <li class="import" id="importContacts">
               import
             </li>
+            <!-- 
             <li class="export" id="exportContacts">
               export
             </li>
+            -->
             <li class="viewUrl" id="viewBookUrl">
               view book url
             </li>
@@ -172,14 +174,18 @@
             <fieldset> 
               <legend>Contact information</legend>
               <div class="bwFormData">
-                
-                <label class="bwField"  for="EMAIL-01">Email:</label>
-                <div class="bwValue">
-                  <select id="EMAILTYPE-01">
-                    <option value="work">work</option>
-                    <option value="home">home</option>
-                  </select>
-                  <input type="text" size="40" value="" id="EMAIL-01"/>
+              
+                <div id="bwContactEmailHolder">
+                  <div class="emailFields" id="emailFields-0">
+                    <label class="bwField"  for="EMAIL-0">Email:</label>
+                    <div class="bwValue">
+                      <select id="EMAILTYPE-0">
+                        <option value="work">work</option>
+                        <option value="home">home</option>
+                      </select>
+                      <input type="text" size="40" value="" id="EMAIL-0"/>
+                    </div>
+                  </div>
                 </div>
                 <div class="bwAppend" id="bwAppendEmail"></div>
                 

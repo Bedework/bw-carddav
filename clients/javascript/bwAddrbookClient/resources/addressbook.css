@@ -433,3 +433,13 @@ button {
 .ui-widget-content a {
   text-decoration: underline;
 }
+.ui-widget-content ol li {
+  list-style: decimal;
+  margin: 0 0 0.5em 1.5em;
+}
+.pre {
+  white-space: pre;
+}
+strong {
+  font-weight: bold;
+}

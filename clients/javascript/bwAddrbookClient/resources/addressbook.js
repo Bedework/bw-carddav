@@ -402,7 +402,9 @@ var bwAddressBook = function() {
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
+    $(".emailFields").each(function(index) {
+      vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $("#EMAIL-" + index).val() + "\n";
+    });
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
@@ -433,7 +435,9 @@ var bwAddressBook = function() {
     vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-01").val() + ":" + $("#EMAIL-01").val() + "\n";
+    $(".emailFields").each(function(index) {
+      vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $("#EMAIL-" + index).val() + "\n";
+    });
     vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
@@ -452,7 +456,7 @@ var bwAddressBook = function() {
   this.importVcards = function() {
     var vcardData = $("#bwImportText").val();
     var curCards = new Array();
-    var importMessages = "";
+    var importMessages = "<ol>";
     curCards = separateIntoCards(vcardData);
     
     showMessage(bwAbDispImportProcessingTitle,bwAbDispImportProcessing,true); 
@@ -465,7 +469,7 @@ var bwAddressBook = function() {
       var etag = "";
       
       // no UID?  Make one.
-      if (!UUID) {
+      if (!UUID || UUID == undefined) {
         UUID = "BwABC-Imp-" + Math.uuid();
       } else {
         // see if we already have a card with this UUID
@@ -473,10 +477,12 @@ var bwAddressBook = function() {
           var book = bwAddressBook.books[j];
           for (var k=0; k < book.vcards.length; k++) {
             var existingCard = jQuery.parseJSON(book.vcards[k]);
-            if (existingCard.UID[0].value == UUID) {
-              isNew = false;
-              etag = existingCard.etag;
-              break;
+            if (existingCard.UID != undefined && existingCard.UID[0].value != undefined) {
+              if (existingCard.UID[0].value == UUID) {
+                isNew = false;
+                etag = existingCard.etag;
+                break;
+              }
             }
           }
           if (!isNew) {
@@ -504,17 +510,29 @@ var bwAddressBook = function() {
           xhrobj.setRequestHeader("Content-Type", "text/vcard");
         },
         success: function(responseData, status){
-          importMessages += i + ". " + status + " " + responseData + "<br/>";
+          importMessages += '<li>' + status + ' ' + responseData;
+          if (isNew) {
+            importMessages += bwAbDispImportNew;
+          } else {
+            importMessages += bwAbDispImportUpdate;
+          }
+          if (curCards[i].FN != undefined) {
+            if (curCards[i].FN[0].value != "") {
+              importMessages += '<br/>' + curCards[i].FN[0].value.stripTags();
+            }
+          }
+          importMessages += '</li>';
         },
         error: function(msg) {
           // there was a problem
-          importMessages += i + ". " + msg.status + " " + msg.statusText + "<br/>";
+          importMessages += '<li><strong>' + msg.status + ' ' + msg.statusText + '</strong><br/>';
+          importMessages += '<span class="pre">' + $ESAPI.encoder().encodeForHTML(String(curCards[i])) + '</span></li>';
         }
       });
     };
 
     // we can show all messages at the end because we are synchronous 
-    importMessages += '<div style="text-align: center; margin-top: 2em;"><button type="button" onclick="window.location.reload();">' + bwAbDispImportDoneButton + '</button>';
+    importMessages += '</ol><div style="text-align: center; margin-top: 2em;"><button type="button" onclick="window.location.reload();">' + bwAbDispImportDoneButton + '</button>';
     showMessage(bwAbDispImportStatus,importMessages,true); 
     clearFields("#importForm");
     
@@ -527,9 +545,8 @@ var bwAddressBook = function() {
   // Should only export the currently selected book.
   // For now, that's the single personal book
   this.exportVcards = function() {
-    
-    // perform a report query on the address book
-    var content = '<?xml version="1.0" encoding="utf-8" ?><C:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav"><D:prop><D:getetag/><C:address-data/></D:prop><C:filter></C:filter></C:addressbook-query>';
+
+    // perform a get on the book, setting the accept headers and content type
     $.ajax({
       type: "get",
       url: bwAddressBook.defPersBookUrl,
@@ -538,7 +555,6 @@ var bwAddressBook = function() {
       async: false,
       //data: content,
       beforeSend: function(xhrobj) {
-        //xhrobj.setRequestHeader("X-HTTP-Method-Override", "REPORT");
         xhrobj.setRequestHeader("Depth", "1");
         xhrobj.setRequestHeader("Content-Type", "text/vcard;charset=UTF-8");
         xhrobj.setRequestHeader("Accept", "text/vcard");
@@ -558,9 +574,9 @@ var bwAddressBook = function() {
           });
         });*/
         showMessage(bwAbDispExportTitle,bwAbDispExported,true);
-        var exportWindow = window.open();
+        /*var exportWindow = window.open();
         exportWindow.document.write(String(responseData));
-        exportWindow.document.close();
+        exportWindow.document.close();*/
         
       },
       error: function(msg) {
@@ -794,7 +810,7 @@ var bwAddressBook = function() {
     vcData += "ADR:" + $.trim($("#LOCATION-POBOX").val()) + ";" + $.trim($("#LOCATION-EXTADDR").val()) + ";" + $.trim($("#LOCATION-STREET").val()) + ";" + $.trim($("#LOCATION-CITY").val()) + ";" +  $.trim($("#LOCATION-STATE").val()) + ";" + $.trim($("#LOCATION-POSTAL").val()) + ";" + $.trim($("#LOCATION-COUNTRY").val()) + "\n";
     //vcData += "GEO:TYPE=" + $.trim($("#ADDRTYPE-01").val()) + ":geo:" + $.trim($("#GEO-01").val()) + "\n";;
     vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
+    vcData += "PHOTO;VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
     vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
@@ -824,7 +840,7 @@ var bwAddressBook = function() {
     vcData += "ADR:" + $.trim($("#LOCATION-POBOX").val()) + ";" + $.trim($("#LOCATION-EXTADDR").val()) + ";" + $.trim($("#LOCATION-STREET").val()) + ";" + $.trim($("#LOCATION-CITY").val()) + ";" +  $.trim($("#LOCATION-STATE").val()) + ";" + $.trim($("#LOCATION-POSTAL").val()) + ";" + $.trim($("#LOCATION-COUNTRY").val()) + "\n";
     //vcData += "GEO:TYPE=" + $.trim($("#ADDRTYPE-01").val()) + ":geo:" + $.trim($("#GEO-01").val()) + "\n";;
     vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
-    vcData += "PHOTO:VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
+    vcData += "PHOTO;VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
     vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
@@ -1429,8 +1445,18 @@ $(document).ready(function() {
   
   // add a new email address field to the add contact form
   $("#bwAppendEmail").click(function() {
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-    return false;
+    // get the id of the last email group
+    var lastEmailId = $(".emailFields:last").attr("id");
+    // extract the number from the id and increment it
+    var i = Number(lastEmailId.substring(lastEmailId.indexOf("-")+1))+1;
+    // build the new fields with the new index (i)
+    var newEmailFields = '<div class="emailFields" id="emailFields-' + i + '">'
+    newEmailFields += '<label class="bwField"  for="EMAIL-' + i + '">';
+    newEmailFields += 'Email:</label><div class="bwValue"><select id="EMAILTYPE-' + i + '">';
+    newEmailFields += '<option value="work">work</option><option value="home">home</option>';
+    newEmailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div></div>';
+    // append the result to the dom
+    $("#bwContactEmailHolder").append(newEmailFields);
   });
   
   // add a new phone field to the add contact form
@@ -1482,15 +1508,30 @@ function setupFormFields(curCard,kind) {
       if (curCard.NICKNAME != undefined) $("#NICKNAME").val(curCard.NICKNAME[0].value.stripTags());
       if (curCard.TITLE != undefined) $("#TITLE").val(curCard.TITLE[0].value.stripTags());
       if (curCard.EMAIL != undefined) {
-        $("#EMAILTYPE-01").val(curCard.EMAIL[0].params['parameter-value'].stripTags()); // this won't do
-        $("#EMAIL-01").val(curCard.EMAIL[0].value.stripTags());
+        for (var i=0; i < curCard.EMAIL.length; i++) {
+          if (i > 0) {
+            var newEmailFields = '<div class="emailFields" id="emailFields-' + i + '"><label class="bwField"  for="EMAIL-' + i + '">';
+            newEmailFields += 'Email:</label><div class="bwValue"><select id="EMAILTYPE-' + i + '">';
+            newEmailFields += '<option value="work">work</option><option value="home">home</option>';
+            newEmailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div></div>';
+            $("#bwContactEmailHolder").append(newEmailFields);
+          }
+          if (curCard.EMAIL[i].params['parameter-value'] != undefined) {
+            $("#EMAILTYPE-" + i).val(curCard.EMAIL[i].params['parameter-value'].stripTags()); // this won't do
+          }
+          $("#EMAIL-" + i).val(curCard.EMAIL[i].value);
+        }
       }
       if (curCard.TEL != undefined) {
-        $("#PHONETYPE-01").val(curCard.TEL[0].params['parameter-value'].stripTags()); // this won't do
+        if (curCard.TEL[0].params['parameter-value'] != undefined) {
+          $("#PHONETYPE-01").val(curCard.TEL[0].params['parameter-value'].stripTags()); // this won't do
+        }
         $("#PHONE-01").val(curCard.TEL[0].values.number.stripTags());
       }
       if (curCard.ADR != undefined) {
-        $("#ADDRTYPE-01").val(curCard.ADR[0].params['parameter-value'].stripTags()); // also won't do
+        if (curCard.ADR[0].params['parameter-value'] != undefined) {
+          $("#ADDRTYPE-01").val(curCard.ADR[0].params['parameter-value'].stripTags()); // also won't do
+        }
         $("#POBOX-01").val(curCard.ADR[0].values.po_box.stripTags());
         $("#EXTADDR-01").val(curCard.ADR[0].values.extended_address.stripTags());
         $("#STREET-01").val(curCard.ADR[0].values.street_address.stripTags());
