@@ -405,7 +405,9 @@ var bwAddressBook = function() {
     $(".emailFields").each(function(index) {
       vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $("#EMAIL-" + index).val() + "\n";
     });
-    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
+    $(".phoneFields").each(function(index) {
+      vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $("#PHONE-" + index).val() + "\n";
+    });
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
@@ -438,7 +440,9 @@ var bwAddressBook = function() {
     $(".emailFields").each(function(index) {
       vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $("#EMAIL-" + index).val() + "\n";
     });
-    vcData += "TEL;TYPE=" + $("#PHONETYPE-01").val() + ":" + $("#PHONE-01").val() + "\n";  
+    $(".phoneFields").each(function(index) {
+      vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $("#PHONE-" + index).val() + "\n";
+    });
     vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
@@ -555,19 +559,6 @@ var bwAddressBook = function() {
         xhrobj.setRequestHeader("Accept", "text/vcard");
       },
       success: function(responseData) {
-        /*var vcardText = "";
-        // extract the vcards
-        $(responseData).find("response").each(function() {
-          var href = $(this).find("href").text();
-          $(this).find("propstat").each(function() {
-            $(this).find("prop").each(function() {
-              var etag = $(this).find("getetag").text();
-              $(this).find("[nodeName=C:address-data]").each(function() {
-                vcardText += $(this).text();
-              });
-            });
-          });
-        });*/
         showMessage(bwAbDispExportTitle,bwAbDispExported,true);
         /*var exportWindow = window.open();
         exportWindow.document.write(String(responseData));
@@ -942,16 +933,18 @@ var bwAddressBook = function() {
     if(curCard.NICKNAME != undefined && curCard.NICKNAME[0].value != "") {
       details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.NICKNAME[0].value.stripTags() + '</td></tr>';
     }
-    // telephone number(s)
-    if (curCard.TEL != undefined) {
-      for (var i=0; i < curCard.TEL.length; i++) {
-        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsPhone.stripTags() + '</td><td>' + curCard.TEL[i].values.number.stripTags() + '</td></tr>';
-      }
-    }
     // email address(es)
     if(curCard.EMAIL != undefined) { 
       for (var i=0; i < curCard.EMAIL.length; i++) {
         details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + $ESAPI.encoder().encodeForHTML(curCard.EMAIL[i].value) + '">' + $ESAPI.encoder().encodeForHTML(curCard.EMAIL[i].value) + '</a></td></tr>';
+      }
+    }
+    // telephone number(s)
+    if (curCard.TEL != undefined) {
+      for (var i=0; i < curCard.TEL.length; i++) {
+        details += '<tr><td class="field">' + bwAbDispDetailsPhone.stripTags() + '</td>';
+        details += '<td>' + curCard.TEL[i].values.number.stripTags();
+        details += '</td></tr>';
       }
     }
     // url
@@ -1445,19 +1438,21 @@ $(document).ready(function() {
     // extract the number from the id and increment it
     var i = Number(lastEmailId.substring(lastEmailId.indexOf("-")+1))+1;
     // build the new fields with the new index (i)
-    var newEmailFields = '<div class="emailFields" id="emailFields-' + i + '">'
-    newEmailFields += '<label class="bwField"  for="EMAIL-' + i + '">';
-    newEmailFields += 'Email:</label><div class="bwValue"><select id="EMAILTYPE-' + i + '">';
-    newEmailFields += '<option value="work">work</option><option value="home">home</option>';
-    newEmailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div></div>';
+    var newEmailFields = buildEmailFields(i);
     // append the result to the dom
     $("#bwContactEmailHolder").append(newEmailFields);
   });
   
   // add a new phone field to the add contact form
   $("#bwAppendPhone").click(function() {
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-    return false;
+    // get the id of the last phone group
+    var lastEmailId = $(".phoneFields:last").attr("id");
+    // extract the number from the id and increment it
+    var i = Number(lastEmailId.substring(lastEmailId.indexOf("-")+1))+1;
+    // build the new fields with the new index (i)
+    var newPhoneFields = buildPhoneFields(i);
+    // append the result to the dom
+    $("#bwContactPhoneHolder").append(newPhoneFields);
   });
   
 });
@@ -1505,10 +1500,7 @@ function setupFormFields(curCard,kind) {
       if (curCard.EMAIL != undefined) {
         for (var i=0; i < curCard.EMAIL.length; i++) {
           if (i > 0) {
-            var newEmailFields = '<div class="emailFields" id="emailFields-' + i + '"><label class="bwField"  for="EMAIL-' + i + '">';
-            newEmailFields += 'Email:</label><div class="bwValue"><select id="EMAILTYPE-' + i + '">';
-            newEmailFields += '<option value="work">work</option><option value="home">home</option>';
-            newEmailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div></div>';
+            var newEmailFields = buildEmailFields(i);
             $("#bwContactEmailHolder").append(newEmailFields);
           }
           if (curCard.EMAIL[i].params['parameter-value'] != undefined) {
@@ -1518,10 +1510,16 @@ function setupFormFields(curCard,kind) {
         }
       }
       if (curCard.TEL != undefined) {
-        if (curCard.TEL[0].params['parameter-value'] != undefined) {
-          $("#PHONETYPE-01").val(curCard.TEL[0].params['parameter-value'].stripTags()); // this won't do
+        for (var i=0; i < curCard.TEL.length; i++) {
+          if (i > 0) {
+            var newPhoneFields = buildPhoneFields(i); 
+            $("#bwContactPhoneHolder").append(newPhoneFields);
+          }
+          if (curCard.TEL[i].params['parameter-value'] != undefined) {
+            $("#PHONETYPE-" + i).val(curCard.TEL[i].params['parameter-value'].stripTags()); // this won't do
+          }
+          $("#PHONE-" + i).val(curCard.TEL[i].values.number.stripTags());
         }
-        $("#PHONE-01").val(curCard.TEL[0].values.number.stripTags());
       }
       if (curCard.ADR != undefined) {
         if (curCard.ADR[0].params['parameter-value'] != undefined) {
@@ -1540,6 +1538,35 @@ function setupFormFields(curCard,kind) {
       if (curCard.PHOTO != undefined) $("#PHOTOURL").val(curCard.PHOTO[0].value.stripTags());
       if (curCard.NOTE != undefined) $("#NOTE").val(curCard.NOTE[0].value.stripTags());
   };
+};
+
+function buildEmailFields(i) {
+  var emailFields = '<div class="emailFields" id="emailFields-' + i + '"><label class="bwField"  for="EMAIL-' + i + '">';
+  emailFields += 'Email:</label><div class="bwValue"><select id="EMAILTYPE-' + i + '">';
+  emailFields += '<option value="work">' + bwAbDispFormWork + '</option><option value="home">' + bwAbDispFormHome + '</option>';
+  emailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div></div>';
+  return emailFields;
+};
+
+function buildPhoneFields(i) {
+  var phoneFields = '<div class="phoneFields" id="phoneFields-' + i + '">';
+  phoneFields += '<label class="bwField" for="PHONE-' + i + '">Phone:</label>';
+  phoneFields += '<div class="bwValue">';
+  phoneFields += '  <select id="PHONETYPE-' + i + '">';
+  phoneFields += '    <option value="work">' + bwAbDispFormWork + '</option>';
+  phoneFields += '    <option value="home">' + bwAbDispFormHome + '</option>';
+  phoneFields += '  </select>';
+  phoneFields += '  <select id="TELTYPE-' + i + '">';
+  phoneFields += '    <option value="voice">' + bwAbDispFormVoice + '</option>';
+  phoneFields += '    <option value="cell">' + bwAbDispFormMobile + '</option>';
+  phoneFields += '    <option value="fax">' + bwAbDispFormFax + '</option>';
+  phoneFields += '    <option value="text">' + bwAbDispFormText + '</option>';
+  phoneFields += '    <option value="pager">' + bwAbDispFormPager + '</option>';
+  phoneFields += '  </select>';
+  phoneFields += '  <input type="text" size="30" value="" id="PHONE-' + i + '"/>';
+  phoneFields += '</div>';
+  phoneFields += '</div>';
+  return phoneFields;
 };
 
 // return the revision date
@@ -1604,7 +1631,19 @@ function clearFields(formId) {
   $(formId + " textarea").each(function(index){
     $(this).val("");
   });
-}
+  if (formId == "#contactForm") {
+    $(formId + " .emailFields").each(function(index){
+      if (index > 0) {
+        $(this).delete(); 
+      }
+    });
+    $(formId + " .phoneFields").each(function(index){
+      if (index > 0) {
+        $(this).delete(); 
+      }
+    });
+  }
+};
 
 function showError(err) {
   var $dialog = $('<div></div>')

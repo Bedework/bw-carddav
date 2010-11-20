@@ -59,6 +59,15 @@ var bwAbDispUpdateLocation = "Update Location";
 var bwAbDispAddGroup = "Add Group";
 var bwAbDispUpdateGroup = "Update Group";
 
+// dynamic form values
+var bwAbDispFormWork = "work";
+var bwAbDispFormHome = "home";
+var bwAbDispFormVoice = "voice";
+var bwAbDispFormMobile = "mobile";
+var bwAbDispFormFax = "fax";
+var bwAbDispFormText = "text";
+var bwAbDispFormPager = "pager";
+
 // error and status messages
 var bwAbDispBookType = "Book type";
 var bwAbDispUnsupported = "unsupported";
