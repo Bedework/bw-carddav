@@ -1209,6 +1209,19 @@ $(document).ready(function() {
     $("#submitContact").attr("class","add");
     $("#contactForm").attr("action","#add");
     $("#submitContact").text(bwAbDispAddContact);
+    
+    // make sure any appended fields are removed
+    $("#contactForm .emailFields").each(function(index){
+      if (index > 0) {
+        $(this).remove(); 
+      }
+    });
+    $("#contactForm .phoneFields").each(function(index){
+      if (index > 0) {
+        $(this).remove(); 
+      }
+    });
+    
     showPage("bw-modContact");
     $("#FIRSTNAME").focus();
   });
@@ -1508,6 +1521,13 @@ function setupFormFields(curCard,kind) {
           }
           $("#EMAIL-" + i).val(curCard.EMAIL[i].value);
         }
+        
+        // make sure any extra fields appended from a previous edit are removed
+        $("#contactForm .emailFields").each(function(index){
+          if (index > i-1) {
+            $(this).remove(); 
+          }
+        });
       }
       if (curCard.TEL != undefined) {
         for (var i=0; i < curCard.TEL.length; i++) {
@@ -1520,6 +1540,13 @@ function setupFormFields(curCard,kind) {
           }
           $("#PHONE-" + i).val(curCard.TEL[i].values.number.stripTags());
         }
+
+        // make sure any extra fields appended from a previous edit are removed
+        $("#contactForm .phoneFields").each(function(index){
+          if (index > i-1) {
+            $(this).remove(); 
+          }
+        });
       }
       if (curCard.ADR != undefined) {
         if (curCard.ADR[0].params['parameter-value'] != undefined) {
@@ -1631,18 +1658,6 @@ function clearFields(formId) {
   $(formId + " textarea").each(function(index){
     $(this).val("");
   });
-  if (formId == "#contactForm") {
-    $(formId + " .emailFields").each(function(index){
-      if (index > 0) {
-        $(this).delete(); 
-      }
-    });
-    $(formId + " .phoneFields").each(function(index){
-      if (index > 0) {
-        $(this).delete(); 
-      }
-    });
-  }
 };
 
 function showError(err) {
