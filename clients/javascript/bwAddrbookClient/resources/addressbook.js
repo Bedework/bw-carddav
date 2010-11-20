@@ -516,11 +516,6 @@ var bwAddressBook = function() {
           } else {
             importMessages += bwAbDispImportUpdate;
           }
-          if (curCards[i].FN != undefined) {
-            if (curCards[i].FN[0].value != "") {
-              importMessages += '<br/>' + curCards[i].FN[0].value.stripTags();
-            }
-          }
           importMessages += '</li>';
         },
         error: function(msg) {
