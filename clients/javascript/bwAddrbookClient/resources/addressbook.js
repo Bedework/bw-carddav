@@ -1370,7 +1370,7 @@ $(document).ready(function() {
   
   $("#cancelContact").click(function() {
     clearFields("#contactForm");
-    showPage("bw-list");
+    showPage("bw-details");
   });
   
   //submit a group to the server
@@ -1384,7 +1384,7 @@ $(document).ready(function() {
   
   $("#cancelGroup").click(function() {
     clearFields("#groupForm");
-    showPage("bw-list");
+    showPage("bw-details");
   });
   
   //submit a location to the server
@@ -1398,7 +1398,7 @@ $(document).ready(function() {
   
   $("#cancelLocation").click(function() {
     clearFields("#locationForm");
-    showPage("bw-list");
+    showPage("bw-details");
   });
   
   
