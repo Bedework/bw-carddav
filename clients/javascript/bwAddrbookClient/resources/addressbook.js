@@ -1571,7 +1571,8 @@ function buildEmailFields(i) {
   var emailFields = '<div class="emailFields" id="emailFields-' + i + '"><label class="bwField"  for="EMAIL-' + i + '">';
   emailFields += 'Email:</label><div class="bwValue"><select id="EMAILTYPE-' + i + '">';
   emailFields += '<option value="work">' + bwAbDispFormWork + '</option><option value="home">' + bwAbDispFormHome + '</option>';
-  emailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div></div>';
+  emailFields += '</select> <input type="text" size="40" value="" id="EMAIL-' + i + '"/></div>';
+  emailFields += '<a class="bwRemove" onclick="bwRemoveItem(\'#emailFields-' + i + '\');"></a></div>';
   return emailFields;
 };
 
@@ -1592,8 +1593,18 @@ function buildPhoneFields(i) {
   phoneFields += '  </select>';
   phoneFields += '  <input type="text" size="30" value="" id="PHONE-' + i + '"/>';
   phoneFields += '</div>';
+  phoneFields += '<div class="bwRemove" onclick="bwRemoveItem(\'#phoneFields-' + i + '\');"></div>';
   phoneFields += '</div>';
   return phoneFields;
+};
+
+function buildAddressFields(i) {
+  
+}
+
+// remove an appended item
+function bwRemoveItem(itemId) {
+  $(itemId).remove();
 };
 
 // return the revision date
@@ -1608,7 +1619,7 @@ function getRevDate() {
   revDate += String(now.getUTCSecondsFull()) + "Z";
    
   return revDate;
-}
+};
 
 //return the UUID of a vcard
 function getUUID(vcard) {
@@ -1620,7 +1631,7 @@ function getUUID(vcard) {
    }
   }   
   return false;
-}
+};
 
 /****************************
  * GENERIC FUNCTIONS:

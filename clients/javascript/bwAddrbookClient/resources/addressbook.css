@@ -246,7 +246,11 @@ ul.topMenu li:hover ul {
 	vertical-align: middle;
 }
 #bwDetailsTable {
+	position: relative;
 	margin: 1em 0 0 0;
+	background-color: white;
+	color: black;
+	
 }
 #bwDetailsTable td.field {
 	text-align: right;
@@ -402,6 +406,17 @@ button {
 	float: right;
 	position: relative;
 	top: -8px;
+}
+.bwRemove {
+  float: left;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 0 0.5em 0.5em;
+  background: white url("icons/silk/delete.png");
+  color: #333;
 }
 .bwAddrBlock {
 	margin: 0;

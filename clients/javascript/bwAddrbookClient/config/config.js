@@ -89,6 +89,21 @@ var bwBooks = [
    
 ];
 
+/* Define public CardDAV servers on which to allow 
+ * searches.  These will appear in a drop-down list next
+ * to the search input field.
+ */
+var bwPublicCardDAV = [
+   {
+     "label" : "public people",
+     "url" : "/ucarddav/public/people/addressbook/"
+   },
+   {
+     "label" : "public locations",
+     "url" : "/ucarddav/public/locations/addressbook/"
+   }
+];
+
 
 
 /*  
