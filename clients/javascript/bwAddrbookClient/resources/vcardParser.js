@@ -159,7 +159,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
 	    bwJsonObj += '"';
           } else {
             //write out part of value before the first colon -- generally all of it.
-            bwJsonObj += '"' + colonSplit[1].replace(/\\,/g,",").replace(/\"/g,'\\"');
+            bwJsonObj += '"' + colonSplit[1].replace(/\\+,/g,",").replace(/\"/g,'\\"');
           }
 
           //put back colon(s) and write out what's past the first colon
@@ -172,7 +172,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
             var rawline = lines[i + 1];
             if (rawline.substring(0,1) == ' ') {
               //append this line and avoid processing it the next time through the loop
-              bwJsonObj += rawline.replace(/\\,/g,",").replace(/\"/g,'\\\"');
+              bwJsonObj += rawline.replace(/\\+,/g,",").replace(/\"/g,'\\\"');
               i++;
             } else {
               //if the next line doesn't begin with space, move on.
@@ -194,7 +194,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
           bwJsonObj += '"' + attributeInfo[y] + '" : ';
           if (y<=attributeFieldValues.length) {
             // replace \, with ,  
-            bwJsonObj += '"' + attributeFieldValues[y-1].replace(/\\,/g,",").replace(/\"/g,'\\"') + '"';
+            bwJsonObj += '"' + attributeFieldValues[y-1].replace(/\\+,/g,",").replace(/\"/g,'\\"') + '"';
           } else {
             //avoid undefines
             bwJsonObj += '""';
