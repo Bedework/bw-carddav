@@ -1370,7 +1370,11 @@ $(document).ready(function() {
   
   $("#cancelContact").click(function() {
     clearFields("#contactForm");
-    showPage("bw-details");
+    if ($("#submitContact").hasClass('update')) {
+      showPage("bw-details");
+    } else {
+      showPage("bw-list");
+    }
   });
   
   //submit a group to the server
@@ -1384,7 +1388,11 @@ $(document).ready(function() {
   
   $("#cancelGroup").click(function() {
     clearFields("#groupForm");
-    showPage("bw-details");
+    if ($("#submitGroup").hasClass('update')) {
+      showPage("bw-details");
+    } else {
+      showPage("bw-list");
+    }
   });
   
   //submit a location to the server
@@ -1398,7 +1406,11 @@ $(document).ready(function() {
   
   $("#cancelLocation").click(function() {
     clearFields("#locationForm");
-    showPage("bw-details");
+    if ($("#submitLocation").hasClass('update')) {
+      showPage("bw-details");
+    } else {
+      showPage("bw-list");
+    }
   });
   
   
