@@ -655,9 +655,11 @@ var bwAddressBook = function() {
     // get the current member to be added
     var curMember = jQuery.parseJSON(bwAddressBook.books[memberBookIndex].vcards[memberIndex]);
     
-    if (curMember.KIND[0].value == "group"){
-      // can't add groups to groups
-      showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddGroup,true);
+    if (curMember.KIND != undefined) {
+      if (curMember.KIND[0].value == "group"){
+        // can't add groups to groups
+        showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddGroup,true);
+      }
     } else if (curMember.EMAIL == undefined) {
       // the member has no email (mailto) address, so disallow adding it to a group
       showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddEmail,true);
