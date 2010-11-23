@@ -707,11 +707,11 @@ var bwAddressBook = function() {
       if (curGroup.MEMBER != undefined) {
         for (var i=0; i<curGroup.MEMBER.length; i++) {
           // no need for mailto: here - it's in the value
-          vcData += "MEMBER:" + $ESAPI.encoder().encodeForJavaScript(curGroup.MEMBER[i].value) + "\n";
+          vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
         }; 
       };
       // now tag on the new member:
-      vcData += "MEMBER:mailto:" + $ESAPI.encoder().encodeForJavaScript($.trim(curMember.EMAIL[0].value)) + "\n";
+      vcData += "MEMBER:mailto:" + $.trim(curMember.EMAIL[0].value) + "\n";
       vcData += "END:VCARD";
       
       this.updateEntry(vcData,curGroup.href,curGroup.etag);
@@ -765,7 +765,7 @@ var bwAddressBook = function() {
     if (curGroup.MEMBER != undefined) {
       for (var i=0; i<curGroup.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
-        vcData += "MEMBER:" + $ESAPI.encoder().encodeForJavaScript(curGroup.MEMBER[i].value) + "\n";
+        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
       }; 
     };
     vcData += "END:VCARD";
