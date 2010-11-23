@@ -48,12 +48,14 @@
   </head>
   <body>
     <div id="searchBar" class="ui-layout-north">
-      <!-- The search and filter box performs a filter on local values and 
-           a search on remote values.  Its behavior depends on what is 
-           selected in the booksAndGroups pane. -->
+      <!-- The search box performs a search across public carddav servers
+           listed in the config. -->
       <div id="searchBox">
+        <select id="SearchUrls">
+          <option>loading...</option>
+        </select>
         <input type="text" id="search" value=""/>
-        <button id="searchButton">filter...</button>
+        <button id="searchButton">search...</button>
       </div>
       <ul id="add" class="topMenu">
         <li>

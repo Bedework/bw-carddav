@@ -33,11 +33,19 @@ body {
 #searchBox {
   float: right;
 }
-#searchBox input {
+#searchBox input{
   background-color: #eef;
   color: #333;
   border: 1px solid #aaf;
   width: 200px;
+}
+#searchBox select {
+  background-color: #eef;
+  color: #333;
+  border: 1px solid #aaf;
+}
+#searchBox option {
+  min-width: 100px;
 }
 ul.topMenu {
 	float: left;

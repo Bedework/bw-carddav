@@ -266,10 +266,13 @@ var bwAddressBook = function() {
           
           listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
           if (book.listDisp.name) {
-            listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
+            listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '">';
+            listing += '<img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
           }
           if (book.listDisp.familyName) {
-            listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '"><img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
+            listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '">';
+            listing += '<a name="' + familyName.substr(0,1) + '"></a>';
+            listing += '<img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
           }
           if (book.listDisp.givenNames) {
             listing += '<td class="name">' + givenNames + '</td>';
@@ -1441,8 +1444,7 @@ $(document).ready(function() {
   
   // letter filters 
   $("#filterLetters a").click(function() {
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-    return false;
+    scrollToItem(self.location.hash); 
   });
   
   // search and filter box
