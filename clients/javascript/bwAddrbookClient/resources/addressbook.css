@@ -418,10 +418,13 @@ button {
   background: white url("icons/silk/delete.png");
   color: #333;
 }
-.bwAddrBlock {
+.bwAddressHolder {
 	margin: 0;
 	padding: 0.5em;
 	border: 2px solid #eef; 
+}
+.addrFields {
+	margin-bottom: 1em;
 }
 .bwInternalField {
 	padding-left: 0.4em;

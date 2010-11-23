@@ -215,51 +215,54 @@
             <fieldset> 
               <legend>Address</legend>
               <div class="bwFormData">
-                <div class="bwAddrBlock">
-                  <label class="bwField"  for="ADDRTYPE-01">Type:</label>
-                  <div class="bwValue">
-                    <select id="ADDRTYPE-01">
-                      <option value="work">work</option>
-                      <option value="home">home</option>
-                    </select>
-                  </div>
-                   
-                  <label class="bwField"  for="POBOX-01">P.O. Box:</label>
-                  <div class="bwValue"><input type="text" size="60" value="" id="POBOX-01"/></div>
-                  <label class="bwField"  for="EXTADDR-01">Apt/Suite:</label>
-                  <div class="bwValue"><input type="text" size="60" value="" id="EXTADDR-01"/></div>
-                  <label class="bwField"  for="STREET-01">Street:</label>
-                  <div class="bwValue"><input type="text" size="60" value="" id="STREET-01"/></div>
-                  
-                  <label class="bwField"  for="CITY-01">City:</label>
-                  <div class="bwValue"><input type="text" size="60" value="" id="CITY-01"/></div>
-                                  
-                  <label class="bwField"  for="STATE-01">State/Province:</label>
-                  <div class="bwValue">
-                    <input type="text" size="20" value="" id="STATE-01"/>
-                    <label class="bwInternalField" for="POSTAL-01">Postal Code:</label>
-                    <input type="text" size="20" value="" id="POSTAL-01"/>
-                  </div>
-                  
-                  <label class="bwField"  for="COUNTRY-01">Country:</label>
-                  <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-01"/></div>
-                  
-                  <!-- GEO gets its type (work or home) from this address block;
-                       GEO-01 corresponds with ADDRTYPE-01 -->
-                  <label class="bwField"  for="GEO-01">GEO:</label>
-                  <div class="bwValue"><input type="text" size="60" value="" id="GEO-01" disabled="disabled"/></div>
-                  <div class="bwHelpLink">
-                    ?
-                    <div class="bwHelp">
-                      Geographic coordinates<br/>
-                      Example: 47.251056,-68.594527<br/>
-                      (unimeplemented)
+                <div id="bwContactAddrHolder">
+                  <div class="addrFields" id="addrFields-0">
+                    <label class="bwField"  for="ADDRTYPE-0">Type:</label>
+                    <div class="bwValue">
+                      <select id="ADDRTYPE-0">
+                        <option value="work">work</option>
+                        <option value="home">home</option>
+                      </select>
+                      <label class="bwInternalField"  for="POBOX-0">P.O. Box:</label>
+                      <input type="text" size="6" value="" id="POBOX-0"/>
+                      <label class="bwInternalField"  for="EXTADDR-0">Apt/Suite:</label>
+                      <input type="text" size="12" value="" id="EXTADDR-0"/>
                     </div>
+                    
+                    <label class="bwField"  for="STREET-0">Street:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="STREET-0"/></div>
+                    
+                    <label class="bwField"  for="CITY-0">City:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="CITY-0"/></div>
+                                    
+                    <label class="bwField"  for="STATE-0">State/Province:</label>
+                    <div class="bwValue">
+                      <input type="text" size="20" value="" id="STATE-0"/>
+                      <label class="bwInternalField" for="POSTAL-0">Postal Code:</label>
+                      <input type="text" size="20" value="" id="POSTAL-0"/>
+                    </div>
+                    
+                    <label class="bwField"  for="COUNTRY-0">Country:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-0"/></div>
+                    
+                    <!-- GEO gets its type (work or home) from this address block;
+                         GEO-0 corresponds with ADDRTYPE-0 -->
+                    <label class="bwField"  for="GEO-0">GEO:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="GEO-0" disabled="disabled"/></div>
+                    <div class="bwHelpLink">
+                      ?
+                      <div class="bwHelp">
+                        Geographic coordinates<br/>
+                        Example: 47.251056,-68.594527<br/>
+                        (unimeplemented)
+                      </div>
+                    </div>
+                    
+                    <br class="clear"/>
                   </div>
-                  
-                  <br class="clear"/>
                 </div>
                 <div class="bwAppend bwRightAppend" id="bwAppendAddr"></div>
+                
               </div>
             </fieldset>
             <fieldset> 

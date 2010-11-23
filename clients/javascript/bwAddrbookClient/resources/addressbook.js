@@ -408,7 +408,9 @@ var bwAddressBook = function() {
     $(".phoneFields").each(function(index) {
       vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $("#PHONE-" + index).val() + "\n";
     });
-    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
+    $(".addrFields").each(function(index) {
+      vcData += "ADR;TYPE=" + $("#ADDRTYPE-" + index).val() + ":" + $("#POBOX-" + index).val() + ";" + $("#EXTADDR-" + index).val() + ";" + $("#STREET-" + index).val() + ";" + $("#CITY-" + index).val() + ";" +  $("#STATE-" + index).val() + ";" + $("#POSTAL-" + index).val() + ";" + $("#COUNTRY-" + index).val() + "\n";
+    });
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
     vcData += "PHOTO;VALUE=uri:" + $("#PHOTOURL").val() + "\n";
@@ -443,8 +445,10 @@ var bwAddressBook = function() {
     $(".phoneFields").each(function(index) {
       vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $("#PHONE-" + index).val() + "\n";
     });
-    vcData += "ADR;TYPE=" + $("#ADDRTYPE-01").val() + ":" + $("#POBOX-01").val() + ";" + $("#EXTADDR-01").val() + ";" + $("#STREET-01").val() + ";" + $("#CITY-01").val() + ";" +  $("#STATE-01").val() + ";" + $("#POSTAL-01").val() + ";" + $("#COUNTRY-01").val() + "\n";
-    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
+    $(".addrFields").each(function(index) {
+      vcData += "ADR;TYPE=" + $("#ADDRTYPE-" + index).val() + ":" + $("#POBOX-" + index).val() + ";" + $("#EXTADDR-" + index).val() + ";" + $("#STREET-" + index).val() + ";" + $("#CITY-" + index).val() + ";" +  $("#STATE-" + index).val() + ";" + $("#POSTAL-" + index).val() + ";" + $("#COUNTRY-" + index).val() + "\n";
+    });
+    //vcData += "GEO:TYPE=" + $("#ADDRTYPE-" + index).val() + ":geo:" + $("#GEO-" + index).val() + "\n";;
     vcData += "URL:" + $("#WEBPAGE").val() + "\n";
     vcData += "PHOTO;VALUE=uri:" + $("#PHOTOURL").val() + "\n";
     vcData += "NOTE:" + $("#NOTE").val() + "\n";
@@ -1450,33 +1454,31 @@ $(document).ready(function() {
   
   // FORM APPENDERS
   
-  // add a set of address fields to the add contact form
+  // add a set of address fields to the contact form
   $("#bwAppendAddr").click(function() {
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-    return false;
+    // get the id of the last email group
+    var lastId = $(".addrFields:last").attr("id");
+    // extract the number from the id and increment it
+    var i = Number(lastId.substring(lastId.indexOf("-")+1))+1;
+    // build the new fields with the new index (i)
+    var newAddrFields = buildAddrFields(i);
+    // append the result to the dom
+    $("#bwContactAddrHolder").append(newAddrFields);
   });
   
-  // add a new email address field to the add contact form
+  // add a new email address field to the contact form
   $("#bwAppendEmail").click(function() {
-    // get the id of the last email group
-    var lastEmailId = $(".emailFields:last").attr("id");
-    // extract the number from the id and increment it
-    var i = Number(lastEmailId.substring(lastEmailId.indexOf("-")+1))+1;
-    // build the new fields with the new index (i)
+    var lastId = $(".emailFields:last").attr("id");
+    var i = Number(lastId.substring(lastId.indexOf("-")+1))+1;
     var newEmailFields = buildEmailFields(i);
-    // append the result to the dom
     $("#bwContactEmailHolder").append(newEmailFields);
   });
   
-  // add a new phone field to the add contact form
+  // add a new phone field to the contact form
   $("#bwAppendPhone").click(function() {
-    // get the id of the last phone group
-    var lastEmailId = $(".phoneFields:last").attr("id");
-    // extract the number from the id and increment it
-    var i = Number(lastEmailId.substring(lastEmailId.indexOf("-")+1))+1;
-    // build the new fields with the new index (i)
+    var lastId = $(".phoneFields:last").attr("id");
+    var i = Number(lastId.substring(lastId.indexOf("-")+1))+1;
     var newPhoneFields = buildPhoneFields(i);
-    // append the result to the dom
     $("#bwContactPhoneHolder").append(newPhoneFields);
   });
   
@@ -1502,7 +1504,7 @@ function setupFormFields(curCard,kind) {
         $("#LOCATION-STATE").val(curCard.ADR[0].values.state.stripTags());
         $("#LOCATION-POSTAL").val(curCard.ADR[0].values.postal_code.stripTags());
         $("#LOCATION-COUNTRY").val(curCard.ADR[0].values.country.stripTags());
-        // $("#GEO-01").val(curCard.URL[0].value); -- set when we have geo working
+        // $("#GEO-01").val(curCard.GEO[0].value); -- set when we have geo working
       }
       if (curCard.URL != undefined) $("#LOCATION-WEBPAGE").val(curCard.URL[0].value.stripTags());
       if (curCard.PHOTO != undefined) $("#LOCATION-PHOTOURL").val(curCard.PHOTO[0].value.stripTags());
@@ -1561,17 +1563,30 @@ function setupFormFields(curCard,kind) {
         });
       }
       if (curCard.ADR != undefined) {
-        if (curCard.ADR[0].params['parameter-value'] != undefined) {
-          $("#ADDRTYPE-01").val(curCard.ADR[0].params['parameter-value'].stripTags()); // also won't do
+        for (var i=0; i < curCard.ADR.length; i++) {
+          if (i > 0) {
+            var newAddrFields = buildAddrFields(i);
+            $("#bwContactAddrHolder").append(newAddrFields);
+          }
+          if (curCard.ADR[0].params['parameter-value'] != undefined) {
+            $("#ADDRTYPE-" + i).val(curCard.ADR[i].params['parameter-value'].stripTags()); // also won't do
+          }
+          $("#POBOX-" + i).val(curCard.ADR[i].values.po_box.stripTags());
+          $("#EXTADDR-" + i).val(curCard.ADR[i].values.extended_address.stripTags());
+          $("#STREET-" + i).val(curCard.ADR[i].values.street_address.stripTags());
+          $("#CITY-" + i).val(curCard.ADR[i].values.locality.stripTags());
+          $("#STATE-" + i).val(curCard.ADR[i].values.state.stripTags());
+          $("#POSTAL-" + i).val(curCard.ADR[i].values.postal_code.stripTags());
+          $("#COUNTRY-" + i).val(curCard.ADR[i].values.country.stripTags());
+          //$("#GEO-" + i).val(curCard.GEO[i].value); -- set when we have geo working
         }
-        $("#POBOX-01").val(curCard.ADR[0].values.po_box.stripTags());
-        $("#EXTADDR-01").val(curCard.ADR[0].values.extended_address.stripTags());
-        $("#STREET-01").val(curCard.ADR[0].values.street_address.stripTags());
-        $("#CITY-01").val(curCard.ADR[0].values.locality.stripTags());
-        $("#STATE-01").val(curCard.ADR[0].values.state.stripTags());
-        $("#POSTAL-01").val(curCard.ADR[0].values.postal_code.stripTags());
-        $("#COUNTRY-01").val(curCard.ADR[0].values.country.stripTags());
-        //$("#GEO-01").val(curCard.URL[0].value); -- set when we have geo working
+        
+        // make sure any extra fields appended from a previous edit are removed
+        $("#contactForm .addrFields").each(function(index){
+          if (index > i-1) {
+            $(this).remove(); 
+          }
+        });
       }
       if (curCard.URL != undefined) $("#WEBPAGE").val(curCard.URL[0].value.stripTags());
       if (curCard.PHOTO != undefined) $("#PHOTOURL").val(curCard.PHOTO[0].value.stripTags());
@@ -1610,8 +1625,43 @@ function buildPhoneFields(i) {
   return phoneFields;
 };
 
-function buildAddressFields(i) {
+function buildAddrFields(i) {
+  var addrFields = '<div class="addrFields" id="addrFields-' + i + '">';
+  addrFields += '  <label class="bwField"  for="ADDRTYPE-' + i + '">Type:</label>';
+  addrFields += '  <div class="bwValue">';
+  addrFields += '    <select id="ADDRTYPE-' + i + '">';
+  addrFields += '     <option value="work">work</option>';
+  addrFields += '     <option value="home">home</option>';
+  addrFields += '    </select>';
+  addrFields += '    <label class="bwInternalField"  for="POBOX-' + i + '">P.O. Box:</label>';
+  addrFields += '    <input type="text" size="6" value="" id="POBOX-' + i + '"/>';
+  addrFields += '    <label class="bwInternalField"  for="EXTADDR-' + i + '">Apt/Suite:</label>';
+  addrFields += '    <input type="text" size="12" value="" id="EXTADDR-' + i + '"/>';
+  addrFields += '  </div>';
+  addrFields += '  <div class="bwRemove" onclick="bwRemoveItem(\'#addrFields-' + i + '\');"></div>';
+   
+  addrFields += '  <label class="bwField"  for="STREET-' + i + '">Street:</label>';
+  addrFields += '  <div class="bwValue"><input type="text" size="60" value="" id="STREET-' + i + '"/></div>';
   
+  addrFields += '<label class="bwField"  for="CITY-' + i + '">City:</label>';
+  addrFields += '  <div class="bwValue"><input type="text" size="60" value="" id="CITY-' + i + '"/></div>';
+                  
+  addrFields += '  <label class="bwField"  for="STATE-' + i + '">State/Province:</label>';
+  addrFields += '  <div class="bwValue">';
+  addrFields += '    <input type="text" size="20" value="" id="STATE-' + i + '"/>';
+  addrFields += '    <label class="bwInternalField" for="POSTAL-' + i + '">Postal Code:</label>';
+  addrFields += '    <input type="text" size="20" value="" id="POSTAL-' + i + '"/>';
+  addrFields += '  </div>';
+  
+  addrFields += '  <label class="bwField"  for="COUNTRY-' + i + '">Country:</label>';
+  addrFields += '  <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-' + i + '"/></div>';
+  
+  addrFields += '  <label class="bwField"  for="GEO-' + i + '">GEO:</label>';
+  addrFields += '  <div class="bwValue"><input type="text" size="60" value="" id="GEO-' + i + '" disabled="disabled"/></div>';
+
+  addrFields += '  <br class="clear"/>';
+  addrFields += '</div>';
+  return addrFields;
 }
 
 // remove an appended item
