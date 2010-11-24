@@ -255,6 +255,9 @@ ul.topMenu li:hover ul {
 	margin: 0 1em 0 0;
 	vertical-align: middle;
 }
+.bwGroupable {
+	cursor: pointer;
+}
 #bwDetailsTable {
 	position: relative;
 	margin: 1em 0 0 0;

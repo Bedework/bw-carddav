@@ -289,7 +289,7 @@ var bwAddressBook = function() {
             listing += '<img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
           }
           if (book.listDisp.familyName) {
-            listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '">';
+            listing += '<td class="name bwGroupable" id="bwCardFamName-' + index + '-' + i + '">';
           
             // build the letter anchors; only insert one if it's new
             if (letterAnchor != familyName.substr(0,1)) {
@@ -327,7 +327,7 @@ var bwAddressBook = function() {
     $("#bwAddrBookOutputList").append(listing);
     
     // make the list items draggable
-    $("#bwAddrBookOutputList td.name").draggable({ 
+    $("#bwAddrBookOutputList td.bwGroupable").draggable({ 
       opacity: 0.5,
       // create a clone & append it to 'body' 
       helper: function (e,ui) {
@@ -679,77 +679,80 @@ var bwAddressBook = function() {
   this.addMemberToGroup = function(bookIndex,groupIndex,memberBookIndex,memberIndex) {
     // get the current member to be added
     var curMember = jQuery.parseJSON(bwAddressBook.books[memberBookIndex].vcards[memberIndex]);
-    
+
     if (curMember.KIND != undefined) {
       if (curMember.KIND[0].value == "group"){
         // can't add groups to groups
         showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddGroup,true);
+        return false;
       }
-    } else if (curMember.EMAIL == undefined) {
+    } 
+    
+    if (curMember.EMAIL == undefined) {
       // the member has no email (mailto) address, so disallow adding it to a group
       showMessage(bwAbDispDisallowed,bwAbDispNoMemberAddEmail,true);
-    } else {
-      // get the group
-      var curGroup = jQuery.parseJSON(bwAddressBook.books[bookIndex].vcards[groupIndex]);
-      
-      // check to see if the entry is already in the group and abort if so
-      if (curGroup.MEMBER != undefined) {
-        for(var i=0; i<curGroup.MEMBER.length; i++) {
-          if(curGroup.MEMBER[i].value.stripTags() == "mailto:" + curMember.EMAIL[0].value.stripTags()) {
-            showMessage(bwAbDispAlreadyAMemberTitle,bwAbDispAlreadyAMember,true);
-            return;
-          }
+      return false;
+    } 
+    // get the group
+    var curGroup = jQuery.parseJSON(bwAddressBook.books[bookIndex].vcards[groupIndex]);
+    
+    // check to see if the entry is already in the group and abort if so
+    if (curGroup.MEMBER != undefined) {
+      for(var i=0; i<curGroup.MEMBER.length; i++) {
+        if(curGroup.MEMBER[i].value.stripTags() == "mailto:" + curMember.EMAIL[0].value.stripTags()) {
+          showMessage(bwAbDispAlreadyAMemberTitle,bwAbDispAlreadyAMember,true);
+          return;
         }
       }
-      
-      // add the member to the group
-      // check for the existence of the properties (UID must be ok or we should simply fail out)
-      var fn ="";
-      if(curGroup.FN != undefined) { 
-        fn = curGroup.FN[0].value.stripTags(); 
-      }
-      var nickname ="";
-      if(curGroup.NICKNAME != undefined) { 
-        nickname = curGroup.NICKNAME[0].value.stripTags(); 
-      }
-      var org = "";
-      if(curGroup.ORG != undefined) { 
-        org = curGroup.ORG[0].values.organization_name.stripTags(); 
-      }
-      var note = "";
-      if(curGroup.NOTE != undefined) { 
-        url = curGroup.NOTE[0].value.stripTags(); 
-      } 
-      
-      // now let's build the vcard
-      var vcData = "BEGIN:VCARD\n"
-      vcData += "VERSION:4.0\n";
-      if (curGroup.UID == undefined) {
-        // if the card doesn't have a UID (probably because it was imported), give it one
-        vcData+= "UID:BwABC-" + Math.uuid() + "\n";
-      } else {
-        vcData += "UID:" + curGroup.UID[0].value + "\n";
-      } 
-      vcData += "FN:" + fn + "\n";
-      vcData += "N:" + fn + ";;;;\n";
-      vcData += "KIND:group\n";
-      vcData += "ORG:" + org + ";;\n";
-      vcData += "NICKNAME:" + nickname + "\n";
-      vcData += "CLASS:PRIVATE\n";
-      vcData += "REV:" + getRevDate() + "\n";
-      vcData += "NOTE:" + note + "\n";
-      if (curGroup.MEMBER != undefined) {
-        for (var i=0; i<curGroup.MEMBER.length; i++) {
-          // no need for mailto: here - it's in the value
-          vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
-        }; 
-      };
-      // now tag on the new member:
-      vcData += "MEMBER:mailto:" + $.trim(curMember.EMAIL[0].value) + "\n";
-      vcData += "END:VCARD";
-      
-      this.updateEntry(vcData,curGroup.href,curGroup.etag);
+    }
+    
+    // add the member to the group
+    // check for the existence of the properties (UID must be ok or we should simply fail out)
+    var fn ="";
+    if(curGroup.FN != undefined) { 
+      fn = curGroup.FN[0].value.stripTags(); 
+    }
+    var nickname ="";
+    if(curGroup.NICKNAME != undefined) { 
+      nickname = curGroup.NICKNAME[0].value.stripTags(); 
+    }
+    var org = "";
+    if(curGroup.ORG != undefined) { 
+      org = curGroup.ORG[0].values.organization_name.stripTags(); 
+    }
+    var note = "";
+    if(curGroup.NOTE != undefined) { 
+      url = curGroup.NOTE[0].value.stripTags(); 
+    } 
+    
+    // now let's build the vcard
+    var vcData = "BEGIN:VCARD\n"
+    vcData += "VERSION:4.0\n";
+    if (curGroup.UID == undefined) {
+      // if the card doesn't have a UID (probably because it was imported), give it one
+      vcData+= "UID:BwABC-" + Math.uuid() + "\n";
+    } else {
+      vcData += "UID:" + curGroup.UID[0].value + "\n";
+    } 
+    vcData += "FN:" + fn + "\n";
+    vcData += "N:" + fn + ";;;;\n";
+    vcData += "KIND:group\n";
+    vcData += "ORG:" + org + ";;\n";
+    vcData += "NICKNAME:" + nickname + "\n";
+    vcData += "CLASS:PRIVATE\n";
+    vcData += "REV:" + getRevDate() + "\n";
+    vcData += "NOTE:" + note + "\n";
+    if (curGroup.MEMBER != undefined) {
+      for (var i=0; i<curGroup.MEMBER.length; i++) {
+        // no need for mailto: here - it's in the value
+        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+      }; 
     };
+    // now tag on the new member:
+    vcData += "MEMBER:mailto:" + $.trim(curMember.EMAIL[0].value) + "\n";
+    vcData += "END:VCARD";
+    
+    this.updateEntry(vcData,curGroup.href,curGroup.etag);
   };
   
   //accepts either a card object or will pick out the current card from the address book
@@ -947,7 +950,7 @@ var bwAddressBook = function() {
       fullName = curCard.FN[0].value.stripTags(); 
     }
     
-    details += '<h1 class="' + curKind + '">' + fullName + '</h1>';
+    details += '<h1 id="detailTitle-' + bwAddressBook.book + '-' + bwAddressBook.card + '" class="bwGroupable ' + curKind + '">' + fullName + '</h1>';
     
     // picture
     if(curCard.PHOTO != undefined) { 
@@ -1066,6 +1069,15 @@ var bwAddressBook = function() {
         window.location.reload();    
       });
     }
+    
+    // make the title (and icon) draggable
+    $(".bwGroupable").draggable({ 
+      opacity: 0.5,
+      // create a clone & append it to 'body' 
+      helper: function (e,ui) {
+         return $(this).clone().appendTo('body').css('zIndex',5).show();
+      } 
+    })
     
     showPage("bw-details");
   }
@@ -1331,7 +1343,7 @@ $(document).ready(function() {
   
   // add a member to group by dragging and dropping
   $("#booksAndGroups a.bwGroup").droppable({ 
-    accept: '#bwAddrBookOutputList td.name', 
+    accept: ('.bwGroupable'), 
     greedy: true,
     hoverClass: 'droppableHighlight',
     drop:   function (event, ui) { 
