@@ -16,7 +16,7 @@
   <property file="${project.home}/build.properties" />
 
   <property name="project.name" value="${org.bedework.package.name}"/>
-  <property name="project.version" value="${org.bedework.version}"/>
+  <property name="project.version" value="${org.bedework.carddav.version}"/>
 
   <property name="dist.home" location="${project.home}/dist"/>
   <property name="lib.dir" location="${project.home}/lib"/>
@@ -306,12 +306,12 @@
     -->
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
-            name="bw-carddumpres" version="3.6"
+            name="bw-carddumpres" version="${org.bedework.carddav.version}"
             projecthome="${project.home}" />
 
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
-            name="bw-cardtools" version="3.6"
+            name="bw-cardtools" version="${org.bedework.carddav.version}"
             projecthome="${project.home}" />
 
     <ant antfile="deployService.xml" target="deploy" inheritRefs="true" >
@@ -325,8 +325,8 @@
 
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
-            name="bw-davio" version="3.6"
-            projecthome="${bedework.home}/projects/davutil" />
+            name="bw-davio" version="${org.bedework.davutil.version}"
+            projecthome="${project.home}/../bedework/projects/davutil" />
     
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
