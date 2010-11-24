@@ -365,10 +365,10 @@ var bwAddressBook = function() {
       data: vcData,
       dataType: "text",
       processData: false,
+      contentType: "text/vcard",
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
         xhrobj.setRequestHeader("If-None-Match", "*");
-        xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
         var serverMsg = "\n" + status + ": " + responseData;
@@ -393,10 +393,10 @@ var bwAddressBook = function() {
       data: vcData,
       dataType: "text",
       processData: false,
+      contentType: "text/vcard",
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
         xhrobj.setRequestHeader("If-Match", '"' + cardEtag + '"'); // restore the etag dquotes
-        xhrobj.setRequestHeader("Content-Type", "text/vcard");
       },
       success: function(responseData, status){
         var serverMsg = "\n" + status + ": " + responseData;
@@ -536,6 +536,7 @@ var bwAddressBook = function() {
         dataType: "text",
         async: false,
         processData: false,
+        contentType: "text/vcard",
         beforeSend: function(xhrobj) {
           xhrobj.setRequestHeader("X-HTTP-Method-Override", "PUT");
           if (isNew) {
@@ -543,7 +544,6 @@ var bwAddressBook = function() {
           } else {
             xhrobj.setRequestHeader("If-Match", '"' + etag + '"');
           }
-          xhrobj.setRequestHeader("Content-Type", "text/vcard");
         },
         success: function(responseData, status){
           importMessages += '<li>' + status + ' ' + responseData;
@@ -583,12 +583,12 @@ var bwAddressBook = function() {
       url: bwAddressBook.defPersBookUrl,
       dataType: "text",
       processData: false,
+      contentType: "text/vcard",
       async: false,
       //data: content,
       beforeSend: function(xhrobj) {
         xhrobj.setRequestHeader("Depth", "1");
         xhrobj.setRequestHeader("Content-Type", "text/vcard;charset=UTF-8");
-        xhrobj.setRequestHeader("Accept", "text/vcard");
       },
       success: function(responseData) {
         showMessage(bwAbDispExportTitle,bwAbDispExported,true);
