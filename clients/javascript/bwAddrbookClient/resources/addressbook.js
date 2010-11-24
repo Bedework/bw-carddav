@@ -1427,7 +1427,7 @@ $(document).ready(function() {
     }
   });
   
-  $("#cancelContact").click(function() {
+  $(".cancelContactButton").click(function() {
     clearFields("#contactForm");
     if ($("#submitContact").hasClass('update')) {
       showPage("bw-details");
@@ -1445,7 +1445,7 @@ $(document).ready(function() {
     }
   });
   
-  $("#cancelGroup").click(function() {
+  $(".cancelGroupButton").click(function() {
     clearFields("#groupForm");
     if ($("#submitGroup").hasClass('update')) {
       showPage("bw-details");
@@ -1463,7 +1463,7 @@ $(document).ready(function() {
     }
   });
   
-  $("#cancelLocation").click(function() {
+  $(".cancelLocationButton").click(function() {
     clearFields("#locationForm");
     if ($("#submitLocation").hasClass('update')) {
       showPage("bw-details");
