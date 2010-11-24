@@ -127,16 +127,16 @@
     <getJar name="log4j" version="1.2.8" />
     <getJar name="servletapi" version="2.4" />
 
-    <getJar name="rpiaccess" version="3.6" project="access"
+    <getJar name="rpiaccess" version="${org.bedework.access.version}" project="access"
             projecthome="${project.home}/../bedework/projects/access" />
 
-    <getJar name="rpiutil" version="3.6" project="rpiutil"
+    <getJar name="rpiutil" version="${org.bedework.rpiutil.version}" project="rpiutil"
             projecthome="${project.home}/../bedework/projects/rpiutil" />
     
-    <getJar name="bw-davio" version="3.6" project="davutil" 
+    <getJar name="bw-davio" version="${org.bedework.davutil.version}" project="davutil" 
             projecthome="${project.home}/../bedework/projects/davutil" />
 
-    <getJar name="bw-webdavserver" version="3.6" project="webdav"
+    <getJar name="bw-webdavserver" version="${org.bedework.webdav.version}" project="webdav"
             projecthome="${project.home}/../bedework/projects/webdav" />
 
     <!-- ==================== Compilation Classpath ==================== -->
