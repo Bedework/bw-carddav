@@ -1495,9 +1495,11 @@ $(document).ready(function() {
   // SEARCHING
   
   // letter warping
-  /*$("#filterLetters a").click(function(event) {
-    scrollToItem(self.location.hash);     
-  });  */
+  $("#filterLetters a").click(function(event) {
+     event.preventDefault();
+     location.replace($(this).attr("href"));
+     /*alert("after move");*/
+  });
   
   // search box
   $("#searchButton").click(function() {
@@ -1505,12 +1507,16 @@ $(document).ready(function() {
       return false; 
     } 
     if (bwAddrBook.lastSearchedCard == "") {
-      showMessage(bwAbDispSearchTitle,bwAbDispSearchMustPick,true);      
+      showMessage(bwAbDispSearchTitle,bwAbDispSearchMustPick,true);
+      return false;
     }
-    
+
+    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true); 
+    return false;
+    /*
     if (bwAddrBook.lastSearchedCard != undefined) {
       alert(bwAddrBook.lastSearchedCard.fn.value + "\n" + bwAddrBook.lastSearchedCard.uid.value);
-    }
+    }*/
     
   });
   
@@ -1555,6 +1561,7 @@ $(document).ready(function() {
     select: function(event, ui) {
       $("#searchButton").html(bwAbDispShow);  // change "search" to "show"
       $("#searchButton").removeAttr("disabled"); // enable the button
+      $("#searchButton").css("cursor","pointer"); // change the cursor
       bwAddrBook.lastSearchedCard = ui.item.jsonValue; // set the value of the last searched card
     }
 

@@ -47,6 +47,9 @@ body {
 #searchBox option {
   min-width: 100px;
 }
+#searchButton {
+	cursor: default;
+}
 ul.topMenu {
 	float: left;
   margin: 0 0.5em 0 0;
