@@ -58,6 +58,7 @@ var bwAbDispAddLocation = "Add Location";
 var bwAbDispUpdateLocation = "Update Location";
 var bwAbDispAddGroup = "Add Group";
 var bwAbDispUpdateGroup = "Update Group";
+var bwAbDispShow = "show...";
 
 // dynamic form values
 var bwAbDispFormWork = "work";
@@ -90,6 +91,8 @@ var bwAbDispImportNew = "(new)";
 var bwAbDispImportUpdate = "(update)";
 var bwAbDispExportTitle = "Export";
 var bwAbDispExported = "Your data has been exported.";
+var bwAbDispSearchTitle = "Search";
+var bwAbDispSearchMustPick = "You must pick from an item in the pull down list";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";

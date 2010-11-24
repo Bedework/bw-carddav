@@ -40,6 +40,7 @@ var bwAddressBook = function() {
   this.card; // the currently selected card
   //this.selectedMenuId = $.cookie("selectedMenuId"); // the currently selected menu item; might be null
   this.groupMenus = new Array(); // a place to store groups when building menus
+  this.lastSearchedCard; // the last vcard returned from a search
   
   this.init = function(bookTemplate,userid) {
     bwAddressBook.books = bookTemplate;
@@ -148,6 +149,17 @@ var bwAddressBook = function() {
 
   };
   
+  this.buildSearches = function(searches) {
+    if (searches == undefined || !searches.length) {
+      return false;
+    }
+    $("#searchUrls option").remove(); // remove the placeholder
+    for (var i = 0; i < searches.length; i++) {
+      var curSearchLocation = jQuery.parseJSON(searches[i]);
+      $("#searchUrls").append('<option value="' + searches[i].url + '">' + searches[i].label + '</option>');
+    }
+  }
+  
   this.buildList = function(bookIndex) {
     var book = new Array();
     var index = bookIndex;
@@ -195,6 +207,7 @@ var bwAddressBook = function() {
       listing += '<tr class="none"><td>' +  bwAbDispListNone + '</td><td></td><td></td><td></td><td></td><td></td></tr>'; 
     } else {
     // we have cards: build the list
+      var letterAnchor = ""; // we will build a list of anchors for the warp letters to link to
       for (var i=0; i < book.vcards.length; i++) {
         var curCard = jQuery.parseJSON(book.vcards[i]);
         
@@ -267,11 +280,23 @@ var bwAddressBook = function() {
           listing += '<tr id="bwBookRow-' + index + '-' + i + '">';
           if (book.listDisp.name) {
             listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '">';
+            
+           // build the letter anchors; only insert one if it's new
+           if (letterAnchor != fn.substr(0,1)) {
+             letterAnchor = fn.substr(0,1)
+             listing += '<a name="' + letterAnchor + '" id="' + letterAnchor + '"></a>';
+            }
             listing += '<img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
           }
           if (book.listDisp.familyName) {
             listing += '<td class="name" id="bwCardFamName-' + index + '-' + i + '">';
-            listing += '<a name="' + familyName.substr(0,1) + '"></a>';
+          
+            // build the letter anchors; only insert one if it's new
+            if (letterAnchor != familyName.substr(0,1)) {
+              letterAnchor = familyName.substr(0,1)
+              listing += '<a name="' + letterAnchor + '" id="' + letterAnchor + '"></a>';
+            }
+            
             listing += '<img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + familyName + '</td>';
           }
           if (book.listDisp.givenNames) {
@@ -1107,16 +1132,23 @@ $(document).ready(function() {
     //, north__minSize:    43 
   });
 
+  // set the width of the A-Z list based on the size of the layout
+  $("#filterLetters").css("width",myLayout.panes.center.innerWidth());
+  
   /****************************
    * INITIALIZE AND DISPLAY
    ****************************/ 
   
   // we have a userid, now load the vcards, build the menus, and display the list!
-  // bwBooks is defined in addressbookProps.js
+  // bwBooks is defined in config.js
   bwAddrBook.init(bwBooks,userid);
   
   // generate the personal and subscribed books menus
   bwAddrBook.buildMenus();
+  
+  // generate the search listings
+  // bwPublicCardDAV is defined in config.js
+  bwAddrBook.buildSearches(bwPublicCardDAV);
   
   // display the default listing
   bwAddrBook.display();
@@ -1132,6 +1164,12 @@ $(document).ready(function() {
   // *****************
   // DISPLAY HANDLERS
   // *****************
+  
+  // reset the width of the letters on resize of the window
+  /* doesn't work
+  $(window).resize(function() {
+    $("#filterLetters").css("width",myLayout.panes.center.innerWidth());
+  });*/
   
   // select a book or subscription to display
   $(".bwBookLink").click(function() {
@@ -1442,17 +1480,72 @@ $(document).ready(function() {
   });
   
   
-  // SEARCHING AND FILTERING
+  // SEARCHING
   
-  // letter filters 
-  $("#filterLetters a").click(function() {
-    scrollToItem(self.location.hash); 
+  // letter warping
+  /*$("#filterLetters a").click(function(event) {
+    scrollToItem(self.location.hash);     
+  });  */
+  
+  // search box
+  $("#searchButton").click(function() {
+    if ($("#searchUrls").val() == "" || $("#search").val() == "") {
+      return false; 
+    } 
+    if (bwAddrBook.lastSearchedCard == "") {
+      showMessage(bwAbDispSearchTitle,bwAbDispSearchMustPick,true);      
+    }
+    
+    if (bwAddrBook.lastSearchedCard != undefined) {
+      alert(bwAddrBook.lastSearchedCard.fn.value + "\n" + bwAddrBook.lastSearchedCard.uid.value);
+    }
+    
   });
   
-  // search and filter box
-  $("#searchButton").click(function() {
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true);
-    return false;
+  $("#search").autocomplete({
+    minLength: 2,
+    // set the data source, call it, and format the results:
+    source: function(req, include) {
+      // in the hidden field with id bwCardDavBookPath
+      addrBookUrl = $("#searchUrls").val();
+      
+      // call the server and push the results into an array "items"
+      $.getJSON(addrBookUrl, req, function(data) {
+        var acResults = "";
+        if (data != undefined && data.microformats != undefined && data.microformats.vcard != undefined) {
+          acResults = data.microformats.vcard;
+        }
+        var items = [];
+        $.each(acResults, function(i,entry) {
+          
+          // build the label from the full name
+          var curLabel = "";
+          if (entry.fn != undefined && entry.fn.value != undefined) {
+            curLabel = entry.fn.value;
+          } 
+          if (curLabel == "") {
+            curLabel = "no name";
+          }
+          
+          
+          // only show the entry if there is a label (an FN)
+          // jsonValue: pass back the whole entry for use in the client
+          if (curLabel != "") {
+            var curItem = {label: curLabel, value: curLabel, jsonValue: entry};
+            items.push(curItem);
+          }
+        });
+        
+        // pass items to the callback function for display in the autocomplete pulldown
+        include(items);
+      });
+    },
+    select: function(event, ui) {
+      $("#searchButton").html(bwAbDispShow);  // change "search" to "show"
+      $("#searchButton").removeAttr("disabled"); // enable the button
+      bwAddrBook.lastSearchedCard = ui.item.jsonValue; // set the value of the last searched card
+    }
+
   });
   
   

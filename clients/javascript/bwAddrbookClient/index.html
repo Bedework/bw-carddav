@@ -38,7 +38,7 @@
     <script type="text/javascript" src="resources/jquery/layout/jquery.layout.min-1.2.0.js"></script>
     <link href="resources/jquery/layout/layout.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="resources/jquery/tablesorter/jquery.tablesorter.min.js"></script>
-    <script type="text/javascript" src="resources/jquery/jquery.cookie.js"></script>
+    <!-- script type="text/javascript" src="resources/jquery/jquery.cookie.js"></script-->
     <script type="text/javascript" src="resources/Math.uuid.js"></script>
     <script type="text/javascript" src="config/config.js"></script>
     <script type="text/javascript" src="resources/addressbook.js"></script>
@@ -51,11 +51,11 @@
       <!-- The search box performs a search across public carddav servers
            listed in the config. -->
       <div id="searchBox">
-        <select id="SearchUrls">
-          <option>loading...</option>
+        <select id="searchUrls">
+          <option value="">loading...</option>
         </select>
         <input type="text" id="search" value=""/>
-        <button id="searchButton">search...</button>
+        <button id="searchButton" disabled="disabled">search...</button>
       </div>
       <ul id="add" class="topMenu">
         <li>
@@ -115,9 +115,9 @@
             <li><a href="#A">A</a></li>
             <li><a href="#B">B</a></li>
             <li><a href="#C">C</a></li>
-            <li><a href="#C">D</a></li>
-            <li><a href="#D">E</a></li>
-            <li><a href="#E">F</a></li>
+            <li><a href="#D">D</a></li>
+            <li><a href="#E">E</a></li>
+            <li><a href="#F">F</a></li>
             <li><a href="#G">G</a></li>
             <li><a href="#H">H</a></li>
             <li><a href="#I">I</a></li>

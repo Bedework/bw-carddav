@@ -62,29 +62,6 @@ function clearFields(formId) {
   });
 }
 
-function scrollToItem(target) {
-  if (target == undefined || target == '') {
-    return true;
-  } else {
-    var hash = this.target;
-    if (!target || !target.length) {
-      return true;
-    }
-  }
-
-  var $pane = $('.ui-layout-center');
-  var $target = $(target);
-  $target = $target.length && $target || $('[name='+ target.slice(1) +']');
-  if ($target.length) {
-    var targetTop = $target.offset().top;
-    var paneTop = $pane.offset().top;
-    $pane.animate({ scrollTop: '+='+ (targetTop - paneTop) +'px' }, 1000, 'linear', function(){
-      self.location.replace(target); // make sure we scroll ALL the way!
-    });
-    return false; // cancel normal hyperlink
-  }
-}; 
-
 /****************************
  * MESSAGE AND ERROR BOXES:
  ****************************/

@@ -175,6 +175,7 @@ ul.topMenu li:hover ul {
   background-color: white;
 }
 #filterLetters {
+  position: fixed;
   color: black;
   background-color: #eef;	
   width: 100%;
@@ -203,6 +204,7 @@ ul.topMenu li:hover ul {
 }
 .bwAddrBookTable {
   float: left;
+  margin: 22px 0 0 0;
   font-size: 0.9em;
   width: 100%;
   border-bottom: 1px solid #eee;
