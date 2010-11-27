@@ -282,8 +282,8 @@ var bwAddressBook = function() {
             listing += '<td class="name" id="bwCardFN-' + index + '-' + i + '">';
             
            // build the letter anchors; only insert one if it's new
-           if (letterAnchor != fn.substr(0,1)) {
-             letterAnchor = fn.substr(0,1)
+           if (letterAnchor != fn.substr(0,1).toUpperCase()) {
+             letterAnchor = fn.substr(0,1).toUpperCase();
              listing += '<a name="' + letterAnchor + '" id="' + letterAnchor + '"></a>';
             }
             listing += '<img src="' + kindIcon + '" width="16" height="16" alt="' + kind + '"/>' + fn + '</td>';
@@ -292,8 +292,8 @@ var bwAddressBook = function() {
             listing += '<td class="name bwGroupable" id="bwCardFamName-' + index + '-' + i + '">';
           
             // build the letter anchors; only insert one if it's new
-            if (letterAnchor != familyName.substr(0,1)) {
-              letterAnchor = familyName.substr(0,1)
+            if (letterAnchor != familyName.substr(0,1).toUpperCase()) {
+              letterAnchor = familyName.substr(0,1).toUpperCase();
               listing += '<a name="' + letterAnchor + '" id="' + letterAnchor + '"></a>';
             }
             
@@ -950,12 +950,13 @@ var bwAddressBook = function() {
       fullName = curCard.FN[0].value.stripTags(); 
     }
     
-    details += '<h1 id="detailTitle-' + bwAddressBook.book + '-' + bwAddressBook.card + '" class="bwGroupable ' + curKind + '">' + fullName + '</h1>';
-    
     // picture
     if(curCard.PHOTO != undefined) { 
       details += '<div class="detailPhoto"><img src="' + curCard.PHOTO[0].value.stripTags() + '" alt="' + bwAbDispDetailsPhoto + fullName + '"/></div>'; 
     }
+    
+    details += '<h1 id="detailTitle-' + bwAddressBook.book + '-' + bwAddressBook.card + '" class="bwGroupable ' + curKind + '">' + fullName + '</h1>';
+    details += '<a class="download" href="' + curCard.href + '">' + bwAbDispDetailsDownload + '</a>';
     
     details += '<table id="bwDetailsTable">';
     // title
@@ -1498,7 +1499,8 @@ $(document).ready(function() {
   $("#filterLetters a").click(function(event) {
      event.preventDefault();
      location.replace($(this).attr("href"));
-     /*alert("after move");*/
+     // scroll back the div to avoid being covered by the fixed filterLetters bar
+     myLayout.panes.center.scrollTop(myLayout.panes.center.scrollTop() - 28);
   });
   
   // search box

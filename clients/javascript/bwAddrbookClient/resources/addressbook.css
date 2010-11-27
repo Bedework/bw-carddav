@@ -325,6 +325,15 @@ h1.location {
   background: white url("icons/silk/building.png") left no-repeat;
   color: #333;
 }
+a.download {
+	position: absolute;
+	top: 1.3em;
+	right: 140px;
+	width: 80px;
+	background: white url("icons/silk/vcardDownload.png") left no-repeat;
+  color: #333;
+  padding-left: 26px;
+}
 h3 {
 	margin: 1em 0 1em 0;
 	font-size: 1em;

@@ -50,6 +50,7 @@ var bwAbDispDetailsRemoveMember = "remove";
 var bwAbDispDetailsCommitMemberRemoval = "commit changes";
 var bwAbDispDetailsCancel = "cancel";
 var bwAbDispDetailsPhoto = "photo:";
+var bwAbDispDetailsDownload = "download";
 
 // form titles and submit buttons
 var bwAbDispAddContact = "Add Contact";
