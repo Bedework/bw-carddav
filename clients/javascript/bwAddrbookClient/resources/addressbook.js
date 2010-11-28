@@ -1513,14 +1513,140 @@ $(document).ready(function() {
       return false;
     }
 
-    showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true); 
-    return false;
-    /*
+    // the data format returned from the server for this json is different from the
+    // json parsed by vcardParser.js
     if (bwAddrBook.lastSearchedCard != undefined) {
-      alert(bwAddrBook.lastSearchedCard.fn.value + "\n" + bwAddrBook.lastSearchedCard.uid.value);
-    }*/
+      var curCard = bwAddrBook.lastSearchedCard;
+      var details = "";
+      var fullName = "";
+      
+      // Get the current kind.
+      // If no kind, attempt to use "individual".
+      var curKind = "individual";
+      if (curCard.kind != undefined) {
+        curKind = String(curCard.kind.value).stripTags();
+      } 
+      
+      // build the details    
+      // full name
+      if(curCard.fn != undefined) { 
+        fullName = String(curCard.fn.value).stripTags(); 
+      }
+      
+      // picture
+      if(curCard.photo != undefined) { 
+        details += '<div class="detailPhoto"><img src="' + curCard.photo.value.stripTags() + '" alt="' + bwAbDispDetailsPhoto + fullName + '"/></div>'; 
+      }
+      
+      details += '<h1 class="bwSearched ' + curKind + '">' + fullName + '</h1>';
+      // download 
+      if (curCard.source != undefined && curCard.source[0].value != '') {
+        details += '<a class="download" href="' + curCard.source[0].value + '">' + bwAbDispDetailsDownload + '</a>';
+      }
+      
+      details += '<table id="bwDetailsTable">';
+      // title
+      if (curCard.title != undefined && curCard.title.value != "") {
+        details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + curCard.title.value.stripTags() + '</td></tr>';
+      }
+      // organization
+      if(curCard.org != undefined && curCard.org.value != "") {
+        details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + curCard.org.value.stripTags() + '</td></tr>';
+      }
+      // nickname
+      if(curCard.nickname != undefined && curCard.nickname.value != "") {
+        details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.nickname.value.stripTags() + '</td></tr>';
+      }
+      // email address(es)
+      if(curCard.email != undefined) { 
+        for (var i=0; i < curCard.email.length; i++) {
+          details += '<tr><td class="field">' + bwAbDispDetailsEmail + '</td><td><a href="mailto:' + $ESAPI.encoder().encodeForHTML(curCard.email[i].value) + '">' + $ESAPI.encoder().encodeForHTML(curCard.email[i].value) + '</a></td></tr>';
+        }
+      }
+      // telephone number(s)
+      if (curCard.tel != undefined) {
+        for (var i=0; i < curCard.tel.length; i++) {
+          details += '<tr><td class="field">' + bwAbDispDetailsPhone + '</td>';
+          details += '<td>' + curCard.tel[i].value.stripTags();
+          details += '</td></tr>';
+        }
+      }
+      // url
+      if (curCard.url != undefined && curCard.url[0] != "") {
+        details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + curCard.url[0].stripTags() + '">' + curCard.url[0].stripTags() + '</a></td></tr>';
+      }
+      // address(es)
+      // return to addresses and members later
+      /*if(curCard.ADR != undefined) { 
+        for (var i=0; i < curCard.ADR.length; i++) {
+          details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsAddress + '</td><td>';
+          // output the address details:
+          if (curCard.ADR[i].values.po_box != undefined && curCard.ADR[i].values.po_box != "") {
+            details += curCard.ADR[i].values.po_box.stripTags() + "<br/>";
+          }
+          if (curCard.ADR[i].values.extended_address != undefined && curCard.ADR[i].values.extended_address != "") {
+            details += curCard.ADR[i].values.extended_address.stripTags() + "<br/>";
+          }
+          if (curCard.ADR[i].values.street_address != undefined && curCard.ADR[i].values.street_address != "") {
+            details += curCard.ADR[i].values.street_address.stripTags() + "<br/>";
+          }
+          if (curCard.ADR[i].values.locality != undefined && curCard.ADR[i].values.locality != "") {
+            details += curCard.ADR[i].values.locality.stripTags();
+          }
+          if (curCard.ADR[i].values.state != undefined && curCard.ADR[i].values.state != "") {
+            details += ", " + curCard.ADR[i].values.state.stripTags() + " ";
+          }
+          if (curCard.ADR[i].values.postal_code != undefined && curCard.ADR[i].values.postal_code != "") {
+            details += curCard.ADR[i].values.postal_code.stripTags() + "<br/>";
+          }
+          if (curCard.ADR[i].values.country != undefined && curCard.ADR[i].values.country != "") {
+            details += curCard.ADR[i].values.country.stripTags();
+          }
+          details += '</td></tr>';
+        }
+      }
+      // group members, if a group 
+      if (curKind == "group") {
+        if (curCard.MEMBER != undefined) {
+          details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsGroupMembers + '</td><td>';
+          details += '<table id="groupMembers">';
+          for (var i=0; i < curCard.MEMBER.length; i++) {
+            details += '<tr><td>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1).stripTags() + '</td>';
+            details += '<td><a href="#" class="bwRemoveMember">' + bwAbDispDetailsRemoveMember + '</a></td></tr>';
+          }
+          details += '<tr id="memberRemovalRow"><td></td><td>';
+          details += '<button id="commitMemberRemoval">' + bwAbDispDetailsCommitMemberRemoval + '</button> ';
+          details += '<button id="cancelMemberRemoval">' + bwAbDispDetailsCancel + '</button></td></tr>';
+          details += '</table></td></tr>';
+        }
+      }*/
+      // note
+      if(curCard.note != undefined && curCard.note.value != "") {
+        details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + String(curCard.note.value).stripTags() + '</td></tr>';
+      }
+      details += '</table>';
+      
+      // create button for adding to address book
+      details += '<button id="bwAddSearchItemToBook">' + bwAbDispDetailsAddToBook + '</button>';
+
+      $("#bwSearchOutput").html(details);
+      showPage("bw-lastSearch");
+      
+      // once built, assign click handler to the button
+      $("#bwAddSearchItemToBook").click(function(){
+        showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true); 
+        return false;
+      });
+      
+      // switch the "show" button back to search and disable to reset the search
+      /*$("#searchButton").html(bwAbDispSearch);  // change "show" to "search"
+      $("#searchButton").attr("disabled","disabled"); // disable the button
+      $("#searchButton").css("cursor","default"); // change the cursor*/
+    }
     
   });
+  
+  
   
   $("#search").autocomplete({
     minLength: 2,

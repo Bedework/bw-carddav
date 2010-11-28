@@ -51,6 +51,7 @@ var bwAbDispDetailsCommitMemberRemoval = "commit changes";
 var bwAbDispDetailsCancel = "cancel";
 var bwAbDispDetailsPhoto = "photo:";
 var bwAbDispDetailsDownload = "download";
+var bwAbDispDetailsAddToBook = "add to address book";
 
 // form titles and submit buttons
 var bwAbDispAddContact = "Add Contact";
@@ -59,6 +60,7 @@ var bwAbDispAddLocation = "Add Location";
 var bwAbDispUpdateLocation = "Update Location";
 var bwAbDispAddGroup = "Add Group";
 var bwAbDispUpdateGroup = "Update Group";
+var bwAbDispSearch = "search...";
 var bwAbDispShow = "show...";
 
 // dynamic form values

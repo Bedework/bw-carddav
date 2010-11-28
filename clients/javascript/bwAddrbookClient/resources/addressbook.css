@@ -302,7 +302,8 @@ ul.topMenu li:hover ul {
 	clear: right;
 	margin: 1em 0 0 0;
 }
-#backToList {
+#backToList,
+#bwAddSearchItemToBook {
 	margin-top: 3em;
 }
 .bwActionButtons {
