@@ -77,12 +77,16 @@ function showError(err) {
   $dialog.dialog('open');
 }
 
-function showMessage(title,msg,modality) {
+function showMessage(title,msg,modality,height) {
+  if (height == null || height == '') {
+    height = "auto"; 
+  }
   var $dialog = $('<div></div>')
   .html(msg)
   .dialog({
     autoOpen: false,
     title: title,
+    height: height,
     modal: modality
   });
   $dialog.dialog('open');

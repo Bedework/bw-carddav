@@ -564,7 +564,7 @@ var bwAddressBook = function() {
 
     // we can show all messages at the end because we are synchronous 
     importMessages += '</ol><div style="text-align: center; margin-top: 2em;"><button type="button" onclick="window.location.reload();">' + bwAbDispImportDoneButton + '</button>';
-    showMessage(bwAbDispImportStatus,importMessages,true); 
+    showMessage(bwAbDispImportStatus,importMessages,true,"300"); 
     clearFields("#importForm");
     
   };
