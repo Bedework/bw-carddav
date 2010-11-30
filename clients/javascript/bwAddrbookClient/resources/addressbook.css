@@ -471,9 +471,6 @@ button {
   clear: both;
 }
 /* dialog boxes */
-/* .ui-dialog {
-  overflow: scroll;
-}*/
 .ui-widget-content {
 	line-height: 1.2em;
 }
