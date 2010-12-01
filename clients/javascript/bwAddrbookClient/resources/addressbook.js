@@ -484,7 +484,15 @@ var bwAddressBook = function() {
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#contactForm");
   };
-
+  
+  // ********************
+  // ADD A PUBLIC CONTACT
+  // ********************
+  // add a contact that has been returned from a public addressbook search
+  this.addPublicVcard = function() {
+    
+  };
+  
   // ********************
   // IMPORT FORM HANDLING
   // ********************
@@ -1504,11 +1512,11 @@ $(document).ready(function() {
   });
   
   // search box
-  $("#searchButton").click(function() {
+  $("#showButton").click(function() {
     if ($("#searchUrls").val() == "" || $("#search").val() == "") {
       return false; 
     } 
-    if (bwAddrBook.lastSearchedCard == "") {
+    if (bwAddrBook.lastSearchedCard == undefined || bwAddrBook.lastSearchedCard == "") {
       showMessage(bwAbDispSearchTitle,bwAbDispSearchMustPick,true);
       return false;
     }
@@ -1639,9 +1647,9 @@ $(document).ready(function() {
       });
       
       // switch the "show" button back to search and disable to reset the search
-      /*$("#searchButton").html(bwAbDispSearch);  // change "show" to "search"
-      $("#searchButton").attr("disabled","disabled"); // disable the button
-      $("#searchButton").css("cursor","default"); // change the cursor*/
+      /*$("#showButton").html(bwAbDispSearch);  // change "show" to "search"
+      $("#showButton").attr("disabled","disabled"); // disable the button
+      $("#showButton").css("cursor","default"); // change the cursor*/
     }
     
   });
@@ -1687,9 +1695,9 @@ $(document).ready(function() {
       });
     },
     select: function(event, ui) {
-      $("#searchButton").html(bwAbDispShow);  // change "search" to "show"
-      $("#searchButton").removeAttr("disabled"); // enable the button
-      $("#searchButton").css("cursor","pointer"); // change the cursor
+      $("#showButton").html(bwAbDispShow);  // change "search" to "show"
+      $("#showButton").removeAttr("disabled"); // enable the button
+      $("#showButton").css("cursor","pointer"); // change the cursor
       bwAddrBook.lastSearchedCard = ui.item.jsonValue; // set the value of the last searched card
     }
 

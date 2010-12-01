@@ -47,7 +47,7 @@ body {
 #searchBox option {
   min-width: 100px;
 }
-#searchButton {
+#showButton {
 	cursor: default;
 }
 ul.topMenu {
