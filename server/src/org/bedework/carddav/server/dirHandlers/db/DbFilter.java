@@ -216,10 +216,17 @@ public class DbFilter {
     }
 
     int mt = tm.getMatchType();
+    String parVal;
+
+    if (caseless) {
+      parVal = tm.getVal().toUpperCase();
+    } else {
+      parVal = tm.getVal();
+    }
 
     if (mt == TextMatch.matchTypeEquals) {
       sb.append("=");
-      addPar(sb, tm.getVal());
+      addPar(sb, parVal);
     } else {
       sb.append(" like ");
 
@@ -227,9 +234,9 @@ public class DbFilter {
 
       if ((mt == TextMatch.matchTypeContains) ||
           (mt == TextMatch.matchTypeEndsWith)) {
-        val = "%" + tm.getVal();
+        val = "%" + parVal;
       } else {
-        val = tm.getVal();
+        val = parVal;
       }
 
       if ((mt == TextMatch.matchTypeContains) ||
