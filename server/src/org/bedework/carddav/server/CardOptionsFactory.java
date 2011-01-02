@@ -37,7 +37,7 @@ public class CardOptionsFactory extends OptionsFactory {
   private static volatile OptionsI opts;
 
   /** Location of the options file */
-  private static final String optionsFile = "/properties/carddav/options.xml";
+  private static final String optionsFile = "/properties/card/options.xml";
 
   private static final String outerTag = "bedework-options";
 
@@ -55,7 +55,7 @@ public class CardOptionsFactory extends OptionsFactory {
    * @return OptionsI
    * @throws OptionsException
    */
-  public static OptionsI getOptions(boolean debug) throws OptionsException {
+  public static OptionsI getOptions(final boolean debug) throws OptionsException {
     if (opts != null) {
       return opts;
     }

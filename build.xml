@@ -9,43 +9,37 @@
   <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
   <property environment="env"/>
-  <!-- These may already be set from calling dir -->
-  <dirname property="org.bedework.project.carddav" file="${ant.file}"/>
   <dirname property="project.home" file="${ant.file}"/>
 
+  <!-- These may already be set from calling dir -->
+  <property name="org.bedework.project.carddav" 
+            location="${project.home}" />
   <property file="${project.home}/build.properties" />
-
-  <property name="project.name" value="${org.bedework.package.name}"/>
-  <property name="project.version" value="${org.bedework.carddav.version}"/>
-
-  <property name="dist.home" location="${project.home}/dist"/>
-  <property name="lib.dir" location="${project.home}/lib"/>
-
-  <property name="build.dir" location="${project.home}/build"/>
-  <property name="buildjar" location="${build.dir}/buildTools/buildjar.xml"/>
-  <property name="buildwar" location="${build.dir}/buildwar.xml"/>
-  <property name="buildsh" location="${build.dir}/buildsh.xml"/>
-
-  <property name="resources.dir" location="${project.home}/resources"/>
-
-  <property name="org.bedework.temp.dir"
-            location="${dist.home}/temp" />
   
-  <delete dir="${org.bedework.temp.dir}" />
-  <mkdir dir="${org.bedework.temp.dir}" />
+  <property name="bedework.home"
+            location="${project.home}/../bedework" />
 
-  <property name="org.bedework.libcache.dir"
-            location="${project.home}/libcache"/>
+  <property name="build.dir" location="${bedework.home}/build"/>
+  
+  <import file="${build.dir}/buildTools/deftasks.xml"/>
+
+  <projectDefs name="${org.bedework.package.name}"
+               version="${org.bedework.carddav.version}" 
+               deployment-name="card"
+  />
 
   <import file="${build.dir}/buildTools/getJar.xml"/>
   <import file="${build.dir}/loadDeployConfig.xml"/>
 
-	<!--
-  <property name="org.bedework.deployutil.jar"
-            location="${build.dir}/${org.bedework.deployutil.jar.name}-${project.version}.jar" />
-            -->
-  <property name="org.bedework.deployutil.jar"
-            location="${build.dir}/bw-deployutil-3.6.jar" />
+  <import file="${project.home}/appjars.xml" />
+  
+  <property name="app.resources.dir" location="${project.home}/tools/resources"/>
+  
+  <property name="org.bedework.sou.hibernate.properties"
+            location="${project.home}/resources/hibernate" />
+
+  <property name="org.bedework.jboss.datasource.jndiname"
+            value="${org.bedework.global.jboss.carddb.datasource.jndiname}" />
 
   <!-- =================================================================
        init:
@@ -71,7 +65,8 @@
       </then>
     </if>
 
-    <echo message="*** Options file: ${org.bedework.carddav.options}" />
+    <property name="org.bedework.options.file"
+              value="${org.bedework.carddav.options}" />
 
     <property name="org.bedework.carddav.server.base"
               location="${project.home}/server" />
@@ -109,6 +104,8 @@
   </target>
 	
   <target name="build-init" depends="init">
+    <getExtraJars/>
+
     <delete dir="${lib.dir}" />
     <mkdir dir="${lib.dir}" />
 
@@ -166,32 +163,14 @@
         <property name="tools.app.zip.name"
                   value="${org.bedework.global.ear.name}-cardtools" />
 
-        <if>
-          <equals arg1="${org.bedework.global.ear.zipped}"
-                  arg2="yes" />
-          <then>
-            <property name="org.bedework.ear.dir"
-                      location="${dist.home}/${org.bedework.global.ear.name}-card" />
-            <property name="org.bedework.ear.file"
-                      location="${dist.home}/${org.bedework.global.ear.name}-card.ear" />
-          </then>
-          <else>
-            <property name="org.bedework.ear.dir"
-                      location="${dist.home}/${org.bedework.global.ear.name}-card.ear" />
-          </else>
-        </if>
+        <property name="org.bedework.ear.name"
+                  value="${org.bedework.global.ear.name}-${ant.project.name}" />
 
         <property name="org.bedework.ear.templib"
                   location="${org.bedework.temp.dir}/earlib" />
 
         <property name="org.bedework.ear.properties.dir"
                   location="${org.bedework.temp.dir}/ear-properties" />
-
-        <property name="org.bedework.ear.properties.jar"
-                  location="${org.bedework.ear.dir}/bw-ear-properties.jar"/>
-
-        <delete dir="${org.bedework.ear.dir}" />
-        <mkdir dir="${org.bedework.ear.dir}" />
 
         <delete dir="${org.bedework.ear.templib}" />
         <mkdir dir="${org.bedework.ear.templib}" />
@@ -219,6 +198,12 @@
     <!-- Clean up before we start -->
     <delete dir="${org.bedework.temp.wars.home}" />
     <mkdir dir="${org.bedework.temp.wars.home}" />
+
+    <delete dir="${org.bedework.temp.ear.extrajars.dir}" />
+    <mkdir dir="${org.bedework.temp.ear.extrajars.dir}" />
+
+    <delete dir="${org.bedework.temp.extrajars.dir}" />
+    <mkdir dir="${org.bedework.temp.extrajars.dir}" />
   </target>
 
   <!-- =================================================================
@@ -285,6 +270,8 @@
 	
   <target name="deploy" depends="deploy-init,build-all,deploy-addrbook"
   	      description="Deploy carddav">
+    <getExtraJars/>
+
     <ant antfile="deploy.xml" target="deployFiles" inheritRefs="true" />
   	<!--
     <if>
@@ -321,7 +308,7 @@
                 location="${org.bedework.carddav.dumpres.base}" />
     	<property name="app.global.properties.dir" 
                 location="${resources.dir}" />
-   </ant>
+    </ant>
 
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
@@ -343,7 +330,9 @@
                 value="tools" />
    </ant>
   	
-    <ant antfile="deployTermination.xml" target="deployTerminate" inheritRefs="true" />
+    <!-- Platform specific -->
+    <ant antfile="${build.dir}/../deployment/termination/build.xml" 
+         target="deploy" inheritRefs="true" />
   </target>
 
 <!-- ==================== Javadoc Target ===============================
