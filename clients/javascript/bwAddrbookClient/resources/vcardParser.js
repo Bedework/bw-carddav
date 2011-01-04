@@ -37,8 +37,12 @@ function parsexml(xml,vcardsArray) {
   });
 }
 
-function escapeDoubleQuotes (string) {
-   
+
+function cleanUpString (string) {
+  // replace or more backslashes followed by comma with comma
+  // replace double-quote with backslash double-quote (escape it)
+  cleanedString = string.replace(/\\,/g,",").replace(/\"/g,'\\"');
+  return cleanedString;
 }
 
 
@@ -92,7 +96,6 @@ function attributeSpecifics (attribute) {
   }
   return returnArray;
 }
-
 
 function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   //each line ends in '\n'
@@ -156,16 +159,16 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
 
           if (colonSplit.length == 1) {
             //write out empty string
-	    bwJsonObj += '"';
+	        bwJsonObj += '"';
           } else {
             //write out part of value before the first colon -- generally all of it.
-            tmpString = '"' + colonSplit[1].replace(/\\+,/g,",").replace(/\"/g,'\\"');
+            tmpString = '"' + cleanUpString(colonSplit[1]);
             bwJsonObj += jQuery.trim(tmpString);
           }
 
           //put back colon(s) and write out what's past the first colon
           for (k=2;k<colonSplit.length;k++) {
-            tmpString = ':' + colonSplit[k].replace(/\\,/g,",").replace(/\"/g,'\\"');
+            tmpString = ':' + cleanUpString(colonSplit[k]);
             bwJsonObj += jQuery.trim(tmpString);   
           }
 
@@ -174,7 +177,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
             var rawline = lines[i + 1];
             if (rawline.substring(0,1) == ' ') {
               //append this line and avoid processing it the next time through the loop
-              tmpString = ':' + rawline.replace(/\\+,/g,",").replace(/\"/g,'\\"');
+              tmpString = ':' + cleanUpString(rawline);
               bwJsonObj += jQuery.trim(tmpString);   
               i++;
             } else {
@@ -191,7 +194,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
             var rawline = lines[i + 1];
             if (rawline.substring(0,1) == ' ') {
               //append this line and avoid processing it the next time through the loop
-              tmpString = rawline.replace(/\\+,/g,",").replace(/\"/g,'\\"');
+              tmpString = ':' + cleanUpString(rawline);
               colonSplit[1] = jQuery.trim(colonSplit[1]) + jQuery.trim(tmpString);   
               i++;
             } else {
@@ -211,8 +214,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
         for (y=1;y<attributeInfo.length;y++) {
           bwJsonObj += '"' + attributeInfo[y] + '" : ';
           if (y<=attributeFieldValues.length) {
-            // replace \, with ,
-            tmpString = '"' + attributeFieldValues[y-1].replace(/\\+,/g,",").replace(/\"/g,'\\"');
+            tmpString = '"' + cleanUpString(attributeFieldValues[y-1]);
             bwJsonObj += jQuery.trim(tmpString) + '"';  
           } else {
             //avoid undefines
