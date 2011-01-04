@@ -37,14 +37,29 @@ function parsexml(xml,vcardsArray) {
   });
 }
 
-
 function cleanUpString (string) {
-  // replace or more backslashes followed by comma with comma
+  // replace one or more backslashes followed by comma with comma
   // replace double-quote with backslash double-quote (escape it)
-  cleanedString = string.replace(/\\,/g,",").replace(/\"/g,'\\"');
+  // replace one or more backslashes followed by a semi-colon with a semi-colon
+  cleanedString = string.replace(/\\,/g,",").replace(/\"/g,'\\"').replace(/\\;/g,";");
+  
   return cleanedString;
 }
 
+function isJSONValid (jsObject) {
+  if (null == jsObject) {
+    return false;
+  }
+  if ("undefined" == typeof(jsObject)) {
+    return false;
+  }
+  try {
+    $.parseJSON(jsObject);
+  } catch(e) {
+      return false;
+  }
+  return true;
+}  
 
 function attributeSpecifics (attribute) {
   var returnArray=new Array();
@@ -140,8 +155,8 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
           var equalsSplit = semiColonSplit[n].split('=');
 
           // THIS ISN'T COMPLETE -- NEED to split on comma, too.
-          bwJsonObj += '"parameter-name": "' + equalsSplit[0] + '",'
-          bwJsonObj += '"parameter-value": "' + equalsSplit[1] + '"'
+          bwJsonObj += '"parameter-name": "' + cleanUpString(equalsSplit[0]) + '",'
+          bwJsonObj += '"parameter-value": "' + cleanUpString(equalsSplit[1]) + '"'
 
           //add a comma between parameters (avoid adding at end)
           if (n != semiColonSplit.length - 1) {
@@ -201,8 +216,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
               //if the next line doesn't begin with space, move on.
               break;
             }
-          }
-          
+          }    
 
         //multiple named values
 
@@ -212,7 +226,7 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
         bwJsonObj += '"values": {';
         //one array goes from 1 to length-1 and the other from 0 to length-1. Hope it's clear.
         for (y=1;y<attributeInfo.length;y++) {
-          bwJsonObj += '"' + attributeInfo[y] + '" : ';
+          bwJsonObj += '"' + cleanUpString(attributeInfo[y]) + '" : ';
           if (y<=attributeFieldValues.length) {
             tmpString = '"' + cleanUpString(attributeFieldValues[y-1]);
             bwJsonObj += jQuery.trim(tmpString) + '"';  
@@ -233,7 +247,10 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
     }   
   }
   bwJsonObj += "]}";
-  vcardsArray.push(bwJsonObj);
+  
+  if(isJSONValid(bwJsonObj)) {
+    vcardsArray.push(bwJsonObj);
+  }
 }
 
 // return an array of vcards from a list of vcards
