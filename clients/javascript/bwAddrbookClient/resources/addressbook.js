@@ -540,7 +540,7 @@ var bwAddressBook = function() {
       $.ajax({
         type: "put",
         url: addrBookUrl + UUID + ".vcf",
-        data: curCards[i],
+        data: curCards[i].replace(/UID: /,"UID:"),
         dataType: "text",
         async: false,
         processData: false,
@@ -1941,7 +1941,7 @@ function getUUID(vcard) {
   for (var i=0;i<lines.length;i++) {
    var line = $.trim(lines[i]);
    if(line.indexOf("UID:")!= -1) {
-     return line.substring(line.indexOf(":")+1);
+     return $.trim(line.substring(line.indexOf(":")+1));
    }
   }   
   return false;
