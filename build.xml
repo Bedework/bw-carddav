@@ -11,9 +11,6 @@
   <property environment="env"/>
   <dirname property="project.home" file="${ant.file}"/>
 
-  <!-- These may already be set from calling dir -->
-  <property name="org.bedework.project.carddav" 
-            location="${project.home}" />
   <property file="${project.home}/build.properties" />
   
   <property name="bedework.home"
@@ -23,12 +20,13 @@
   
   <import file="${build.dir}/buildTools/deftasks.xml"/>
 
+  <deftasks/>
+
   <projectDefs name="${org.bedework.package.name}"
                version="${org.bedework.carddav.version}" 
                deployment-name="card"
   />
 
-  <import file="${build.dir}/buildTools/getJar.xml"/>
   <import file="${build.dir}/loadDeployConfig.xml"/>
 
   <import file="${project.home}/appjars.xml" />
@@ -40,12 +38,16 @@
 
   <property name="org.bedework.jboss.datasource.jndiname"
             value="${org.bedework.global.jboss.carddb.datasource.jndiname}" />
+  
+  <property name="ear.meta.dir" location="${project.home}/ear.meta"/>
 
   <!-- =================================================================
        init:
        ================================================================= -->
 
   <target name="init">
+    <projectInit/>
+    
     <property name="org.bedework.project.bedework"
   	          location="${project.home}/../bedework" />
 
@@ -77,22 +79,6 @@
     <property name="org.bedework.carddav.tools.base"
               location="${project.home}/tools" />
 
-    <mkdir dir="${dist.home}" />
-
-    <property name="test.data.dir"
-              location="${dist.home}/test-data" />
-
-    <property name="edu.rpi.cmt.empty.dir"
-              location="${dist.home}/empty-dir" />
-    <mkdir dir="${edu.rpi.cmt.empty.dir}" />
-
-    <fileset id="empty.fileset" dir="${edu.rpi.cmt.empty.dir}"
-             excludes="*" />
-
-    <!-- default to empty -->
-    <fileset id="buildjar.resource.files" refid="empty.fileset" />
-    <fileset id="buildjar.generated.java.sources" refid="empty.fileset" />
-
     <property name="server.jar"
               location="${dist.home}/${edu.rpi.cmt.carddav.server.jar}-${project.version}.jar" />
 
@@ -105,9 +91,6 @@
 	
   <target name="build-init" depends="init">
     <getExtraJars/>
-
-    <delete dir="${lib.dir}" />
-    <mkdir dir="${lib.dir}" />
 
     <property name="org.bedework.getjar.property.prefix"
               value="org.bedework.appjar" />
@@ -135,17 +118,6 @@
 
     <getJar name="bw-webdavserver" version="${org.bedework.webdav.version}" project="webdav"
             projecthome="${project.home}/../bedework/projects/webdav" />
-
-    <!-- ==================== Compilation Classpath ==================== -->
-
-    <path id="compile.classpath">
-      <fileset dir="${lib.dir}">
-         <include name="**/*.jar"/>
-      </fileset>
-      <fileset dir="${dist.home}">
-         <include name="*.jar"/>
-      </fileset>
-    </path>
   </target>
     
 	<target name="deploy-init" depends="init">
@@ -206,54 +178,57 @@
     <mkdir dir="${org.bedework.temp.extrajars.dir}" />
   </target>
 
-  <!-- =================================================================
-       Clean out all library files from other projects and all generated
-       files in preparation for a complete rebuild.
-
-       Needed because switching versions leaves a load of old bedework
-       generated stuff in the libraries.
-       ================================================================= -->
-  <target name="deep-clean" depends="clean">
-    <delete dir="${lib.dir}" />
-  </target>
-
-  <!-- =================================================================
-       Clean all generated files
-       ================================================================= -->
-  <target name="clean">
-    <delete dir="${dist.home}" />
-  </target>
-
-  <!-- =================================================================
-       Clean up after a build.
-       ================================================================= -->
-  <target name="cleanup">
-    <delete dir="${edu.rpi.cmt.empty.dir}" />
-  </target>
-
-  <!-- ========================== Base build Targets ===================
-       Here we have one target building the classes and interfaces that make
-       up the access control suite.
-       ================================================================= -->
-
-  <target name="clean-build" depends="clean,build"
-          description="Clean and compile carddav classes"/>
-
-  <target name="clean-build-all" depends="clean,build-all"
-          description="Clean and compile carddav classes"/>
-
-  <target name="build" depends="build-source,cleanup"
-          description="Compile carddav classes"/>
-
-  <!-- ===================== build.all Target ===============================
+  <!-- ===================== build-source Target ===============================
      This target builds jar files ready for the deploy target.
      =================================================================== -->
 
-  <target name="build-all" depends="build-source,cleanup"
-          description="Compile carddav classes"/>
+  <target name="build-source" depends="build-init" >
+    <build-jar module-base="${org.bedework.carddav.server.base}" 
+               jar-file="${server.jar}" />
 
-  <target name="build-source" 
-  	      depends="build-init,bld.auth.server,bld.unauth.server,bld.dumpres,bld.tools" />
+    <build-jar module-base="${org.bedework.carddav.dumpres.base}" 
+               jar-file="${dumpres.jar}" />
+
+    <build-jar module-base="${org.bedework.carddav.tools.base}" 
+               jar-file="${tools.jar}" />
+
+    <!-- =================================================================
+         Build the authenticated war
+         ================================================================= -->
+
+    <property name="app.sou.dir"
+              location="${org.bedework.carddav.server.base}" />
+
+    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+      <property name="propval.app.context.root"
+                value="${org.bedework.app.usercarddav.war.name}" />
+      
+      <property name="propval.app.war.name"
+                value="${org.bedework.app.usercarddav.war.name}" />
+      
+      <property name="propval.app.web.xml"
+                location="${app.sou.dir}/war/WEB-INF/userweb.xml" />
+
+      <property name="org.bedework.deploy.name"
+                value="usercarddav" />
+    </ant>
+    
+    <!-- ===============================================================
+         Build the unauthenticated war
+         =============================================================== -->
+
+    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+      <property name="propval.app.context.root"
+                value="${org.bedework.app.pubcarddav.war.name}" />
+      <property name="propval.app.war.name"
+                value="${org.bedework.app.pubcarddav.war.name}" />
+      <property name="propval.app.web.xml"
+                location="${app.sou.dir}/war/WEB-INF/publicweb.xml" />
+
+      <property name="org.bedework.deploy.name"
+                value="pubcarddav" />
+    </ant>
+  </target>
 
   <!-- ===================== deploy Target ===============================
      Deploy if an application server is defined.
@@ -300,15 +275,6 @@
             libcache="${org.bedework.libcache.dir}"
             name="bw-cardtools" version="${org.bedework.carddav.version}"
             projecthome="${project.home}" />
-
-    <ant antfile="deployService.xml" target="deploy" inheritRefs="true" >
-    	<property name="propval.app.zip.name"
-    	          value="${dumpres.app.zip.name}" />
-      <property name="app.service.base" 
-                location="${org.bedework.carddav.dumpres.base}" />
-    	<property name="app.global.properties.dir" 
-                location="${resources.dir}" />
-    </ant>
 
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
@@ -366,66 +332,5 @@
       <link href="../../webdav/api" />
       <link href="${env.JAVA_HOME}/docs/api" />
     </javadoc>
-  </target>
-
-  <!-- ===================== internal build targets ====================
-       ================================================================= -->
-
-  <target name="bld.auth.server">
-    <ant antfile="${org.bedework.carddav.server.base}/build.xml" inheritrefs="true"
-         target="build" />
-
-    <!-- ===============================================================
-         Build the authenticated war
-         =============================================================== -->
-
-    <property name="app.sou.dir"
-              location="${org.bedework.carddav.server.base}" />
-
-    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
-      <property name="propval.app.context.root"
-                value="${org.bedework.app.usercarddav.war.name}" />
-      <property name="propval.app.war.name"
-                value="${org.bedework.app.usercarddav.war.name}" />
-      <property name="propval.app.web.xml"
-                location="${app.sou.dir}/war/WEB-INF/userweb.xml" />
-
-      <property name="org.bedework.deploy.name"
-                value="usercarddav" />
-    </ant>
-  </target>
-
-  <target name="bld.unauth.server">
-    <ant antfile="${org.bedework.carddav.server.base}/build.xml" inheritrefs="true"
-         target="build" />
-
-    <!-- ===============================================================
-         Build the unauthenticated war
-         =============================================================== -->
-
-    <property name="app.sou.dir"
-              location="${org.bedework.carddav.server.base}" />
-
-    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
-      <property name="propval.app.context.root"
-                value="${org.bedework.app.pubcarddav.war.name}" />
-      <property name="propval.app.war.name"
-                value="${org.bedework.app.pubcarddav.war.name}" />
-      <property name="propval.app.web.xml"
-                location="${app.sou.dir}/war/WEB-INF/publicweb.xml" />
-
-      <property name="org.bedework.deploy.name"
-                value="pubcarddav" />
-    </ant>
-  </target>
-
-  <target name="bld.dumpres">
-    <ant antfile="${org.bedework.carddav.dumpres.base}/build.xml" inheritrefs="true"
-         target="build" />
-  </target>
-
-  <target name="bld.tools">
-    <ant antfile="${org.bedework.carddav.tools.base}/build.xml" inheritrefs="true"
-         target="build" />
   </target>
 </project>

@@ -18,6 +18,11 @@
               libcache="${org.bedework.libcache.dir}"
               name="bw-carddavsvr" version="${org.bedework.carddav.version}"
               projecthome="${project.home}" />
+      
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="bw-carddumpres" version="${org.bedework.carddav.version}"
+              projecthome="${project.home}" />
 
     	<!--
       <getJar lib="${org.bedework.temp.extrajars.dir}"
