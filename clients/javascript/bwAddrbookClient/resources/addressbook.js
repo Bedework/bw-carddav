@@ -131,10 +131,10 @@ var bwAddressBook = function() {
     
     // check for empty menus
     if (personalBooks == "") {
-      personalBooks = '<li class="empty">no books found</li>'; 
+      personalBooks = '<li class="empty">' + bwAbDispNoBooksFound + '</li>'; 
     }
     if (subscriptions == "") {
-      subscriptions = '<li class="empty">no books found</li>'; 
+      subscriptions = '<li class="empty">' + bwAbDispNoBooksFound + '</li>'; 
     }
     
     // write the menus back to the browser
@@ -489,8 +489,99 @@ var bwAddressBook = function() {
   // ADD A PUBLIC CONTACT
   // ********************
   // add a contact that has been returned from a public addressbook search
-  this.addPublicVcard = function() {
+  this.addPublicVcard = function(curCard) {
+    // create a new UUID when adding from the public books 
+    // this can create duplicate copies of the public vcard, but avoids 
+    // other complexity for now.
+    var newUUID =  "BwABC-Pub-" + Math.uuid();
     
+    // build the vcard
+    var vcData = "BEGIN:VCARD\n";
+    
+    if (curCard.version != undefined && curCard.version.value != "") {
+      vcData += "VERSION:" + String(curCard.version.value).stripTags() + "\n";
+    } else {
+      vcData += "VERSION:4.0\n";
+    } 
+    
+    vcData += "UID:" + newUUID + "\n";
+    
+    // Get the current kind.
+    // If no kind, use "individual".
+    var curKind = "individual";
+    if (curCard.kind != undefined) {
+      curKind = String(curCard.kind.value).stripTags();
+    }
+    vcData += "KIND:" + curKind + "\n";
+    
+    if(curCard.fn != undefined) { 
+      vcData += "FN:" + String(curCard.fn.value).stripTags() + "\n";
+    }
+    
+    var curClass = "PRIVATE";
+    if(curCard.class != undefined) { 
+      curClass = String(curCard.class.value).stripTags();
+    }
+    vcData += "CLASS:" + curClass + "\n";
+    
+    if(curCard.n != undefined) { 
+      vcData += "N:" + String(curCard.n.value).stripTags() + "\n";
+    }
+    if(curCard.photo != undefined) { 
+      vcData += "PHOTO;VALUE=uri:" + String(curCard.photo.value).stripTags() + "\n"; 
+    }
+    if (curCard.title != undefined && curCard.title.value != "") {
+      vcData += "TITLE:" + String(curCard.title.value).stripTags() + "\n";
+    }
+    if(curCard.org != undefined) {
+      for (var i=0; i < curCard.org.length; i++) {
+        vcData += "ORG:" + String(curCard.org[i].value).stripTags() + "\n";
+      }
+    }
+    if(curCard.nickname != undefined) {
+      for (var i=0; i < curCard.nickname.length; i++) {
+        vcData += "NICKNAME:" + String(curCard.nickname[i].value).stripTags() + "\n";
+      }
+    }
+    vcData += "REV:" + getRevDate() + "\n";
+    if(curCard.email != undefined) { 
+      for (var i=0; i < curCard.email.length; i++) {
+        vcData += "EMAIL:" + String(curCard.email[i].value).stripTags() + "\n";
+      }
+    }
+    if(curCard.tel != undefined) { 
+      for (var i=0; i < curCard.tel.length; i++) {
+        vcData += "TEL:" + String(curCard.tel[i].value).stripTags() + "\n";
+      }
+    }
+    if (curCard.url != undefined) {
+      for (var i=0; i < curCard.url.length; i++) {
+        vcData += "URL:" + String(curCard.url[i].value).stripTags() + "\n";
+      }
+    }
+    var addresses = new Array();
+    if(curCard.adr != undefined) { 
+      for (var i=0; i < curCard.adr.length; i++) {
+        vcData += "ADR:" + String(curCard.adr[i].value).stripTags() + "\n";
+      }
+    }
+    if (curKind == "group") {
+      var members = new Array();
+      if (curCard.member != undefined) {
+        for (var i=0; i < curCard.member.length; i++) {
+          vcData += "MEMBER:" + String(curCard.member[i].value).stripTags() + "\n";
+        }
+      }
+    }
+    if(curCard.note != undefined && curCard.note.value != "") {
+      vcData += "NOTE:" + String(curCard.note.value).stripTags() + "\n";
+    }
+    
+    // NEED GEO
+    vcData += "END:VCARD";
+
+    
+    this.addEntry(vcData,newUUID);
   };
   
   // ********************
@@ -1154,7 +1245,7 @@ $(document).ready(function() {
   });
 
   // set the width of the A-Z list based on the size of the layout
-  $("#filterLetters").css("width",myLayout.panes.center.innerWidth());
+  $("#filterLetters ul").css("width",myLayout.panes.center.innerWidth());
   
   /****************************
    * INITIALIZE AND DISPLAY
@@ -1558,12 +1649,16 @@ $(document).ready(function() {
         details += '<tr><td class="field">' + bwAbDispDetailsTitle + '</td><td>' + curCard.title.value.stripTags() + '</td></tr>';
       }
       // organization
-      if(curCard.org != undefined && curCard.org.value != "") {
-        details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + curCard.org.value.stripTags() + '</td></tr>';
+      if(curCard.org != undefined) {
+        for (var i=0; i < curCard.org.length; i++) {
+          details += '<tr><td class="field">' + bwAbDispDetailsOrg + '</td><td>' + curCard.org[i].value.stripTags() + '</td></tr>';
+        }
       }
       // nickname
-      if(curCard.nickname != undefined && curCard.nickname.value != "") {
-        details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.nickname.value.stripTags() + '</td></tr>';
+      if(curCard.nickname != undefined) {
+        for (var i=0; i < curCard.nickname.length; i++) {
+          details += '<tr><td class="field">' + bwAbDispDetailsNickname + '</td><td>' + curCard.nickname[i].value.stripTags() + '</td></tr>';
+        }
       }
       // email address(es)
       if(curCard.email != undefined) { 
@@ -1580,54 +1675,61 @@ $(document).ready(function() {
         }
       }
       // url
-      if (curCard.url != undefined && curCard.url[0] != "") {
-        details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + curCard.url[0].stripTags() + '">' + curCard.url[0].stripTags() + '</a></td></tr>';
+      if (curCard.url != undefined) {
+        for (var i=0; i < curCard.url.length; i++) {
+          details += '<tr><td class="field">' + bwAbDispDetailsUrl + '</td><td><a href="' + curCard.url[i].value.stripTags() + '">' + curCard.url[i].value.stripTags() + '</a></td></tr>';
+        }
       }
       // address(es)
-      // return to addresses and members later
-      /*if(curCard.ADR != undefined) { 
-        for (var i=0; i < curCard.ADR.length; i++) {
+      if(curCard.adr != undefined) { 
+        for (var i=0; i < curCard.adr.length; i++) {
+          // break the address into its parts
+          var curAddress = curCard.adr[i].value.split(";");
+          // output the address details:          
           details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsAddress + '</td><td>';
-          // output the address details:
-          if (curCard.ADR[i].values.po_box != undefined && curCard.ADR[i].values.po_box != "") {
-            details += curCard.ADR[i].values.po_box.stripTags() + "<br/>";
+          // p.o. box
+          if (curAddress[0] != "") {
+            details += curAddress[0].stripTags() + "<br/>";
           }
-          if (curCard.ADR[i].values.extended_address != undefined && curCard.ADR[i].values.extended_address != "") {
-            details += curCard.ADR[i].values.extended_address.stripTags() + "<br/>";
+          // extended address
+          if (curAddress[1] != "") {
+            details += curAddress[1].stripTags() + "<br/>";
           }
-          if (curCard.ADR[i].values.street_address != undefined && curCard.ADR[i].values.street_address != "") {
-            details += curCard.ADR[i].values.street_address.stripTags() + "<br/>";
+          // street address
+          if (curAddress[2] != "") {
+            details += curAddress[2].stripTags() + "<br/>";
           }
-          if (curCard.ADR[i].values.locality != undefined && curCard.ADR[i].values.locality != "") {
-            details += curCard.ADR[i].values.locality.stripTags();
+          // locality
+          if (curAddress[3] != "") {
+            details += curAddress[3].stripTags() + "<br/>";
           }
-          if (curCard.ADR[i].values.state != undefined && curCard.ADR[i].values.state != "") {
-            details += ", " + curCard.ADR[i].values.state.stripTags() + " ";
+          // state
+          if (curAddress[4] != "") {
+            details += curAddress[4].stripTags() + "<br/>";
           }
-          if (curCard.ADR[i].values.postal_code != undefined && curCard.ADR[i].values.postal_code != "") {
-            details += curCard.ADR[i].values.postal_code.stripTags() + "<br/>";
+          // postal code
+          if (curAddress[5] != "") {
+            details += curAddress[5].stripTags() + "<br/>";
           }
-          if (curCard.ADR[i].values.country != undefined && curCard.ADR[i].values.country != "") {
-            details += curCard.ADR[i].values.country.stripTags();
+          // country
+          if (curAddress[6] != "") {
+            details += curAddress[6].stripTags() + "<br/>";
           }
           details += '</td></tr>';
         }
       }
       // group members, if a group 
       if (curKind == "group") {
-        if (curCard.MEMBER != undefined) {
+        if (curCard.member != undefined) {
           details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsGroupMembers + '</td><td>';
           details += '<table id="groupMembers">';
-          for (var i=0; i < curCard.MEMBER.length; i++) {
-            details += '<tr><td>' + curCard.MEMBER[i].value.substring(curCard.MEMBER[i].value.indexOf(":")+1).stripTags() + '</td>';
+          for (var i=0; i < curCard.member.length; i++) {
+            details += '<tr><td>' + curCard.member[i].value.substring(curCard.member[i].value.indexOf(":")+1).stripTags() + '</td>';
             details += '<td><a href="#" class="bwRemoveMember">' + bwAbDispDetailsRemoveMember + '</a></td></tr>';
           }
-          details += '<tr id="memberRemovalRow"><td></td><td>';
-          details += '<button id="commitMemberRemoval">' + bwAbDispDetailsCommitMemberRemoval + '</button> ';
-          details += '<button id="cancelMemberRemoval">' + bwAbDispDetailsCancel + '</button></td></tr>';
           details += '</table></td></tr>';
         }
-      }*/
+      }
       // note
       if(curCard.note != undefined && curCard.note.value != "") {
         details += '<tr class="newGrouping"><td class="field">' + bwAbDispDetailsNote + '</td><td>' + String(curCard.note.value).stripTags() + '</td></tr>';
@@ -1642,14 +1744,14 @@ $(document).ready(function() {
       
       // once built, assign click handler to the button
       $("#bwAddSearchItemToBook").click(function(){
-        showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true); 
-        return false;
+         bwAddrBook.addPublicVcard(curCard);
+        //showMessage(bwAbDispUnimplementedTitle,bwAbDispUnimplemented,true); 
+        //return false;
       });
       
-      // switch the "show" button back to search and disable to reset the search
-      /*$("#showButton").html(bwAbDispSearch);  // change "show" to "search"
-      $("#showButton").attr("disabled","disabled"); // disable the button
-      $("#showButton").css("cursor","default"); // change the cursor*/
+      // switch the "show" button back to disabled
+      //$("#showButton").attr("disabled","disabled"); // disable the button
+      //$("#showButton").css("cursor","default"); // change the cursor*/
     }
     
   });

@@ -159,6 +159,21 @@ var bwBooks = [
    
  ];
 
+/* Define public CardDAV servers on which to allow 
+ * searches.  These will appear in a drop-down list next
+ * to the search input field.  The responses must be in json format
+ */
+var bwPublicCardDAV = [
+   {
+     "label" : "public people",
+     "url" : "/ucarddav/find?format=json&addrbook=/public/people/"
+   },
+   {
+     "label" : "public locations",
+     "url" : "/ucarddav/find?format=json&addrbook=/public/locations/"
+   }
+];
+
 /*  
  * Load language file for javascript functions.  
  * To internationalize, you must also translate 

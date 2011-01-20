@@ -96,6 +96,7 @@ var bwAbDispExportTitle = "Export";
 var bwAbDispExported = "Your data has been exported.";
 var bwAbDispSearchTitle = "Search";
 var bwAbDispSearchMustPick = "You must pick from an item in the pull down list";
+var bwAbDispNoBooksFound = "no books found";
 
 // add/update messages
 var bwAbDispSuccessTitle = "Success";
