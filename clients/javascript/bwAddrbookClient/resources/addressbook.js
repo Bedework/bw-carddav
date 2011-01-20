@@ -526,6 +526,8 @@ var bwAddressBook = function() {
     
     if(curCard.n != undefined) { 
       vcData += "N:" + String(curCard.n.value).stripTags() + "\n";
+    } else if (curCard.fn != undefined) {
+      vcData += "N:" + String(curCard.fn.value).stripTags() + ";;;;\n";
     }
     if(curCard.photo != undefined) { 
       vcData += "PHOTO;VALUE=uri:" + String(curCard.photo.value).stripTags() + "\n"; 

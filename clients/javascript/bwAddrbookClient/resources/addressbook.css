@@ -187,6 +187,8 @@ ul.topMenu li:hover ul {
 }
 #filterLetters ul {
   position: fixed;
+  color: black;
+  background-color: #eef; 
 }
 #filterLetters li {
 	display: inline;
