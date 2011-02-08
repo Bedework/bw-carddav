@@ -41,7 +41,7 @@ function cleanUpString (string) {
   // replace one or more backslashes followed by comma with comma
   // replace double-quote with backslash double-quote (escape it)
   // replace one or more backslashes followed by a semi-colon with a semi-colon
-  cleanedString = string.replace(/\\,/g,",").replace(/\"/g,'\\"').replace(/\\;/g,";");
+  cleanedString = string.replace(/\\+,/g,",").replace(/"/g,'\\"').replace(/\\+;/g,";");
   
   return cleanedString;
 }
@@ -121,11 +121,29 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   var lines =  blob.split('\n');
   var lastAttributeName = "";
   for (var i=0;i<lines.length;i++) {
+    var linebuffer = lines[i];
+    var example = lines[i].match(/Michael/);
+    if (example != null) {
+        alert(example[0]);
+    }
     //each line is in the form of a key[;param;param]:value.  Sometimes the value contains colons, too.
-    if (lines[i] != "") {
-      var colonSplit = lines[i].split(':');
+    if (linebuffer != "") {
+      while (i + 1 < lines.length) {
+        //append continuation lines (lines that start with a space character)
+        var rawline = lines[i + 1];
+        var leadingSpace = rawline.match(/^ /);
+        if (leadingSpace != null) {
+          //append this line and avoid processing it the next time through the loop
+          linebuffer += jQuery.trim(rawline);
+          i++;
+        } else {
+          //if the next line doesn't begin with space, move on.
+          break;
+        }
+      }
+      var colonSplit = linebuffer.split(/:(.+)/);
 
-      //split out the key and the paramaters
+      //split out the key and the parameters
       var semiColonSplit = colonSplit[0].split(';');
       var attribute = semiColonSplit[0];
       var attributeInfo = new Array();
@@ -152,16 +170,16 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
       //locate any parameters in the key and write out the parameter array
       bwJsonObj += '"params": {' 
       for (var n=1;n<semiColonSplit.length;n++) {
-          var equalsSplit = semiColonSplit[n].split('=');
+        var equalsSplit = semiColonSplit[n].split('=');
 
-          // THIS ISN'T COMPLETE -- NEED to split on comma, too.
-          bwJsonObj += '"parameter-name": "' + cleanUpString(equalsSplit[0]) + '",'
-          bwJsonObj += '"parameter-value": "' + cleanUpString(equalsSplit[1]) + '"'
+        // THIS ISN'T COMPLETE -- NEED to split on comma, too.
+        bwJsonObj += '"parameter-name": "' + cleanUpString(equalsSplit[0]) + '",'
+        bwJsonObj += '"parameter-value": "' + cleanUpString(equalsSplit[1]) + '"'
 
-          //add a comma between parameters (avoid adding at end)
-          if (n != semiColonSplit.length - 1) {
-            bwJsonObj += ',';
-          }
+        //add a comma between parameters (avoid adding at end)
+        if (n != semiColonSplit.length - 1) {
+          bwJsonObj += ',';
+        }
       }
 
       bwJsonObj += '},'
@@ -180,47 +198,11 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
             tmpString = '"' + cleanUpString(colonSplit[1]);
             bwJsonObj += jQuery.trim(tmpString);
           }
-
-          //put back colon(s) and write out what's past the first colon
-          for (k=2;k<colonSplit.length;k++) {
-            tmpString = ':' + cleanUpString(colonSplit[k]);
-            bwJsonObj += jQuery.trim(tmpString);   
-          }
-
-          //look ahead and see if there's more in the next line. Continuation lines begin with a space.
-          while (i + 1 < lines.length) {
-            var rawline = lines[i + 1];
-            if (rawline.substring(0,1) == ' ') {
-              //append this line and avoid processing it the next time through the loop
-              tmpString = ':' + cleanUpString(rawline);
-              bwJsonObj += jQuery.trim(tmpString);   
-              i++;
-            } else {
-              //if the next line doesn't begin with space, move on.
-              break;
-            }
-          }
           bwJsonObj += '"}';
       }
       if (attributeType == 2) {
-      
-        //look ahead and see if there's more in the next line. Continuation lines begin with a space.
-          while (i + 1 < lines.length) {
-            var rawline = lines[i + 1];
-            if (rawline.substring(0,1) == ' ') {
-              //append this line and avoid processing it the next time through the loop
-              tmpString = ':' + cleanUpString(rawline);
-              colonSplit[1] = jQuery.trim(colonSplit[1]) + jQuery.trim(tmpString);   
-              i++;
-            } else {
-              //if the next line doesn't begin with space, move on.
-              break;
-            }
-          }    
 
         //multiple named values
-
-        //Will need to deal with the possibility of colons in the individual values.
 
         var attributeFieldValues = colonSplit[1].split(';');
         bwJsonObj += '"values": {';
