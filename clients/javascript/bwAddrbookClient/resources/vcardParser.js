@@ -122,10 +122,6 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
   var lastAttributeName = "";
   for (var i=0;i<lines.length;i++) {
     var linebuffer = lines[i];
-    var example = lines[i].match(/Michael/);
-    if (example != null) {
-        alert(example[0]);
-    }
     //each line is in the form of a key[;param;param]:value.  Sometimes the value contains colons, too.
     if (linebuffer != "") {
       while (i + 1 < lines.length) {
