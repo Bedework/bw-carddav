@@ -137,8 +137,32 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
           break;
         }
       }
+      
+      //This section copes with the case when we have a colon character 
+      //between double-quotes prior to the colon we should be splitting on.
+      //If an uneven number of double-quotes is found on the left side on the 
+      //original colon split, we assume the original split was incorrect and move 
+      //part of the left (up to the next double-colon) over to the left side.  
+      //We'll do this up to five times.  Limiting the attempts prevents
+      //an infinite loop caused by a bad vcard with unmatched parentheses.
+      //
+      
       var colonSplit = linebuffer.split(/:(.+)/);
-
+      var quotes = colonSplit[0].match(/"/g);
+      var tempColonSplit;
+      var j = 0;
+      while (quotes != null && quotes.length % 2 == 1) {
+        tempColonSplit = colonSplit[1].split(/:(.+)/);
+        colonSplit[0] += ':' + tempColonSplit[0];
+        if (tempColonSplit.length > 1) {
+          colonSplit[1] = tempColonSplit[1];
+        }
+        quotes = colonSplit[0].match(/"/g);
+        // a little insurance, in case we have unbalanced quotes
+        j++;
+        if (j > 5) break;
+      }
+      
       //split out the key and the parameters
       var semiColonSplit = colonSplit[0].split(';');
       var attribute = semiColonSplit[0];
