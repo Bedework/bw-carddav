@@ -90,8 +90,6 @@
   </target>
 	
   <target name="build-init" depends="init">
-    <getExtraJars/>
-
     <property name="org.bedework.getjar.property.prefix"
               value="org.bedework.appjar" />
 
@@ -191,45 +189,8 @@
 
     <build-jar module-base="${org.bedework.carddav.tools.base}" 
                jar-file="${tools.jar}" />
-
-    <!-- =================================================================
-         Build the authenticated war
-         ================================================================= -->
-
-    <property name="app.sou.dir"
-              location="${org.bedework.carddav.server.base}" />
-
-    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
-      <property name="propval.app.context.root"
-                value="${org.bedework.app.usercarddav.war.name}" />
-      
-      <property name="propval.app.war.name"
-                value="${org.bedework.app.usercarddav.war.name}" />
-      
-      <property name="propval.app.web.xml"
-                location="${app.sou.dir}/war/WEB-INF/userweb.xml" />
-
-      <property name="org.bedework.deploy.name"
-                value="usercarddav" />
-    </ant>
-    
-    <!-- ===============================================================
-         Build the unauthenticated war
-         =============================================================== -->
-
-    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
-      <property name="propval.app.context.root"
-                value="${org.bedework.app.pubcarddav.war.name}" />
-      <property name="propval.app.war.name"
-                value="${org.bedework.app.pubcarddav.war.name}" />
-      <property name="propval.app.web.xml"
-                location="${app.sou.dir}/war/WEB-INF/publicweb.xml" />
-
-      <property name="org.bedework.deploy.name"
-                value="pubcarddav" />
-    </ant>
   </target>
-
+  
   <!-- ===================== deploy Target ===============================
      Deploy if an application server is defined.
      =================================================================== -->
@@ -246,26 +207,49 @@
   <target name="deploy" depends="deploy-init,build-all,deploy-addrbook"
   	      description="Deploy carddav">
     <getExtraJars/>
+    
+    <property name="app.sou.dir"
+              location="${org.bedework.carddav.server.base}" />
+
+    <!-- =================================================================
+         Build the authenticated war
+         ================================================================= -->
+    
+    <var name="org.bedework.deploy.name"
+         value="usercarddav" />
+    
+    <propertyset id="deploy-user-app-properties">
+      <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
+      <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
+    </propertyset>
+    
+    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+      <propertyset refid="deploy-user-app-properties" />
+      <property name="propval.app.web.xml"
+                location="${app.sou.dir}/war/WEB-INF/userweb.xml" />
+    </ant>
+
+    <!-- ===============================================================
+         Build the unauthenticated war
+         =============================================================== -->
+
+    <var name="org.bedework.deploy.name"
+         value="pubcarddav" />
+    
+    <propertyset id="deploy-pub-app-properties">
+      <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
+      <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
+    </propertyset>
+    
+    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+      <propertyset refid="deploy-pub-app-properties" />
+
+      <property name="propval.app.web.xml"
+                location="${app.sou.dir}/war/WEB-INF/publicweb.xml" />
+    </ant>
 
     <ant antfile="deploy.xml" target="deployFiles" inheritRefs="true" />
-  	<!--
-    <if>
-      <isset property="org.bedework.appserver.deploy.dir"/>
-      <then>
-        <delete dir="${org.bedework.appserver.deploy.dir}/${org.bedework.app.usercarddav.war.name}" />
-        <delete dir="${org.bedework.appserver.deploy.dir}/${org.bedework.app.pubcarddav.war.name}" />
 
-        <copy todir="${org.bedework.appserver.deploy.dir}">
-          <fileset dir="${dist.home}">
-        	  <include name="*.war" />
-         </fileset>
-        </copy>
-      </then>
-      <else>
-        <echo message="********* No deploy directory defined" />
-      </else>
-    </if>
-    -->
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
             name="bw-carddumpres" version="${org.bedework.carddav.version}"
@@ -281,10 +265,6 @@
             name="bw-davio" version="${org.bedework.davutil.version}"
             projecthome="${project.home}/../bedework/projects/davutil" />
     
-    <getJar lib="${org.bedework.temp.extrajars.dir}"
-            libcache="${org.bedework.libcache.dir}"
-            name="log4j" version="1.2.8"/>
-
     <ant antfile="${buildsh}" target="build" inheritRefs="true" >
       <property name="propval.app.zip.name"
                 value="${tools.app.zip.name}" />
