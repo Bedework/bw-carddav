@@ -11,6 +11,9 @@
   <property environment="env"/>
   <dirname property="project.home" file="${ant.file}"/>
 
+  <property name="org.bedework.project.carddav"
+            location="${project.home}" />
+
   <property file="${project.home}/build.properties" />
   
   <property name="bedework.home"
@@ -67,8 +70,10 @@
       </then>
     </if>
 
+    <!--
     <property name="org.bedework.options.file"
               value="${org.bedework.carddav.options}" />
+              -->
 
     <property name="org.bedework.carddav.server.base"
               location="${project.home}/server" />
@@ -126,9 +131,6 @@
       <then>
         <property name="app.ear.file.name"
                   value="${org.bedework.global.ear.name}-card.ear" />
-
-        <property name="dumpres.app.zip.name"
-                  value="${org.bedework.global.ear.name}-carddumpres" />
 
         <property name="tools.app.zip.name"
                   value="${org.bedework.global.ear.name}-cardtools" />
@@ -208,47 +210,64 @@
   	      description="Deploy carddav">
     <getExtraJars/>
     
-    <property name="app.sou.dir"
-              location="${org.bedework.carddav.server.base}" />
-
     <!-- =================================================================
          Build the authenticated war
          ================================================================= -->
     
-    <var name="org.bedework.deploy.name"
-         value="usercarddav" />
-    
-    <propertyset id="deploy-user-app-properties">
-      <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
-      <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
-    </propertyset>
-    
-    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
-      <propertyset refid="deploy-user-app-properties" />
-      <property name="propval.app.web.xml"
-                location="${app.sou.dir}/war/WEB-INF/userweb.xml" />
-    </ant>
+    <forApp name="usercarddav"
+            prefix="org.bedework.deploy"
+            appPrefix="org.bedework.app"
+            projectPrefix="org.bedework.project">
+      <sequential>
+        <property name="app.sou.dir"
+                  location="${org.bedework.deploy.app.sou}" />
+      
+        <propertyset id="deploy-user-app-properties">
+          <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
+          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
+        </propertyset>
+      
+        <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+          <propertyset refid="deploy-user-app-properties" />
+        </ant>
+      </sequential>
+    </forApp>
 
     <!-- ===============================================================
          Build the unauthenticated war
          =============================================================== -->
 
-    <var name="org.bedework.deploy.name"
-         value="pubcarddav" />
+    <forApp name="pubcarddav"
+            prefix="org.bedework.deploy"
+            appPrefix="org.bedework.app"
+            projectPrefix="org.bedework.project">
+      <sequential>
+        <property name="app.sou.dir"
+                  location="${org.bedework.deploy.app.sou}" />
+      
+        <propertyset id="deploy-pub-app-properties">
+          <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
+          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
+        </propertyset>
+        
+        <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+          <propertyset refid="deploy-pub-app-properties" />
+        </ant>
+      </sequential>
+    </forApp>
     
-    <propertyset id="deploy-pub-app-properties">
-      <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
-      <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
-    </propertyset>
-    
-    <ant antfile="${buildwar}" inheritRefs="true" target="build" >
-      <propertyset refid="deploy-pub-app-properties" />
-
-      <property name="propval.app.web.xml"
-                location="${app.sou.dir}/war/WEB-INF/publicweb.xml" />
+    <ant antfile="${build.dir}/../deployment/termination/webapp/build.xml" 
+         target="deploy" inheritRefs="true" >
+      <property name="org.bedework.no.extra.ear.jars" value="yes" />
     </ant>
+    
+    <!-- Platform specific -->
+    <ant antfile="${build.dir}/../deployment/termination/build.xml" 
+         target="deploy" inheritRefs="true" />
 
-    <ant antfile="deploy.xml" target="deployFiles" inheritRefs="true" />
+    <!-- ===============================================================
+         Build the tool zip
+         =============================================================== -->
 
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"
@@ -265,6 +284,10 @@
             name="bw-davio" version="${org.bedework.davutil.version}"
             projecthome="${project.home}/../bedework/projects/davutil" />
     
+    <getJar lib="${org.bedework.temp.extrajars.dir}"
+            libcache="${org.bedework.libcache.dir}"
+            name="log4j" version="1.2.8" />
+    
     <ant antfile="${buildsh}" target="build" inheritRefs="true" >
       <property name="propval.app.zip.name"
                 value="${tools.app.zip.name}" />
@@ -275,10 +298,6 @@
       <property name="org.bedework.deploy.name" 
                 value="tools" />
    </ant>
-  	
-    <!-- Platform specific -->
-    <ant antfile="${build.dir}/../deployment/termination/build.xml" 
-         target="deploy" inheritRefs="true" />
   </target>
 
 <!-- ==================== Javadoc Target ===============================
