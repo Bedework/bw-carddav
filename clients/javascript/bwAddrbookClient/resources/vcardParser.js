@@ -38,11 +38,13 @@ function parsexml(xml,vcardsArray) {
 }
 
 function cleanUpString (string) {
+  if ( string == "" ) {
+    return string;
+  }
   // replace one or more backslashes followed by comma with comma
   // replace double-quote with backslash double-quote (escape it)
   // replace one or more backslashes followed by a semi-colon with a semi-colon
   cleanedString = string.replace(/\\+,/g,",").replace(/"/g,'\\"').replace(/\\+;/g,";");
-  
   return cleanedString;
 }
 
@@ -194,7 +196,11 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
 
         // THIS ISN'T COMPLETE -- NEED to split on comma, too.
         bwJsonObj += '"parameter-name": "' + cleanUpString(equalsSplit[0]) + '",'
-        bwJsonObj += '"parameter-value": "' + cleanUpString(equalsSplit[1]) + '"'
+        if (equalsSplit.length == 1) {
+          bwJsonObj += '"parameter-value": ""'
+        } else {
+          bwJsonObj += '"parameter-value": "' + cleanUpString(equalsSplit[1]) + '"'
+        }
 
         //add a comma between parameters (avoid adding at end)
         if (n != semiColonSplit.length - 1) {
