@@ -11,7 +11,7 @@ for i in lib/*
     cp=$cp:$i
 done
 
-RUNCMD="$JAVA_HOME/bin/java -cp $cp org.bedework.carddav.tools.Importer"
+RUNCMD="$JAVA_HOME/bin/java -cp $cp org.bedework.c"
 
 APPNAME=@BW-APP-NAME@
 

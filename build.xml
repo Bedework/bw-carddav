@@ -70,11 +70,6 @@
       </then>
     </if>
 
-    <!--
-    <property name="org.bedework.options.file"
-              value="${org.bedework.carddav.options}" />
-              -->
-
     <property name="org.bedework.carddav.server.base"
               location="${project.home}/server" />
 
@@ -124,58 +119,11 @@
   </target>
     
 	<target name="deploy-init" depends="init">
-    <!-- ========= Stuff in main bedework deployment build file =========   -->
-    <!-- Where we put ear stuff -->
-    <if>
-      <isset property="org.bedework.global.build.ear" />
-      <then>
-        <property name="app.ear.file.name"
-                  value="${org.bedework.global.ear.name}-card.ear" />
+    <deployInit ear-name="bw-${ant.project.name}" />
+	  
+    <property name="tools.app.zip.name"
+              value="bw-cardtools" />
 
-        <property name="tools.app.zip.name"
-                  value="${org.bedework.global.ear.name}-cardtools" />
-
-        <property name="org.bedework.ear.name"
-                  value="${org.bedework.global.ear.name}-${ant.project.name}" />
-
-        <property name="org.bedework.ear.templib"
-                  location="${org.bedework.temp.dir}/earlib" />
-
-        <property name="org.bedework.ear.properties.dir"
-                  location="${org.bedework.temp.dir}/ear-properties" />
-
-        <delete dir="${org.bedework.ear.templib}" />
-        <mkdir dir="${org.bedework.ear.templib}" />
-
-        <delete dir="${org.bedework.ear.properties.dir}" />
-        <mkdir dir="${org.bedework.ear.properties.dir}" />
-      </then>
-    </if>
-    
-	  <property name="org.bedework.temp.shellscr.home"
-	            location="${org.bedework.temp.dir}/shellscr" />
-
-    <property name="org.bedework.temp.extrajars.dir"
-              location="${org.bedework.temp.dir}/extrajars" />
-
-    <!-- Preserve extra jars for ear builds -->
-    <property name="org.bedework.temp.ear.extrajars.dir"
-              location="${org.bedework.temp.dir}/earextrajars" />
-    
-    <property name="org.bedework.global.context.roots"
-              location="${org.bedework.temp.dir}/context-roots.properties" />
-
-    <!-- ===== End of stuff in main bedework deployment build file ======   -->
-		
-    <!-- Clean up before we start -->
-    <delete dir="${org.bedework.temp.wars.home}" />
-    <mkdir dir="${org.bedework.temp.wars.home}" />
-
-    <delete dir="${org.bedework.temp.ear.extrajars.dir}" />
-    <mkdir dir="${org.bedework.temp.ear.extrajars.dir}" />
-
-    <delete dir="${org.bedework.temp.extrajars.dir}" />
-    <mkdir dir="${org.bedework.temp.extrajars.dir}" />
   </target>
 
   <!-- ===================== build-source Target ===============================
@@ -224,7 +172,8 @@
       
         <propertyset id="deploy-user-app-properties">
           <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
-          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
+          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" 
+                      to="propval.app.*"/>
         </propertyset>
       
         <ant antfile="${buildwar}" inheritRefs="true" target="build" >
@@ -247,7 +196,8 @@
       
         <propertyset id="deploy-pub-app-properties">
           <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
-          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" to="propval.app.*"/>
+          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" 
+                      to="propval.app.*"/>
         </propertyset>
         
         <ant antfile="${buildwar}" inheritRefs="true" target="build" >
@@ -257,9 +207,7 @@
     </forApp>
     
     <ant antfile="${build.dir}/../deployment/termination/webapp/build.xml" 
-         target="deploy" inheritRefs="true" >
-      <property name="org.bedework.no.extra.ear.jars" value="yes" />
-    </ant>
+         target="deploy" inheritRefs="true" />
     
     <!-- Platform specific -->
     <ant antfile="${build.dir}/../deployment/termination/build.xml" 
@@ -288,16 +236,36 @@
             libcache="${org.bedework.libcache.dir}"
             name="log4j" version="1.2.8" />
     
-    <ant antfile="${buildsh}" target="build" inheritRefs="true" >
-      <property name="propval.app.zip.name"
-                value="${tools.app.zip.name}" />
-      <property name="app.service.base" 
-                location="${org.bedework.carddav.tools.base}" />
-      <property name="app.global.properties.dir" 
-                location="${org.bedework.carddav.tools.base}/resources" />
-      <property name="org.bedework.deploy.name" 
-                value="tools" />
-   </ant>
+    <forApp name="carddavimp"
+            prefix="org.bedework.deploy"
+            appPrefix="org.bedework.app"
+            projectPrefix="org.bedework.project">
+      <sequential>
+        <property name="app.sou.dir"
+                  location="${org.bedework.deploy.app.sou}" />
+        
+        <propertyset id="deploy-pub-app-properties">
+          <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
+          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" 
+                      to="propval.app.*"/>
+        </propertyset>
+      
+        <ant antfile="${buildsh}" target="build" inheritRefs="true" >
+          <property name="app.run.shellscr"
+                    location="${app.resources.dir}/bwrun.sh" />
+
+          <property name="app.run.batscr"
+                    location="${app.resources.dir}/bwrun.bat" />
+          
+          <property name="org.bedework.runsh.log4j.xml"
+                    location="${app.resources.dir}/log4j.xml" />
+          
+          <property name="app.global.properties.dir" 
+                    location="${org.bedework.carddav.tools.base}/resources" />
+          <propertyset refid="deploy-pub-app-properties" />
+        </ant>
+      </sequential>
+    </forApp>
   </target>
 
 <!-- ==================== Javadoc Target ===============================

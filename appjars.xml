@@ -50,9 +50,11 @@
 
       <!-- Hibernate jars -->
     	
+      <!--
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="antlr" version="2.7.6" />
+              -->
     	              	
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
@@ -66,9 +68,11 @@
               libcache="${org.bedework.libcache.dir}"
               name="cglib" version="2.1.3" />
     	
+      <!--
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="dom4j" version="1.6.1" />
+              -->
     	
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
@@ -102,7 +106,7 @@
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="commons-collections"/>
-    	
+    	<!--
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="slf4j-api" version="1.5.6"  />
@@ -110,6 +114,7 @@
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="slf4j-log4j12" version="1.5.6"  />
+              -->
 
       <!-- Other jars -->
 
@@ -129,11 +134,11 @@
               libcache="${org.bedework.libcache.dir}"
               name="commons-ssl" />
 
+      <!--
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="commons-logging" />
       
-    	<!--
     	gdata-calendar-1.0.jar
     	gdata-client-1.0.jar
       -->

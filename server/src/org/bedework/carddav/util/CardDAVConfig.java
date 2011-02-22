@@ -36,6 +36,11 @@ import java.util.List;
  * @author Mike Douglass
  */
 public class CardDAVConfig /*extends ConfigCommon */{
+  /* For bedework build */
+  private String appType;
+
+  private boolean guestMode;
+
   /* System interface implementation */
   private String sysintfImpl;
 
@@ -67,6 +72,35 @@ public class CardDAVConfig /*extends ConfigCommon */{
   private String hostPrincipalRoot;
 
   private Collection<DirHandlerConfig> handlerConfigs;
+
+  /**
+   * @param val
+   */
+  public void setAppType(final String val) {
+    appType = val;
+  }
+
+  /**
+   * @return String
+   */
+  public String getAppType() {
+    return appType;
+  }
+
+  /** True for a guest mode (non-auth) client.
+   *
+   * @param val
+   */
+  public void setGuestMode(final boolean val) {
+    guestMode = val;
+  }
+
+  /**
+   * @return boolean
+   */
+  public boolean getGuestMode() {
+    return guestMode;
+  }
 
   /** Set the System interface implementation
    *
