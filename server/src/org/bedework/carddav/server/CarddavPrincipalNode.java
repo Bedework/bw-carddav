@@ -58,15 +58,13 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
    * @param cdURI
    * @param sysi
    * @param ap
-   * @param debug
    * @throws WebdavException
    */
   public CarddavPrincipalNode(final CarddavURI cdURI, final SysIntf sysi,
-                             final AccessPrincipal ap,
-                             final boolean debug) throws WebdavException {
+                             final AccessPrincipal ap) throws WebdavException {
     super(sysi.getUrlHandler(), cdURI.getPath(),
           ap,
-          cdURI.isCollection(), cdURI.getUri(), debug);
+          cdURI.isCollection(), cdURI.getUri());
     this.sysi = sysi;
   }
 

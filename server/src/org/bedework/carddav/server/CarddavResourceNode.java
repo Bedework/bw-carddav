@@ -53,10 +53,11 @@ public class CarddavResourceNode extends CarddavNode {
    * @param sysi
    * @param status
    * @param uri
-   * @param debug
    */
-  public CarddavResourceNode(final SysIntf sysi, final int status, final String uri, final boolean debug) {
-    super(true, sysi, uri, debug);
+  public CarddavResourceNode(final SysIntf sysi,
+                             final int status,
+                             final String uri) {
+    super(true, sysi, uri);
     setStatus(status);
     this.uri = uri;
   }
@@ -65,12 +66,11 @@ public class CarddavResourceNode extends CarddavNode {
    *
    * @param cdURI
    * @param sysi
-   * @param debug
    * @throws WebdavException
    */
   public CarddavResourceNode(final CarddavURI cdURI,
-                             final SysIntf sysi, final boolean debug) throws WebdavException {
-    super(cdURI, sysi, debug);
+                             final SysIntf sysi) throws WebdavException {
+    super(cdURI, sysi);
 
     resource = cdURI.getResource();
     col = cdURI.getCol();

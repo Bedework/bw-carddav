@@ -22,10 +22,10 @@ import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
+import edu.rpi.cct.webdav.servlet.shared.WdEntity;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
-import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 
 import java.util.ArrayList;
@@ -56,10 +56,10 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* for accessing calendars */
   private SysIntf sysi;
 
-  CarddavNode(CarddavURI cdURI, SysIntf sysi,
-              boolean debug) throws WebdavException {
+  CarddavNode(final CarddavURI cdURI,
+              final SysIntf sysi) throws WebdavException {
     super(sysi.getUrlHandler(), cdURI.getPath(), cdURI.isCollection(),
-          cdURI.getUri(), debug);
+          cdURI.getUri());
 
     //this.cdURI = cdURI;
     this.sysi = sysi;
@@ -69,8 +69,10 @@ public abstract class CarddavNode extends WebdavNsNode {
     }
   }
 
-  CarddavNode(boolean collection, SysIntf sysi, String uri,boolean debug) {
-    super(sysi.getUrlHandler(), null, collection, uri, debug);
+  CarddavNode(final boolean collection,
+              final SysIntf sysi,
+              final String uri) {
+    super(sysi.getUrlHandler(), null, collection, uri);
 
     //this.cdURI = cdURI;
     this.sysi = sysi;
@@ -80,7 +82,8 @@ public abstract class CarddavNode extends WebdavNsNode {
    *                         Public methods
    * ==================================================================== */
 
-  public WdCollection getCollection(boolean deref) throws WebdavException {
+  @Override
+  public WdCollection getCollection(final boolean deref) throws WebdavException {
     return col;
   }
 
@@ -98,7 +101,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    * @return Collection
    * @throws WebdavException
    */
-  public QueryResult getChildren(GetLimits limits) throws WebdavException {
+  public QueryResult getChildren(final GetLimits limits) throws WebdavException {
     return null;
   }
 
@@ -114,6 +117,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    * @return Collection of QName
    * @throws WebdavException
    */
+  @Override
   public Collection<QName> getSupportedReports() throws WebdavException {
     Collection<QName> res = new ArrayList<QName>();
     res.addAll(super.getSupportedReports());
@@ -129,6 +133,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentBinary()
    */
+  @Override
   public boolean getContentBinary() throws WebdavException {
     return false;
   }
@@ -136,7 +141,8 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getChildren()
    */
-  public Collection getChildren() throws WebdavException {
+  @Override
+  public Collection<? extends WdEntity> getChildren() throws WebdavException {
     return null;
   }
 
@@ -147,7 +153,8 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
    */
-  public boolean knownProperty(QName tag) {
+  @Override
+  public boolean knownProperty(final QName tag) {
     if (propertyNames.get(tag) != null) {
       return true;
     }
@@ -159,11 +166,10 @@ public abstract class CarddavNode extends WebdavNsNode {
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.rpi.sss.util.xml.QName, edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
    */
-  public boolean generatePropertyValue(QName tag,
-                                       WebdavNsIntf intf,
-                                       boolean allProp) throws WebdavException {
-    XmlEmit xml = intf.getXmlEmit();
-
+  @Override
+  public boolean generatePropertyValue(final QName tag,
+                                       final WebdavNsIntf intf,
+                                       final boolean allProp) throws WebdavException {
     try {
       // Not known - try higher
       return super.generatePropertyValue(tag, intf, allProp);
@@ -178,6 +184,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    *                   Object methods
    * ==================================================================== */
 
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer(this.getClass().getName());
 

@@ -466,19 +466,19 @@ public class CarddavBWIntf extends WebdavNsIntf {
         if (wi.isUser()) {
           ap = new User(wi.getEntityName());
           ap.setPrincipalRef(wi.getPath());
-          nd = new CarddavUserNode(wi, sysi, ap, debug);
+          nd = new CarddavUserNode(wi, sysi, ap);
         } else {
           ap = new Group(wi.getEntityName());
           ap.setPrincipalRef(wi.getPath());
-          nd = new CarddavGroupNode(wi, sysi, ap, debug);
+          nd = new CarddavGroupNode(wi, sysi, ap);
         }
 
       } else if (wi.isCollection()) {
-        nd = new CarddavColNode(wi, sysi, debug);
+        nd = new CarddavColNode(wi, sysi);
       } else if (wi.isResource()) {
-        nd = new CarddavResourceNode(wi, sysi, debug);
+        nd = new CarddavResourceNode(wi, sysi);
       } else {
-        nd = new CarddavCardNode(wi, sysi, debug);
+        nd = new CarddavCardNode(wi, sysi);
       }
 
       return nd;
@@ -1109,8 +1109,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(),
                                       ap.getPrincipalRef(),
                                       ap, false,
-                                      ap.getPrincipalRef() + "/",
-                                      debug));
+                                      ap.getPrincipalRef() + "/"));
     }
 
     return res;
@@ -1145,8 +1144,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                          cui.principalPathPrefix,
                                          new User(cui.account), true,
                                          cui.principalPathPrefix + "/" +
-                                           cui.account + "/",
-                                         debug));
+                                           cui.account + "/"));
     }
 
     return pnodes;

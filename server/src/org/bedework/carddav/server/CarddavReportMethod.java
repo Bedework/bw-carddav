@@ -352,11 +352,11 @@ public class CarddavReportMethod extends ReportMethod {
             if (hr.endsWith("/")) {
               nodes.add(new CarddavColNode(intf.getSysi(),
                                            we.getStatusCode(),
-                                           intf.getUri(hr), debug));
+                                           intf.getUri(hr)));
             } else {
             	nodes.add(new CarddavCardNode(intf.getSysi(),
             	                              we.getStatusCode(),
-            	                              intf.getUri(hr), debug));
+            	                              intf.getUri(hr)));
             }
           }
         }

@@ -69,10 +69,11 @@ public class CarddavColNode extends CarddavNode {
    * @param sysi
    * @param status
    * @param uri
-   * @param debug
    */
-  public CarddavColNode(final SysIntf sysi, final int status, final String uri, final boolean debug) {
-    super(true, sysi, uri, debug);
+  public CarddavColNode(final SysIntf sysi,
+                        final int status,
+                        final String uri) {
+    super(true, sysi, uri);
     setStatus(status);
     this.uri = uri;
   }
@@ -80,12 +81,11 @@ public class CarddavColNode extends CarddavNode {
   /**
    * @param cdURI
    * @param sysi
-   * @param debug
    * @throws WebdavException
    */
-  public CarddavColNode(final CarddavURI cdURI, final SysIntf sysi,
-                        final boolean debug) throws WebdavException {
-    super(cdURI, sysi, debug);
+  public CarddavColNode(final CarddavURI cdURI,
+                        final SysIntf sysi) throws WebdavException {
+    super(cdURI, sysi);
 
     col = cdURI.getCol();
     collection = true;
@@ -173,7 +173,7 @@ public class CarddavColNode extends CarddavNode {
       if (gr.collections != null) {
         for (CarddavCollection wdc: gr.collections) {
           res.nodes.add(new CarddavColNode(new CarddavURI(wdc, true),
-                                           getSysi(), debug));
+                                           getSysi()));
         }
       }
 
@@ -188,7 +188,7 @@ public class CarddavColNode extends CarddavNode {
           res.nodes.add(new CarddavCardNode(new CarddavURI(c, card,
                                                            card.getName(),
                                                            true),
-                                            getSysi(), debug));
+                                            getSysi()));
         }
       }
 
