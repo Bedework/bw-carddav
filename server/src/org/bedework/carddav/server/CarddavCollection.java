@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -30,6 +30,20 @@ public class CarddavCollection extends WdCollectionBase {
 
   private boolean addressBook;
 
+  /** UTC datetime */
+  private String lastmod;
+
+  /** Ensure uniqueness - lastmod only down to second.
+   */
+  private int sequence;
+
+  /** UTC datetime */
+  private String prevLastmod;
+
+  /** Ensure uniqueness - lastmod only down to second.
+   */
+  private int prevSequence;
+
   /**
    * @throws WebdavException
    */
@@ -40,7 +54,7 @@ public class CarddavCollection extends WdCollectionBase {
   /**
    * @param val
    */
-  public void setParent(CarddavCollection val) {
+  public void setParent(final CarddavCollection val) {
     parent = val;
   }
 
@@ -54,7 +68,7 @@ public class CarddavCollection extends WdCollectionBase {
   /**
    * @param val
    */
-  public void setAddressBook(boolean val) {
+  public void setAddressBook(final boolean val) {
     addressBook = val;
   }
 
@@ -63,5 +77,90 @@ public class CarddavCollection extends WdCollectionBase {
    */
   public boolean getAddressBook() {
     return addressBook;
+  }
+
+  /**
+   * @param val
+   * @throws WebdavException
+   */
+  @Override
+  public void setLastmod(final String val) throws WebdavException {
+    lastmod = val;
+  }
+
+  /**
+   * @return String lastmod
+   * @throws WebdavException
+   */
+  @Override
+  public String getLastmod() throws WebdavException {
+    return lastmod;
+  }
+
+  /** Set the sequence
+   *
+   * @param val    sequence number
+   * @throws WebdavException
+   */
+  public void setSequence(final int val) throws WebdavException {
+    sequence = val;
+  }
+
+  /** Get the sequence
+   *
+   * @return int    the sequence
+   * @throws WebdavException
+   */
+  public int getSequence() throws WebdavException {
+    return sequence;
+  }
+
+  /** Prev lastmod is the saved lastmod before any changes.
+   *
+   * @param val
+   * @throws WebdavException
+   */
+  public void setPrevLastmod(final String val) throws WebdavException {
+    prevLastmod = val;
+  }
+
+  /**
+   * @return String lastmod
+   * @throws WebdavException
+   */
+  public String getPrevLastmod() throws WebdavException {
+    return prevLastmod;
+  }
+
+  /** Set the sequence
+   *
+   * @param val    sequence number
+   * @throws WebdavException
+   */
+  public void setPrevSequence(final int val) throws WebdavException {
+    prevSequence = val;
+  }
+
+  /** Get the sequence
+   *
+   * @return int    the sequence
+   * @throws WebdavException
+   */
+  public int getPrevSequence() throws WebdavException {
+    return prevSequence;
+  }
+
+  @Override
+  public String getEtag() throws WebdavException {
+    return "\"" + getLastmod() + "-" +
+           getSequence() +
+           "\"";
+  }
+
+  @Override
+  public String getPreviousEtag() throws WebdavException {
+    return "\"" + getPrevLastmod() +
+           getPrevSequence() +
+           "\"";
   }
 }

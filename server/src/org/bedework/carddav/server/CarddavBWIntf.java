@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -667,10 +667,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, boolean, java.lang.String)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, boolean, java.lang.String)
    */
   @Override
   public PutContentResult putContent(final HttpServletRequest req,
+                                     final HttpServletResponse resp,
                                      final WebdavNsNode node,
                                      final String[] contentTypePars,
                                      final Reader contentRdr,
