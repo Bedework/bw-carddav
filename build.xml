@@ -181,6 +181,35 @@
         </ant>
       </sequential>
     </forApp>
+    
+    <if>
+      <istrue value="${org.bedework.global.carddav.web.version}" />
+      <then>
+	    <!-- =================================================================
+	         Build the authenticated war - web version
+	         ================================================================= -->
+	    
+	    <forApp name="usercarddavweb"
+	            prefix="org.bedework.deploy"
+	            appPrefix="org.bedework.app"
+	            projectPrefix="org.bedework.project">
+	      <sequential>
+	        <property name="app.sou.dir"
+	                  location="${org.bedework.deploy.app.sou}" />
+	      
+	        <propertyset id="deploy-user-app-properties">
+	          <propertyref prefix="org.bedework.app.${org.bedework.deploy.name}"/>
+	          <globmapper from="org.bedework.app.${org.bedework.deploy.name}.*" 
+	                      to="propval.app.*"/>
+	        </propertyset>
+	      
+	        <ant antfile="${buildwar}" inheritRefs="true" target="build" >
+	          <propertyset refid="deploy-user-app-properties" />
+	        </ant>
+	      </sequential>
+	    </forApp>
+      </then>
+    </if>
 
     <!-- ===============================================================
          Build the unauthenticated war
