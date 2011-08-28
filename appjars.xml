@@ -24,13 +24,6 @@
               name="bw-carddumpres" version="${org.bedework.carddav.version}"
               projecthome="${project.home}" />
 
-    	<!--
-      <getJar lib="${org.bedework.temp.extrajars.dir}"
-              libcache="${org.bedework.libcache.dir}"
-              name="bw-carddumpres" version="3.6"
-              projecthome="${project.home}" />
-              -->
-
       <!-- Bedework jars -->
       
       <getJar lib="${org.bedework.temp.extrajars.dir}"
@@ -41,12 +34,12 @@
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="rpiaccess" version="${org.bedework.access.version}" project="access"
-              projecthome="${bedework.home}/projects/access" />
+              projecthome="${project.home}/../access" />
 
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="rpiutil" version="${org.bedework.rpiutil.version}" project="rpiutil"
-              projecthome="${bedework.home}/projects/rpiutil" />
+              projecthome="${project.home}/../rpiutil" />
 
       <!-- Hibernate jars -->
     	
@@ -133,15 +126,6 @@
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="commons-ssl" />
-
-      <!--
-      <getJar lib="${org.bedework.temp.extrajars.dir}"
-              libcache="${org.bedework.libcache.dir}"
-              name="commons-logging" />
-      
-    	gdata-calendar-1.0.jar
-    	gdata-client-1.0.jar
-      -->
       
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
