@@ -105,17 +105,21 @@
     <getJar name="log4j" version="1.2.8" />
     <getJar name="servletapi" version="2.4" />
 
-    <getJar name="rpiaccess" version="${org.bedework.access.version}" project="access"
+    <getJar name="rpiaccess" 
+            version="${org.bedework.access.version}" project="access"
             projecthome="${project.home}/../access" />
 
-    <getJar name="rpiutil" version="${org.bedework.rpiutil.version}" project="rpiutil"
+    <getJar name="rpiutil" 
+            version="${org.bedework.rpiutil.version}" project="rpiutil"
             projecthome="${project.home}/../rpiutil" />
     
-    <getJar name="bw-davio" version="${org.bedework.davutil.version}" project="davutil" 
+    <getJar name="bw-davio" 
+            version="${org.bedework.davutil.version}" project="davutil" 
             projecthome="${project.home}/../davutil" />
 
-    <getJar name="bw-webdavserver" version="${org.bedework.webdav.version}" project="webdav"
-            projecthome="${project.home}/../bedework/projects/webdav" />
+    <getJar name="bw-webdavserver" 
+            version="${org.bedework.webdav.version}" project="webdav"
+            projecthome="${project.home}/../webdav" />
   </target>
     
 	<target name="deploy-init" depends="init">

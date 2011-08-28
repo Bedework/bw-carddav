@@ -29,7 +29,7 @@
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="bw-webdavserver" version="${org.bedework.webdav.version}"
-              projecthome="${bedework.home}/projects/webdav" />
+              projecthome="${project.home}/../webdav" />
 
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
