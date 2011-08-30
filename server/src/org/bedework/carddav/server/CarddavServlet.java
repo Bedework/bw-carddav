@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,8 +18,8 @@
 */
 package org.bedework.carddav.server;
 
-import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
+import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 
@@ -51,7 +51,7 @@ public class CarddavServlet extends WebdavServlet {
       throws WebdavException {
     CarddavBWIntf wi = new CarddavBWIntf();
 
-    wi.init(this, req, debug, methods, dumpContent);
+    wi.init(this, req, methods, dumpContent);
     return wi;
   }
 }

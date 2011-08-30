@@ -33,9 +33,9 @@ import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.common.AccessUtil;
 import edu.rpi.cct.webdav.servlet.common.Headers;
+import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
 import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.common.WebdavUtils;
-import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
@@ -51,16 +51,16 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavUnauthorized;
 import edu.rpi.cct.webdav.servlet.shared.WebdavUnsupportedMediaType;
 import edu.rpi.cmt.access.AccessException;
 import edu.rpi.cmt.access.AccessPrincipal;
+import edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb;
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
-import edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb;
 import edu.rpi.sss.util.OptionsI;
 import edu.rpi.sss.util.xml.XmlEmit;
-import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.XmlEmit.NameSpace;
+import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
 
@@ -129,7 +129,6 @@ public class CarddavBWIntf extends WebdavNsIntf {
    *
    * @param servlet
    * @param req
-   * @param debug
    * @param methods    HashMap   table of method info
    * @param dumpContent
    * @throws WebdavException
@@ -137,10 +136,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public void init(final WebdavServlet servlet,
                    final HttpServletRequest req,
-                   final boolean debug,
                    final HashMap<String, MethodInfo> methods,
                    final boolean dumpContent) throws WebdavException {
-    super.init(servlet, req, debug, methods, dumpContent);
+    super.init(servlet, req, methods, dumpContent);
 
     try {
       HttpSession session = req.getSession();
@@ -187,7 +185,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       sysi.init(req, account, config, debug);
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
-                                  new CardDavAccessXmlCb(sysi), debug);
+                                  new CardDavAccessXmlCb(sysi));
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -209,7 +207,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       sysi.init(req, account, config, debug);
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
-                                  new CardDavAccessXmlCb(sysi), debug);
+                                  new CardDavAccessXmlCb(sysi));
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -1013,7 +1011,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } else {
       resp.setStatus(HttpServletResponse.SC_CREATED);
-      Headers.makeLocation(resp, getLocation(to), debug);
+      Headers.makeLocation(resp, getLocation(to));
     }
   }
 
@@ -1042,7 +1040,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } else {
       resp.setStatus(HttpServletResponse.SC_CREATED);
-      Headers.makeLocation(resp, getLocation(to), debug);
+      Headers.makeLocation(resp, getLocation(to));
     }
   }
 
@@ -1071,7 +1069,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } else {
       resp.setStatus(HttpServletResponse.SC_CREATED);
-      Headers.makeLocation(resp, getLocation(to), debug);
+      Headers.makeLocation(resp, getLocation(to));
     }
   }
 
