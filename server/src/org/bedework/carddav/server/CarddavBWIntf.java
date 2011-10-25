@@ -33,11 +33,13 @@ import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.common.AccessUtil;
 import edu.rpi.cct.webdav.servlet.common.Headers;
+import edu.rpi.cct.webdav.servlet.common.Headers.IfHeaders;
 import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
 import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.common.WebdavUtils;
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
+import edu.rpi.cct.webdav.servlet.shared.WdSynchReport;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
@@ -665,7 +667,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, boolean, java.lang.String)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, edu.rpi.cct.webdav.servlet.common.Headers.IfHeaders)
    */
   @Override
   public PutContentResult putContent(final HttpServletRequest req,
@@ -673,8 +675,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                      final WebdavNsNode node,
                                      final String[] contentTypePars,
                                      final Reader contentRdr,
-                                     final boolean create,
-                                     final String ifEtag) throws WebdavException {
+                                     final IfHeaders ifHeaders) throws WebdavException {
     try {
       PutContentResult pcr = new PutContentResult();
       pcr.node = node;
@@ -709,7 +710,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                   t.getMessage());
       }
 
-      pcr.created = putCard(bwnode, card, create, ifEtag);
+      pcr.created = putCard(bwnode, card, ifHeaders);
 
       return pcr;
     } catch (WebdavException we) {
@@ -720,15 +721,14 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putBinaryContent(javax.servlet.http.HttpServletRequest, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.InputStream, boolean, java.lang.String)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putBinaryContent(javax.servlet.http.HttpServletRequest, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.InputStream, edu.rpi.cct.webdav.servlet.common.Headers.IfHeaders)
    */
   @Override
   public PutContentResult putBinaryContent(final HttpServletRequest req,
                                            final WebdavNsNode node,
                                            final String[] contentTypePars,
                                            final InputStream contentStream,
-                                           boolean create,
-                                           final String ifEtag) throws WebdavException {
+                                           final IfHeaders ifHeaders) throws WebdavException {
     try {
       PutContentResult pcr = new PutContentResult();
       pcr.node = node;
@@ -747,7 +747,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       CarddavResource r = bwnode.getResource();
 
       if (!bwnode.getExists()) {
-        create = true;
+        ifHeaders.create = true;
       }
 
       String contentType = null;
@@ -808,7 +808,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       rc.setValue(res);
       r.setContentLength(res.length);
 
-      if (create) {
+      if (ifHeaders.create) {
         sysi.putFile(col, r);
       } else {
         sysi.updateFile(r, true);
@@ -823,8 +823,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   private boolean putCard(final CarddavCardNode bwnode,
                           final Card card,
-                          final boolean create,
-                          final String ifEtag) throws WebdavException {
+                          final IfHeaders ifHeaders) throws WebdavException {
     String entityName = bwnode.getEntityName();
     CarddavCollection col = bwnode.getWdCollection();
     boolean created = false;
@@ -843,7 +842,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       sysi.addCard(col.getPath(), card);
 
       bwnode.setCard(card);
-    } else if (create) {
+    } else if (ifHeaders.create) {
       /* Resource already exists */
 
       throw new WebdavException(HttpServletResponse.SC_PRECONDITION_FAILED,
@@ -853,9 +852,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
         throw new WebdavBadRequest("Mismatched names");
       }
 
-      if ((ifEtag != null) && (!ifEtag.equals(bwnode.getPrevEtagValue(true)))) {
+      if ((ifHeaders.ifEtag != null) &&
+          (!ifHeaders.ifEtag.equals(bwnode.getPrevEtagValue(true)))) {
         if (debug) {
-          debugMsg("putContent: etag mismatch if=" + ifEtag +
+          debugMsg("putContent: etag mismatch if=" + ifHeaders.ifEtag +
                    "prev=" + bwnode.getPrevEtagValue(true));
         }
         throw new WebdavException(HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -1082,6 +1082,19 @@ public class CarddavBWIntf extends WebdavNsIntf {
                             final String resourceUri) throws WebdavException {
     return SpecialUri.process(req, resp, resourceUri, getSysi(), config,
                               false, null, debug);
+  }
+
+  @Override
+  public WdSynchReport getSynchReport(final String path,
+                                      final String token,
+                                      final int limit,
+                                      final boolean recurse) throws WebdavException {
+    return null;
+  }
+
+  @Override
+  public String getSyncToken(final String path) throws WebdavException{
+    return null;
   }
 
   /* ====================================================================
