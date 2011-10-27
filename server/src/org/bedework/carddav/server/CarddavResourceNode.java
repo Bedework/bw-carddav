@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,8 +20,8 @@ package org.bedework.carddav.server;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
+import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.sss.util.DateTimeUtil;
 import edu.rpi.sss.util.xml.XmlEmit;
 
@@ -286,10 +286,10 @@ public class CarddavResourceNode extends CarddavNode {
    * ==================================================================== */
 
   @Override
-  public boolean writeContent(final XmlEmit xml,
-                              final Writer wtr,
-                              final String contentType) throws WebdavException {
-    return false;
+  public String writeContent(final XmlEmit xml,
+                             final Writer wtr,
+                             final String contentType) throws WebdavException {
+    return null;
   }
 
   /* (non-Javadoc)

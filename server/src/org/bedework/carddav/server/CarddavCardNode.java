@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,8 +23,8 @@ import org.bedework.carddav.vcard.Card;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
+import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 
@@ -245,22 +245,22 @@ public boolean generatePropertyValue(final QName tag,
    * ==================================================================== */
 
   @Override
-  public boolean writeContent(final XmlEmit xml,
-                              final Writer wtr,
-                              final String contentType) throws WebdavException {
+  public String writeContent(final XmlEmit xml,
+                             final Writer wtr,
+                             final String contentType) throws WebdavException {
     try {
       if (xml == null) {
         wtr.write(card.output());
-      } else {
-        xml.cdataValue(card.output());
+        return "text/vcard";
       }
+
+      xml.cdataValue(card.output());
+      return "application/vcard+xml";
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
-
-    return true;
   }
 
   @Override
