@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="lib/hibernate-3.3.1.ga.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/access"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/davutil"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/rpituil"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/rpiutil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdav"/>
 	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav/carddav"/>
 </classpath>
