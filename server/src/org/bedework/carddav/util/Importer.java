@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -40,7 +40,7 @@ public class Importer {
 
   private static int port = 8080;
 
-  private static boolean secure = false;
+  private static String scheme = "http";
 
   private String urlPrefix;
 
@@ -205,7 +205,7 @@ public class Importer {
     try {
       int respCode;
 
-      cio = new DavClient(host, port, 0, secure);
+      cio = new DavClient(host, port, scheme, 0);
 
       cio.setCredentials(user, pw);
 
