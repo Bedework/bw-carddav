@@ -14,8 +14,6 @@
   <property name="org.bedework.project.carddav"
             location="${project.home}" />
 
-  <property file="${project.home}/build.properties" />
-  
   <property name="bedework.home"
             location="${project.home}/../bedework" />
 
@@ -25,12 +23,10 @@
 
   <deftasks/>
 
-  <projectDefs name="${org.bedework.package.name}"
+  <projectDefs name="Carddav package"
                version="${org.bedework.carddav.version}" 
                deployment-name="card"
   />
-
-  <import file="${build.dir}/loadDeployConfig.xml"/>
 
   <import file="${project.home}/appjars.xml" />
   
@@ -51,11 +47,6 @@
   <target name="init">
     <projectInit/>
     
-    <property name="org.bedework.project.bedework"
-  	          location="${project.home}/../bedework" />
-
-  	<loadDeployConfig />
-
     <property name="org.bedework.temp.wars.home"
               location="${dist.home}/temp/wars" />
   	
@@ -80,13 +71,13 @@
               location="${project.home}/tools" />
 
     <property name="server.jar"
-              location="${dist.home}/${edu.rpi.cmt.carddav.server.jar}-${project.version}.jar" />
+              location="${dist.home}/bw-carddavsvr-${project.version}.jar" />
 
     <property name="dumpres.jar"
-              location="${dist.home}/${edu.rpi.cmt.carddav.dumpres.jar}-${project.version}.jar" />
+              location="${dist.home}/bw-carddumpres-${project.version}.jar" />
 
     <property name="tools.jar"
-              location="${dist.home}/${edu.rpi.cmt.carddav.tools.jar}-${project.version}.jar" />
+              location="${dist.home}/bw-cardtools-${project.version}.jar" />
   </target>
 	
   <target name="build-init" depends="init">
@@ -103,7 +94,7 @@
     <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
     <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
     <getJar name="log4j" version="1.2.8" />
-    <getJar name="servletapi" version="2.4" />
+    <getJar name="servlet-api" version="2.4" />
 
     <getJar name="rpiaccess" 
             version="${org.bedework.access.version}" project="access"
@@ -122,7 +113,7 @@
             projecthome="${project.home}/../webdav" />
   </target>
     
-	<target name="deploy-init" depends="init">
+  <target name="deploy-init" depends="init">
     <deployInit ear-name="bw-${ant.project.name}" />
 	  
     <property name="tools.app.zip.name"
