@@ -89,8 +89,7 @@
     <getJar name="gdata-calendar" version="1.0" />
     <getJar name="gdata-client" version="1.0" />
     <getJar name="ejb3-persistence" version="3.4.0.GA" />
-    <getJar name="hibernate" version="3.3.1.ga" />
-    <getJar name="hibernate-annotations" version="3.4.0.GA" />
+    <getJar name="hibernate" version="3.6.9.Final" />
     <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
     <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
     <getJar name="log4j" version="1.2.8" />

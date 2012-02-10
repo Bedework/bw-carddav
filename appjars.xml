@@ -71,19 +71,19 @@
               libcache="${org.bedework.libcache.dir}"
               name="ehcache" version="1.2.3" />
     	
-    	<getJar lib="${org.bedework.temp.extrajars.dir}"
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
-              name="hibernate" version="3.3.1.ga" />
-    	
+              name="hibernate" version="3.6.9.Final" />
+      
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="hibernate-validator" version="3.1.0.GA" />
+      
       <!--
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
 	            libcache="${org.bedework.libcache.dir}"
               name="hibernate-annotations" version="3.4.0.GA" />
       
-      <getJar lib="${org.bedework.temp.extrajars.dir}"
-              libcache="${org.bedework.libcache.dir}"
-              name="hibernate-validator" version="3.1.0.GA" />
-    	
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="javassist" version="3.4.GA" />
@@ -123,10 +123,6 @@
               libcache="${org.bedework.libcache.dir}"
               name="commons-httpclient" version="3.0"/>
 
-      <getJar lib="${org.bedework.temp.extrajars.dir}"
-              libcache="${org.bedework.libcache.dir}"
-              name="commons-ssl" />
-      
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="ical4j" version="1.0-rc3-SNAPSHOT"/>
