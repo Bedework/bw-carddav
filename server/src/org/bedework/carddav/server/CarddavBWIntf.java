@@ -164,6 +164,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
         config = new CardDAVConfig();
       }
 
+      config.setAppName(appName);
+
       if (!config.dirHandlersConfigured()) {
         String dirHandlersElementName = "org.bedework.global.dirhandlers";
         Collection<String> dirHandlerNames = opts.getNames(dirHandlersElementName);

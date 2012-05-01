@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,8 +23,8 @@ import org.bedework.carddav.server.CarddavColNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.CarddavResource;
 import org.bedework.carddav.server.PropertyHandler;
-import org.bedework.carddav.server.SysIntf;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
+import org.bedework.carddav.server.SysIntf;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
@@ -39,17 +39,17 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
-import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
+import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.cmt.access.Access;
+import edu.rpi.cmt.access.Access.AccessCb;
 import edu.rpi.cmt.access.AccessException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
 import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
-import edu.rpi.cmt.access.Privilege;
-import edu.rpi.cmt.access.Access.AccessCb;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
+import edu.rpi.cmt.access.Privilege;
 import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
@@ -949,9 +949,6 @@ public class BwSysIntfImpl implements SysIntf {
         handlers.put(hk, dh);
       }
 
-      if (dh == null) {
-        throw new WebdavBadRequest("Bad path " + path);
-      }
       dh.open(account);
       openHandlers.add(dh);
 

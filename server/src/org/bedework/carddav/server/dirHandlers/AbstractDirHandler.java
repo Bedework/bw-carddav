@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -93,6 +93,33 @@ public abstract class AbstractDirHandler implements DirHandler {
     this.account = account;
   }
 
+  /* standard mbean attributes - unfinished * /
+  private static List<MBeanAttributeInfo> standardMbeanAttrs;
+
+  static {
+    standardMbeanAttrs = new ArrayList<MBeanAttributeInfo>();
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("pathPrefix",
+                                                  "Selector for handler"));
+
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("cardPathPrefix",
+        "If non-null defines the prefix for principal cards"));
+
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("cardPathPrefixes",
+        "If non-null defines the prefixes for principal cards based on an account prefix"));
+
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("addressBook",
+        "True if this prefix represents an addressbook"));
+
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("className",
+                                                    "Handler class"));
+
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("ownerHref",
+                                                    "Href of owner for this path"));
+
+    standardMbeanAttrs.add(MBeanUtil.stringAttrInfo("cardKind",
+                                                    "If set defines the default kind in this directory"));
+  } */
+
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#close()
    */
@@ -117,6 +144,22 @@ public abstract class AbstractDirHandler implements DirHandler {
     initWhoMaps(cdConfig.getResourcePrincipalRoot(), Ace.whoTypeResource);
     initWhoMaps(cdConfig.getVenuePrincipalRoot(), Ace.whoTypeVenue);
     initWhoMaps(cdConfig.getHostPrincipalRoot(), Ace.whoTypeHost);
+
+    /* This is wrong - needs to be done as a one time setup - perhaps in the
+     * constructors
+
+    //get the available MBean servers
+    ArrayList list = MBeanServerFactory.findMBeanServer(null);
+    //take the first one
+    MBeanServer server = (MBeanServer)list.get(0);
+
+    //build the MBean name
+    try {
+      ObjectName on = new ObjectName("org.bedework:service=carddav,handler=" + dhConfig.getPathPrefix());
+      server.registerMBean(this, on);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    } */
   }
 
   /* (non-Javadoc)
@@ -294,7 +337,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     }
 
     int prefixLen = dhConfig.getPathPrefix().length();
-    if ((path.length() > prefixLen + 1) && (path.charAt(prefixLen) != '/')) {
+    if ((path.length() > (prefixLen + 1)) && (path.charAt(prefixLen) != '/')) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
     }
   }
@@ -306,7 +349,7 @@ public abstract class AbstractDirHandler implements DirHandler {
    */
   protected synchronized boolean lookupUser(final String account) {
     if ((lastFlush != 0) &&
-        (System.currentTimeMillis() - lastFlush > flushTime)) {
+        ((System.currentTimeMillis() - lastFlush) > flushTime)) {
       validUsers.clear();
     }
 
@@ -413,6 +456,23 @@ public abstract class AbstractDirHandler implements DirHandler {
     getLogger().debug(msg);
   }
 
+  /* ====================================================================
+   *  Dynamic mbean methods. - unfinishd
+   * ==================================================================== * /
+
+  public Object getAttribute(final String attribute)
+      throws AttributeNotFoundException, MBeanException, ReflectionException {
+    if (dhConfig == null) {
+      return null;
+    }
+
+    String val = dhConfig.getPropertyValue(attribute);
+    if (val != null) {
+
+    }
+    return null;
+  }
+  */
   /* ====================================================================
    *  Private methods.
    * ==================================================================== */

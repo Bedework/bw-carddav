@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,47 +20,30 @@ package org.bedework.carddav.util;
 
 
 /** This class defines the various properties we need to make a connection
- * and retrieve a group and user information via ldap.
+ * and retrieve a group and user information from a db.
  *
  * @author Mike Douglass
  */
 public class DbDirHandlerConfig extends DirHandlerConfig {
-  private String moduleType;
+  private static final String rootAccessPname = "rootAccess";
 
-  private String rootAccess;
+  private static final String rootOwnerPname = "rootOwner";
 
-  private String rootOwner;
-
-  private int queryLimit;
-
-  /** Used by configuration tools
-   *
-   * @param val
-   */
-  public void setModuleType(final String val)  {
-    moduleType  = val;
-  }
-
-  /**
-   * @return String
-   */
-  public String getRootAccess()  {
-    return rootAccess;
-  }
+  private static final String queryLimitPname = "queryLimit";
 
   /**
    *
    * @param val
    */
   public void setRootAccess(final String val)  {
-    rootAccess  = val;
+    setProperty(rootAccessPname, val);
   }
 
   /**
    * @return String
    */
-  public String getRootOwner()  {
-    return rootOwner;
+  public String getRootAccess()  {
+    return getPropertyValue(rootAccessPname);
   }
 
   /**
@@ -68,14 +51,14 @@ public class DbDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setRootOwner(final String val)  {
-    rootOwner  = val;
+    setProperty(rootOwnerPname, val);
   }
 
   /**
    * @return String
    */
-  public String getModuleType()  {
-    return moduleType;
+  public String getRootOwner()  {
+    return getPropertyValue(rootOwnerPname);
   }
 
   /** Set the query limit - 0 for no limit
@@ -83,7 +66,7 @@ public class DbDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setQueryLimit(final int val)  {
-    queryLimit = val;
+    setProperty(queryLimitPname, String.valueOf(val));
   }
 
   /**
@@ -91,6 +74,6 @@ public class DbDirHandlerConfig extends DirHandlerConfig {
    * @return int val
    */
   public int getQueryLimit()  {
-    return queryLimit;
+    return getIntPropertyValue(queryLimitPname);
   }
 }
