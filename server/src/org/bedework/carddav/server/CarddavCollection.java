@@ -22,6 +22,8 @@ import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WdCollectionBase;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 
+import javax.xml.namespace.QName;
+
 /**
  * @author douglm
  *
@@ -71,6 +73,15 @@ public class CarddavCollection extends WdCollectionBase {
    */
   @Override
   public WdCollection resolveAlias(final boolean resolveSubAlias) throws WebdavException {
+    return this;
+  }
+
+  @Override
+  public void setProperty(final QName name, final String val) throws WebdavException {
+  }
+
+  @Override
+  public String getProperty(final QName name) throws WebdavException {
     return null;
   }
 
