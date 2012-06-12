@@ -68,6 +68,16 @@ public class CarddavCollection extends WdCollectionBase {
     return parent;
   }
 
+  @Override
+  public boolean getCanShare() throws WebdavException {
+    return false;
+  }
+
+  @Override
+  public boolean getCanPublish() throws WebdavException {
+    return false;
+  }
+
   /* (non-Javadoc)
    * @see edu.rpi.cct.webdav.servlet.shared.WdEntity#resolveAlias(boolean)
    */
