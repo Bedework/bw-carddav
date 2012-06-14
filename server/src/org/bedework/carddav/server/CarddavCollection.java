@@ -18,7 +18,6 @@
 */
 package org.bedework.carddav.server;
 
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WdCollectionBase;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 
@@ -28,7 +27,7 @@ import javax.xml.namespace.QName;
  * @author douglm
  *
  */
-public class CarddavCollection extends WdCollectionBase {
+public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
   private CarddavCollection parent;
 
   private boolean addressBook;
@@ -82,7 +81,7 @@ public class CarddavCollection extends WdCollectionBase {
    * @see edu.rpi.cct.webdav.servlet.shared.WdEntity#resolveAlias(boolean)
    */
   @Override
-  public WdCollection resolveAlias(final boolean resolveSubAlias) throws WebdavException {
+  public CarddavCollection resolveAlias(final boolean resolveSubAlias) throws WebdavException {
     return this;
   }
 
