@@ -70,7 +70,7 @@
 var bwBooks = [
    {
        "label" : "personal",
-       "carddavUrl" : "/ucarddav",
+       "carddavUrl" : "/ucarddavweb",
        "path" : "/user/",
        "bookName" : "/addressbook/",
        "type" : "personal-default",
@@ -101,7 +101,7 @@ var bwBooks = [
    },
    {
        "label" : "public people",
-       "carddavUrl" : "/ucarddav",
+       "carddavUrl" : "/ucarddavweb",
        "path" : "/public",
        "bookName" : "/people/",
        "type" : "subscription",
@@ -128,7 +128,7 @@ var bwBooks = [
    },
    {
        "label" : "public locations",
-       "carddavUrl" : "/ucarddav",
+       "carddavUrl" : "/ucarddavweb",
        "path" : "/public",
        "bookName" : "/locations/",
        "type" : "subscription",
@@ -166,11 +166,11 @@ var bwBooks = [
 var bwPublicCardDAV = [
    {
      "label" : "public people",
-     "url" : "/ucarddav/find?format=json&addrbook=/public/people/"
+     "url" : "/ucarddavweb/find?format=json&addrbook=/public/people/"
    },
    {
      "label" : "public locations",
-     "url" : "/ucarddav/find?format=json&addrbook=/public/locations/"
+     "url" : "/ucarddavweb/find?format=json&addrbook=/public/locations/"
    }
 ];
 
