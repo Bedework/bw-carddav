@@ -18,6 +18,8 @@
 */
 package org.bedework.carddav.util;
 
+import javax.xml.namespace.QName;
+
 
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information via ldap.
@@ -25,38 +27,39 @@ package org.bedework.carddav.util;
  * @author Mike Douglass
  */
 public class LdapDirHandlerConfig extends DirHandlerConfig {
-  private static final String initialContextFactoryPname = "initialContextFactory";
-  private static final String securityAuthenticationPname = "securityAuthentication";
+  private static final QName initialContextFactory = new QName(ns, "initialContextFactory");
 
-  private static final String securityProtocolPname = "securityProtocol";
+  private static final QName securityAuthentication = new QName(ns, "securityAuthentication");
 
-  private static final String providerUrlPname = "providerUrl";
+  private static final QName securityProtocol = new QName(ns, "securityProtocol");
 
-  private static final String baseDnPname = "baseDn";
+  private static final QName providerUrl = new QName(ns, "providerUrl");
 
-  private static final String queryLimitPname = "queryLimit";
+  private static final QName baseDn = new QName(ns, "baseDn");
 
-  private static final String attrIdsPname = "attrIds";
+  private static final QName queryLimit = new QName(ns, "queryLimit");
 
-  private static final String folderObjectClassPname = "folderObjectClass";
+  private static final QName attrIds = new QName(ns, "attrIds");
 
-  private static final String addressbookObjectClassPname = "addressbookObjectClass";
+  private static final QName folderObjectClass = new QName(ns, "folderObjectClass");
 
-  private static final String addressbookEntryObjectClassPname = "addressbookEntryObjectClass";
+  private static final QName addressbookObjectClass = new QName(ns, "addressbookObjectClass");
 
-  private static final String principalIdAttrPname = "principalIdAttr";
+  private static final QName addressbookEntryObjectClass = new QName(ns, "addressbookEntryObjectClass");
 
-  private static final String folderIdAttrPname = "folderIdAttr";
+  private static final QName principalIdAttr = new QName(ns, "principalIdAttr");
 
-  private static final String addressbookIdAttrPname = "addressbookIdAttr";
+  private static final QName folderIdAttr = new QName(ns, "folderIdAttr");
 
-  private static final String addressbookEntryIdAttrPname = "addressbookEntryIdAttr";
+  private static final QName addressbookIdAttr = new QName(ns, "addressbookIdAttr");
 
-  private static final String groupMemberAttrPname = "groupMemberAttr";
+  private static final QName addressbookEntryIdAttr = new QName(ns, "addressbookEntryIdAttr");
 
-  private static final String authDnPname = "authDn";
+  private static final QName groupMemberAttr = new QName(ns, "groupMemberAttr");
 
-  private static final String authPwPname = "authPw";
+  private static final QName authDn = new QName(ns, "authDn");
+
+  private static final QName authPw = new QName(ns, "authPw");
 
   private String[] attrIdList = null;
 
@@ -64,28 +67,28 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setInitialContextFactory(final String val)  {
-    setProperty(initialContextFactoryPname, val);
+    setProperty(initialContextFactory, val);
   }
 
   /**
    * @return String
    */
   public String getInitialContextFactory()  {
-    return getPropertyValue(initialContextFactoryPname);
+    return getPropertyValue(initialContextFactory);
   }
 
   /**
    * @param val
    */
   public void setSecurityAuthentication(final String val)  {
-    setProperty(securityAuthenticationPname, val);
+    setProperty(securityAuthentication, val);
   }
 
   /**
    * @return String
    */
   public String getSecurityAuthentication()  {
-    return getPropertyValue(securityAuthenticationPname);
+    return getPropertyValue(securityAuthentication);
   }
 
   /** e.g. "ssl"
@@ -93,7 +96,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   * @param val
   */
   public void setSecurityProtocol(final String val)  {
-    setProperty(securityProtocolPname, val);
+    setProperty(securityProtocol, val);
   }
 
   /** e.g "ssl"
@@ -101,7 +104,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
   * @return String val
   */
   public String getSecurityProtocol()  {
-    return getPropertyValue(securityProtocolPname);
+    return getPropertyValue(securityProtocol);
   }
 
   /** URL of ldap server
@@ -109,7 +112,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setProviderUrl(final String val)  {
-    setProperty(providerUrlPname, val);
+    setProperty(providerUrl, val);
   }
 
   /** URL of ldap server
@@ -117,7 +120,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getProviderUrl()  {
-    return getPropertyValue(providerUrlPname);
+    return getPropertyValue(providerUrl);
   }
 
   /**
@@ -125,7 +128,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setBaseDn(final String val)  {
-    setProperty(baseDnPname, val);
+    setProperty(baseDn, val);
   }
 
   /**
@@ -133,7 +136,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getBaseDn()  {
-    return getPropertyValue(baseDnPname);
+    return getPropertyValue(baseDn);
   }
 
   /** Set the query limit - 0 for no limit
@@ -141,7 +144,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setQueryLimit(final int val)  {
-    setProperty(queryLimitPname, String.valueOf(val));
+    setIntegerProperty(queryLimit, val);
   }
 
   /**
@@ -149,7 +152,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return int val
    */
   public int getQueryLimit()  {
-    return getIntPropertyValue(queryLimitPname);
+    return getIntegerPropertyValue(queryLimit);
   }
 
   /**
@@ -157,7 +160,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAttrIds(final String val)  {
-    setProperty(attrIdsPname, val);
+    setProperty(attrIds, val);
   }
 
   /**
@@ -165,7 +168,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAttrIds()  {
-    return getPropertyValue(attrIdsPname);
+    return getPropertyValue(attrIds);
   }
 
   /**
@@ -173,7 +176,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setFolderObjectClass(final String val)  {
-    setProperty(folderObjectClassPname, val);
+    setProperty(folderObjectClass, val);
   }
 
   /**
@@ -181,7 +184,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getFolderObjectClass()  {
-    return getPropertyValue(folderObjectClassPname);
+    return getPropertyValue(folderObjectClass);
   }
 
   /**
@@ -189,7 +192,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAddressbookObjectClass(final String val)  {
-    setProperty(addressbookObjectClassPname, val);
+    setProperty(addressbookObjectClass, val);
   }
 
   /**
@@ -197,7 +200,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAddressbookObjectClass()  {
-    return getPropertyValue(addressbookObjectClassPname);
+    return getPropertyValue(addressbookObjectClass);
   }
 
   /**
@@ -205,7 +208,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAddressbookEntryObjectClass(final String val)  {
-    setProperty(addressbookEntryObjectClassPname, val);
+    setProperty(addressbookEntryObjectClass, val);
   }
 
   /**
@@ -213,7 +216,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAddressbookEntryObjectClass()  {
-    return getPropertyValue(addressbookEntryObjectClassPname);
+    return getPropertyValue(addressbookEntryObjectClass);
   }
 
   /** Attribute we search for to get a principal
@@ -221,7 +224,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setPrincipalIdAttr(final String val)  {
-    setProperty(principalIdAttrPname, val);
+    setProperty(principalIdAttr, val);
   }
 
   /** Attribute we search for to get a group
@@ -229,7 +232,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getPrincipalIdAttr()  {
-    return getPropertyValue(principalIdAttrPname);
+    return getPropertyValue(principalIdAttr);
   }
 
   /**
@@ -237,7 +240,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setFolderIdAttr(final String val)  {
-    setProperty(folderIdAttrPname, val);
+    setProperty(folderIdAttr, val);
   }
 
   /**
@@ -245,7 +248,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getFolderIdAttr()  {
-    return getPropertyValue(folderIdAttrPname);
+    return getPropertyValue(folderIdAttr);
   }
 
   /**
@@ -253,7 +256,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAddressbookIdAttr(final String val)  {
-    setProperty(addressbookIdAttrPname, val);
+    setProperty(addressbookIdAttr, val);
   }
 
   /**
@@ -261,7 +264,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAddressbookIdAttr()  {
-    return getPropertyValue(addressbookIdAttrPname);
+    return getPropertyValue(addressbookIdAttr);
   }
 
   /**
@@ -269,7 +272,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAddressbookEntryIdAttr(final String val)  {
-    setProperty(addressbookEntryIdAttrPname, val);
+    setProperty(addressbookEntryIdAttr, val);
   }
 
   /**
@@ -277,7 +280,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAddressbookEntryIdAttr()  {
-    return getPropertyValue(addressbookEntryIdAttrPname);
+    return getPropertyValue(addressbookEntryIdAttr);
   }
 
   /** Attribute we want back identifying a member
@@ -285,7 +288,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setGroupMemberAttr(final String val)  {
-    setProperty(groupMemberAttrPname, val);
+    setProperty(groupMemberAttr, val);
   }
 
   /** Attribute we want back identifying a member
@@ -293,7 +296,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getGroupMemberAttr()  {
-    return getPropertyValue(groupMemberAttrPname);
+    return getPropertyValue(groupMemberAttr);
   }
 
   /** If we need an id to authenticate this is it.
@@ -301,7 +304,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAuthDn(final String val)  {
-    setProperty(authDnPname, val);
+    setProperty(authDn, val);
   }
 
   /** If we need an id to authenticate this is it.
@@ -309,7 +312,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAuthDn()  {
-    return getPropertyValue(authDnPname);
+    return getPropertyValue(authDn);
   }
 
   /** If we need an id to authenticate this is the pw.
@@ -317,7 +320,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setAuthPw(final String val)  {
-    setProperty(authPwPname, val);
+    setProperty(authPw, val);
   }
 
   /** If we need an id to authenticate this is it.
@@ -325,7 +328,7 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    * @return String val
    */
   public String getAuthPw()  {
-    return getPropertyValue(authPwPname);
+    return getPropertyValue(authPw);
   }
 
   /**

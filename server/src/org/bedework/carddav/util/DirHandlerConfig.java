@@ -18,32 +18,89 @@
  */
 package org.bedework.carddav.util;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import edu.rpi.cmt.config.ConfigurationStringValueType;
+import edu.rpi.cmt.config.ConfigurationType;
+import edu.rpi.sss.util.ToString;
+
+import javax.xml.namespace.QName;
 
 /** Class defining the configuration for a directory handler.
  *
  * @author douglm
+ * @param <T>
  */
-public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
-  private String pathPrefix;
+public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends ConfigBase<T> {
+  /** */
+  public final static QName confElement = new QName(ns, "bwcarddav-dirhandler");
 
-  private String cardPathPrefix;
+  public static final QName confClass = new QName(ns, "confClass");
 
-  private String cardPathPrefixes;
+  private static final QName confBeanClass = new QName(ns, "confBeanClass");
 
-  private boolean addressBook;
+  private static final QName pathPrefix = new QName(ns, "pathPrefix");
 
-  private String className;
+  private static final QName cardPathPrefix = new QName(ns, "cardPathPrefix");
 
-  private String ownerHref;
+  private static final QName cardPathPrefixes = new QName(ns, "cardPathPrefixes");
 
-  private String cardKind;
+  private static final QName addressBook = new QName(ns, "addressBook");
 
-  private Set<CarddavProperty> properties;
+  private static final QName className = new QName(ns, "className");
 
-  private boolean debug;
+  private static final QName ownerHref = new QName(ns, "ownerHref");
+
+  private static final QName cardKind = new QName(ns, "cardKind");
+
+  @Override
+  public QName getConfElement() {
+    return confElement;
+  }
+
+  /** set the class for the conf wrapper object class
+   *
+   * @param val
+   */
+  public void setConfClass(final String val) {
+    setProperty(confClass, val);
+  }
+
+  /** Get the class for the conf wrapper object class
+   *
+   * @return String   path
+   */
+  public String getConfClass() {
+    return getPropertyValue(confClass);
+  }
+
+  /** Get the class for the conf wrapper object class given a configuration
+   * object.
+   *
+   * @param conf
+   * @return String   path
+   */
+  public static String getConfClass(final ConfigurationType conf) {
+    try {
+      return ((ConfigurationStringValueType)conf.findAll(confClass).get(0)).getValue();
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  /** set the class for the jmx conf bean
+   *
+   * @param val
+   */
+  public void setConfBeanClass(final String val) {
+    setProperty(confBeanClass, val);
+  }
+
+  /** Get the class for the jmx conf bean
+   *
+   * @return String   path
+   */
+  public String getConfBeanClass() {
+    return getPropertyValue(confBeanClass);
+  }
 
   /** Set the pathPrefix which defines the paths for which we call this handler.
    *
@@ -61,7 +118,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param val    String path
    */
   public void setPathPrefix(final String val) {
-    pathPrefix = val;
+    setProperty(pathPrefix, val);
   }
 
   /** Get the pathPrefix
@@ -69,7 +126,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @return String   path
    */
   public String getPathPrefix() {
-    return pathPrefix;
+    return getPropertyValue(pathPrefix);
   }
 
   /** Set the cardPathPrefix which defines the prefix for principal cards.
@@ -91,7 +148,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param val    String path
    */
   public void setCardPathPrefix(final String val) {
-    cardPathPrefix = val;
+    setProperty(cardPathPrefix, val);
   }
 
   /** Get the cardPathPrefix
@@ -99,7 +156,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @return String   path
    */
   public String getCardPathPrefix() {
-    return cardPathPrefix;
+    return getPropertyValue(cardPathPrefix);
   }
 
   /** Set the cardPathPrefixes which defines the prefixes for principal cards based
@@ -115,7 +172,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param val    String
    */
   public void setCardPathPrefixes(final String val) {
-    cardPathPrefixes = val;
+    setProperty(cardPathPrefixes, val);
   }
 
   /** Get the cardPathPrefixes
@@ -123,24 +180,24 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @return String
    */
   public String getCardPathPrefixes() {
-    return cardPathPrefixes;
+    return getPropertyValue(cardPathPrefixes);
   }
 
-  /** True if this prefix represents an addressbook. Only required if we have no
+  /** True if this prefix represents areturn getPropertyValue(ssbook. Only required if we have no
    * way of adding objectClasses or attributes to the directory itself.
    *
    * @param val
    */
   public void setAddressBook(final boolean val)  {
-    addressBook = val;
+    setBooleanProperty(addressBook, val);
   }
 
   /** Is debugging on?
    *
    * @return boolean val
    */
-  public boolean getAddressBook()  {
-    return addressBook;
+  public boolean getAddressBook() {
+    return getBooleanPropertyValue(addressBook);
   }
 
   /** Set the interface implementation
@@ -148,7 +205,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param val    String
    */
   public void setClassName(final String val) {
-    className = val;
+    setProperty(className, val);
   }
 
   /** get the interface implementation
@@ -156,7 +213,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @return String
    */
   public String getClassName() {
-    return className;
+    return getPropertyValue(className);
   }
 
   /** Set the href for the owner
@@ -164,7 +221,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param val    String
    */
   public void setOwnerHref(final String val) {
-    ownerHref = val;
+    setProperty(ownerHref, val);
   }
 
   /** get the href for the owner
@@ -172,7 +229,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @return String
    */
   public String getOwnerHref() {
-    return ownerHref;
+    return getPropertyValue(ownerHref);
   }
 
   /** If set defines the default kind in this directory
@@ -180,7 +237,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param val
    */
   public void setCardKind(final String val)  {
-    cardKind = val;
+    setProperty(cardKind, val);
   }
 
   /** If set defines the default kind in this directory
@@ -188,239 +245,7 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @return String val
    */
   public String getCardKind()  {
-    return cardKind;
-  }
-
-  /**
-   * @param val
-   */
-  public void setDebug(final boolean val)  {
-    debug = val;
-  }
-
-  /** Is debugging on?
-   *
-   * @return boolean val
-   */
-  public boolean getDebug()  {
-    return debug;
-  }
-
-  /* ====================================================================
-   *                   Property methods
-   * ==================================================================== */
-
-  /**
-   * @param val
-   */
-  public void setProperties(final Set<CarddavProperty> val) {
-    properties = val;
-  }
-
-  /**
-   * @return properties
-   */
-  public Set<CarddavProperty> getProperties() {
-    return properties;
-  }
-
-  /**
-   * @param name
-   * @return properties with given name
-   */
-  public Set<CarddavProperty> getProperties(final String name) {
-    TreeSet<CarddavProperty> ps = new TreeSet<CarddavProperty>();
-
-    if (getNumProperties() == 0) {
-      return ps;
-    }
-
-    for (CarddavProperty p: getProperties()) {
-      if (p.getName().equals(name)) {
-        ps.add(p);
-      }
-    }
-
-    return ps;
-  }
-
-  /** Remove all with given name
-   *
-   * @param name
-   */
-  public void removeProperties(final String name) {
-    Set<CarddavProperty> ps = getProperties(name);
-
-    if ((ps == null) || (ps.size() == 0)) {
-      return;
-    }
-
-    for (CarddavProperty p: ps) {
-      removeProperty(p);
-    }
-  }
-
-  /**
-   * @return int
-   */
-  public int getNumProperties() {
-    Collection<CarddavProperty> c = getProperties();
-    if (c == null) {
-      return 0;
-    }
-
-    return c.size();
-  }
-
-  /**
-   * @param name
-   * @return property or null
-   */
-  public CarddavProperty findProperty(final String name) {
-    Collection<CarddavProperty> props = getProperties();
-
-    if (props == null) {
-      return null;
-    }
-
-    for (CarddavProperty prop: props) {
-      if (name.equals(prop.getName())) {
-        return prop;
-      }
-    }
-
-    return null;
-  }
-
-  /** Set the single valued property
-   *
-   * @param name
-   * @param value
-   */
-  public void setProperty(final String name,
-                          final String value) {
-    Set<CarddavProperty> ps = getProperties(name);
-
-    if (ps.size() == 0) {
-      addProperty(new CarddavProperty(name, value));
-      return;
-    }
-
-    if (ps.size() > 1) {
-      throw new RuntimeException("Multiple values for single valued property " + name);
-    }
-
-    CarddavProperty p = ps.iterator().next();
-
-    if (!p.getValue().equals(value)) {
-      p.setValue(value);
-    }
-  }
-
-  /**
-   * @param name
-   * @return single value of valued property with given name
-   */
-  public String getPropertyValue(final String name) {
-    Set<CarddavProperty> ps = getProperties(name);
-
-    if (ps.size() == 0) {
-      return null;
-    }
-
-    if (ps.size() > 1) {
-      throw new RuntimeException("Multiple values for single valued property " + name);
-    }
-
-    return ps.iterator().next().getValue();
-  }
-
-  /**
-   * @param name
-   * @return single value of valued property with given name
-   */
-  public Integer getIntPropertyValue(final String name) {
-    String s = getPropertyValue(name);
-
-    if (s == null) {
-      return null;
-    }
-
-    return Integer.valueOf(s);
-  }
-
-  /**
-   * @param name
-   * @return single value of valued property with given name
-   */
-  public Long getLongPropertyValue(final String name) {
-    String s = getPropertyValue(name);
-
-    if (s == null) {
-      return null;
-    }
-
-    return Long.valueOf(s);
-  }
-
-  /**
-   * @param val
-   */
-  public void addProperty(final CarddavProperty val) {
-    Set<CarddavProperty> c = getProperties();
-    if (c == null) {
-      c = new TreeSet<CarddavProperty>();
-      setProperties(c);
-    }
-
-    if (!c.contains(val)) {
-      c.add(val);
-    }
-  }
-
-  /**
-   * @param val
-   * @return boolean
-   */
-  public boolean removeProperty(final CarddavProperty val) {
-    Set<CarddavProperty> c = getProperties();
-    if (c == null) {
-      return false;
-    }
-
-    return c.remove(val);
-  }
-
-  /**
-   * @return set of CarddavProperty
-   */
-  public Set<CarddavProperty> copyProperties() {
-    if (getNumProperties() == 0) {
-      return null;
-    }
-    TreeSet<CarddavProperty> ts = new TreeSet<CarddavProperty>();
-
-    for (CarddavProperty p: getProperties()) {
-      ts.add(p);
-    }
-
-    return ts;
-  }
-
-  /**
-   * @return set of CarddavProperty
-   */
-  public Set<CarddavProperty> cloneProperties() {
-    if (getNumProperties() == 0) {
-      return null;
-    }
-    TreeSet<CarddavProperty> ts = new TreeSet<CarddavProperty>();
-
-    for (CarddavProperty p: getProperties()) {
-      ts.add((CarddavProperty)p.clone());
-    }
-
-    return ts;
+    return getPropertyValue(cardKind);
   }
 
   /** Add our stuff to the StringBuilder
@@ -428,13 +253,12 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * @param sb    StringBuilder for result
    * @param indent
    */
-  public void toStringSegment(final StringBuilder sb,
-                              final String indent) {
-    sb.append("pathPrefix = ");
-    sb.append(getPathPrefix());
+  @Override
+  public void toStringSegment(final ToString ts) {
+    super.toStringSegment(ts);
 
-    sb.append(", ownerHref = ");
-    sb.append(getOwnerHref());
+    ts.append("pathPrefix", getPathPrefix());
+    ts.append("ownerHref", getOwnerHref());
   }
 
   /* ====================================================================
@@ -442,22 +266,12 @@ public class DirHandlerConfig extends DbItem<DirHandlerConfig> {
    * ==================================================================== */
 
   @Override
-  public int compareTo(final DirHandlerConfig that) {
+  public int compareTo(final T that) {
     return getPathPrefix().compareTo(that.getPathPrefix());
   }
 
   @Override
   public int hashCode() {
     return getPathPrefix().hashCode();
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append("{");
-
-    toStringSegment(sb, "  ");
-
-    sb.append("}");
-    return sb.toString();
   }
 }

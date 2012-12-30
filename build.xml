@@ -40,6 +40,10 @@
   
   <property name="ear.meta.dir" location="${project.home}/ear.meta"/>
 
+  <!--
+  <property name="service.xmdesc.dir" location="${project.home}/resources/xmdesc"/>
+  -->
+
   <!-- =================================================================
        init:
        ================================================================= -->
@@ -84,6 +88,7 @@
     <property name="org.bedework.getjar.property.prefix"
               value="org.bedework.appjar" />
 
+    <getJar name="activemq-core" version="5.3.0" />
     <getJar name="commons-codec" version="1.5" />
   	<getJar name="httpcore" version="4.1.2" />
     <getJar name="gdata-calendar" version="1.0" />
@@ -92,6 +97,10 @@
     <getJar name="hibernate" version="3.6.9.Final" />
     <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
     <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
+    <getJar name="jboss-j2se" version="5.1.0.GA" />
+    <getJar name="jboss-kernel" version="5.1.0.GA" />
+    <getJar name="jboss-system" version="5.1.0.GA" />
+    <getJar name="jboss-system-jmx" version="5.1.0.GA" />
     <getJar name="log4j" version="1.2.8" />
     <getJar name="servlet-api" version="2.4" />
 

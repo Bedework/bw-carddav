@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,7 +18,6 @@
 */
 package org.bedework.carddav.dumpres;
 
-import java.util.List;
 
 /** Run the dump/restore and/or the schema initialization as an mbean
  *
@@ -146,38 +145,41 @@ public interface BwCardDumpRestoreMBean {
    */
   public String getSqlIn();
 
-  /** XML data input file name - full path. Used for data restore
+  /* * XML data input file name - full path. Used for data restore
+   *  XXX We have no dump/restore - really a function of th eback end9s)
+   *
    *
    * @param val
-   */
+   * /
   public void setDataIn(String val);
 
-  /**
+  /* *
    * @return XML data input file name - full path
-   */
+   * /
   public String getDataIn();
 
-  /** XML data output directory name - full path. Used for data restore
+  / * * XML data output directory name - full path. Used for data restore
    *
    * @param val
-   */
+   * /
   public void setDataOut(String val);
 
-  /**
+  / * *
    * @return XML data output directory name - full path
-   */
+   * /
   public String getDataOut();
 
-  /** XML data output file prefix - for data dump
+  / * * XML data output file prefix - for data dump
    *
    * @param val
-   */
+   * /
   public void setDataOutPrefix(String val);
 
-  /**
+  / * *
    * @return XML data output file prefix - for data dump
-   */
+   * /
   public String getDataOutPrefix();
+  */
 
   /* ========================================================================
    * Operations
@@ -200,25 +202,27 @@ public interface BwCardDumpRestoreMBean {
    */
   public String schema();
 
-  /** Restores the data from the DataIn path. Will not restore if there appears
+  /* * Restores the data from the DataIn path. Will not restore if there appears
    * to be any data already in the db.
    *
    * @return Completion messages and stats
-   */
+   * /
   public List<String> restoreData();
 
-  /** Dumps the data to a file in the DataOut directory.
+  / * * Dumps the data to a file in the DataOut directory.
    *
    * @return Completion messages and stats
-   */
+   * /
   public List<String> dumpData();
+  */
 
-  /** Try to drop all the tables. May get errors for a partial db or for an updated
+  /* * Try to drop all the tables. May get errors for a partial db or for an updated
    * db.
    *
    * @return Completion message
-   */
+   * /
   public String dropTables();
+  */
 
   /* ========================================================================
    * Lifecycle

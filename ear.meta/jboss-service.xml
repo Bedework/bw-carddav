@@ -5,6 +5,27 @@
     org.bedework:archive=carddav-dumpres-service 
   </loader-repository> 
   
+  <!-- 
+  <mbean code="org.bedework.carddav.server.config.CardDavConf"
+         name="org.bedework:service=AuthCardDavConf"
+         xmbean-dd="resource:xmdesc/bw-cardDavConf-xmbean.xml">
+    <attribute name="AppName">usercarddav</attribute>
+    <attribute name="ConfigDir">${jboss.server.data.dir}/bedework/carddavConfig</attribute>
+  </mbean>
+  
+  <mbean code="org.bedework.carddav.server.config.CardDavConf"
+         name="org.bedework:service=PubCardDavConf"
+         xmbean-dd="resource:xmdesc/bw-cardDavConf-xmbean.xml">
+    <attribute name="AppName">pubcarddav</attribute>
+    <attribute name="ConfigDir">${jboss.server.data.dir}/bedework/carddavConfig</attribute>
+  </mbean>
+ -->
+  <mbean code="org.bedework.carddav.server.jmx.CardDav"
+         name="org.bedework.carddav:service=CardDav">
+    <attribute name="ConfigName">carddav</attribute>
+    <attribute name="ConfigDir">${jboss.server.data.dir}/bedework/carddavConfig</attribute>
+  </mbean>
+  
   <mbean code="org.bedework.carddav.dumpres.BwCardDumpRestore"
          name="org.bedework:service=CardDumpres">
     <attribute name="Account">admin</attribute>
@@ -38,14 +59,19 @@
         Make sure it refers to a non-existant file -->
     <attribute name="SqlIn">not-a-file.sql</attribute>
     
-    <!-- XML data input file name - full path. Used for data restore -->
+    <!-- XML data input file name - full path. Used for data restore
+         This is really a function of the back end connectors
     <attribute name="DataIn">${jboss.server.data.dir}/bedework/carddumprestore/initcard.xml</attribute>
+     -->
     
-    <!-- XML data output directory - full path. Used for data dump -->
+    <!-- XML data output directory - full path. Used for data dump
+         Again - back ends shoulddo this
     <attribute name="DataOut">${jboss.server.data.dir}/bedework/carddumprestore/</attribute>
+     -->
     
-    <!-- XML data output file prefix - for data dump -->
+    <!-- XML data output file prefix - for data dump
     <attribute name="DataOutPrefix">bwcarddata</attribute>
+     -->
 
     <!-- We need activemq 
     <depends>jboss.jca:service=ConnectionFactoryBinding,name=activemq/QueueConnectionFactory</depends>

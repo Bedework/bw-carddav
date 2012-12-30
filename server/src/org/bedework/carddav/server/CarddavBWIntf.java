@@ -24,6 +24,7 @@ import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
 import org.bedework.carddav.server.filter.Filter;
+import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
@@ -146,40 +147,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
       HttpSession session = req.getSession();
       ServletContext sc = session.getServletContext();
 
-      String appName = sc.getInitParameter("bwappname");
-
-      if ((appName == null) || (appName.length() == 0)) {
-        appName = "unknown-app-name";
-      }
-
       namespacePrefix = WebdavUtils.getUrlPrefix(req);
       namespace = namespacePrefix + "/schema";
 
-      /* Note that the options factory returns a static object and we should
-       * initialise the config once only
-       */
-      OptionsI opts = CardOptionsFactory.getOptions(debug);
-      config = (CardDAVConfig)opts.getAppProperty(appName);
-      if (config == null) {
-        config = new CardDAVConfig();
-      }
-
-      config.setAppName(appName);
-
-      if (!config.dirHandlersConfigured()) {
-        String dirHandlersElementName = "org.bedework.global.dirhandlers";
-        Collection<String> dirHandlerNames = opts.getNames(dirHandlersElementName);
-
-        for (String dhn: dirHandlerNames) {
-          Object o = opts.getProperty(dirHandlersElementName + "." + dhn);
-
-          if (debug) {
-            debugMsg("dhn=" + dhn);
-          }
-
-          config.addDirhandler((DirHandlerConfig)o);
-        }
-      }
+      loadConfig(sc.getInitParameter("bwappname"));
 
       /* Set ical4j so that it allows some older constructs */
       CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING,
@@ -1474,6 +1445,47 @@ public class CarddavBWIntf extends WebdavNsIntf {
   /* ====================================================================
    *                         Private methods
    * ==================================================================== */
+
+  private void loadConfig(String appName) throws WebdavException {
+    try {
+      if ((appName == null) || (appName.length() == 0)) {
+        appName = "unknown-app-name";
+      }
+
+      /* Note that the options factory returns a static object and we should
+       * Initialize the config once only
+       * /
+      OptionsI opts = CardOptionsFactory.getOptions(debug);
+      config = (CardDAVConfig)opts.getAppProperty(appName);
+            */
+
+      config = CardDav.getConf(appName);
+      if (config == null) {
+        config = new CardDAVConfig();
+      }
+
+      config.setAppName(appName);
+
+      if (!config.dirHandlersConfigured()) {
+        OptionsI opts = CardOptionsFactory.getOptions();
+
+        String dirHandlersElementName = "org.bedework.global.dirhandlers";
+        Collection<String> dirHandlerNames = opts.getNames(dirHandlersElementName);
+
+        for (String dhn: dirHandlerNames) {
+          Object o = opts.getProperty(dirHandlersElementName + "." + dhn);
+
+          if (debug) {
+            debugMsg("dhn=" + dhn);
+          }
+
+          config.addDirhandler((DirHandlerConfig)o);
+        }
+      }
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
+  }
 
   /** Find the named item by following down the path from the root.
    * This requires the names at each level to be unique (and present)

@@ -136,7 +136,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     this.dhConfig = dhConfig;
     this.urlHandler = urlHandler;
 
-    debug = dhConfig.getDebug();
+    debug = getLogger().isDebugEnabled();
 
     initWhoMaps(cdConfig.getUserPrincipalRoot(), Ace.whoTypeUser);
     initWhoMaps(cdConfig.getGroupPrincipalRoot(), Ace.whoTypeGroup);

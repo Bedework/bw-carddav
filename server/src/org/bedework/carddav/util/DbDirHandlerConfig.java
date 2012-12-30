@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.util;
 
+import javax.xml.namespace.QName;
 
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information from a db.
@@ -25,25 +26,25 @@ package org.bedework.carddav.util;
  * @author Mike Douglass
  */
 public class DbDirHandlerConfig extends DirHandlerConfig {
-  private static final String rootAccessPname = "rootAccess";
+  private static final QName rootAccess = new QName(ns, "rootAccess");
 
-  private static final String rootOwnerPname = "rootOwner";
+  private static final QName rootOwner = new QName(ns, "rootOwner");
 
-  private static final String queryLimitPname = "queryLimit";
+  private static final QName queryLimit = new QName(ns, "queryLimit");
 
   /**
    *
    * @param val
    */
   public void setRootAccess(final String val)  {
-    setProperty(rootAccessPname, val);
+    setProperty(rootAccess, val);
   }
 
   /**
    * @return String
    */
   public String getRootAccess()  {
-    return getPropertyValue(rootAccessPname);
+    return getPropertyValue(rootAccess);
   }
 
   /**
@@ -51,14 +52,14 @@ public class DbDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setRootOwner(final String val)  {
-    setProperty(rootOwnerPname, val);
+    setProperty(rootOwner, val);
   }
 
   /**
    * @return String
    */
   public String getRootOwner()  {
-    return getPropertyValue(rootOwnerPname);
+    return getPropertyValue(rootOwner);
   }
 
   /** Set the query limit - 0 for no limit
@@ -66,7 +67,7 @@ public class DbDirHandlerConfig extends DirHandlerConfig {
    * @param val
    */
   public void setQueryLimit(final int val)  {
-    setProperty(queryLimitPname, String.valueOf(val));
+    setIntegerProperty(queryLimit, val);
   }
 
   /**
@@ -74,6 +75,6 @@ public class DbDirHandlerConfig extends DirHandlerConfig {
    * @return int val
    */
   public int getQueryLimit()  {
-    return getIntPropertyValue(queryLimitPname);
+    return getIntegerPropertyValue(queryLimit);
   }
 }

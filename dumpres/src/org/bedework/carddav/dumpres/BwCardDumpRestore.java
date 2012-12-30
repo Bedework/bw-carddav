@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -21,9 +21,6 @@ package org.bedework.carddav.dumpres;
 import org.apache.log4j.Logger;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author douglm
@@ -55,11 +52,11 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
 
   private String sqlIn;
 
-  private String dataIn;
+  //private String dataIn;
 
-  private String dataOut;
+  //private String dataOut;
 
-  private String dataOutPrefix;
+  //private String dataOutPrefix;
 
   private Configuration cfg;
 
@@ -167,6 +164,7 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
     return sqlIn;
   }
 
+  /*
   public void setDataIn(final String val) {
     dataIn = val;
   }
@@ -190,6 +188,7 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
   public String getDataOutPrefix() {
     return dataOutPrefix;
   }
+  */
 
   /* ========================================================================
    * Operations
@@ -247,11 +246,12 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
     return result;
   }
 
+  /*
   public synchronized List<String> restoreData() {
     List<String> infoLines = new ArrayList<String>();
 
     try {
-      /*
+      / *
       if (!disableIndexer()) {
         infoLines.add("***********************************\n");
         infoLines.add("********* Unable to disable indexer\n");
@@ -289,13 +289,13 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
                     Restore.twoDigits(seconds) + "\n");
 
       infoLines.add("Restore complete" + "\n");
-      */
+      * /
       infoLines.add("************************Restore unimplemented *************************" + "\n");
     } catch (Throwable t) {
       error(t);
       infoLines.add("Exception - check logs: " + t.getMessage() + "\n");
     } finally {
-      /*
+      / *
       try {
         if (!reindex()) {
           infoLines.add("***********************************");
@@ -306,7 +306,7 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
         error(t);
         infoLines.add("Exception - check logs: " + t.getMessage() + "\n");
       }
-        */
+        * /
     }
 
     return infoLines;
@@ -316,7 +316,7 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
     List<String> infoLines = new ArrayList<String>();
 
     try {
-      /*
+      / *
       long startTime = System.currentTimeMillis();
 
       Dump d = new Dump(getConfiguration());
@@ -357,7 +357,7 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
                     Restore.twoDigits(seconds) + "\n");
 
       infoLines.add("Dump complete" + "\n");
-      */
+      * /
       infoLines.add("************************Dump unimplemented *************************" + "\n");
     } catch (Throwable t) {
       error(t);
@@ -370,6 +370,7 @@ public class BwCardDumpRestore implements BwCardDumpRestoreMBean {
   public String dropTables() {
     return "Not implemented";
   }
+  */
 
   /* ========================================================================
    * Lifecycle

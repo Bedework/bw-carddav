@@ -41,6 +41,10 @@
               name="rpiutil" version="${org.bedework.rpiutil.version}" project="rpiutil"
               projecthome="${project.home}/../rpiutil" />
 
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="activemq-core" version="5.3.0" />
+
       <!-- Hibernate jars -->
     	
       <!--
