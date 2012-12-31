@@ -24,7 +24,7 @@ import org.apache.activemq.broker.jmx.MBeanInfo;
  *
  * @author douglm
  */
-public interface DbDirHandlerConfMBean extends ConfBaseMBean {
+public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
   /* ========================================================================
    * Attributes
    * ======================================================================== */

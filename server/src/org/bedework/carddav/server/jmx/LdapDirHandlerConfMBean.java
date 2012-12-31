@@ -24,7 +24,7 @@ import org.apache.activemq.broker.jmx.MBeanInfo;
  *
  * @author douglm
  */
-public interface LdapDirHandlerConfMBean extends ConfBaseMBean {
+public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
   /* ========================================================================
    * Attributes
    * ======================================================================== */
@@ -112,7 +112,8 @@ public interface LdapDirHandlerConfMBean extends ConfBaseMBean {
    *
    * @return String val
    */
-  @MBeanInfo("comman separated list of attribute ids")
+  @MBeanInfo("comma separated list of attribute ids to be used in addition to" +
+  		" the default set of attributes.")
   String getAttrIds();
 
   /**

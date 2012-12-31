@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
  *
  * @author Mike Douglass
  */
-public class DbDirHandlerConfig extends DirHandlerConfig {
+public class DbDirHandlerConfig extends DirHandlerConfig<DbDirHandlerConfig> {
   private static final QName rootAccess = new QName(ns, "rootAccess");
 
   private static final QName rootOwner = new QName(ns, "rootOwner");
