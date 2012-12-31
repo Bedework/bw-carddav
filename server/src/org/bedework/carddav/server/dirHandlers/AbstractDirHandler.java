@@ -248,6 +248,10 @@ public abstract class AbstractDirHandler implements DirHandler {
           }
         }
 
+        if (ap == null) {
+          return null;
+        }
+
         ap.setPrincipalRef(path);
 
         return ap;
