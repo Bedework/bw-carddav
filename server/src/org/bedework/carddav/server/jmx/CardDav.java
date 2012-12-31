@@ -132,7 +132,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
    * Operations
    * ======================================================================== */
 
-  public TabularData ListDirHandlers() {
+  public TabularData ListDirHandlersTable() {
     dhData.clear();
 
     for (DirHandlerConfig dhc: dirhandlerConfigs) {
@@ -150,6 +150,22 @@ public class CardDav extends ConfBase implements CardDavMBean {
 
     return dhData;
   }
+
+  public String ListDirHandlers() {
+    StringBuilder res = new StringBuilder();
+
+    for (DirHandlerConfig dhc: dirhandlerConfigs) {
+      res.append(dhc.getPathPrefix());
+      res.append("\t");
+      res.append(dhc.getAppName());
+      res.append("\t");
+      res.append(dhc.getClassName());
+      res.append("\n");
+    }
+
+    return res.toString();
+  }
+
 
   /*
    * public void addPageSizeResult(PageSizeResult pageSizeResult) {

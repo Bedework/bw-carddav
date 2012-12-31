@@ -125,7 +125,8 @@ public interface LdapDirHandlerConfMBean extends ConfBaseMBean {
    *
    * @return String val
    */
-  @MBeanInfo("Folder objectclass")
+  @MBeanInfo("The objectclass used to represent a folder or collection. " +
+  		"usually \"organizationalUnit\". Required.")
   String getFolderObjectClass();
 
   /**
@@ -178,7 +179,8 @@ public interface LdapDirHandlerConfMBean extends ConfBaseMBean {
    *
    * @return String val
    */
-  @MBeanInfo("Folder id attribute")
+  @MBeanInfo("The attribute used to designate the equivalent of a folder or " +
+  		"collection, usually \"ou\". Required.")
   String getFolderIdAttr();
 
   /**

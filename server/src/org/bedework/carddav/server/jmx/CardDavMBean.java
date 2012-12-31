@@ -38,6 +38,13 @@ public interface CardDavMBean extends ConfBaseMBean {
   /**
    * @return List of dir handler mappings
    */
-  @MBeanInfo("Lists the dir handler mappings to the principal hierarchy")
-  TabularData ListDirHandlers();
+  @MBeanInfo("Lists the dir handler mappings to the principal hierarchy " +
+  		"(Not HTML friendy)")
+  TabularData ListDirHandlersTable();
+
+  /**
+   * @return List of dir handler mappings
+   */
+  @MBeanInfo("Lists the dir handler mappings to the principal hierarchy ")
+  String ListDirHandlers();
 }

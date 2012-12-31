@@ -27,7 +27,6 @@ import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.carddav.server.query.AddressData;
 import org.bedework.carddav.util.CardDAVConfig;
-import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
@@ -60,7 +59,6 @@ import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
-import edu.rpi.sss.util.OptionsI;
 import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.XmlEmit.NameSpace;
 import edu.rpi.sss.util.xml.XmlUtil;
@@ -1464,6 +1462,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         config = new CardDAVConfig();
       }
 
+      /*
       config.setAppName(appName);
 
       if (!config.dirHandlersConfigured()) {
@@ -1481,7 +1480,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
           config.addDirhandler((DirHandlerConfig)o);
         }
-      }
+      }*/
     } catch (Throwable t) {
       throw new WebdavException(t);
     }

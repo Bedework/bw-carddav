@@ -175,22 +175,6 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
-  public void setFolderObjectClass(final String val)  {
-    setProperty(folderObjectClass, val);
-  }
-
-  /**
-   *
-   * @return String val
-   */
-  public String getFolderObjectClass()  {
-    return getPropertyValue(folderObjectClass);
-  }
-
-  /**
-   *
-   * @param val
-   */
   public void setAddressbookObjectClass(final String val)  {
     setProperty(addressbookObjectClass, val);
   }
@@ -239,11 +223,29 @@ public class LdapDirHandlerConfig extends DirHandlerConfig {
    *
    * @param val
    */
+  public void setFolderObjectClass(final String val)  {
+    setProperty(folderObjectClass, val);
+  }
+
+  /** The objectclass used to represent a folder or collection. usually
+   * "organizationalUnit". Required.
+   *
+   * @return String val
+   */
+  public String getFolderObjectClass()  {
+    return getPropertyValue(folderObjectClass);
+  }
+
+  /**
+   *
+   * @param val
+   */
   public void setFolderIdAttr(final String val)  {
     setProperty(folderIdAttr, val);
   }
 
-  /**
+  /** The attribute used to designate the equivalent of a folder or collection,
+   * usually "ou". Required.
    *
    * @return String val
    */

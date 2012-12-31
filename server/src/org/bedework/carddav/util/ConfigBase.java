@@ -234,10 +234,16 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
 
     try {
       if (ce == null) {
-        return null;
+        return false;
       }
 
-      return ((ConfigurationBooleanValueType)ce).getValue();
+      Boolean bval = ((ConfigurationBooleanValueType)ce).getValue();
+
+      if (bval == null) {
+        return false;
+      }
+
+      return bval;
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
