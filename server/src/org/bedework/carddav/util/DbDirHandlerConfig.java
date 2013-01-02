@@ -18,6 +18,8 @@
 */
 package org.bedework.carddav.util;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 /** This class defines the various properties we need to make a connection
@@ -31,6 +33,8 @@ public class DbDirHandlerConfig extends DirHandlerConfig<DbDirHandlerConfig> {
   private static final QName rootOwner = new QName(ns, "rootOwner");
 
   private static final QName queryLimit = new QName(ns, "queryLimit");
+
+  private static final QName hibernateProperty = new QName(ns, "hibernateProperty");
 
   /**
    *
@@ -76,5 +80,78 @@ public class DbDirHandlerConfig extends DirHandlerConfig<DbDirHandlerConfig> {
    */
   public int getQueryLimit()  {
     return getIntegerPropertyValue(queryLimit);
+  }
+
+  /** Add a hibernate property
+   *
+   * @param name
+   * @param val
+   */
+  public void addHibernateProperty(final String name,
+                                   final String val) {
+    addProperty(hibernateProperty, name + "=" + val);
+  }
+
+  /** Get a hibernate property
+   *
+   * @param val
+   * @return value or null
+   */
+  public String getHibernateProperty(final String val) {
+    List<String> ps = getHibernateProperties();
+
+    String key = val + "=";
+    for (String p: ps) {
+      if (p.startsWith(key)) {
+        return p.substring(key.length());
+      }
+    }
+
+    return null;
+  }
+
+  /** Remove a hibernate property
+   *
+   * @param name
+   */
+  public void removeHibernateProperty(final String name) {
+    try {
+      String v = getHibernateProperty(name);
+
+      if (v == null) {
+        return;
+      }
+
+      getConfig().removeProperty(hibernateProperty, name + "=" + v);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  /** Set a hibernate property
+   *
+   * @param name
+   * @param val
+   */
+  public void setHibernateProperty(final String name,
+                                   final String val) {
+    try {
+      removeHibernateProperty(name);
+      addHibernateProperty(name, val);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   *
+   * @return String val
+   */
+  public List<String> getHibernateProperties() {
+    try {
+      return getConfig().getAll(hibernateProperty);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 }

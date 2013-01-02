@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -37,16 +37,18 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.Access;
 import edu.rpi.cmt.access.AccessException;
 import edu.rpi.cmt.access.AccessPrincipal;
+import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
-import edu.rpi.cmt.access.Acl.CurrentAccess;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.io.StringReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -68,11 +70,11 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   protected HibSession sess;
 
   /** We make this static for this implementation so that there is only one
-   * SessionFactory per server for the calendar.
+   * SessionFactory per server for the card server.
    *
    * <p>static fields used this way are illegal in the j2ee specification
    * though we might get away with it here as the session factory only
-   * contains parsed mappings for the calendar configuration. This should
+   * contains parsed mappings for the card configuration. This should
    * be the same for any machine in a cluster so it might work OK.
    *
    * <p>It might be better to find some other approach for the j2ee world.
@@ -604,7 +606,19 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
         }
         */
 
-        conf.configure();
+        StringBuilder sb = new StringBuilder();
+
+        List<String> ps = dbConfig.getHibernateProperties();
+
+        for (String p: ps) {
+          sb.append(p);
+          sb.append("\n");
+        }
+
+        Properties hprops = new Properties();
+        hprops.load(new StringReader(sb.toString()));
+
+        conf.addProperties(hprops).configure();
 
         sessionFactory = conf.buildSessionFactory();
 

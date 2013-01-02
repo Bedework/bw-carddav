@@ -20,6 +20,8 @@ package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.util.DbDirHandlerConfig;
 
+import java.util.List;
+
 /**
  * @author douglm
  *
@@ -56,6 +58,43 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   /* ========================================================================
    * Operations
    * ======================================================================== */
+
+  public String listHibernateProperties() {
+    StringBuilder res = new StringBuilder();
+
+    List<String> ps = getConf().getHibernateProperties();
+
+    for (String p: ps) {
+      res.append(p);
+      res.append("\n");
+    }
+
+    return res.toString();
+  }
+
+  public String displayHibernateProperty(final String name) {
+    String val = getConf().getHibernateProperty(name);
+
+    if (val != null) {
+      return val;
+    }
+
+    return "Not found";
+  }
+
+  public void removeHibernateProperty(final String name) {
+    getConf().removeHibernateProperty(name);
+  }
+
+  public void addHibernateProperty(final String name,
+                                   final String value) {
+    getConf().addHibernateProperty(name, value);
+  }
+
+  public void setHibernateProperty(final String name,
+                                   final String value) {
+    getConf().setHibernateProperty(name, value);
+  }
 
   /*
   @Override

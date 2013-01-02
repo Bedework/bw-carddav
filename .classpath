@@ -15,12 +15,13 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdav"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-3.6.9.Final.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-3.6.9.Final.jar" sourcepath="/hibernate-distribution-3.6.9.Final"/>
 	<classpathentry kind="lib" path="lib/servlet-api-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-j2se-5.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-kernel-5.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-system-5.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-system-jmx-5.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-core-5.3.0.jar" sourcepath="/home/douglm/drop2/apache/activemq/activemq-parent-5.3.0/activemq-core"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav/carddav"/>
 </classpath>

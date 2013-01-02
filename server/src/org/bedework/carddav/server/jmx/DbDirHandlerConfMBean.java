@@ -70,6 +70,44 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
    * Operations
    * ======================================================================== */
 
+  /** List the hibernate properties
+   *
+   * @return properties
+   */
+  @MBeanInfo("List the hibernate properties")
+  String listHibernateProperties();
+
+  /** Display the named property
+   *
+   * @param name
+   * @return value
+   */
+  @MBeanInfo("Display the named hibernate property")
+  String displayHibernateProperty(@MBeanInfo("name") final String name);
+
+  /** Remove the named property
+   *
+   * @param name
+   */
+  @MBeanInfo("Remove the named hibernate property")
+  void removeHibernateProperty(@MBeanInfo("name") final String name);
+
+  /**
+   * @param name
+   * @param value
+   */
+  @MBeanInfo("Add a hibernate property")
+  void addHibernateProperty(@MBeanInfo("name") final String name,
+                              @MBeanInfo("value") final String value);
+
+  /**
+   * @param name
+   * @param value
+   */
+  @MBeanInfo("Set a hibernate property")
+  void setHibernateProperty(@MBeanInfo("name") final String name,
+                            @MBeanInfo("value") final String value);
+
   /* * Get info for a user
    *
    * @param cua

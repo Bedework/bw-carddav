@@ -18,10 +18,7 @@
 */
 package org.bedework.carddav.util;
 
-import edu.rpi.cmt.config.ConfigurationBooleanValueType;
 import edu.rpi.cmt.config.ConfigurationElementType;
-import edu.rpi.cmt.config.ConfigurationIntegerValueType;
-import edu.rpi.cmt.config.ConfigurationStringValueType;
 import edu.rpi.cmt.config.ConfigurationType;
 import edu.rpi.sss.util.ToString;
 import edu.rpi.sss.util.xml.tagdefs.BedeworkServerTags;
@@ -145,39 +142,29 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
     return null;
   }*/
 
-  private ConfigurationElementType findSingleValueProperty(final QName name) {
-    List<ConfigurationElementType> ps = getProperties(name);
-
-    if (ps.size() == 0) {
-      return null;
-    }
-
-    if (ps.size() > 1) {
-      throw new RuntimeException("Multiple values for single valued property " + name);
-    }
-
-    return ps.get(0);
-  }
-
   /** Set the single valued property
-  *
-  * @param name
-  * @param value
-  */
+   *
+   * @param name
+   * @param value
+   */
   public void setProperty(final QName name,
                           final String value) {
-    ConfigurationElementType ce = findSingleValueProperty(name);
     try {
-      if (ce == null) {
-        getConfig().addString(name, value);
-        return;
-      }
+      getConfig().setProperty(name, value);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
 
-      ConfigurationStringValueType p = (ConfigurationStringValueType)ce;
-
-      if (!p.getValue().equals(value)) {
-        p.setValue(value);
-      }
+  /** Add a property
+   *
+   * @param name
+   * @param value
+   */
+  public void addProperty(final QName name,
+                          final String value) {
+    try {
+      getConfig().addProperty(name, value);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -188,14 +175,8 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
    * @return single value of valued property with given name
    */
   public String getPropertyValue(final QName name) {
-    ConfigurationElementType ce = findSingleValueProperty(name);
-
     try {
-      if (ce == null) {
-        return null;
-      }
-
-      return ((ConfigurationStringValueType)ce).getValue();
+      return getConfig().getPropertyValue(name);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -208,18 +189,8 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
   */
   public void setBooleanProperty(final QName name,
                                  final Boolean value) {
-    ConfigurationElementType ce = findSingleValueProperty(name);
     try {
-      if (ce == null) {
-        getConfig().addBoolean(name, value);
-        return;
-      }
-
-      ConfigurationBooleanValueType p = (ConfigurationBooleanValueType)ce;
-
-      if (!p.getValue().equals(value)) {
-        p.setValue(value);
-      }
+      getConfig().setBooleanProperty(name, value);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -230,44 +201,22 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
    * @return single value of valued property with given name
    */
   public Boolean getBooleanPropertyValue(final QName name) {
-    ConfigurationElementType ce = findSingleValueProperty(name);
-
     try {
-      if (ce == null) {
-        return false;
-      }
-
-      Boolean bval = ((ConfigurationBooleanValueType)ce).getValue();
-
-      if (bval == null) {
-        return false;
-      }
-
-      return bval;
+      return getConfig().getBooleanPropertyValue(name);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
   /** Set the single valued property
-  *
-  * @param name
-  * @param value
-  */
+   *
+   * @param name
+   * @param value
+   */
   public void setIntegerProperty(final QName name,
                                  final Integer value) {
-    ConfigurationElementType ce = findSingleValueProperty(name);
     try {
-      if (ce == null) {
-        getConfig().addInteger(name, value);
-        return;
-      }
-
-      ConfigurationIntegerValueType p = (ConfigurationIntegerValueType)ce;
-
-      if (!p.getValue().equals(value)) {
-        p.setValue(value);
-      }
+      getConfig().setIntegerProperty(name, value);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
@@ -278,14 +227,8 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
    * @return single value of valued property with given name
    */
   public Integer getIntegerPropertyValue(final QName name) {
-    ConfigurationElementType ce = findSingleValueProperty(name);
-
     try {
-      if (ce == null) {
-        return null;
-      }
-
-      return ((ConfigurationIntegerValueType)ce).getValue();
+      return getConfig().getIntegerPropertyValue(name);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
