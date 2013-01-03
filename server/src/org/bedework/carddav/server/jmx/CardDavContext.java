@@ -18,7 +18,6 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.server.CardOptionsFactory;
 import org.bedework.carddav.util.CardDAVConfig;
 
 import edu.rpi.cmt.config.ConfigurationFileStore;
@@ -32,7 +31,7 @@ import java.util.List;
  * @author douglm
  *
  */
-public class CardDavConf extends ConfBase implements CardDavConfMBean {
+public class CardDavContext extends ConfBase implements CardDavContextMBean {
   private String serviceName;
 
   private CardDAVConfig cfg;
@@ -43,7 +42,7 @@ public class CardDavConf extends ConfBase implements CardDavConfMBean {
    * @param configName
    * @param configDir
    */
-  public CardDavConf(final String serviceName,
+  public CardDavContext(final String serviceName,
                      final CardDAVConfig cfg,
                      final String configName,
                      final String configDir) {
@@ -56,11 +55,6 @@ public class CardDavConf extends ConfBase implements CardDavConfMBean {
   @Override
   public ConfigurationType getConfigObject() {
     return getConf().getConfig();
-  }
-
-  @Override
-  public String getName() {
-    return serviceName;
   }
 
   /* ========================================================================
@@ -218,11 +212,11 @@ public class CardDavConf extends ConfBase implements CardDavConfMBean {
            * This is just to allow a migration from the old 3.8 system to the
            * later releases.
            */
-          OptionsI opts = CardOptionsFactory.getOptions();
+          OptionsI opts = CardDavSvc.getOptions();
           cfg = (CardDAVConfig)opts.getAppProperty(getConfigName());
 
           /* Now save it for next time */
-          saveConfig();
+          //saveConfig(); - done at create
         } else {
           cfg.setConfig(config);
           cfg.setAppName(getConfigName());

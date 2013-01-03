@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author douglm
  */
-public interface CardDavConfMBean extends ConfBaseMBean {
+public interface CardDavContextMBean extends ConfBaseMBean {
   /* ========================================================================
    * Attributes
    * ======================================================================== */

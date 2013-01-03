@@ -1,0 +1,445 @@
+<?xml version="1.0"?>
+
+<!-- This is a migration option for 3.8 and earlier to 3.9. It provides an
+     initial set of data. It can be the cal.options.xml file from your 
+     config. See the jmx console carddav bean to specify the path to the file.
+     
+     This file is a stripped down version with just the carddav stuff.
+  -->
+<bedework-options>
+  <org>
+    <bedework>
+      <global>
+        <version>3.9</version>
+        
+        <!-- This property is how the running system finds the system settings.
+             In theory we could have multiple settings with different names
+             
+             DO NOT CHANGE
+         -->
+        <systemName>bedework</systemName>
+
+        <systemRoots classname="org.bedework.calfacade.configs.SystemRoots" >
+          <principalRoot>/principals</principalRoot>
+          <userPrincipalRoot>/principals/users</userPrincipalRoot>
+          <groupPrincipalRoot>/principals/groups</groupPrincipalRoot>
+          <bwadmingroupPrincipalRoot>/principals/groups/bwadmin</bwadmingroupPrincipalRoot>
+          <resourcePrincipalRoot>/principals/resources</resourcePrincipalRoot>
+          <venuePrincipalRoot>/principals/locations</venuePrincipalRoot>
+          <ticketPrincipalRoot>/principals/tickets</ticketPrincipalRoot>
+          <hostPrincipalRoot>/principals/hosts</hostPrincipalRoot>
+        </systemRoots>
+           
+        <!-- ===============================================================
+                         CardDAV directory handlers
+             =============================================================== -->
+
+        <dirhandlers>
+          <!-- handle the principal hierarchy.
+               This could be a read-only interface if we don't intend to allow
+               modification of the enterprise directory.
+
+               However, we may need to merge in subsidiary information to handle
+               principal properties. That may mean maintaining a shadow
+               principal hierarchy in the local server.
+               
+               Each element name below must be unique.
+            -->
+          <principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals</pathPrefix>
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>dc=bedework, dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <!-- We need to get operational attributes from the directory.
+               This requires us to explicitly name all attributes on fetch.
+               This element allows us to name EXTRA attributes from the default
+               list provided by the implementation.
+              -->
+            <attrIds></attrIds>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+          </principal-dirHandler>
+
+          <user-principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals/users</pathPrefix>
+            <addressBook>true</addressBook>
+            
+            <!-- The cardPathPrefix is used to manufacture a path to a card for 
+                 the principal. If it is set we take the path
+                 
+                 <principal-root>/<account>
+                 
+                 and transform it to 
+                 
+                 <cardPathPrefix>/<account>.vcf
+                 
+                 If it is not set we try the cardPathPrefixes supplied globally.
+                 If they are not supplied we don't give any path. The client will
+                 have to fall back to a query.
+                 -->
+            <cardPathPrefix>/public/people</cardPathPrefix>
+
+            <cardPathPrefixes>/public/people,loc_:/public/locations</cardPathPrefixes>
+
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>ou=accounts,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <attrIds></attrIds>
+
+            <cardKind>individual</cardKind>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>uid</addressbookEntryIdAttr>
+
+            <principalIdAttr>uid</principalIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </user-principal-dirHandler>
+
+          <group-principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals/groups</pathPrefix>
+            <addressBook>true</addressBook>
+
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+
+            <baseDn>ou=groups,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <attrIds></attrIds>
+
+            <cardKind>group</cardKind>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>groupOfUniqueNames</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <folderIdAttr>ou</folderIdAttr>
+            
+            <principalIdAttr>cn</principalIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </group-principal-dirHandler>
+          
+          <location-principal-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/principals/locations</pathPrefix>
+            <addressBook>true</addressBook>
+            <cardPathPrefix>/public/locations</cardPathPrefix>
+
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapPrincipalDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+
+            <baseDn>ou=locations,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <attrIds></attrIds>
+
+            <cardKind>location</cardKind>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>groupOfUniqueNames</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <principalIdAttr>cn</principalIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </location-principal-dirHandler>
+            
+          <!-- handle the public (enterprise) people address book hierarchy -->
+          <public-people-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/public/people</pathPrefix>
+            
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapAddrBookDirHandler</className>
+            
+            <!-- manufacture an owner for public entities -->
+            <ownerHref>/principals/users/admin</ownerHref>
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>ou=people,ou=public,dc=bedework,dc=org</baseDn>
+            <queryLimit>1000</queryLimit>
+            
+            <attrIds></attrIds>
+            
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <folderIdAttr>ou</folderIdAttr>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+            
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+            <debug>true</debug>
+          </public-people-dirHandler>
+          
+          
+          <!-- handle the user address book hierarchy -->
+          
+          <user-dirHandler classname="org.bedework.carddav.util.DbDirHandlerConfig" >
+            <pathPrefix>/user</pathPrefix>
+            
+            <className>org.bedework.carddav.server.dirHandlers.db.DbAddrBookDirHandler</className>
+
+            <queryLimit>1000</queryLimit> <!-- unimplemented -->
+          
+            <!-- This is the access set at the root. I'll do this as XML soon -->
+            <rootAccess>WONyA WANyFyS </rootAccess>
+          
+            <!-- This is the owner of the user root and user home -->
+            <rootOwner>/principals/users/root</rootOwner>
+            
+            <debug>true</debug>
+          </user-dirHandler>
+
+          <!-- handle the user address book hierarchy
+               How it might be done with ldap 
+          <user-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/user</pathPrefix>
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapAddrBookDirHandler</className>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+
+            <baseDn>ou=users,ou=addrbooks,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <attrIds></attrIds>
+
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <folderIdAttr>ou</folderIdAttr>
+
+            <addressbookObjectClass>addressBook</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+            <debug>true</debug>
+          </user-dirHandler>
+          -->
+ 
+          <public-locations-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/public/locations</pathPrefix>
+
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapAddrBookDirHandler</className>
+
+            <!-- manufacture an owner for public entities -->
+            <ownerHref>/principals/users/admin</ownerHref>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+            <baseDn>ou=locations,ou=public,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <attrIds></attrIds>
+
+            <cardKind>location</cardKind>
+
+            <addressbookObjectClass>organizationalUnit</addressbookObjectClass>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+
+            <addressbookEntryObjectClass>CalendarResource</addressbookEntryObjectClass>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <folderIdAttr>ou</folderIdAttr>
+
+            <principalIdAttr>calcaladruri</principalIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+
+            <debug>true</debug>
+          </public-locations-dirHandler>
+
+          <!-- handle the public (enterprise) address book hierarchy -->
+          <public-dirHandler classname="org.bedework.carddav.util.LdapDirHandlerConfig" >
+            <pathPrefix>/public</pathPrefix>
+            <className>org.bedework.carddav.server.dirHandlers.ldap.LdapAddrBookDirHandler</className>
+
+            <!-- manufacture an owner for public entities -->
+            <ownerHref>/principals/users/admin</ownerHref>
+
+            <initialContextFactory>com.sun.jndi.ldap.LdapCtxFactory</initialContextFactory>
+            <securityAuthentication>simple</securityAuthentication>
+            <securityProtocol>NONE</securityProtocol>
+            <providerUrl>ldap://localhost:10389/</providerUrl>
+
+            <baseDn>ou=public,dc=bedework,dc=org</baseDn>
+
+            <queryLimit>1000</queryLimit>
+
+            <attrIds></attrIds>
+
+            <folderObjectClass>organizationalUnit</folderObjectClass>
+            <addressbookObjectClass>addressBook</addressbookObjectClass>
+            <addressbookEntryObjectClass>inetOrgPerson</addressbookEntryObjectClass>
+
+            <folderIdAttr>ou</folderIdAttr>
+            <addressbookIdAttr>ou</addressbookIdAttr>
+            <addressbookEntryIdAttr>cn</addressbookEntryIdAttr>
+
+            <authDn>uid=admin,ou=system</authDn>
+            <authPw>secret</authPw>
+            <debug>true</debug>
+          </public-dirHandler>
+        </dirhandlers>
+      </global>
+
+      <app>
+        <!-- ===============================================================
+                          User CardDAV server usercarddav
+             =============================================================== -->
+        <usercarddav classname="org.bedework.carddav.util.CardDAVConfig" >
+          <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
+          
+          <webaddrServiceURI>/find</webaddrServiceURI>
+          <webaddrServicePropertiesList>fn,email,note,org</webaddrServicePropertiesList>
+          <webaddrPublicAddrbook>/principals/users</webaddrPublicAddrbook>
+
+          <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
+
+          <defaultAddressbook>addressbook</defaultAddressbook>
+
+          <!-- This will act as the root for the file system -->
+          <addressBookHandlerPrefix>/user</addressBookHandlerPrefix>
+          
+          <!-- Needed for access calculations -->
+          <userHomeRoot>/user</userHomeRoot>
+
+          <principalRoot>/principals</principalRoot>
+          <userPrincipalRoot>/principals/users</userPrincipalRoot>
+          <groupPrincipalRoot>/principals/groups</groupPrincipalRoot>
+          <resourcePrincipalRoot>/principals/resources</resourcePrincipalRoot>
+          <venuePrincipalRoot>/principals/locations</venuePrincipalRoot>
+          <ticketPrincipalRoot>/principals/tickets</ticketPrincipalRoot>
+          <hostPrincipalRoot>/principals/hosts</hostPrincipalRoot>
+        </usercarddav>
+
+        <!-- ===============================================================
+                          User CardDAV server usercarddavweb
+             This should be pretty much identical to the above
+             =============================================================== -->
+        <usercarddavweb classname="org.bedework.carddav.util.CardDAVConfig" >
+          <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
+          
+          <webaddrServiceURI>/find</webaddrServiceURI>
+          <webaddrServicePropertiesList>fn,email,note,org</webaddrServicePropertiesList>
+          <webaddrPublicAddrbook>/principals/users</webaddrPublicAddrbook>
+
+          <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
+
+          <defaultAddressbook>addressbook</defaultAddressbook>
+
+          <!-- This will act as the root for the file system -->
+          <addressBookHandlerPrefix>/user</addressBookHandlerPrefix>
+          
+          <!-- Needed for access calculations -->
+          <userHomeRoot>/user</userHomeRoot>
+
+          <principalRoot>/principals</principalRoot>
+          <userPrincipalRoot>/principals/users</userPrincipalRoot>
+          <groupPrincipalRoot>/principals/groups</groupPrincipalRoot>
+          <resourcePrincipalRoot>/principals/resources</resourcePrincipalRoot>
+          <venuePrincipalRoot>/principals/locations</venuePrincipalRoot>
+          <ticketPrincipalRoot>/principals/tickets</ticketPrincipalRoot>
+          <hostPrincipalRoot>/principals/hosts</hostPrincipalRoot>
+        </usercarddavweb>
+
+        <!-- ===============================================================
+                          Public CardDAV server pubcarddav
+             =============================================================== -->
+        <pubcarddav classname="org.bedework.carddav.util.CardDAVConfig" >
+          <sysintfImpl>org.bedework.carddav.bwserver.BwSysIntfImpl</sysintfImpl>
+          
+          <webaddrServiceURI>/find</webaddrServiceURI>
+          <webaddrServicePropertiesList>fn,note,org</webaddrServicePropertiesList>
+          <webaddrPublicAddrbook>/principals/users</webaddrPublicAddrbook>
+
+          <directoryBrowsingDisallowed>false</directoryBrowsingDisallowed>
+
+          <defaultAddressbook>addressbook</defaultAddressbook>
+
+          <addressBookHandlerPrefix>/public</addressBookHandlerPrefix>
+          
+          <!-- Needed for access calculations -->
+          <userHomeRoot>/user</userHomeRoot>
+
+          <principalRoot>/principals</principalRoot>
+          <userPrincipalRoot>/principals/users</userPrincipalRoot>
+          <groupPrincipalRoot>/principals/groups</groupPrincipalRoot>
+          <resourcePrincipalRoot>/principals/resources</resourcePrincipalRoot>
+          <venuePrincipalRoot>/principals/locations</venuePrincipalRoot>
+          <ticketPrincipalRoot>/principals/tickets</ticketPrincipalRoot>
+          <hostPrincipalRoot>/principals/hosts</hostPrincipalRoot>
+        </pubcarddav>
+
+        <!-- ==================================================================
+                          CardDAV importer
+             ================================================================== -->
+        <carddavImp classname="org.bedework.carddav.util.CardDAVConfig">
+          <appType>carddavimp</appType>
+          <!-- 
+          <publicAdmin>false</publicAdmin> -->
+          <guestMode>false</guestMode>
+        </carddavImp>
+      </app>
+    </bedework>
+  </org>
+</bedework-options>
+

@@ -20,34 +20,75 @@ package org.bedework.carddav.server.jmx;
 
 import org.apache.activemq.broker.jmx.MBeanInfo;
 
-/** Run the carddav service
+
+
+/** Boot up the carddav service and maintian the jmx management context. This is
+ * a standard jboss mbean and does very little other than register the resto of
+ * the service.
  *
  * @author douglm
  */
-public interface ConfBaseMBean {
+public interface CardDavSvcMBean {
   /* ========================================================================
    * Attributes
    * ======================================================================== */
 
+  /** Path to the old (3.8 and earlier) options
+   *
+   * @param val
+   */
+  void setOptionsPath(String val);
+
+  /** Path to the old (3.8 and earlier) options
+   *
+   * @return path
+   */
+  String getOptionsPath();
+
   /**
    * @param val
    */
-  void setConfigName(final String val);
+  void setConfigDir(final String val);
 
   /**
-   * @return String application name
+   * @return String path to configs
    */
-  @MBeanInfo("Application name: identifies configuration")
-  String getConfigName();
+  @MBeanInfo("Directory for configuration files")
+  String getConfigDir();
 
   /* ========================================================================
    * Operations
    * ======================================================================== */
 
-  /** Save the current configuration
+  /* No special operations */
+
+  /* ========================================================================
+   * Lifecycle
+   * ======================================================================== */
+
+  /** Lifecycle
    *
-   * @return completion message
    */
-  @MBeanInfo("Save the configuration")
-  String saveConfig();
+  public void create();
+
+  /** Lifecycle
+   *
+   */
+  public void start();
+
+  /** Lifecycle
+   *
+   */
+  public void stop();
+
+  /** Lifecycle
+   *
+   * @return true if started
+   */
+  public boolean isStarted();
+
+  /** Lifecycle
+   *
+   */
+  public void destroy();
 }

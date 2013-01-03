@@ -52,11 +52,6 @@ public class DirHandlerConf extends ConfBase implements DirHandlerConfMBean {
     return getConf().getConfig();
   }
 
-  @Override
-  public String getName() {
-    return serviceName;
-  }
-
   /* ========================================================================
    * Attributes
    * ======================================================================== */

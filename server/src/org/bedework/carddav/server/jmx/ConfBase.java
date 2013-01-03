@@ -21,15 +21,10 @@ package org.bedework.carddav.server.jmx;
 import edu.rpi.cmt.config.ConfigurationFileStore;
 import edu.rpi.cmt.config.ConfigurationType;
 
-import org.apache.activemq.broker.jmx.AnnotatedMBean;
-import org.apache.activemq.broker.jmx.ManagementContext;
 import org.apache.activemq.util.JMXSupport;
 import org.apache.log4j.Logger;
-import org.jboss.mx.util.MBeanServerLocator;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -45,12 +40,32 @@ public abstract class ConfBase implements ConfBaseMBean {
 
   private String configName;
 
-  private String configRoot;
+  private String configDir;
+
+  /**
+   */
+  public static final String serviceName = "org.bedework.carddav:service=CardDav";
 
   /**
    * @return name IDENTICAL to that defined for service.
    */
-  public abstract String getName();
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  /**
+   * @param val
+   */
+  public void setConfigDir(final String val) {
+    configDir = val;
+  }
+
+  /**
+   * @return String path to configs
+   */
+  public String getConfigDir() {
+    return configDir;
+  }
 
   /**
    * @return the object we are managing
@@ -68,14 +83,6 @@ public abstract class ConfBase implements ConfBaseMBean {
 
   public String getConfigName() {
     return configName;
-  }
-
-  public void setConfigDir(final String val) {
-    configRoot = val;
-  }
-
-  public String getConfigDir() {
-    return configRoot;
   }
 
   /* ========================================================================
@@ -106,54 +113,19 @@ public abstract class ConfBase implements ConfBaseMBean {
    *                   Private methods
    * ==================================================================== */
 
-  /* ========================================================================
-   * Lifecycle
-   * ======================================================================== */
-
-  @Override
-  public void create() {
-  }
-
-  @Override
-  public void start() {
-    started = true;
-  }
-
-  @Override
-  public void stop() {
-    started = false;
-  }
-
-  @Override
-  public boolean isStarted() {
-    return started;
-  }
-
-  @Override
-  public void destroy() {
-    try {
-      getManagementContext().stop();
-    } catch (Throwable t) {
-      error("Failed to stop management context");
-      error(t);
-    }
-  }
-
   /* ====================================================================
    *                   JMX methods
    * ==================================================================== */
 
   /* */
   private ObjectName serviceObjectName;
-  private ManagementContext managementContext;
-  private Set<ObjectName> registeredMBeans = new CopyOnWriteArraySet<ObjectName>();
 
   protected void register(final String serviceType,
                        final String name,
                        final Object view) {
     try {
       ObjectName objectName = createObjectName(serviceType, name);
-      register(objectName, view);
+      CardDavSvc.register(objectName, view);
     } catch (Throwable t) {
       error("Failed to register " + serviceType + ":" + name);
       error(t);
@@ -161,42 +133,19 @@ public abstract class ConfBase implements ConfBaseMBean {
   }
 
   protected void unregister(final String serviceType,
-                         final String name) {
+                            final String name) {
     try {
       ObjectName objectName = createObjectName(serviceType, name);
-      unregister(objectName);
+      CardDavSvc.unregister(objectName);
     } catch (Throwable t) {
       error("Failed to unregister " + serviceType + ":" + name);
       error(t);
     }
   }
 
-  protected void register(final ObjectName key,
-                          final Object view) throws Exception {
-    try {
-      AnnotatedMBean.registerMBean(getManagementContext(), view, key);
-      registeredMBeans.add(key);
-    } catch (Throwable e) {
-      warn("Failed to register MBean: " + key);
-      debug("Failure reason: " + e);
-      error(e);
-    }
-  }
-
-  protected void unregister(final ObjectName key) throws Exception {
-    if (registeredMBeans.remove(key)) {
-      try {
-        getManagementContext().unregisterMBean(key);
-      } catch (Throwable e) {
-        warn("Failed to unregister MBean: " + key);
-        debug("Failure reason: " + e);
-      }
-    }
-  }
-
   protected ObjectName getServiceObjectName() throws MalformedObjectNameException {
     if (serviceObjectName == null) {
-      serviceObjectName = new ObjectName(getName());
+      serviceObjectName = new ObjectName(getServiceName());
     }
 
     return serviceObjectName;
@@ -211,16 +160,6 @@ public abstract class ConfBase implements ConfBaseMBean {
         "Type=" + JMXSupport.encodeObjectNamePart(serviceType) + "," +
         "Name=" + JMXSupport.encodeObjectNamePart(name));
     return objectName;
-  }
-
-  protected ManagementContext getManagementContext() {
-    if (managementContext == null) {
-      managementContext = new ManagementContext();
-      managementContext.setCreateConnector(false);
-
-      managementContext.setMBeanServer(MBeanServerLocator.locateJBoss());
-    }
-    return managementContext;
   }
 
   /* ====================================================================

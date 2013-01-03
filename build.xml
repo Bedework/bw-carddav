@@ -239,6 +239,14 @@
       </sequential>
     </forApp>
     
+    <copy tofile="${org.bedework.data.dir}/carddav-options.xml"
+          file="${project.home}/resources/carddav-options.xml" >
+      <filterset>
+        <filter token="RPI-DEBUG" value="${app.debug.val}"/>
+      </filterset>
+      <filterset refid="property.filters" />
+    </copy>
+    
     <ant antfile="${build.dir}/../deployment/termination/webapp/build.xml" 
          target="deploy" inheritRefs="true" />
     

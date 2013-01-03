@@ -20,9 +20,9 @@
     <attribute name="ConfigDir">${jboss.server.data.dir}/bedework/carddavConfig</attribute>
   </mbean>
  -->
-  <mbean code="org.bedework.carddav.server.jmx.CardDav"
-         name="org.bedework.carddav:service=CardDav">
-    <attribute name="ConfigName">carddav</attribute>
+  <mbean code="org.bedework.carddav.server.jmx.CardDavSvc"
+         name="org.bedework.carddav:service=CardDavSvc">
+    <attribute name="OptionsPath">${jboss.server.data.dir}/bedework/carddav-options.xml</attribute>
     <attribute name="ConfigDir">${jboss.server.data.dir}/bedework/carddavConfig</attribute>
   </mbean>
   

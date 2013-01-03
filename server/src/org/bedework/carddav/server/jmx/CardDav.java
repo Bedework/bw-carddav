@@ -18,7 +18,6 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.server.CardOptionsFactory;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DbDirHandlerConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
@@ -27,7 +26,6 @@ import org.bedework.carddav.util.LdapDirHandlerConfig;
 import edu.rpi.cmt.config.ConfigurationFileStore;
 import edu.rpi.cmt.config.ConfigurationStore;
 import edu.rpi.cmt.config.ConfigurationType;
-import edu.rpi.sss.util.OptionsI;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,16 +54,16 @@ public class CardDav extends ConfBase implements CardDavMBean {
   private static List<DirHandlerConfig> dirhandlerConfigs;
 
   private static String[] dhListItemNames = {"path",
-                                                     "name",
-                                                     "class"};
+                                             "name",
+                                             "class"};
 
   private static String[] dhListItemDescriptions = {"Path sequence",
-                                                            "Dir handler name",
-                                                            "Dir handler class"};
+                                                    "Dir handler name",
+                                                    "Dir handler class"};
 
   private static OpenType[] dhListItemTypes = {SimpleType.STRING,
-                                                       SimpleType.STRING,
-                                                       SimpleType.STRING};
+                                               SimpleType.STRING,
+                                               SimpleType.STRING};
 
   /* path must be unique */
   private static String[] dhListIndexNames = {"path"};
@@ -93,8 +91,11 @@ public class CardDav extends ConfBase implements CardDavMBean {
   }
 
   /**
+   * @param configDir
    */
-  public static final String serviceName = "org.bedework.carddav:service=CardDav";
+  public CardDav(final String configDir) {
+    setConfigDir(configDir);
+  }
 
   /**
    * @param configName
@@ -102,9 +103,9 @@ public class CardDav extends ConfBase implements CardDavMBean {
    */
   public static CardDAVConfig getConf(final String configName) {
     for (ConfBase c: confBeans) {
-      if ((c instanceof CardDavConf) &&
+      if ((c instanceof CardDavContext) &&
           (configName.equals(c.getConfigName()))) {
-        return ((CardDavConf)c).getConf();
+        return ((CardDavContext)c).getConf();
       }
     }
 
@@ -114,14 +115,6 @@ public class CardDav extends ConfBase implements CardDavMBean {
   @Override
   public ConfigurationType getConfigObject() {
     return null;
-  }
-
-  /**
-   * @return name IDENTICAL to that defined for service.
-   */
-  @Override
-  public String getName() {
-    return serviceName;
   }
 
   /* ========================================================================
@@ -166,40 +159,8 @@ public class CardDav extends ConfBase implements CardDavMBean {
     return res.toString();
   }
 
-
-  /*
-   * public void addPageSizeResult(PageSizeResult pageSizeResult) {
-     Object[] itemValues = {
-        pageSizeResult.pageClass.getName(),
-        pageSizeResult.sizeBeforeDetach,
-        pageSizeResult.sizeAfterDetach
-     };
-     try {
-        pageData.put(new CompositeDataSupport(pageType, itemNames,
-           itemValues));
-     } catch (OpenDataException e) {
-        e.printStackTrace();
-     }
-  }
-   */
-
-  /* ========================================================================
-   * Lifecycle
-   * ======================================================================== */
-
-  /* Only for loading from options object */
-  private OptionsI opts;
-
-  private OptionsI getOpts() throws Throwable {
-    if (opts == null) {
-      opts = CardOptionsFactory.getOptions();
-    }
-
-    return opts;
-  }
-
   @Override
-  public void create() {
+  public String loadConfigs() {
     try {
       /* Load up the end-point configs */
 
@@ -207,12 +168,11 @@ public class CardDav extends ConfBase implements CardDavMBean {
 
       confBeans = new ArrayList<ConfBase>();
 
-      getManagementContext().start();
       /* register all our configurations */
       for (String c: configs) {
         ObjectName objectName = createObjectName("conf", c);
 
-        CardDavConf cdc = new CardDavConf(objectName.toString(),
+        CardDavContext cdc = new CardDavContext(objectName.toString(),
                                           getCardDAVConf(cfs, c),
                                           c,
                                           getConfigDir());
@@ -234,7 +194,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
       if (dirHandlerNames.isEmpty()) {
         // XXX temp - get from the options
         String dirHandlersElementName = "org.bedework.global.dirhandlers";
-        dirHandlerNames = getOpts().getNames(dirHandlersElementName);
+        dirHandlerNames = CardDavSvc.getOptions().getNames(dirHandlersElementName);
       }
 
       dirhandlerConfigs = new ArrayList<DirHandlerConfig>();
@@ -250,8 +210,8 @@ public class CardDav extends ConfBase implements CardDavMBean {
         dirhandlerConfigs.add(cfg);
 
         for (ConfBase c: confBeans) {
-          if (c instanceof CardDavConf) {
-            ((CardDavConf)c).getConf().addDirhandler(cfg);
+          if (c instanceof CardDavContext) {
+            ((CardDavContext)c).getConf().addDirhandler(cfg);
           }
         }
 
@@ -270,9 +230,12 @@ public class CardDav extends ConfBase implements CardDavMBean {
 
         dhc.saveConfig(); // Just to ensure we have it for next time
       }
+
+      return "OK";
     } catch (Throwable t) {
       error("Failed to start management context");
       error(t);
+      return "failed";
     }
   }
 
@@ -295,7 +258,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
          * This is just to allow a migration from the old 3.8 system to the
          * later releases.
          */
-        cfg = (CardDAVConfig)getOpts().getAppProperty(configName);
+        cfg = (CardDAVConfig)CardDavSvc.getOptions().getAppProperty(configName);
       } else {
         cfg = new CardDAVConfig();
 
@@ -335,7 +298,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
        * later releases.
        */
       String cname = "org.bedework.global.dirhandlers." + configName;
-      DirHandlerConfig cfg = (DirHandlerConfig)getOpts().getProperty(cname);
+      DirHandlerConfig cfg = (DirHandlerConfig)CardDavSvc.getOptions().getProperty(cname);
 
       if (cfg == null) {
         warn("No config found for " + cname);
