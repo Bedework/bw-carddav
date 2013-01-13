@@ -33,6 +33,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
   /** */
   public final static QName confElement = new QName(ns, "bwcarddav-dirhandler");
 
+  /** */
   public static final QName confClass = new QName(ns, "confClass");
 
   private static final QName confBeanClass = new QName(ns, "confBeanClass");

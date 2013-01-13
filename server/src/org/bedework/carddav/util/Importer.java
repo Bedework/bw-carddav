@@ -18,10 +18,8 @@
 */
 package org.bedework.carddav.util;
 
-import org.bedework.http.client.dav.DavClient;
-import org.bedework.http.client.dav.DavResp;
-
 import edu.rpi.sss.util.Args;
+import edu.rpi.sss.util.http.BasicHttpClient;
 
 import org.apache.log4j.Logger;
 
@@ -200,31 +198,30 @@ public class Importer {
   }
 
   private boolean putCard(final String name, final byte[] content) {
-    DavClient cio = null;
+    BasicHttpClient client = null;
 
     try {
       int respCode;
 
-      cio = new DavClient(host, port, scheme, 0);
+      client = new BasicHttpClient(host, port, scheme, 0);
 
-      cio.setCredentials(user, pw);
+      client.setCredentials(user, pw);
 
-      respCode = cio.sendRequest("PUT", urlPrefix + "/" + name + ".vcf",
-                                 null, null,
-                                 "text/vcard", content.length,
-                                 content);
-
-      DavResp resp = cio.getResponse();
+      respCode = client.sendRequest("PUT", urlPrefix + "/" + name + ".vcf",
+                                    null, null,
+                                    "text/vcard", content.length,
+                                    content);
 
       InputStream in = null;
 
       try {
-        in = resp.getContentStream();
+        in = client.getResponseBodyAsStream();
 
         info("Response code: " + respCode + " at line " + lnr.getLineNumber());
 
         if (in != null) {
-          readContent(in, resp.getContentLength(), resp.getCharset());
+          readContent(in, client.getResponseContentLength(),
+                      client.getResponseCharSet());
         }
       } finally {
         in.close();
@@ -235,11 +232,11 @@ public class Importer {
       t.printStackTrace();
       return false;
     } finally {
-      if (cio != null) {
+      if (client != null) {
         try {
-          cio.release();
+          client.release();
         } catch (Throwable t) {}
-        cio.close();
+        client.close();
       }
     }
   }

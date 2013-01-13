@@ -85,11 +85,6 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
 
   private Set<DirHandlerConfig> handlerConfigs;
 
-  /* For bedework build */
-  private String appType;
-
-  private boolean guestMode;
-
   private List<String> webaddrServiceProperties;
 
   @Override

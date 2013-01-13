@@ -36,8 +36,6 @@ import javax.management.ObjectName;
 public abstract class ConfBase implements ConfBaseMBean {
   private transient Logger log;
 
-  private boolean started;
-
   private String configName;
 
   private String configDir;

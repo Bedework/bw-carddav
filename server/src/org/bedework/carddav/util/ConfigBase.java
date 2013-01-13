@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 /** This class defines the various properties we need for a carddav server
  *
  * @author Mike Douglass
+ * @param <T>
  */
 public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>, Serializable {
   protected ConfigurationType config;
@@ -310,7 +311,7 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
 
   /** Add our stuff to the StringBuilder
    *
-   * @param sb    StringBuilder for result
+   * @param ts    ToString for result
    * @param indent
    */
   public void toStringSegment(final ToString ts) {

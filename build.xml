@@ -95,7 +95,8 @@
     <getJar name="gdata-calendar" version="1.0" />
     <getJar name="gdata-client" version="1.0" />
     <getJar name="hibernate" version="3.6.9.Final" />
-    <getJar name="httpcore" version="4.1.2" />
+    <getJar name="httpclient" version="4.2.1" />
+    <getJar name="httpcore" version="4.2.2" />
     <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
     <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
     <getJar name="jboss-j2se" version="5.1.0.GA" />
@@ -112,10 +113,6 @@
     <getJar name="rpiutil" 
             version="${org.bedework.rpiutil.version}" project="rpiutil"
             projecthome="${project.home}/../rpiutil" />
-    
-    <getJar name="bw-davio" 
-            version="${org.bedework.davutil.version}" project="davutil" 
-            projecthome="${project.home}/../davutil" />
 
     <getJar name="bw-webdavserver" 
             version="${org.bedework.webdav.version}" project="webdav"
