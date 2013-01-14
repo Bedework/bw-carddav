@@ -88,6 +88,14 @@ public class DirHandlerConf extends ConfBase implements DirHandlerConfMBean {
     return getConf().getAddressBook();
   }
 
+  public void setDirectory(final boolean val) {
+    getConf().setDirectory(val);
+  }
+
+  public boolean getDirectory() {
+    return getConf().getDirectory();
+  }
+
   public void setClassName(final String val) {
     getConf().setClassName(val);
   }

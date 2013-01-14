@@ -46,6 +46,8 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
 
   private static final QName addressBook = new QName(ns, "addressBook");
 
+  private static final QName directory = new QName(ns, "directory");
+
   private static final QName className = new QName(ns, "className");
 
   private static final QName ownerHref = new QName(ns, "ownerHref");
@@ -184,7 +186,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
     return getPropertyValue(cardPathPrefixes);
   }
 
-  /** True if this prefix represents areturn getPropertyValue(ssbook. Only required if we have no
+  /** True if this prefix represents an addressbook. Only required if we have no
    * way of adding objectClasses or attributes to the directory itself.
    *
    * @param val
@@ -193,12 +195,29 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
     setBooleanProperty(addressBook, val);
   }
 
-  /** Is debugging on?
+  /** Is this an addressbook?
    *
    * @return boolean val
    */
   public boolean getAddressBook() {
     return getBooleanPropertyValue(addressBook);
+  }
+
+  /** True if this prefix represents a directory. This is part of the gateway
+   * spec. A directory should be treated as potentially very large.
+   *
+   * @param val
+   */
+  public void setDirectory(final boolean val)  {
+    setBooleanProperty(directory, val);
+  }
+
+  /** Is this a directory?
+   *
+   * @return boolean val
+   */
+  public boolean getDirectory() {
+    return getBooleanPropertyValue(directory);
   }
 
   /** Set the interface implementation

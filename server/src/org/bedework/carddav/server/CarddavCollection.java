@@ -32,6 +32,8 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
 
   private boolean addressBook;
 
+  private boolean directory;
+
   /** UTC datetime */
   private String lastmod;
 
@@ -106,6 +108,23 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
    */
   public boolean getAddressBook() {
     return addressBook;
+  }
+
+  /** True if this represents a directory. This is part of the gateway
+   * spec. A directory should be treated as potentially very large.
+   *
+   * @param val
+   */
+  public void setDirectory(final boolean val) {
+    directory = val;
+  }
+
+  /** Is this a directory?
+  *
+  * @return boolean val
+  */
+  public boolean getDirectory() {
+    return directory;
   }
 
   /**

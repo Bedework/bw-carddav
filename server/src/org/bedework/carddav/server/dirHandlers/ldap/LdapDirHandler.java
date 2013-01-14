@@ -328,6 +328,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                                                final Attributes attrs) throws WebdavException {
     CarddavCollection cdc = new CarddavCollection();
 
+    if (ldapConfig.getDirectory()) {
+      /* This prefix is flagged as a potentially large directory.
+       * This tells clients not to try to download the whole thing.
+       */
+      cdc.setDirectory(true);
+    }
+
     if (ldapConfig.getAddressBook()) {
       /* This prefix is flagged as an address book. */
       cdc.setAddressBook(true);

@@ -81,6 +81,18 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
   @MBeanInfo("True if this prefix represents an addressbook.")
   boolean getAddressBook();
 
+  /** True if this prefix represents a directory.
+   * @param val
+   */
+  void setDirectory(final boolean val);
+
+  /** True if this prefix represents a directory.
+   * @return boolean
+   */
+  @MBeanInfo("True if this prefix represents a (potentially very large) directory. " +
+  		"Tells clients not to try to download the whole thing")
+  boolean getDirectory();
+
   /** Set the interface implementation
    *
    * @param val    String
