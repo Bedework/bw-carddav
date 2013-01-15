@@ -94,7 +94,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       openContext();
 
-      String fullPath = path + "/" + name;
+      String fullPath = Util.buildPath(path, "/", name);
 
       Attributes attrs = getObject(fullPath, false);
 
@@ -381,7 +381,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 //                                   ldapConfig.getAddressbookEntryIdAttr());
 //      simpleProp(card, "SOURCE",
 //                 urlHandler.prefix(path + cardName + ".vcf"));
-      cdc.setPath(path + "/" + cdc.getName());
+      cdc.setPath(Util.buildPath(path, "/", cdc.getName()));
     }
 
     //private String path;
@@ -591,7 +591,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       if (fullPath) {
         source = path;
       } else {
-        source = path + "/" + card.getName();
+        source = Util.buildPath(path, "/", card.getName());
       }
       source = urlHandler.prefix(source);
 

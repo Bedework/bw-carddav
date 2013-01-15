@@ -50,6 +50,7 @@ import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.cmt.access.Privilege;
+import edu.rpi.sss.util.Util;
 import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
@@ -203,13 +204,8 @@ public class BwSysIntfImpl implements SysIntf {
    * @see org.bedework.carddav.server.SysIntf#getPrincipal()
    */
   public AccessPrincipal getPrincipal() throws WebdavException {
-    String href = conf.getUserPrincipalRoot();
-
-    if (!href.endsWith("/")) {
-      href += "/";
-    }
-
-    return getPrincipal(href + account);
+    return getPrincipal(Util.buildPath(conf.getUserPrincipalRoot(),
+                                       "/", account));
   }
 
   private static class MyPropertyHandler extends PropertyHandler {
@@ -416,16 +412,7 @@ public class BwSysIntfImpl implements SysIntf {
       return null;
     }
 
-    StringBuilder sb = new StringBuilder(cardPathPrefix);
-
-    if (!cardPathPrefix.endsWith("/")) {
-      sb.append("/");
-    }
-
-    sb.append(account);
-    sb.append(".vcf");
-
-    return sb.toString();
+    return Util.buildPath(cardPathPrefix, "/", account, ".vcf");
   }
 
   /* (non-Javadoc)
@@ -1082,7 +1069,7 @@ public class BwSysIntfImpl implements SysIntf {
     cdc.setDisplayName(name);
 
     cdc.setOwner(owner);
-    cdc.setPath(parentPath + "/" + name);
+    cdc.setPath(Util.buildPath(parentPath, "/", name));
     cdc.setParentPath(parentPath);
 
     return cdc;

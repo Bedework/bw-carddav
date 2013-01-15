@@ -59,6 +59,7 @@ import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
+import edu.rpi.sss.util.Util;
 import edu.rpi.sss.util.xml.XmlEmit;
 import edu.rpi.sss.util.xml.XmlEmit.NameSpace;
 import edu.rpi.sss.util.xml.XmlUtil;
@@ -548,6 +549,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
                             final WebdavNsNode node) throws WebdavException {
     try {
       String accept = req.getHeader("ACCEPT");
+      String[] acceptPars = {};
+
+      if (accept != null) {
+        acceptPars = accept.split(";");
+      }
 
       if (node.isCollection()) {
         if ((accept == null) || (accept.indexOf("text/html") >= 0)) {
@@ -568,8 +574,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       /* ===================  Try for address-book fetch ======================= */
 
-      if (node.isCollection() && (accept != null) &&
-          (accept.trim().startsWith("text/vcard") ||
+      if (node.isCollection() && (acceptPars.length > 0) &&
+          (acceptPars[0].trim().equals("text/vcard") ||
               accept.trim().startsWith("application/json"))) {
         SpecialUri.process(req, resp, getResourceUri(req), getSysi(), config,
                            true, accept, debug);
@@ -1092,7 +1098,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(),
                                       ap.getPrincipalRef(),
                                       ap, false,
-                                      ap.getPrincipalRef() + "/"));
+                                      Util.buildPath(ap.getPrincipalRef(), "/")));
     }
 
     return res;
@@ -1126,8 +1132,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
       pnodes.add(new WebdavPrincipalNode(sysi.getUrlHandler(),
                                          cui.principalPathPrefix,
                                          new User(cui.account), true,
-                                         cui.principalPathPrefix + "/" +
-                                           cui.account + "/"));
+                                         Util.buildPath(cui.principalPathPrefix,
+                                                        "/",
+                                                        cui.account,
+                                                        "/")));
     }
 
     return pnodes;
@@ -1386,12 +1394,10 @@ public class CarddavBWIntf extends WebdavNsIntf {
         /* If no name was assigned use the guid */
         String name = card.getName();
         if (name == null) {
-          name = card.getUid() + ".vcf";
+          name = makeName(card.getUid()) + ".vcf";
         }
 
-        String curi = uri + "/" + name;
-
-        CarddavCardNode cnode = (CarddavCardNode)getNodeInt(curi,
+        CarddavCardNode cnode = (CarddavCardNode)getNodeInt(Util.buildPath(uri, "/", name),
                                                    WebdavNsIntf.existanceDoesExist,
                                                    WebdavNsIntf.nodeTypeEntity,
                                                    col, card, null);
@@ -1605,7 +1611,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         newCol.setParent(col);
         newCol.setName(split.name);
-        newCol.setPath(col.getPath() + "/" + newCol.getName());
+        newCol.setPath(Util.buildPath(col.getPath(), "/", newCol.getName()));
 
         curi = new CarddavURI(newCol, false);
 

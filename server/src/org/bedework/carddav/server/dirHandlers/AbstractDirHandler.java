@@ -30,6 +30,7 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
+import edu.rpi.sss.util.Util;
 
 import org.apache.log4j.Logger;
 
@@ -319,11 +320,11 @@ public abstract class AbstractDirHandler implements DirHandler {
   }
 
   public String getprincipalHome() throws WebdavException {
-    return dhConfig.getPathPrefix() + "/" + account + "/";
+    return Util.buildPath(dhConfig.getPathPrefix(), "/", account, "/");
   }
 
   public String getprincipalHome(final AccessPrincipal p) throws WebdavException {
-    return dhConfig.getPathPrefix() + "/" + p.getAccount() + "/";
+    return Util.buildPath(dhConfig.getPathPrefix(), "/", p.getAccount(), "/");
   }
 
   /* ====================================================================

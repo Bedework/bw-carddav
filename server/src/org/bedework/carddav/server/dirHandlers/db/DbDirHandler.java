@@ -21,17 +21,16 @@ package org.bedework.carddav.server.dirHandlers.db;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.access.AccessUtil;
-import org.bedework.carddav.server.access.AccessUtilI;
-import org.bedework.carddav.server.access.SharedEntity;
 import org.bedework.carddav.server.dirHandlers.AbstractDirHandler;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.DbDirHandlerConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
-import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
 
+import edu.rpi.cct.webdav.servlet.access.AccessHelper;
+import edu.rpi.cct.webdav.servlet.access.AccessHelperI;
+import edu.rpi.cct.webdav.servlet.access.SharedEntity;
 import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.Access;
@@ -84,13 +83,13 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
   /** For evaluating access control
    */
-  private AccessUtilI access;
+  private AccessHelperI access;
 
   /**
    * @author douglm
    *
    */
-  private class AccessUtilCb extends AccessUtilI.CallBack {
+  private class AccessUtilCb extends AccessHelperI.CallBack {
     DbDirHandler hdlr;
 
     AccessUtilCb(final DbDirHandler hdlr) {
@@ -159,7 +158,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
     AccessUtilCb acb = new AccessUtilCb(this);
 
-    access = new AccessUtil();
+    access = new AccessHelper();
     access.init(acb);
 
     try {
@@ -182,7 +181,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     openSession();
     open = true;
 
-    access.setAuthUser((User)getPrincipal(makePrincipalHref(account,
+    access.setAuthPrincipal(getPrincipal(makePrincipalHref(account,
                                                             WhoDefs.whoTypeUser)));
   }
 

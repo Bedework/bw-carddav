@@ -19,6 +19,7 @@
 package org.bedework.carddav.util;
 
 import edu.rpi.sss.util.Args;
+import edu.rpi.sss.util.Util;
 import edu.rpi.sss.util.http.BasicHttpClient;
 
 import org.apache.log4j.Logger;
@@ -207,7 +208,8 @@ public class Importer {
 
       client.setCredentials(user, pw);
 
-      respCode = client.sendRequest("PUT", urlPrefix + "/" + name + ".vcf",
+      respCode = client.sendRequest("PUT",
+                                    Util.buildPath(urlPrefix, "/", name, ".vcf"),
                                     null, null,
                                     "text/vcard", content.length,
                                     content);

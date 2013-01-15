@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,6 +23,7 @@ import org.bedework.carddav.vcard.Card;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
+import edu.rpi.sss.util.Util;
 
 /** We map uris onto an object which may be a calendar or an
  * entity contained within that calendar.
@@ -58,7 +59,7 @@ public class CarddavURI {
    * @param col
    * @param exists        true if the referenced object exists
    */
-  CarddavURI(CarddavCollection col, boolean exists) {
+  CarddavURI(final CarddavCollection col, final boolean exists) {
     init(col, null, null, null, exists);
   }
 
@@ -69,9 +70,9 @@ public class CarddavURI {
    * @param entityName
    * @param exists        true if the referenced object exists
    */
-  CarddavURI(CarddavCollection col, Card entity,
-             String entityName,
-             boolean exists) {
+  CarddavURI(final CarddavCollection col, final Card entity,
+             final String entityName,
+             final boolean exists) {
     init(col, null, entity, entityName, exists);
   }
 
@@ -80,25 +81,25 @@ public class CarddavURI {
    * @param res
    * @param exists        true if the referenced object exists
    */
-  CarddavURI(CarddavResource res, boolean exists) {
+  CarddavURI(final CarddavResource res, final boolean exists) {
     init(res.getParent(), res, null, res.getName(), exists);
     resourceUri = true;
   }
 
-  CarddavURI(AccessPrincipal principal) {
+  CarddavURI(final AccessPrincipal principal) {
     exists = true;
     col = null;
-    this.entityName = principal.getAccount();
+    entityName = principal.getAccount();
     this.principal = principal;
   }
 
-  private void init(CarddavCollection col, CarddavResource res,
-                    Card entity, String name,
-                    boolean exists) {
+  private void init(final CarddavCollection col, final CarddavResource res,
+                    final Card entity, final String name,
+                    final boolean exists) {
     this.col = col;
-    this.resource = res;
+    resource = res;
     this.entity = entity;
-    this.entityName = name;
+    entityName = name;
     this.exists = exists;
   }
 
@@ -172,7 +173,7 @@ public class CarddavURI {
     }
 
     if (entity != null) {
-      return col.getPath() + "/" + entity.getName();
+      return Util.buildPath(col.getPath(), "/", entity.getName());
     }
 
     return col.getPath();
@@ -183,10 +184,6 @@ public class CarddavURI {
    * @throws WebdavException
    */
   public String getUri() throws WebdavException {
-//    if (entityName == null) {
-//      return getPath();
-//    }
-//    return getPath() + "/" + entityName;
     return getPath();
   }
 
@@ -230,7 +227,7 @@ public class CarddavURI {
    * @param entityName
    * @return true if has same name
    */
-  public boolean sameName(String entityName) {
+  public boolean sameName(final String entityName) {
     if ((entityName == null) && (getEntityName() == null)) {
       return true;
     }
@@ -242,6 +239,7 @@ public class CarddavURI {
     return entityName.equals(getEntityName());
   }
 
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("CaldavURI{path=");
 
@@ -258,6 +256,7 @@ public class CarddavURI {
     return sb.toString();
   }
 
+  @Override
   public int hashCode() {
     try {
       int hc = entityName.hashCode();
@@ -270,13 +269,14 @@ public class CarddavURI {
         return hc * 2;
       }
 
-      return hc * 3 + col.getPath().hashCode();
+      return (hc * 3) + col.getPath().hashCode();
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
-  public boolean equals(Object o) {
+  @Override
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
