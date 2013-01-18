@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,8 +23,8 @@ import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.query.AddressData;
 
-import edu.rpi.cct.webdav.servlet.common.ReportMethod;
 import edu.rpi.cct.webdav.servlet.common.PropFindMethod.PropRequest;
+import edu.rpi.cct.webdav.servlet.common.ReportMethod;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
@@ -63,7 +63,7 @@ public class CarddavReportMethod extends ReportMethod {
   private GetLimits limit;
   private ArrayList<String> hrefs;
 
-  AddressData caldata;
+  AddressData adrdata;
 
   // ENUM
   private final static int reportTypeQuery = 0;
@@ -172,7 +172,7 @@ public class CarddavReportMethod extends ReportMethod {
           // Look for an address-data property
           for (WebdavProperty prop: preq.props) {
             if (prop instanceof AddressData) {
-              caldata = (AddressData)prop;
+              adrdata = (AddressData)prop;
             }
           }
         }
@@ -345,9 +345,14 @@ public class CarddavReportMethod extends ReportMethod {
       if (hrefs != null) {
         for (String hr: hrefs) {
           try {
-            nodes.add(intf.getNode(intf.getUri(hr),
-                                   WebdavNsIntf.existanceMust,
-                                   WebdavNsIntf.nodeTypeUnknown));
+            WebdavNsNode nd = intf.getNode(intf.getUri(hr),
+                                           WebdavNsIntf.existanceMust,
+                                           WebdavNsIntf.nodeTypeUnknown);
+
+            if (nd instanceof CarddavCardNode) {
+              ((CarddavCardNode)nd).setVcardVersion(getVcardVersion());
+            }
+            nodes.add(nd);
           } catch (WebdavException we) {
             if (hr.endsWith("/")) {
               nodes.add(new CarddavColNode(intf.getSysi(),
@@ -381,12 +386,23 @@ public class CarddavReportMethod extends ReportMethod {
     flush();
   }
 
+  private String getVcardVersion() throws WebdavException {
+    String reqv = null;
+    if (adrdata != null) {
+      reqv = adrdata.getVersion();
+    }
+
+    return ((CarddavBWIntf)getNsIntf()).getVcardVersion(reqv);
+  }
+
   private QueryResult doNodeAndChildren(final WebdavNsNode node,
                                         int curDepth,
                                         final int maxDepth) throws WebdavException {
     if (node instanceof CarddavCardNode) {
       // Targeted directly at component
       QueryResult qr = new QueryResult();
+
+      ((CarddavCardNode)node).setVcardVersion(getVcardVersion());
 
       qr.nodes.add(node);
       return qr;
@@ -406,7 +422,7 @@ public class CarddavReportMethod extends ReportMethod {
     if (colnode.getWdCollection().getAddressBook()) {
       CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
 
-      return intf.query(node, filter, limit);
+      return intf.query(node, filter, limit, getVcardVersion());
     }
 
     curDepth++;

@@ -442,10 +442,10 @@ public class CarddavColNode extends CarddavNode {
 
       if (tag.equals(CarddavTags.supportedAddressData)) {
         /* e.g.
-         * <A:supported-address-data
-         *              xmlns:C="urn:ietf:params:xml:ns:caldav">
-         *   <A:calendar-data content-type="text/calendar" version="2.0"/>
-         * </A:supported-calendar-data>
+         *        <C:supported-address-data
+         *           xmlns:C="urn:ietf:params:xml:ns:carddav">
+         *          <C:address-data-type content-type="text/vcard" version="3.0"/>
+         *        </C:supported-address-data>
          */
         xml.openTag(tag);
         xml.startTag(CarddavTags.addressDataType);

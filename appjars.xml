@@ -133,7 +133,7 @@
       
       <getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
-              name="ical4j-vcard" version="0.9.3-SNAPSHOT"/>
+              name="ical4j-vcard" version="0.9.6-BW-SNAPSHOT"/>
       <if>
       	<not>
           <isset property="org.bedework.global.build.ear" />

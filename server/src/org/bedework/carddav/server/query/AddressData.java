@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,6 +23,7 @@ import net.fortuna.ical4j.vcard.property.Kind;
 
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.vcard.VcardDefs;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -73,6 +74,8 @@ public class AddressData extends WebdavProperty {
 
   private String returnContentType; // null for defaulted
 
+  private String version; // null for defaulted
+
   // true or look at props
   private boolean allprop;
 
@@ -94,6 +97,13 @@ public class AddressData extends WebdavProperty {
    */
   public String getReturnContentType() {
     return returnContentType;
+  }
+
+  /**
+   * @return String version
+   */
+  public String getVersion() {
+    return version;
   }
 
   /**
@@ -136,6 +146,11 @@ public class AddressData extends WebdavProperty {
             throw new WebdavBadRequest();
           }
         } else if (attr.getNodeName().equals("xmlns")) {
+        } else if (attr.getNodeName().equals("version")) {
+          version = attr.getNodeValue();
+          if ((version == null) || !VcardDefs.validVersions.contains(version)) {
+            throw new WebdavBadRequest("Bad version");
+          }
         } else {
           // Bad attribute(s)
           throw new WebdavBadRequest();
@@ -264,7 +279,7 @@ public class AddressData extends WebdavProperty {
         }
       }
 
-      return ncard.output();
+      return ncard.output(getVersion());
     } catch (Throwable t) {
       if (debug) {
         getLogger().error("transformVcard exception: ", t);
@@ -336,6 +351,12 @@ public class AddressData extends WebdavProperty {
     if (returnContentType != null) {
       sb.append("  return-content-type=\"");
       sb.append(returnContentType);
+      sb.append("\"");
+    }
+
+    if (version != null) {
+      sb.append("  version=\"");
+      sb.append(version);
       sb.append("\"");
     }
     sb.append(">");

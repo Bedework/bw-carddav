@@ -31,6 +31,19 @@ public interface CardDavContextMBean extends ConfBaseMBean {
    * Attributes
    * ======================================================================== */
 
+  /** Set the default vcard version
+   *
+   * @param val    String
+   */
+  void setDefaultVcardVersion(final String val);
+
+  /** get the default vcard version
+   *
+   * @return String
+   */
+  @MBeanInfo("The default vcard version")
+  String getDefaultVcardVersion();
+
   /** Set the System interface implementation
    *
    * @param val    String

@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,14 +18,16 @@
 */
 package org.bedework.carddav.vcard;
 
+import net.fortuna.ical4j.data.FoldingWriter;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Escapable;
 import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
+import net.fortuna.ical4j.vcard.Property.Id;
 import net.fortuna.ical4j.vcard.VCard;
 import net.fortuna.ical4j.vcard.VCardBuilder;
-import net.fortuna.ical4j.vcard.VCardOutputter;
-import net.fortuna.ical4j.vcard.Property.Id;
 import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
@@ -35,11 +37,14 @@ import org.bedework.carddav.server.CarddavCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /** A vcard and properties for cardDAV
  *
@@ -63,8 +68,6 @@ public class Card {
   private String jsonStrForm;
 
   private String prevLastmod;
-
-  private static VCardOutputter cardOut = new VCardOutputter(false);
 
   /** Create Card with a new embedded VCard
    *
@@ -294,16 +297,59 @@ public class Card {
    * @return String
    * @throws WebdavException
    */
-  public String output() throws WebdavException {
+  public String output(final String version) throws WebdavException {
     if (strForm != null) {
       return strForm;
     }
 
     StringWriter sw = new StringWriter();
 
-    synchronized (cardOut) {
+    final FoldingWriter wtr = new FoldingWriter(sw,
+                                                FoldingWriter.REDUCED_FOLD_LENGTH);
+    try {
+      wtr.write("BEGIN:VCARD");
+      wtr.write(Strings.LINE_SEPARATOR);
+
+      /* Version should come before anything else. */
+      boolean version4 = false;
+
+      if (version != null) {
+        version4 = version.equals("4.0");
+      } else {
+        Version v = (Version)vcard.getProperty(Property.Id.VERSION);
+
+        if (v != null) {
+          version4 = v.equals(Version.VERSION_4_0);
+        }
+      }
+
+      if (version4) {
+        wtr.write(Version.VERSION_4_0.toString());
+      } else {
+        wtr.write(new Version("3.0").toString());
+      }
+
+      for (Property prop : vcard.getProperties()) {
+        if (prop.getId() == Property.Id.VERSION) {
+          continue;
+        }
+
+        if (version4) {
+          wtr.write(prop.toString());
+          continue;
+        }
+
+        /* Attempt to downgrade by turning some properties into x-props. */
+        appendDowngraded(wtr, prop);
+      }
+
+      wtr.write("END:VCARD");
+      wtr.write(Strings.LINE_SEPARATOR);
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    } finally {
       try {
-        cardOut.output(vcard, sw);
+        wtr.close();
       } catch (Throwable t) {
         throw new WebdavException(t);
       }
@@ -373,7 +419,7 @@ public class Card {
   @Override
   public String toString() {
     try {
-      return output();
+      return output(null);
     } catch (Throwable t) {
       return t.getMessage();
     }
@@ -389,5 +435,130 @@ public class Card {
     }
 
     ps.add(val);
+  }
+
+  private void appendDowngraded(final Writer wtr,
+                                final Property prop) throws IOException {
+    /* From rfc6350 - vcard 4.0
+
+Appendix A. Differences from RFCs 2425 and 2426
+ This appendix contains a high-level overview of the major changes
+ that have been made in the vCard specification from RFCs 2425 and
+ 2426.  It is incomplete, as it only lists the most important changes.
+
+A.1. New Structure
+ o  [RFC2425] and [RFC2426] have been merged.
+
+ o  vCard is now not only a MIME type but a stand-alone format.
+
+ o  A proper MIME type registration form has been included.
+
+ o  UTF-8 is now the only possible character set.
+
+ o  New vCard elements can be registered from IANA.
+
+A.2. Removed Features
+ o  The CONTEXT and CHARSET parameters are no more.
+
+ o  The NAME, MAILER, LABEL, and CLASS properties are no more.
+
+ o  The "intl", "dom", "postal", and "parcel" TYPE parameter values
+    for the ADR property have been removed.
+
+ o  In-line vCards (such as the value of the AGENT property) are no
+    longer supported.
+
+A.3. New Properties and Parameters
+ o  The KIND, GENDER, LANG, ANNIVERSARY, XML, and CLIENTPIDMAP
+    properties have been added.
+
+ o  [RFC2739], which defines the FBURL, CALADRURI, CAPURI, and CALURI
+    properties, has been merged in.
+
+ o  [RFC4770], which defines the IMPP property, has been merged in.
+
+ o  The "work" and "home" TYPE parameter values are now applicable to
+    many more properties.
+
+ o  The "pref" value of the TYPE parameter is now a parameter of its
+    own, with a positive integer value indicating the level of
+    preference.
+
+ o  The ALTID and PID parameters have been added.
+
+ o  The MEDIATYPE parameter has been added and replaces the TYPE
+    parameter when it was used for indicating the media type of the
+    property's content.
+     */
+
+    if (v3Ok(prop)) {
+      wtr.write(prop.toString());
+      return;
+    }
+
+    /* x-prop already? */
+
+    if (Property.Id.EXTENDED == prop.getId()) {
+      wtr.write(prop.toString());
+      return;
+    }
+
+    /* Output as x-prop */
+    if (prop.getGroup() != null) {
+      wtr.write(prop.getGroup().toString());
+      wtr.write('.');
+    }
+
+    wtr.write(VcardDefs.v4AsXpropPrefix);
+    wtr.write(prop.getId().getPropertyName());
+
+    for (Parameter param : prop.getParameters()) {
+      wtr.write(';');
+
+      /* Watch for non v3 */
+      wtr.write(param.toString());
+    }
+    wtr.write(':');
+
+    if (prop instanceof Escapable) {
+      wtr.write(Strings.escape(Strings.valueOf(prop.getValue())));
+    }
+    else {
+      wtr.write(Strings.valueOf(prop.getValue()));
+    }
+
+    wtr.write(Strings.LINE_SEPARATOR);
+  }
+
+  private static Set<Property.Id> notV3Ok = new TreeSet<Property.Id>();
+
+  static {
+    notV3Ok.add(Property.Id.KIND);
+    notV3Ok.add(Property.Id.GENDER);
+    notV3Ok.add(Property.Id.LANG);
+    notV3Ok.add(Property.Id.ANNIVERSARY);
+    notV3Ok.add(Property.Id.XML);
+    notV3Ok.add(Property.Id.CLIENTPIDMAP);
+  }
+
+  /* Return true if this property should be OK for v3 */
+  private boolean v3Ok(final Property prop) {
+    Property.Id id = prop.getId();
+
+    if (notV3Ok.contains(id)) {
+  return false;
+    }
+
+    Parameter par = prop.getParameter(Parameter.Id.ALTID);
+    if (par != null) {
+      return false;
+    }
+
+    par = prop.getParameter(Parameter.Id.PID);
+    if (par != null) {
+      return false;
+    }
+
+    return true;
   }
 }

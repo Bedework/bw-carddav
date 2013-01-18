@@ -30,6 +30,7 @@ import org.bedework.carddav.util.CardDAVConfig;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.vcard.VcardDefs;
 
 import edu.rpi.cct.webdav.servlet.common.AccessUtil;
 import edu.rpi.cct.webdav.servlet.common.Headers;
@@ -409,58 +410,6 @@ public class CarddavBWIntf extends WebdavNsIntf {
     return getNodeInt(uri, existance, nodeType, null, null, null);
   }
 
-  private WebdavNsNode getNodeInt(final String uri,
-                                  final int existance,
-                                  final int nodeType,
-                                  final CarddavCollection col,
-                                  final Card card,
-                                  final CarddavResource r) throws WebdavException {
-    if (debug) {
-      debugMsg("About to get node for " + uri);
-    }
-
-    if (uri == null)  {
-      return null;
-    }
-
-    try {
-      CarddavURI wi = findURI(uri, existance, nodeType, col, card, r);
-
-      if (wi == null) {
-        throw new WebdavNotFound(uri);
-      }
-
-      WebdavNsNode nd = null;
-
-      if (wi.isUser() || wi.isGroup()) {
-        AccessPrincipal ap;
-
-        if (wi.isUser()) {
-          ap = new User(wi.getEntityName());
-          ap.setPrincipalRef(wi.getPath());
-          nd = new CarddavUserNode(wi, sysi, ap);
-        } else {
-          ap = new Group(wi.getEntityName());
-          ap.setPrincipalRef(wi.getPath());
-          nd = new CarddavGroupNode(wi, sysi, ap);
-        }
-
-      } else if (wi.isCollection()) {
-        nd = new CarddavColNode(wi, sysi);
-      } else if (wi.isResource()) {
-        nd = new CarddavResourceNode(wi, sysi);
-      } else {
-        nd = new CarddavCardNode(wi, sysi);
-      }
-
-      return nd;
-    } catch (WebdavException we) {
-      throw we;
-    } catch (Throwable t) {
-      throw new WebdavException(t);
-    }
-  }
-
   @Override
   public void putNode(final WebdavNsNode node)
       throws WebdavException {
@@ -550,9 +499,23 @@ public class CarddavBWIntf extends WebdavNsIntf {
     try {
       String accept = req.getHeader("ACCEPT");
       String[] acceptPars = {};
+      String requestedVersion = null;
 
       if (accept != null) {
         acceptPars = accept.split(";");
+
+        String reqv = null;
+        if (acceptPars.length > 0) {
+          for (String s: acceptPars) {
+            if (!s.toLowerCase().startsWith("version=")) {
+              continue;
+            }
+
+            reqv = s.split("=")[1];
+          }
+        }
+
+        requestedVersion = getVcardVersion(reqv);
       }
 
       if (node.isCollection()) {
@@ -576,9 +539,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       if (node.isCollection() && (acceptPars.length > 0) &&
           (acceptPars[0].trim().equals("text/vcard") ||
-              accept.trim().startsWith("application/json"))) {
+              acceptPars[0].trim().startsWith("application/json"))) {
         SpecialUri.process(req, resp, getResourceUri(req), getSysi(), config,
-                           true, accept, debug);
+                           true, accept, requestedVersion);
 
         Content c = new Content();
 
@@ -597,6 +560,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       Content c = new Content();
       c.written = true;
+
+      /* Should be a card node */
+
+      if (node instanceof CarddavCardNode) {
+        ((CarddavCardNode)node).setVcardVersion(requestedVersion);
+      }
 
       node.writeContent(null, resp.getWriter(), accept);
 
@@ -1058,7 +1027,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                             final HttpServletResponse resp,
                             final String resourceUri) throws WebdavException {
     return SpecialUri.process(req, resp, resourceUri, getSysi(), config,
-                              false, null, debug);
+                              false, null, null);
   }
 
   @Override
@@ -1356,13 +1325,15 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param wdnode    WebdavNsNode defining root of search
    * @param retrieveRecur  How we retrieve recurring events
    * @param fltr      Filter object defining search
-   * @param limits    to limit resutl size
+   * @param limits    to limit result size
+   * @param vcardVersion
    * @return Collection of result nodes (empty for no result)
    * @throws WebdavException
    */
   public QueryResult query(final WebdavNsNode wdnode,
                                         final Filter fltr,
-                                        final GetLimits limits) throws WebdavException {
+                                        final GetLimits limits,
+                                        final String vcardVersion) throws WebdavException {
     QueryResult qr = new QueryResult();
     CarddavNode node = getBwnode(wdnode);
 
@@ -1401,6 +1372,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                                    WebdavNsIntf.existanceDoesExist,
                                                    WebdavNsIntf.nodeTypeEntity,
                                                    col, card, null);
+
+        cnode.setVcardVersion(vcardVersion);
 
         qr.nodes.add(cnode);
       }
@@ -1446,9 +1419,86 @@ public class CarddavBWIntf extends WebdavNsIntf {
     return (CarddavColNode)node;
   }
 
+  /**
+   * @param requested version - may be null
+   * @return a valid version
+   * @throws WebdavException if version invalid
+   */
+  public String getVcardVersion(final String requested) throws WebdavException {
+    if (requested != null) {
+      return checkVersion(requested);
+    }
+
+    if (config.getDefaultVcardVersion() != null) {
+      return checkVersion(config.getDefaultVcardVersion());
+    }
+
+    return "3.0";
+  }
+
   /* ====================================================================
    *                         Private methods
    * ==================================================================== */
+
+  private String checkVersion(final String version) throws WebdavException {
+    if (!VcardDefs.validVersions.contains(version)) {
+      throw new WebdavBadRequest("Bad version " + version);
+    }
+
+    return version;
+  }
+
+  private WebdavNsNode getNodeInt(final String uri,
+                                  final int existance,
+                                  final int nodeType,
+                                  final CarddavCollection col,
+                                  final Card card,
+                                  final CarddavResource r) throws WebdavException {
+    if (debug) {
+      debugMsg("About to get node for " + uri);
+    }
+
+    if (uri == null)  {
+      return null;
+    }
+
+    try {
+      CarddavURI wi = findURI(uri, existance, nodeType, col, card, r);
+
+      if (wi == null) {
+        throw new WebdavNotFound(uri);
+      }
+
+      WebdavNsNode nd = null;
+
+      if (wi.isUser() || wi.isGroup()) {
+        AccessPrincipal ap;
+
+        if (wi.isUser()) {
+          ap = new User(wi.getEntityName());
+          ap.setPrincipalRef(wi.getPath());
+          nd = new CarddavUserNode(wi, sysi, ap);
+        } else {
+          ap = new Group(wi.getEntityName());
+          ap.setPrincipalRef(wi.getPath());
+          nd = new CarddavGroupNode(wi, sysi, ap);
+        }
+
+      } else if (wi.isCollection()) {
+        nd = new CarddavColNode(wi, sysi);
+      } else if (wi.isResource()) {
+        nd = new CarddavResourceNode(wi, sysi);
+      } else {
+        nd = new CarddavCardNode(wi, sysi);
+      }
+
+      return nd;
+    } catch (WebdavException we) {
+      throw we;
+    } catch (Throwable t) {
+      throw new WebdavException(t);
+    }
+  }
 
   private void loadConfig(String appName) throws WebdavException {
     try {

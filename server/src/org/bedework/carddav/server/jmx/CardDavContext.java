@@ -61,6 +61,14 @@ public class CardDavContext extends ConfBase implements CardDavContextMBean {
    * Attributes
    * ======================================================================== */
 
+  public void setDefaultVcardVersion(final String val) {
+    getConf().setDefaultVcardVersion(val);
+  }
+
+  public String getDefaultVcardVersion() {
+    return getConf().getDefaultVcardVersion();
+  }
+
   public void setSysintfImpl(final String val) {
     getConf().setSysintfImpl(val);
   }

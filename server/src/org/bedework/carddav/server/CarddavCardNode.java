@@ -44,6 +44,8 @@ import javax.xml.namespace.QName;
 public class CarddavCardNode extends CarddavNode {
   private Card card;
 
+  private String vcardVersion;
+
   private String entityName;
 
   private CarddavCollection col;
@@ -120,6 +122,13 @@ public class CarddavCardNode extends CarddavNode {
     }
 
     return null;
+  }
+
+  /**
+   * @param val
+   */
+  public void setVcardVersion(final String val) {
+    vcardVersion = val;
   }
 
   /* (non-Javadoc)
@@ -237,7 +246,7 @@ public boolean generatePropertyValue(final QName tag,
 
   @Override
   public String getContentString() throws WebdavException {
-    return card.output();
+    return card.output(vcardVersion);
   }
 
   /* ====================================================================
@@ -250,11 +259,11 @@ public boolean generatePropertyValue(final QName tag,
                              final String contentType) throws WebdavException {
     try {
       if (xml == null) {
-        wtr.write(card.output());
+        wtr.write(card.output(vcardVersion));
         return "text/vcard";
       }
 
-      xml.cdataValue(card.output());
+      xml.cdataValue(card.output(vcardVersion));
       return "application/vcard+xml";
     } catch (WebdavException we) {
       throw we;
@@ -339,7 +348,7 @@ public boolean generatePropertyValue(final QName tag,
   @Override
   public long getContentLen() throws WebdavException {
     if (card != null) {
-      return card.output().length();
+      return card.output(vcardVersion).length();
     }
 
     return 0;

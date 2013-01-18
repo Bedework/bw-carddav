@@ -35,6 +35,10 @@ import javax.xml.namespace.QName;
 public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
   private final static QName confElement = new QName(ns, "bwcarddav");
 
+  /* Default vcard version */
+  private static final QName defaultVcardVersion = new QName(ns,
+      "defaultVcardVersion");
+
   /* System interface implementation */
   private static final QName sysintfImpl = new QName(ns,
       "sysintfImpl");
@@ -90,6 +94,22 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
   @Override
   public QName getConfElement() {
     return confElement;
+  }
+
+  /** Set the default vcard version
+   *
+   * @param val    String
+   */
+  public void setDefaultVcardVersion(final String val) {
+    setProperty(defaultVcardVersion, val);
+  }
+
+  /** get the default vcard version
+   *
+   * @return String
+   */
+  public String getDefaultVcardVersion() {
+    return getPropertyValue(defaultVcardVersion);
   }
 
   /** Set the System interface implementation

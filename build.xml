@@ -98,7 +98,7 @@
     <getJar name="httpclient" version="4.2.1" />
     <getJar name="httpcore" version="4.2.2" />
     <getJar name="ical4j" version="1.0-rc3-SNAPSHOT" />
-    <getJar name="ical4j-vcard" version="0.9.3-SNAPSHOT" />
+    <getJar name="ical4j-vcard" version="0.9.6-BW-SNAPSHOT" />
     <getJar name="jboss-j2se" version="5.1.0.GA" />
     <getJar name="jboss-kernel" version="5.1.0.GA" />
     <getJar name="jboss-system" version="5.1.0.GA" />

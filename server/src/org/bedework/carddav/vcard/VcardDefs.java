@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,9 +18,11 @@
 */
 package org.bedework.carddav.vcard;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /** Vcard definitions
  *
@@ -28,6 +30,21 @@ import java.util.Set;
  *
  */
 public class VcardDefs {
+  /** Prefix for V4 properties converted to v3 */
+  public static final String v4AsXpropPrefix = "X-ICAL4J-TOV3-";
+
+  /** Valid versions
+   */
+  public static final Set<String> validVersions;
+
+  static {
+    Set<String> vs = new TreeSet<String>();
+    vs.add("3.0");
+    vs.add("4.0");
+
+    validVersions = Collections.unmodifiableSet(vs);
+  }
+
   /** */
   public static final int cardinalityZeroOrOne = 0;
   /** */

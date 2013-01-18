@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -55,7 +55,6 @@ public class SpecialUri {
    * @param config
    * @param fromGetAccept - true if this is GET with ACCEPT targeted at address book
    * @param accept - desired format
-   * @param debug
    * @return true for a special uri
    * @throws WebdavException
    */
@@ -66,7 +65,7 @@ public class SpecialUri {
                                 final CardDAVConfig config,
                                 final boolean fromGetAccept,
                                 final String accept,
-                                final boolean debug) throws WebdavException {
+                                final String vcardVersion) throws WebdavException {
     String addrbook = null;
     String format;
 
@@ -132,9 +131,9 @@ public class SpecialUri {
           throw new WebdavBadRequest("Must specify addressbook");
         }
 
-        res = doList(req, col, limits, config, sysi, debug);
+        res = doList(req, col, limits, config, sysi);
       } else {
-        res = doSearch(req, col, limits, config, sysi, debug);
+        res = doSearch(req, col, limits, config, sysi);
       }
 
       if (Util.isEmpty(res.cards)) {
@@ -142,7 +141,7 @@ public class SpecialUri {
         break buildResponse;
       }
 
-      doOutput(resp, res.cards, format);
+      doOutput(resp, res.cards, format, vcardVersion);
     } // buildResponse
 
     if ((res != null) && ((res.overLimit) || (res.serverTruncated))) {
@@ -178,8 +177,7 @@ public class SpecialUri {
                                     final CarddavCollection col,
                                     final GetLimits limits,
                                     final CardDAVConfig config,
-                                    final SysIntf sysi,
-                                    final boolean debug) throws WebdavException {
+                                    final SysIntf sysi) throws WebdavException {
     String text = req.getParameter("q");
 
     if (text == null) {
@@ -188,7 +186,7 @@ public class SpecialUri {
 
     boolean orThem = true;
 
-    Filter fltr = new Filter(debug);
+    Filter fltr = new Filter(false);
 
     if (orThem) {
       fltr.setTestAllAny(Filter.testAnyOf);
@@ -232,20 +230,20 @@ public class SpecialUri {
                                   final CarddavCollection col,
                                   final GetLimits limits,
                                   final CardDAVConfig config,
-                                  final SysIntf sysi,
-                                  final boolean debug) throws WebdavException {
+                                  final SysIntf sysi) throws WebdavException {
     return sysi.getCards(col, null, limits);
   }
 
   private static void doOutput(final HttpServletResponse resp,
                                final Collection<Card> cards,
-                               final String format) throws WebdavException {
+                               final String format,
+                               final String vcardVersion) throws WebdavException {
     try {
       Writer wtr = resp.getWriter();
 
       if (format.equals(formatVcard)) {
         for (Card card: cards) {
-          wtr.write(card.output());
+          wtr.write(card.output(vcardVersion));
         }
         resp.setStatus(HttpServletResponse.SC_OK);
 

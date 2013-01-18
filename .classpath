@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="lib/gdata-calendar-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/gdata-client-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/ical4j-1.0-rc3-SNAPSHOT.jar" sourcepath="/ical4j-vcard/src/main/java"/>
-	<classpathentry kind="lib" path="lib/ical4j-vcard-0.9.3-SNAPSHOT.jar" sourcepath="/ical4j-vcard/src/main/java"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/access"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/rpiutil"/>
@@ -23,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/jboss-kernel-5.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-system-5.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-system-jmx-5.1.0.GA.jar"/>
+	<classpathentry kind="lib" path="lib/ical4j-vcard-0.9.6-BW-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin/bw-carddav/carddav/carddav/carddav"/>
 </classpath>
