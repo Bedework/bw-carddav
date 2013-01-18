@@ -66,9 +66,57 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
   @MBeanInfo("Max number of entries returned")
   public int getQueryLimit();
 
+  /** Do we drop tables?
+   *
+   * @param val
+   */
+  public void setDrop(boolean val);
+
+  /**
+   * @return true for drop tables
+   */
+  @MBeanInfo("Drop tables on export (write) schema to database?")
+  public boolean getDrop();
+
+  /** Export schema to database?
+   *
+   * @param val
+   */
+  public void setExport(boolean val);
+
+  /**
+   * @return true for export schema
+   */
+  @MBeanInfo("Export (write) schema to database?")
+  public boolean getExport();
+
+  /** Output file name - full path
+   *
+   * @param val
+   */
+  public void setSchemaOutFile(String val);
+
+  /**
+   * @return Output file name - full path
+   */
+  @MBeanInfo("Full path of schema output file")
+  public String getSchemaOutFile();
+
   /* ========================================================================
    * Operations
    * ======================================================================== */
+
+  /** Create or dump new schema. If export and drop set will try to drop tables.
+   * Export and create will create a schema in the db and export, drop, create
+   * will drop tables, and try to create a new schema.
+   *
+   * The export and drop flags will all be reset to false after this,
+   * whatever the result. This avoids accidental damage to the db.
+   *
+   * @return Completion message
+   */
+  @MBeanInfo("Write the database schema. Set export flag to write to db.")
+  public String schema();
 
   /** List the hibernate properties
    *
