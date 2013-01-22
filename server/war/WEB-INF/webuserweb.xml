@@ -9,7 +9,7 @@
 
   <context-param>
     <param-name>bwappname</param-name>
-    <param-value>@BW-APP-NAME@</param-value>
+    <param-value>usercarddav</param-value>
   </context-param>
 
   <listener>

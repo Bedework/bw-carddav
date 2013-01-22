@@ -89,8 +89,6 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
 
   private Set<DirHandlerConfig> handlerConfigs;
 
-  private List<String> webaddrServiceProperties;
-
   @Override
   public QName getConfElement() {
     return confElement;
@@ -150,12 +148,6 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    */
   public void setWebaddrServicePropertiesList(final String val) {
     setProperty(webaddrServicePropertiesList, val);
-
-    webaddrServiceProperties = new ArrayList<String>();
-
-    for (String s: val.split(",")) {
-      webaddrServiceProperties.add(s.trim());
-    }
   }
 
   /**
@@ -247,6 +239,11 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return List derived from webaddrServicePropertiesList
    */
   public List<String> getWebaddrServiceProperties() {
+    List<String> webaddrServiceProperties = new ArrayList<String>();
+
+    for (String s: getWebaddrServicePropertiesList().split(",")) {
+      webaddrServiceProperties.add(s.trim());
+    }
     return webaddrServiceProperties;
   }
 
