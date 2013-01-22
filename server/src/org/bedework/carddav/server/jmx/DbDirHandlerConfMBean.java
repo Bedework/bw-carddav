@@ -20,6 +20,8 @@ package org.bedework.carddav.server.jmx;
 
 import org.apache.activemq.broker.jmx.MBeanInfo;
 
+import java.util.List;
+
 /** Configure a carddav service dir handler
  *
  * @author douglm
@@ -115,8 +117,15 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
    *
    * @return Completion message
    */
-  @MBeanInfo("Write the database schema. Set export flag to write to db.")
+  @MBeanInfo("Start build of the database schema. Set export flag to write to db.")
   public String schema();
+
+  /** Returns status of the schema build.
+   *
+   * @return Completion messages
+   */
+  @MBeanInfo("Status of the database schema build.")
+  public List<String> schemaStatus();
 
   /** List the hibernate properties
    *

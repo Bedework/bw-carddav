@@ -41,6 +41,60 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   private Configuration cfg;
 
+  private class SchemaThread extends Thread {
+    InfoLines infoLines = new InfoLines();
+
+    SchemaThread() {
+      super("BuildSchema");
+    }
+
+    @Override
+    public void run() {
+      try {
+        infoLines.addLn("Started restore of data");
+
+        long startTime = System.currentTimeMillis();
+
+        SchemaExport se = new SchemaExport(getConfiguration());
+
+//      if (getDelimiter() != null) {
+//        se.setDelimiter(getDelimiter());
+//      }
+
+        se.setFormat(true);       // getFormat());
+        se.setHaltOnError(false); // getHaltOnError());
+        se.setOutputFile(getSchemaOutFile());
+        /* There appears to be a bug in the hibernate code. Everybody initialises
+        this to /import.sql. Set to null causes an NPE
+        Make sure it refers to a non-existant file */
+        //se.setImportFile("not-a-file.sql");
+
+        se.execute(false, // script - causes write to System.out if true
+                   getExport(),
+                   getDrop(),
+                   true);   //   getCreate());
+
+        long millis = System.currentTimeMillis() - startTime;
+        long seconds = millis / 1000;
+        long minutes = seconds / 60;
+        seconds -= (minutes * 60);
+
+        infoLines.addLn("Elapsed time: " + minutes + ":" +
+                        twoDigits(seconds));
+      } catch (Throwable t) {
+        error(t);
+        infoLines.exceptionMsg(t);
+      } finally {
+        infoLines.addLn("Schema build completed");
+        drop = false;
+        export = false;
+      }
+    }
+  }
+
+  private SchemaThread buildSchema = new SchemaThread();
+
+
   /* ========================================================================
    * Schema attributes
    * ======================================================================== */
@@ -102,37 +156,30 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
    * ======================================================================== */
 
   public String schema() {
-    String result = "Export complete: check logs";
-
     try {
-      SchemaExport se = new SchemaExport(getConfiguration());
+//      buildSchema = new SchemaThread();
 
-//      if (getDelimiter() != null) {
-//        se.setDelimiter(getDelimiter());
-//      }
+      buildSchema.start();
 
-      se.setFormat(true);       // getFormat());
-      se.setHaltOnError(false); // getHaltOnError());
-      se.setOutputFile(getSchemaOutFile());
-      /* There appears to be a bug in the hibernate code. Everybody initialises
-        this to /import.sql. Set to null causes an NPE
-        Make sure it refers to a non-existant file */
-      se.setImportFile("not-a-file.sql");
-
-      se.execute(false, // script - causes write to System.out if true
-                 getExport(),
-                 getDrop(),
-                 true);   //   getCreate());
+      return "OK";
     } catch (Throwable t) {
       error(t);
-      result = "Exception: " + t.getLocalizedMessage();
-    } finally {
-      //create = false;
-      drop = false;
-      export = false;
+
+      return "Exception: " + t.getLocalizedMessage();
+    }
+  }
+
+  @Override
+  public synchronized List<String> schemaStatus() {
+    if (buildSchema == null) {
+      InfoLines infoLines = new InfoLines();
+
+      infoLines.addLn("Schema build has not been started");
+
+      return infoLines;
     }
 
-    return result;
+    return buildSchema.infoLines;
   }
 
   public String listHibernateProperties() {
@@ -220,6 +267,18 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
     }
 
     return cfg;
+  }
+
+  /**
+   * @param val
+   * @return 2 digit val
+   */
+  private static String twoDigits(final long val) {
+    if (val < 10) {
+      return "0" + val;
+    }
+
+    return String.valueOf(val);
   }
 
   /* ========================================================================

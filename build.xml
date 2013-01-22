@@ -77,9 +77,6 @@
     <property name="server.jar"
               location="${dist.home}/bw-carddavsvr-${project.version}.jar" />
 
-    <property name="dumpres.jar"
-              location="${dist.home}/bw-carddumpres-${project.version}.jar" />
-
     <property name="tools.jar"
               location="${dist.home}/bw-cardtools-${project.version}.jar" />
   </target>
@@ -94,6 +91,9 @@
     <getJar name="ejb3-persistence" version="3.4.0.GA" />
     <getJar name="gdata-calendar" version="1.0" />
     <getJar name="gdata-client" version="1.0" />
+    <!--
+    <getJar name="hibernate-core" version="4.1.9.Final" />
+    -->
     <getJar name="hibernate" version="3.6.9.Final" />
     <getJar name="httpclient" version="4.2.1" />
     <getJar name="httpcore" version="4.2.2" />
@@ -134,9 +134,6 @@
   <target name="build-source" depends="build-init" >
     <build-jar module-base="${org.bedework.carddav.server.base}" 
                jar-file="${server.jar}" />
-
-    <build-jar module-base="${org.bedework.carddav.dumpres.base}" 
-               jar-file="${dumpres.jar}" />
 
     <build-jar module-base="${org.bedework.carddav.tools.base}" 
                jar-file="${tools.jar}" />
@@ -254,11 +251,6 @@
     <!-- ===============================================================
          Build the tool zip
          =============================================================== -->
-
-    <getJar lib="${org.bedework.temp.extrajars.dir}"
-            libcache="${org.bedework.libcache.dir}"
-            name="bw-carddumpres" version="${org.bedework.carddav.version}"
-            projecthome="${project.home}" />
 
     <getJar lib="${org.bedework.temp.extrajars.dir}"
             libcache="${org.bedework.libcache.dir}"

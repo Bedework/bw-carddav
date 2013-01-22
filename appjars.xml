@@ -18,11 +18,6 @@
               libcache="${org.bedework.libcache.dir}"
               name="bw-carddavsvr" version="${org.bedework.carddav.version}"
               projecthome="${project.home}" />
-      
-      <getJar lib="${org.bedework.temp.extrajars.dir}"
-              libcache="${org.bedework.libcache.dir}"
-              name="bw-carddumpres" version="${org.bedework.carddav.version}"
-              projecthome="${project.home}" />
 
       <!-- Bedework jars -->
       
@@ -84,6 +79,20 @@
               name="hibernate-validator" version="3.1.0.GA" />
       
       <!--
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="hibernate-core" version="4.1.9.Final" />
+      
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="hibernate-commons-annotations" version="4.0.1.Final" />
+
+      <getJar lib="${org.bedework.temp.extrajars.dir}"
+              libcache="${org.bedework.libcache.dir}"
+              name="jboss-logging" version="3.1.0.GA"  />
+              -->
+      
+      <!--
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
 	            libcache="${org.bedework.libcache.dir}"
               name="hibernate-annotations" version="3.4.0.GA" />
@@ -103,6 +112,7 @@
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
               name="commons-collections"/>
+      
     	<!--
     	<getJar lib="${org.bedework.temp.extrajars.dir}"
               libcache="${org.bedework.libcache.dir}"
