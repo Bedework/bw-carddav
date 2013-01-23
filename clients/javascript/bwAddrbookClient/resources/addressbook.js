@@ -420,7 +420,7 @@ var bwAddressBook = function() {
     
     // build the vcard
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     vcData += "UID:" + newUUID + "\n";
     vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
     vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
@@ -452,7 +452,7 @@ var bwAddressBook = function() {
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     if (curCard.UID == undefined) {
       // if the card doesn't have a UID (probably because it was imported), give it one
       vcData+= "UID:BwABC-" + Math.uuid() + "\n";
@@ -501,7 +501,7 @@ var bwAddressBook = function() {
     if (curCard.version != undefined && curCard.version.value != "") {
       vcData += "VERSION:" + String(curCard.version.value).stripTags() + "\n";
     } else {
-      vcData += "VERSION:4.0\n";
+      vcData += "VERSION:3.0\n";
     } 
     
     vcData += "UID:" + newUUID + "\n";
@@ -730,7 +730,7 @@ var bwAddressBook = function() {
     var newUUID = "BwABC-" + Math.uuid();
     
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     vcData += "UID:" + newUUID + "\n";
     vcData += "FN:" + $.trim($("#GROUP-NAME").val()) + "\n";
     vcData += "N:" + $.trim($("#GROUP-NAME").val()) + ";;;;\n";
@@ -749,7 +749,7 @@ var bwAddressBook = function() {
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     if (curCard.UID == undefined) {
       // if the card doesn't have a UID (probably because it was imported), give it one
       vcData+= "UID:BwABC-" + Math.uuid() + "\n";
@@ -828,7 +828,7 @@ var bwAddressBook = function() {
     
     // now let's build the vcard
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     if (curGroup.UID == undefined) {
       // if the card doesn't have a UID (probably because it was imported), give it one
       vcData+= "UID:BwABC-" + Math.uuid() + "\n";
@@ -885,7 +885,7 @@ var bwAddressBook = function() {
     
     // now let's build the vcard
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     if (curGroup.UID == undefined) {
       // if the card doesn't have a UID (probably because it was imported), give it one
       vcData+= "UID:BwABC-" + Math.uuid() + "\n";
@@ -920,7 +920,7 @@ var bwAddressBook = function() {
     var newUUID = "BwABC-" + Math.uuid();
    
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     vcData += "UID:" + newUUID + "\n";
     vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
     vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
@@ -945,7 +945,7 @@ var bwAddressBook = function() {
     var curCard = jQuery.parseJSON(bwAddressBook.books[bwAddressBook.book].vcards[bwAddressBook.card]);
     
     var vcData = "BEGIN:VCARD\n"
-    vcData += "VERSION:4.0\n";
+    vcData += "VERSION:3.0\n";
     if (curCard.UID == undefined) {
       // if the card doesn't have a UID (probably because it was imported), give it one
       vcData+= "UID:BwABC-" + Math.uuid() + "\n";
