@@ -26,11 +26,12 @@ import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.Property.Id;
 import net.fortuna.ical4j.vcard.VCard;
 import net.fortuna.ical4j.vcard.VCardBuilder;
-import net.fortuna.ical4j.vcard.VCardOutputter;
 import net.fortuna.ical4j.vcard.property.Kind;
 import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
+
+import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.access.AccessState;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
@@ -38,7 +39,6 @@ import edu.rpi.sss.util.Util;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   private String prevLastmod;
 
-  private static VCardOutputter cardOut = new VCardOutputter();
+  //private static VCardOutputter cardOut = new VCardOutputter();
 
   /** Create DbCard with a new embedded VCard
    *
@@ -315,6 +315,10 @@ public class DbCard extends DbNamedEntity<DbCard> {
       return strForm;
     }
 
+    Card cd = new Card(vcard);
+    strForm = cd.output(null);
+
+    /*
     StringWriter sw = new StringWriter();
 
     synchronized (cardOut) {
@@ -326,6 +330,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
     }
 
     strForm = sw.toString();
+    */
 
     return strForm;
   }
