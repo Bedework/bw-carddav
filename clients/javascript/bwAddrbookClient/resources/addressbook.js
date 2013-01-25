@@ -1405,24 +1405,26 @@ $(document).ready(function() {
   
   // show form for adding a group
   $("#addGroup").click(function() {
-    clearFields("#groupForm");
+    alert("Group management is currently disabled\nIt will be restored in a coming update.");
+    /* clearFields("#groupForm");
     $("#bw-modGroup h3").text(bwAbDispAddGroup);
     $("#submitGroup").attr("class","add");
     $("#groupForm").attr("action","#add");
     $("#submitGroup").text(bwAbDispAddGroup);
     showPage("bw-modGroup");
-    $("#GROUP-NAME").focus();
+    $("GROUP-NAME").focus(); */
   });
   
   // show form for adding a location
   $("#addLocation").click(function() {
-    clearFields("#locationForm");
+    alert("Location management is currently disabled.\nIt will be restored in a coming update.");
+    /* clearFields("#locationForm");
     $("#bw-modLocation h3").text(bwAbDispAddLocation);
     $("#submitLocation").attr("class","add");
     $("#locationForm").attr("action","#add");
     $("#submitLocation").text(bwAbDispAddLocation);
     showPage("bw-modLocation");
-    $("#LOCATION-NAME").focus();
+    $("#LOCATION-NAME").focus(); */
   });
 
   // show form for adding/editing a resource (not yet available)
