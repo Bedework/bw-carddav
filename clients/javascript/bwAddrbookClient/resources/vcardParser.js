@@ -230,7 +230,10 @@ function parseVCardBlobIntoJson(blob,vcardsArray,href,etag) {
 
         //multiple named values
 
-        var attributeFieldValues = colonSplit[1].split(';');
+        var attributeFieldValues = "";
+        if (colonSplit[1] != undefined) {
+          var attributeFieldValues = colonSplit[1].split(';');
+        }
         bwJsonObj += '"values": {';
         //one array goes from 1 to length-1 and the other from 0 to length-1. Hope it's clear.
         for (y=1;y<attributeInfo.length;y++) {

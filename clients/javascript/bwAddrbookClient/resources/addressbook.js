@@ -422,27 +422,29 @@ var bwAddressBook = function() {
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:3.0\n";
     vcData += "UID:" + newUUID + "\n";
-    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
-    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    if ($.trim($("#FIRSTNAME").val()) !="" || $.trim($("#LASSTNAME").val()) != "") {
+      vcData += "FN:" + $.trim($("#FIRSTNAME").val()) + " " + $.trim($("#LASTNAME").val()) + "\n";
+      vcData += "N:" + $.trim($("#LASTNAME").val()) + ";" + $.trim($("#FIRSTNAME").val()) + ";;;\n";
+    }
     vcData += "KIND:individual\n";
-    vcData += "ORG:" + $("#ORG").val() + ";;\n";
-    vcData += "TITLE:" + $("#TITLE").val() + "\n";
-    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
+    if($.trim($("#ORG").val()) != '') vcData += "ORG:" + $.trim($("#ORG").val()) + ";;\n"; 
+    if($.trim($("#TITLE").val()) != '') vcData += "TITLE:" + $.trim($("#TITLE").val()) + "\n";
+    if($.trim($("#NICKNAME").val()) != '') vcData += "NICKNAME:" + $.trim($("#NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
     $(".emailFields").each(function(index) {
-      vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $("#EMAIL-" + index).val() + "\n";
+      if($.trim($("#EMAIL-" + index).val()) != '') vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $.trim($("#EMAIL-" + index).val()) + "\n";
     });
     $(".phoneFields").each(function(index) {
-      vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $("#PHONE-" + index).val() + "\n";
+      if($.trim($("#PHONE-" + index).val()) != '') vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $.trim($("#PHONE-" + index).val()) + "\n";
     });
     $(".addrFields").each(function(index) {
       vcData += "ADR;TYPE=" + $("#ADDRTYPE-" + index).val() + ":" + $("#POBOX-" + index).val() + ";" + $("#EXTADDR-" + index).val() + ";" + $("#STREET-" + index).val() + ";" + $("#CITY-" + index).val() + ";" +  $("#STATE-" + index).val() + ";" + $("#POSTAL-" + index).val() + ";" + $("#COUNTRY-" + index).val() + "\n";
     });
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-01").val() + ":geo:" + $("#GEO-01").val() + "\n";;
-    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
-    vcData += "PHOTO;VALUE=uri:" + $("#PHOTOURL").val() + "\n";
-    vcData += "NOTE:" + $("#NOTE").val() + "\n";
+    if($.trim($("#WEBPAGE").val()) != '') vcData += "URL:" + $.trim($("#WEBPAGE").val()) + "\n";
+    if($.trim($("#PHOTOURL").val()) != '')  vcData += "PHOTO;VALUE=uri:" + $.trim($("#PHOTOURL").val()) + "\n";
+    if($.trim($("#NOTE").val()) != '') vcData += "NOTE:" + $.trim($("#NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.addEntry(vcData,newUUID,"#contactForm");
@@ -459,27 +461,29 @@ var bwAddressBook = function() {
     } else {
       vcData += "UID:" + curCard.UID[0].value + "\n";
     } 
-    vcData += "FN:" + $("#FIRSTNAME").val() + " " + $("#LASTNAME").val() + "\n";
-    vcData += "N:" + $("#LASTNAME").val() + ";" + $("#FIRSTNAME").val() + ";;;\n";
+    if ($.trim($("#FIRSTNAME").val()) !="" || $.trim($("#LASSTNAME").val()) != "") {
+      vcData += "FN:" + $.trim($("#FIRSTNAME").val()) + " " + $.trim($("#LASTNAME").val()) + "\n";
+      vcData += "N:" + $.trim($("#LASTNAME").val()) + ";" + $.trim($("#FIRSTNAME").val()) + ";;;\n";
+    }
     vcData += "KIND:individual\n";
-    vcData += "ORG:" + $("#ORG").val() + ";;\n";
-    vcData += "TITLE:" + $("#TITLE").val() + "\n";
-    vcData += "NICKNAME:" + $("#NICKNAME").val() + "\n";
+    if($.trim($("#ORG").val()) != '') vcData += "ORG:" + $.trim($("#ORG").val()) + ";;\n";
+    if($.trim($("#TITLE").val()) != '') vcData += "TITLE:" + $.trim($("#TITLE").val()) + "\n";
+    if($.trim($("#NICKNAME").val()) != '') vcData += "NICKNAME:" + $.trim($("#NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
     $(".emailFields").each(function(index) {
-      vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $("#EMAIL-" + index).val() + "\n";
+      if($.trim($("#EMAIL" + index).val()) != '') vcData += "EMAIL;TYPE=" + $("#EMAILTYPE-" + index).val() + ":" + $.trim($("#EMAIL-" + index).val()) + "\n";
     });
     $(".phoneFields").each(function(index) {
-      vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $("#PHONE-" + index).val() + "\n";
+      if($.trim($("#PHONE-" + index).val()) != '') vcData += "TEL;TYPE=" + $("#PHONETYPE-" + index).val() + ":" + $.trim($("#PHONE-" + index).val()) + "\n";
     });
     $(".addrFields").each(function(index) {
       vcData += "ADR;TYPE=" + $("#ADDRTYPE-" + index).val() + ":" + $("#POBOX-" + index).val() + ";" + $("#EXTADDR-" + index).val() + ";" + $("#STREET-" + index).val() + ";" + $("#CITY-" + index).val() + ";" +  $("#STATE-" + index).val() + ";" + $("#POSTAL-" + index).val() + ";" + $("#COUNTRY-" + index).val() + "\n";
     });
     //vcData += "GEO:TYPE=" + $("#ADDRTYPE-" + index).val() + ":geo:" + $("#GEO-" + index).val() + "\n";;
-    vcData += "URL:" + $("#WEBPAGE").val() + "\n";
-    vcData += "PHOTO;VALUE=uri:" + $("#PHOTOURL").val() + "\n";
-    vcData += "NOTE:" + $("#NOTE").val() + "\n";
+    if($.trim($("#WEBPAGE").val()) != '') vcData += "URL:" + $.trim($("#WEBPAGE").val()) + "\n";
+    if($.trim($("#PHOTOURL").val()) != '') vcData += "PHOTO;VALUE=uri:" + $.trim($("#PHOTOURL").val()) + "\n";
+    if($.trim($("#NOTE").val()) != '') vcData += "NOTE:" + $.trim($("#NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#contactForm");
@@ -756,14 +760,16 @@ var bwAddressBook = function() {
     } else {
       vcData += "UID:" + curCard.UID[0].value + "\n";
     }
-    vcData += "FN:" + $.trim($("#GROUP-NAME").val()) + "\n";
-    vcData += "N:" + $.trim($("#GROUP-NAME").val()) + ";;;;\n";
+    if ($.trim($("#GROUP-NAME").val()) != "") {
+      vcData += "FN:" + $.trim($("#GROUP-NAME").val()) + "\n";
+      vcData += "N:" + $.trim($("#GROUP-NAME").val()) + ";;;;\n";
+    }
     vcData += "KIND:group\n";
-    vcData += "ORG:" + $.trim($("#GROUP-ORG").val()) + ";;\n";
-    vcData += "NICKNAME:" + $.trim($("#GROUP-NICKNAME").val()) + "\n";
+    if($.trim($("#GROUP-ORG").val()) != "") vcData += "ORG:" + $.trim($("#GROUP-ORG").val()) + ";;\n";
+    if($.trim($("#GROUP-NICKNAME").val()) != "") vcData += "NICKNAME:" + $.trim($("#GROUP-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "NOTE:" + $.trim($("#GROUP-NOTE").val()) + "\n";
+    if($.trim($("#GROUP-NOTE").val()) != "") vcData += "NOTE:" + $.trim($("#GROUP-NOTE").val()) + "\n";
     if (curCard.MEMBER != undefined) {
       for (var i=0; i<curCard.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
@@ -835,18 +841,20 @@ var bwAddressBook = function() {
     } else {
       vcData += "UID:" + curGroup.UID[0].value + "\n";
     } 
-    vcData += "FN:" + fn + "\n";
-    vcData += "N:" + fn + ";;;;\n";
+    if (fn != "") {
+      vcData += "FN:" + fn + "\n";
+      vcData += "N:" + fn + ";;;;\n";
+    }
     vcData += "KIND:group\n";
-    vcData += "ORG:" + org + ";;\n";
-    vcData += "NICKNAME:" + nickname + "\n";
+    if (org != "") vcData += "ORG:" + org + ";;\n";
+    if (nickname != "") vcData += "NICKNAME:" + nickname + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "NOTE:" + note + "\n";
+    if (note != "") vcData += "NOTE:" + note + "\n";
     if (curGroup.MEMBER != undefined) {
       for (var i=0; i<curGroup.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
-        vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
+        if (curGroup.MEMBER[i].value != "") vcData += "MEMBER:" + curGroup.MEMBER[i].value + "\n";
       }; 
     };
     // now tag on the new member:
@@ -892,14 +900,18 @@ var bwAddressBook = function() {
     } else {
       vcData += "UID:" + curGroup.UID[0].value + "\n";
     } 
-    vcData += "FN:" + fn + "\n";
-    vcData += "N:" + fn + ";;;;\n";
+    
+    if (fn != "") {
+      vcData += "FN:" + fn + "\n";
+      vcData += "N:" + fn + ";;;;\n";
+    }
     vcData += "KIND:group\n";
-    vcData += "ORG:" + org + ";;\n";
-    vcData += "NICKNAME:" + nickname + "\n";
+    if (org != "") vcData += "ORG:" + org + ";;\n";
+    if (nickname != "") vcData += "NICKNAME:" + nickname + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "NOTE:" + note + "\n";
+    if (note != "") vcData += "NOTE:" + note + "\n";
+    
     if (curGroup.MEMBER != undefined) {
       for (var i=0; i<curGroup.MEMBER.length; i++) {
         // no need for mailto: here - it's in the value
@@ -922,20 +934,22 @@ var bwAddressBook = function() {
     var vcData = "BEGIN:VCARD\n"
     vcData += "VERSION:3.0\n";
     vcData += "UID:" + newUUID + "\n";
-    vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
-    vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
+    if ($.trim($("#LOCATION-NAME").val()) != "") {
+      vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
+      vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
+    }
     vcData += "KIND:location\n";
-    vcData += "ORG:" + $.trim($("#LOCATION-ORG").val()) + ";;\n";
-    vcData += "NICKNAME:" + $.trim($("#LOCATION-NICKNAME").val()) + "\n";
+    if ($.trim($("#LOCATION-ORG").val()) != "") vcData += "ORG:" + $.trim($("#LOCATION-ORG").val()) + ";;\n";
+    if ($.trim($("#LOCATION-NICKNAME").val()) != "") vcData += "NICKNAME:" + $.trim($("#LOCATION-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "EMAIL:" + $.trim($("#LOCATION-EMAIL").val()) + "\n";
-    vcData += "TEL:" + $.trim($("#LOCATION-PHONE").val()) + "\n";  
+    if ($.trim($("#LOCATION-EMAIL").val()) != "") vcData += "EMAIL:" + $.trim($("#LOCATION-EMAIL").val()) + "\n";
+    if ($.trim($("#LOCATION-PHONE").val()) != "") vcData += "TEL:" + $.trim($("#LOCATION-PHONE").val()) + "\n";  
     vcData += "ADR:" + $.trim($("#LOCATION-POBOX").val()) + ";" + $.trim($("#LOCATION-EXTADDR").val()) + ";" + $.trim($("#LOCATION-STREET").val()) + ";" + $.trim($("#LOCATION-CITY").val()) + ";" +  $.trim($("#LOCATION-STATE").val()) + ";" + $.trim($("#LOCATION-POSTAL").val()) + ";" + $.trim($("#LOCATION-COUNTRY").val()) + "\n";
     //vcData += "GEO:TYPE=" + $.trim($("#ADDRTYPE-01").val()) + ":geo:" + $.trim($("#GEO-01").val()) + "\n";;
-    vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
-    vcData += "PHOTO;VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
-    vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
+    if ($.trim($("#LOCATION-WEBPAGE").val()) != "") vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
+    if ($.trim($("#LOCATION-PHOTOURL").val()) != "") vcData += "PHOTO;VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
+    if ($.trim($("#LOCATION-NOTE").val()) != "") vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.addEntry(vcData,newUUID,"#locationForm");
@@ -952,20 +966,22 @@ var bwAddressBook = function() {
     } else {
       vcData += "UID:" + curCard.UID[0].value + "\n";
     } 
-    vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
-    vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
+    if ($.trim($("#LOCATION-NAME").val()) != "") {
+      vcData += "FN:" + $.trim($("#LOCATION-NAME").val()) + "\n";
+      vcData += "N:" + $.trim($("#LOCATION-NAME").val()) + ";;;;\n";
+    }
     vcData += "KIND:location\n";
-    vcData += "ORG:" + $.trim($("#LOCATION-ORG").val()) + ";;\n";
-    vcData += "NICKNAME:" + $.trim($("#LOCATION-NICKNAME").val()) + "\n";
+    if ($.trim($("#LOCATION-ORG").val()) != "") vcData += "ORG:" + $.trim($("#LOCATION-ORG").val()) + ";;\n";
+    if ($.trim($("#LOCATION-NICKNAME").val()) != "") vcData += "NICKNAME:" + $.trim($("#LOCATION-NICKNAME").val()) + "\n";
     vcData += "CLASS:PRIVATE\n";
     vcData += "REV:" + getRevDate() + "\n";
-    vcData += "EMAIL:" + $.trim($("#LOCATION-EMAIL").val()) + "\n";
-    vcData += "TEL:" + $.trim($("#LOCATION-PHONE").val()) + "\n";  
+    if ($.trim($("#LOCATION-EMAIL").val()) != "") vcData += "EMAIL:" + $.trim($("#LOCATION-EMAIL").val()) + "\n";
+    if ($.trim($("#LOCATION-PHONE").val()) != "") vcData += "TEL:" + $.trim($("#LOCATION-PHONE").val()) + "\n";  
     vcData += "ADR:" + $.trim($("#LOCATION-POBOX").val()) + ";" + $.trim($("#LOCATION-EXTADDR").val()) + ";" + $.trim($("#LOCATION-STREET").val()) + ";" + $.trim($("#LOCATION-CITY").val()) + ";" +  $.trim($("#LOCATION-STATE").val()) + ";" + $.trim($("#LOCATION-POSTAL").val()) + ";" + $.trim($("#LOCATION-COUNTRY").val()) + "\n";
     //vcData += "GEO:TYPE=" + $.trim($("#ADDRTYPE-01").val()) + ":geo:" + $.trim($("#GEO-01").val()) + "\n";;
-    vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
-    vcData += "PHOTO;VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
-    vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
+    if ($.trim($("#LOCATION-WEBPAGE").val()) != "") vcData += "URL:" + $.trim($("#LOCATION-WEBPAGE").val()) + "\n";
+    if ($.trim($("#LOCATION-PHOTOURL").val()) != "") vcData += "PHOTO;VALUE=uri:" + $.trim($("#LOCATION-PHOTOURL").val()) + "\n";
+    if ($.trim($("#LOCATION-NOTE").val()) != "") vcData += "NOTE:" + $.trim($("#LOCATION-NOTE").val()) + "\n";
     vcData += "END:VCARD";
     
     this.updateEntry(vcData,curCard.href,curCard.etag,"#locationForm");
