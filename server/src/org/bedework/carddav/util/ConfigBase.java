@@ -41,7 +41,7 @@ public abstract class ConfigBase<T extends ConfigBase> implements Comparable<T>,
   private String appName;
 
   /**
-   * @return QName which acts as the outer elemnt for the configuration.
+   * @return QName which acts as the outer element for the configuration.
    */
   public abstract QName getConfElement();
 
