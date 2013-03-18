@@ -204,7 +204,7 @@ public class BwSysIntfImpl implements SysIntf {
    * @see org.bedework.carddav.server.SysIntf#getPrincipal()
    */
   public AccessPrincipal getPrincipal() throws WebdavException {
-    return getPrincipal(Util.buildPath(conf.getUserPrincipalRoot(),
+    return getPrincipal(Util.buildPath(true, conf.getUserPrincipalRoot(),
                                        "/", account));
   }
 
@@ -412,7 +412,7 @@ public class BwSysIntfImpl implements SysIntf {
       return null;
     }
 
-    return Util.buildPath(cardPathPrefix, "/", account, ".vcf");
+    return Util.buildPath(false, cardPathPrefix, "/", account, ".vcf");
   }
 
   /* (non-Javadoc)
@@ -1069,7 +1069,7 @@ public class BwSysIntfImpl implements SysIntf {
     cdc.setDisplayName(name);
 
     cdc.setOwner(owner);
-    cdc.setPath(Util.buildPath(parentPath, "/", name));
+    cdc.setPath(Util.buildPath(true, parentPath, "/", name));
     cdc.setParentPath(parentPath);
 
     return cdc;

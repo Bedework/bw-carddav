@@ -209,7 +209,7 @@ public class Importer {
       client.setCredentials(user, pw);
 
       respCode = client.sendRequest("PUT",
-                                    Util.buildPath(urlPrefix, "/", name, ".vcf"),
+                                    Util.buildPath(false, urlPrefix, "/", name, ".vcf"),
                                     null, null,
                                     "text/vcard", content.length,
                                     content);

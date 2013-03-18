@@ -1067,7 +1067,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(),
                                       ap.getPrincipalRef(),
                                       ap, false,
-                                      Util.buildPath(ap.getPrincipalRef(), "/")));
+                                      ap.getPrincipalRef()));
     }
 
     return res;
@@ -1101,10 +1101,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
       pnodes.add(new WebdavPrincipalNode(sysi.getUrlHandler(),
                                          cui.principalPathPrefix,
                                          new User(cui.account), true,
-                                         Util.buildPath(cui.principalPathPrefix,
+                                         Util.buildPath(true, cui.principalPathPrefix,
                                                         "/",
-                                                        cui.account,
-                                                        "/")));
+                                                        cui.account)));
     }
 
     return pnodes;
@@ -1368,7 +1367,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           name = makeName(card.getUid()) + ".vcf";
         }
 
-        CarddavCardNode cnode = (CarddavCardNode)getNodeInt(Util.buildPath(uri, "/", name),
+        CarddavCardNode cnode = (CarddavCardNode)getNodeInt(Util.buildPath(false, uri, "/", name),
                                                    WebdavNsIntf.existanceDoesExist,
                                                    WebdavNsIntf.nodeTypeEntity,
                                                    col, card, null);
@@ -1661,7 +1660,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         newCol.setParent(col);
         newCol.setName(split.name);
-        newCol.setPath(Util.buildPath(col.getPath(), "/", newCol.getName()));
+        newCol.setPath(Util.buildPath(true, col.getPath(), "/", newCol.getName()));
 
         curi = new CarddavURI(newCol, false);
 

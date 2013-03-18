@@ -320,11 +320,11 @@ public abstract class AbstractDirHandler implements DirHandler {
   }
 
   public String getprincipalHome() throws WebdavException {
-    return Util.buildPath(dhConfig.getPathPrefix(), "/", account, "/");
+    return Util.buildPath(true, dhConfig.getPathPrefix(), "/", account);
   }
 
   public String getprincipalHome(final AccessPrincipal p) throws WebdavException {
-    return Util.buildPath(dhConfig.getPathPrefix(), "/", p.getAccount(), "/");
+    return Util.buildPath(true, dhConfig.getPathPrefix(), "/", p.getAccount());
   }
 
   /* ====================================================================
