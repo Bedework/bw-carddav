@@ -51,7 +51,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
     @Override
     public void run() {
       try {
-        infoLines.addLn("Started restore of data");
+        infoLines.addLn("Started export of schema");
 
         long startTime = System.currentTimeMillis();
 
