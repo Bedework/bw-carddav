@@ -20,6 +20,8 @@ package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.util.DbDirHandlerConfig;
 
+import edu.rpi.cmt.jmx.InfoLines;
+
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 
