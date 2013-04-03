@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jboss-web>
+  <!-- Virtual host -->
+
+  <security-domain>java:/jaas/bedeworkdemo</security-domain>
+
+  <resource-ref>
+    <res-ref-name>jdbc/cardDB</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <jndi-name>java:/CardDS</jndi-name>
+  </resource-ref>
+</jboss-web>
