@@ -12,11 +12,16 @@
     <param-value>usercarddav</param-value>
   </context-param>
 
+  <!-- One and only one context should register the jmx mbeans -->
+  <context-param>
+    <param-name>register-jmx</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
   <listener>
     <listener-class>edu.rpi.sss.util.jsp.SessionListener</listener-class>
   </listener>
 
-  <!-- Need this to fush a static table maintained by the servlet -->
   <listener>
     <listener-class>org.bedework.carddav.server.CarddavServlet</listener-class>
   </listener>

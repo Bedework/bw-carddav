@@ -20,9 +20,9 @@ package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.util.CardDAVConfig;
 
-import edu.rpi.cmt.config.ConfigurationFileStore;
+import edu.rpi.cmt.config.ConfigurationStore;
 import edu.rpi.cmt.config.ConfigurationType;
-import edu.rpi.sss.util.OptionsI;
+import edu.rpi.cmt.jmx.ConfBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,25 +31,21 @@ import java.util.List;
  * @author douglm
  *
  */
-public class CardDavContext extends ConfBase implements CardDavContextMBean {
-  private String serviceName;
-
+public class CardDavContext extends ConfBase<CardDAVConfig> implements CardDavContextMBean {
   private CardDAVConfig cfg;
 
   /**
+   * @param configStore
    * @param serviceName
-   * @param cfg
    * @param configName
-   * @param configDir
    */
-  public CardDavContext(final String serviceName,
-                     final CardDAVConfig cfg,
-                     final String configName,
-                     final String configDir) {
-    this.serviceName = serviceName;
-    this.cfg = cfg;
+  public CardDavContext(final ConfigurationStore configStore,
+                        final String serviceName,
+                        final String configName) {
+    super(serviceName);
+    setStore(configStore);
+
     setConfigName(configName);
-    setConfigDir(configDir);
   }
 
   @Override
@@ -57,134 +53,181 @@ public class CardDavContext extends ConfBase implements CardDavContextMBean {
     return getConf().getConfig();
   }
 
+  /**
+   * @throws Throwable
+   */
+  public void loadConfig() throws Throwable {
+    /* Load up the config */
+
+    cfg = getConfigInfo(getConfigName(), CardDAVConfig.class);
+
+    if (cfg == null) {
+      throw new Exception("Unable to read configuration " + getConfigName());
+    }
+
+    saveConfig(); // Just to ensure we have it for next time
+  }
+
   /* ========================================================================
    * Attributes
    * ======================================================================== */
 
+  @Override
   public void setDefaultVcardVersion(final String val) {
     getConf().setDefaultVcardVersion(val);
   }
 
+  @Override
   public String getDefaultVcardVersion() {
     return getConf().getDefaultVcardVersion();
   }
 
+  @Override
   public void setSysintfImpl(final String val) {
     getConf().setSysintfImpl(val);
   }
 
+  @Override
   public String getSysintfImpl() {
     return getConf().getSysintfImpl();
   }
 
+  @Override
   public void setWebaddrServiceURI(final String val) {
     getConf().setWebaddrServiceURI(val);
   }
 
+  @Override
   public String getWebaddrServiceURI() {
     return getConf().getWebaddrServiceURI();
   }
 
+  @Override
   public void setWebaddrServicePropertiesList(final String val) {
     getConf().setWebaddrServicePropertiesList(val);
   }
 
+  @Override
   public String getWebaddrServicePropertiesList() {
     return getConf().getWebaddrServicePropertiesList();
   }
 
+  @Override
   public void setWebaddrPublicAddrbook(final String val) {
     getConf().setWebaddrPublicAddrbook(val);
   }
 
+  @Override
   public String getWebaddrPublicAddrbook() {
     return getConf().getWebaddrPublicAddrbook();
   }
 
+  @Override
   public void setDirectoryBrowsingDisallowed(final boolean val) {
     getConf().setDirectoryBrowsingDisallowed(val);
   }
 
+  @Override
   public boolean getDirectoryBrowsingDisallowed() {
     return getConf().getDirectoryBrowsingDisallowed();
   }
 
+  @Override
   public void setDefaultAddressbook(final String val) {
     getConf().setDefaultAddressbook(val);
   }
 
+  @Override
   public String getDefaultAddressbook() {
     return getConf().getDefaultAddressbook();
   }
 
+  @Override
   public void setAddressBookHandlerPrefix(final String val) {
     getConf().setAddressBookHandlerPrefix(val);
   }
 
+  @Override
   public String getAddressBookHandlerPrefix() {
     return getConf().getAddressBookHandlerPrefix();
   }
 
+  @Override
   public void setUserHomeRoot(final String val) {
     getConf().setUserHomeRoot(val);
   }
 
+  @Override
   public String getUserHomeRoot() {
     return getConf().getUserHomeRoot();
   }
 
+  @Override
   public void setPrincipalRoot(final String val) {
     getConf().setPrincipalRoot(val);
   }
 
+  @Override
   public String getPrincipalRoot() {
     return getConf().getPrincipalRoot();
   }
 
+  @Override
   public void setUserPrincipalRoot(final String val) {
     getConf().setUserPrincipalRoot(val);
   }
 
+  @Override
   public String getUserPrincipalRoot() {
     return getConf().getUserPrincipalRoot();
   }
 
+  @Override
   public void setGroupPrincipalRoot(final String val) {
     getConf().setGroupPrincipalRoot(val);
   }
 
+  @Override
   public String getGroupPrincipalRoot() {
     return getConf().getGroupPrincipalRoot();
   }
 
+  @Override
   public void setResourcePrincipalRoot(final String val) {
     getConf().setResourcePrincipalRoot(val);
   }
 
+  @Override
   public String getResourcePrincipalRoot() {
     return getConf().getResourcePrincipalRoot();
   }
 
+  @Override
   public void setVenuePrincipalRoot(final String val) {
     getConf().setVenuePrincipalRoot(val);
   }
 
+  @Override
   public String getVenuePrincipalRoot() {
     return getConf().getVenuePrincipalRoot();
   }
 
+  @Override
   public void setTicketPrincipalRoot(final String val) {
     getConf().setTicketPrincipalRoot(val);
   }
 
+  @Override
   public String getTicketPrincipalRoot() {
     return getConf().getTicketPrincipalRoot();
   }
 
+  @Override
   public void setHostPrincipalRoot(final String val) {
     getConf().setHostPrincipalRoot(val);
   }
 
+  @Override
   public String getHostPrincipalRoot() {
     return getConf().getHostPrincipalRoot();
   }
@@ -207,29 +250,11 @@ public class CardDavContext extends ConfBase implements CardDavContextMBean {
    */
   public synchronized CardDAVConfig getConf() {
     try {
-      if (cfg == null) {
-        /* Try to load it */
-        cfg = new CardDAVConfig();
-
-        ConfigurationFileStore cfs = new ConfigurationFileStore(getConfigDir());
-
-        ConfigurationType config = cfs.getConfig(getConfigName());
-
-        if (config == null) {
-          /* XXX For the time being try to load it from the options.
-           * This is just to allow a migration from the old 3.8 system to the
-           * later releases.
-           */
-          OptionsI opts = CardDavSvc.getOptions();
-          cfg = (CardDAVConfig)opts.getAppProperty(getConfigName());
-
-          /* Now save it for next time */
-          //saveConfig(); - done at create
-        } else {
-          cfg.setConfig(config);
-          cfg.setAppName(getConfigName());
-        }
+      if (cfg != null) {
+        return cfg;
       }
+
+      cfg = getConfigInfo(getConfigName(), CardDAVConfig.class);
 
       return cfg;
     } catch (Throwable t) {

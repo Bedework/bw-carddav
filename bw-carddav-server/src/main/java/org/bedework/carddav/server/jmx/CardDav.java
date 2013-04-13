@@ -19,13 +19,11 @@
 package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.util.CardDAVConfig;
-import org.bedework.carddav.util.DbDirHandlerConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
-import org.bedework.carddav.util.LdapDirHandlerConfig;
 
-import edu.rpi.cmt.config.ConfigurationFileStore;
 import edu.rpi.cmt.config.ConfigurationStore;
 import edu.rpi.cmt.config.ConfigurationType;
+import edu.rpi.cmt.jmx.ConfBase;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +44,11 @@ import javax.management.openmbean.TabularType;
  *
  */
 public class CardDav extends ConfBase implements CardDavMBean {
+  private static final String serviceName = "org.bedework.carddav:service=CardDav";
+
+  /* Name of the property holding the location of the config data */
+  private static final String datauriPname = "org.bedework.carddav.datauri";
+
   private static final String[] configs = {"usercarddav",
                                            "pubcarddav"};
 
@@ -91,10 +94,11 @@ public class CardDav extends ConfBase implements CardDavMBean {
   }
 
   /**
-   * @param configDir
    */
-  public CardDav(final String configDir) {
-    setConfigDir(configDir);
+  public CardDav() {
+    super(serviceName);
+
+    setConfigPname(datauriPname);
   }
 
   /**
@@ -125,6 +129,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
    * Operations
    * ======================================================================== */
 
+  @Override
   public TabularData ListDirHandlersTable() {
     dhData.clear();
 
@@ -144,6 +149,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
     return dhData;
   }
 
+  @Override
   public String ListDirHandlers() {
     StringBuilder res = new StringBuilder();
 
@@ -164,7 +170,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
     try {
       /* Load up the end-point configs */
 
-      ConfigurationStore cfs = new ConfigurationFileStore(getConfigDir());
+      ConfigurationStore cs = getStore();
 
       confBeans = new ArrayList<ConfBase>();
 
@@ -172,35 +178,28 @@ public class CardDav extends ConfBase implements CardDavMBean {
       for (String c: configs) {
         ObjectName objectName = createObjectName("conf", c);
 
-        CardDavContext cdc = new CardDavContext(objectName.toString(),
-                                          getCardDAVConf(cfs, c),
-                                          c,
-                                          getConfigDir());
+        CardDavContext cdc = new CardDavContext(cs,
+                                                objectName.toString(),
+                                                c);
 
+        cdc.loadConfig();
         register("conf", c, cdc);
         confBeans.add(cdc);
-
-        cdc.saveConfig(); // Just to ensure we have it for next time
       }
 
       /* Now do the dir handlers */
 
       /* First we need a list */
 
-      cfs = cfs.getStore("dirHandlers");
+      cs = cs.getStore("dirHandlers");
 
-      Collection<String> dirHandlerNames = cfs.getConfigs();
-
-      if (dirHandlerNames.isEmpty()) {
-        // XXX temp - get from the options
-        String dirHandlersElementName = "org.bedework.global.dirhandlers";
-        dirHandlerNames = CardDavSvc.getOptions().getNames(dirHandlersElementName);
-      }
+      Collection<String> dirHandlerNames = cs.getConfigs();
 
       dirhandlerConfigs = new ArrayList<DirHandlerConfig>();
 
       for (String dhn: dirHandlerNames) {
-        DirHandlerConfig cfg = getDirHandlerConf(cfs, dhn);
+        /* We have to load the config here to get the class of the bean. */
+        DirHandlerConfig cfg = getDirHandlerConf(cs, dhn);
 
         if (cfg == null) {
           continue;
@@ -223,12 +222,11 @@ public class CardDav extends ConfBase implements CardDavMBean {
           continue;
         }
 
-        dhc.init(objectName.toString(), cfg, dhn, cfs.getPath());
+        dhc.init(cs, cfg, objectName.toString(), dhn);
 
         register("dirhandler", dhn, dhc);
         confBeans.add(dhc);
-
-        dhc.saveConfig(); // Just to ensure we have it for next time
+        dhc.saveConfig();
       }
 
       return "OK";
@@ -246,37 +244,6 @@ public class CardDav extends ConfBase implements CardDavMBean {
   /**
    * @return current state of config
    */
-  private synchronized CardDAVConfig getCardDAVConf(final ConfigurationStore cfs,
-                                                   final String configName) {
-    CardDAVConfig cfg;
-    try {
-      /* Try to load it */
-      ConfigurationType config = cfs.getConfig(configName);
-
-      if (config == null) {
-        /* XXX For the time being try to load it from the options.
-         * This is just to allow a migration from the old 3.8 system to the
-         * later releases.
-         */
-        cfg = (CardDAVConfig)CardDavSvc.getOptions().getAppProperty(configName);
-      } else {
-        cfg = new CardDAVConfig();
-
-        cfg.setConfig(config);
-        cfg.setAppName(configName);
-      }
-
-      return cfg;
-    } catch (Throwable t) {
-      error(t);
-      cfg = new CardDAVConfig();
-      return cfg;
-    }
-  }
-
-  /**
-   * @return current state of config
-   */
   private synchronized DirHandlerConfig getDirHandlerConf(final ConfigurationStore cfs,
                                                            final String configName) {
     try {
@@ -284,56 +251,16 @@ public class CardDav extends ConfBase implements CardDavMBean {
 
       ConfigurationType config = cfs.getConfig(configName);
 
-      if (config != null) {
-        DirHandlerConfig cfg =
-            (DirHandlerConfig)makeObject(DirHandlerConfig.getConfClass(config));
-
-        cfg.setConfig(config);
-
-        return cfg;
-      }
-
-      /* XXX For the time being try to load it from the options.
-       * This is just to allow a migration from the old 3.8 system to the
-       * later releases.
-       */
-      String cname = "org.bedework.global.dirhandlers." + configName;
-      DirHandlerConfig cfg = (DirHandlerConfig)CardDavSvc.getOptions().getProperty(cname);
-
-      if (cfg == null) {
-        warn("No config found for " + cname);
+      if (config == null) {
         return null;
       }
 
-      cfg.setConfClass(cfg.getClass().getCanonicalName());
+      DirHandlerConfig cfg =
+          (DirHandlerConfig)makeObject(DirHandlerConfig.getConfClass(config));
 
-      /* Fix this up so that we have a class for the config bean. */
-
-      if (cfg instanceof DbDirHandlerConfig) {
-        cfg.setConfBeanClass(DbDirHandlerConf.class.getCanonicalName());
-      } else if (cfg instanceof LdapDirHandlerConfig) {
-        cfg.setConfBeanClass(LdapDirHandlerConf.class.getCanonicalName());
-      } else {
-        warn("No config bean for class " + cfg.getConfClass());
-      }
+      cfg.setConfig(config);
 
       return cfg;
-    } catch (Throwable t) {
-      error(t);
-      return null;
-    }
-  }
-
-  private Object makeObject(final String className) {
-    try {
-      Object o = Class.forName(className).newInstance();
-
-      if (o == null) {
-        error("Class " + className + " not found");
-        return null;
-      }
-
-      return o;
     } catch (Throwable t) {
       error(t);
       return null;

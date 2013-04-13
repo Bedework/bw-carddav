@@ -15,11 +15,6 @@
 		<!-- Project Dependencies -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>bw-carddav-ear-properties</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>bw-carddav-server</artifactId>
 			<version>${project.version}</version>
 			<exclusions>

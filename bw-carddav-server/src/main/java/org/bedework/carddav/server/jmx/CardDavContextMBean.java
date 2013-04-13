@@ -18,7 +18,8 @@
  */
 package org.bedework.carddav.server.jmx;
 
-import org.apache.activemq.broker.jmx.MBeanInfo;
+import edu.rpi.cmt.jmx.ConfBaseMBean;
+import edu.rpi.cmt.jmx.MBeanInfo;
 
 import java.util.List;
 

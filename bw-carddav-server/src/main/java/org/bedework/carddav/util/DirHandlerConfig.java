@@ -18,6 +18,7 @@
  */
 package org.bedework.carddav.util;
 
+import edu.rpi.cmt.config.ConfigBase;
 import edu.rpi.cmt.config.ConfigurationStringValueType;
 import edu.rpi.cmt.config.ConfigurationType;
 import edu.rpi.sss.util.ToString;

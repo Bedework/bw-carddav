@@ -18,11 +18,17 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.server.jmx.CardDav;
+
 import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
 import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
+import edu.rpi.cmt.config.ConfigurationType;
+import edu.rpi.cmt.jmx.ConfBase;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServletRequest;
 
 /** This class extends the webdav servlet class, implementing the abstract
@@ -30,7 +36,8 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Mike Douglass   douglm  rpi . edu
  */
-public class CarddavServlet extends WebdavServlet {
+public class CarddavServlet extends WebdavServlet
+    implements ServletContextListener {
   /* ====================================================================
    *                     Abstract servlet methods
    * ==================================================================== */
@@ -54,4 +61,62 @@ public class CarddavServlet extends WebdavServlet {
     wi.init(this, req, methods, dumpContent);
     return wi;
   }
+
+  /* -----------------------------------------------------------------------
+   *                         JMX support
+   */
+
+  class Configurator extends ConfBase {
+    CardDav cd;
+
+    Configurator() {
+      super("org.bedework.synch:service=Synch");
+    }
+
+    @Override
+    public ConfigurationType getConfigObject() {
+      return cd.getConfigObject();
+    }
+
+    void start() {
+      try {
+        getManagementContext().start();
+
+        cd = new CardDav();
+        register("cardDav", "cardDav", cd);
+        cd.loadConfigs();
+      } catch (Throwable t){
+        t.printStackTrace();
+      }
+    }
+
+    void stop() {
+      try {
+        if (cd != null) {
+          getManagementContext().stop();
+        }
+      } catch (Throwable t){
+        t.printStackTrace();
+      }
+    }
+  }
+
+  private Configurator conf = new Configurator();
+
+  @Override
+  public void contextInitialized(final ServletContextEvent sce) {
+    String s = sce.getServletContext().getInitParameter("register-jmx");
+
+    if (!Boolean.valueOf(s)) {
+      return;
+    }
+
+    conf.start();
+  }
+
+  @Override
+  public void contextDestroyed(final ServletContextEvent sce) {
+    conf.stop();
+  }
+
 }

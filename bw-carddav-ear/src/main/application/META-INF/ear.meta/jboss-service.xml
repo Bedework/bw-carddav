@@ -4,10 +4,4 @@
   <loader-repository> 
     org.bedework:archive=carddav-dumpres-service 
   </loader-repository> 
-  
-  <mbean code="org.bedework.carddav.server.jmx.CardDavSvc"
-         name="org.bedework.carddav:service=CardDavSvc">
-    <attribute name="OptionsPath">${jboss.server.data.dir}/bedework/carddav-options.xml</attribute>
-    <attribute name="ConfigDir">${jboss.server.data.dir}/bedework/carddavConfig</attribute>
-  </mbean>
 </server>

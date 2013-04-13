@@ -60,7 +60,6 @@
 		<module>bw-carddav-public-war</module>
 		<module>bw-carddav-user-war</module>
 		<module>bw-carddav-userweb-war</module>
-		<module>bw-carddav-ear-properties</module>
 		<module>bw-carddav-ear</module>
 	</modules>
 

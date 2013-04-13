@@ -18,7 +18,7 @@
  */
 package org.bedework.carddav.server.jmx;
 
-import org.apache.activemq.broker.jmx.MBeanInfo;
+import edu.rpi.cmt.jmx.MBeanInfo;
 
 /** Configure a carddav service dir handler
  *

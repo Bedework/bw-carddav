@@ -210,7 +210,7 @@ public class Importer {
 
       respCode = client.sendRequest("PUT",
                                     Util.buildPath(false, urlPrefix, "/", name, ".vcf"),
-                                    null, null,
+                                    null,
                                     "text/vcard", content.length,
                                     content);
 
