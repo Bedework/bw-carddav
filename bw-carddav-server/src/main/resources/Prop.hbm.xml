@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!-- ===================================================================
+     Object to represent a card.
+     =================================================================== -->
+
+<hibernate-mapping>
+  <class name="org.bedework.carddav.server.dirHandlers.db.DbCardProperty"
+         table="bwcd_props" >
+    <cache usage="read-write"/>
+    <id name="id" type="long" column="bwcd_id">
+      <generator class="native"/>
+    </id>
+
+    <!-- property properties -->
+
+    <property name="name" column="bwcd_name" type="string" length="500"
+              index="bwcdidx_prop_name" />
+
+    <bag name="params" table="bwcd_prop_params"
+         lazy="true"
+         cascade="all-delete-orphan" >
+      <key column="bwcd_propid" foreign-key="bwcd_prp_param_fk" />
+      <many-to-many class="org.bedework.carddav.server.dirHandlers.db.DbCardParam"
+                    unique="true"
+                    column="bwcd_paramid"
+                    foreign-key="bwcd_prop_param_fk" />
+    </bag>
+
+    <property name="value" column="bwcd_value" type="text"/>
+  </class>
+</hibernate-mapping>
+

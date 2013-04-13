@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration
+    PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<!-- ===================================================================
+     Hibernate mapping for the bedework carddav suite.
+     =================================================================== -->
+
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.query.substitutions">true 'T', false 'F', yes 'Y', no 'N'</property>
+
+    <!-- Mapping files -->
+    <mapping resource="Card.hbm.xml"/>
+    <mapping resource="Collection.hbm.xml"/>
+    <mapping resource="Prop.hbm.xml"/>
+    <mapping resource="Param.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>
