@@ -18,8 +18,6 @@
 */
 package org.bedework.carddav.server;
 
-import net.fortuna.ical4j.util.CompatibilityHints;
-
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
@@ -66,6 +64,8 @@ import edu.rpi.sss.util.xml.XmlEmit.NameSpace;
 import edu.rpi.sss.util.xml.XmlUtil;
 import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
 import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
+
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.w3c.dom.Element;
 
@@ -238,6 +238,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     /* (non-Javadoc)
      * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#makeHref(java.lang.String, int)
      */
+    @Override
     public String makeHref(final String id, final int whoType) throws AccessException {
       try {
         AccessPrincipal p;
@@ -255,6 +256,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     /* (non-Javadoc)
      * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getPrincipal()
      */
+    @Override
     public AccessPrincipal getPrincipal() throws AccessException {
       try {
         return sysi.getPrincipal();
@@ -263,6 +265,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
     }
 
+    @Override
     public AccessPrincipal getPrincipal(final String href) throws AccessException {
       try {
         return sysi.getPrincipal(href);
@@ -274,6 +277,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     /* (non-Javadoc)
      * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#setErrorTag(edu.rpi.sss.util.xml.QName)
      */
+    @Override
     public void setErrorTag(final QName tag) throws AccessException {
       errorTag = tag;
     }
@@ -281,6 +285,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     /* (non-Javadoc)
      * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getErrorTag()
      */
+    @Override
     public QName getErrorTag() throws AccessException {
       return errorTag;
     }
@@ -288,6 +293,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     /* (non-Javadoc)
      * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#setErrorMsg(java.lang.String)
      */
+    @Override
     public void setErrorMsg(final String val) throws AccessException {
       errorMsg = val;
     }
@@ -295,6 +301,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     /* (non-Javadoc)
      * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getErrorMsg()
      */
+    @Override
     public String getErrorMsg() throws AccessException {
       return errorMsg;
     }
@@ -495,6 +502,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public Content getContent(final HttpServletRequest req,
                             final HttpServletResponse resp,
+                            final String contentType,
                             final WebdavNsNode node) throws WebdavException {
     try {
       String accept = req.getHeader("ACCEPT");
