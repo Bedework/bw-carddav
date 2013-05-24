@@ -23,7 +23,7 @@ import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
@@ -62,7 +62,7 @@ public class SpecialUri {
                                 final HttpServletResponse resp,
                                 final String resourceUri,
                                 final SysIntf sysi,
-                                final CardDAVConfig config,
+                                final CardDAVContextConfig config,
                                 final boolean fromGetAccept,
                                 final String accept,
                                 final String vcardVersion) throws WebdavException {
@@ -176,7 +176,7 @@ public class SpecialUri {
   private static GetResult doSearch(final HttpServletRequest req,
                                     final CarddavCollection col,
                                     final GetLimits limits,
-                                    final CardDAVConfig config,
+                                    final CardDAVContextConfig config,
                                     final SysIntf sysi) throws WebdavException {
     String text = req.getParameter("q");
 
@@ -229,7 +229,7 @@ public class SpecialUri {
   private static GetResult doList(final HttpServletRequest req,
                                   final CarddavCollection col,
                                   final GetLimits limits,
-                                  final CardDAVConfig config,
+                                  final CardDAVContextConfig config,
                                   final SysIntf sysi) throws WebdavException {
     return sysi.getCards(col, null, limits);
   }

@@ -127,6 +127,18 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
   @MBeanInfo("Status of the database schema build.")
   public List<String> schemaStatus();
 
+  /**
+   * @param value
+   */
+  @MBeanInfo("Set the hibernate dialect")
+  void setHibernateDialect(@MBeanInfo("value: a valid hibernate dialect class") final String value);
+
+  /**
+   * @return Completion messages
+   */
+  @MBeanInfo("Get the hibernate dialect")
+  String getHibernateDialect();
+
   /** List the hibernate properties
    *
    * @return properties
@@ -155,7 +167,7 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
    */
   @MBeanInfo("Add a hibernate property")
   void addHibernateProperty(@MBeanInfo("name") final String name,
-                              @MBeanInfo("value") final String value);
+                            @MBeanInfo("value") final String value);
 
   /**
    * @param name

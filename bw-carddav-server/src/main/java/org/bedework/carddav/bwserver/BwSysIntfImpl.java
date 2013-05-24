@@ -27,7 +27,7 @@ import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.SysIntf;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
@@ -79,7 +79,7 @@ public class BwSysIntfImpl implements SysIntf {
 
   private UrlHandler urlHandler;
 
-  private CardDAVConfig conf;
+  private CardDAVContextConfig conf;
 
   private static class HandlerKey {
     String prefix;
@@ -176,7 +176,7 @@ public class BwSysIntfImpl implements SysIntf {
 
   public void init(final HttpServletRequest req,
                    final String account,
-                   final CardDAVConfig conf,
+                   final CardDAVContextConfig conf,
                    final boolean debug) throws WebdavException {
     try {
       this.account = account;

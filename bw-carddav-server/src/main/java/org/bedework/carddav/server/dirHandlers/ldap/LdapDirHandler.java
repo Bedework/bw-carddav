@@ -29,7 +29,7 @@ import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapp
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
@@ -77,7 +77,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
    * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
   @Override
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);

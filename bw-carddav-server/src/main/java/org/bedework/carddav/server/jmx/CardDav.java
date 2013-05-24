@@ -18,11 +18,10 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 
 import edu.rpi.cmt.config.ConfigurationStore;
-import edu.rpi.cmt.config.ConfigurationType;
 import edu.rpi.cmt.jmx.ConfBase;
 
 import java.util.ArrayList;
@@ -43,11 +42,11 @@ import javax.management.openmbean.TabularType;
  * @author douglm
  *
  */
-public class CardDav extends ConfBase implements CardDavMBean {
+public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMBean {
   private static final String serviceName = "org.bedework.carddav:service=CardDav";
 
   /* Name of the property holding the location of the config data */
-  private static final String datauriPname = "org.bedework.carddav.datauri";
+  private static final String confuriPname = "org.bedework.carddav.confuri";
 
   private static final String[] configs = {"usercarddav",
                                            "pubcarddav"};
@@ -98,14 +97,14 @@ public class CardDav extends ConfBase implements CardDavMBean {
   public CardDav() {
     super(serviceName);
 
-    setConfigPname(datauriPname);
+    setConfigPname(confuriPname);
   }
 
   /**
    * @param configName
    * @return config for given service
    */
-  public static CardDAVConfig getConf(final String configName) {
+  public static CardDAVContextConfig getConf(final String configName) {
     for (ConfBase c: confBeans) {
       if ((c instanceof CardDavContext) &&
           (configName.equals(c.getConfigName()))) {
@@ -113,11 +112,6 @@ public class CardDav extends ConfBase implements CardDavMBean {
       }
     }
 
-    return null;
-  }
-
-  @Override
-  public ConfigurationType getConfigObject() {
     return null;
   }
 
@@ -135,7 +129,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
 
     for (DirHandlerConfig dhc: dirhandlerConfigs) {
       Object[] itemValues = {dhc.getPathPrefix(),
-                             dhc.getAppName(),
+                             dhc.getName(),
                              dhc.getClassName()
       };
       try {
@@ -156,7 +150,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
     for (DirHandlerConfig dhc: dirhandlerConfigs) {
       res.append(dhc.getPathPrefix());
       res.append("\t");
-      res.append(dhc.getAppName());
+      res.append(dhc.getName());
       res.append("\t");
       res.append(dhc.getClassName());
       res.append("\n");
@@ -205,7 +199,7 @@ public class CardDav extends ConfBase implements CardDavMBean {
           continue;
         }
 
-        cfg.setAppName(dhn);
+        cfg.setName(dhn);
         dirhandlerConfigs.add(cfg);
 
         for (ConfBase c: confBeans) {
@@ -244,23 +238,10 @@ public class CardDav extends ConfBase implements CardDavMBean {
   /**
    * @return current state of config
    */
-  private synchronized DirHandlerConfig getDirHandlerConf(final ConfigurationStore cfs,
-                                                           final String configName) {
+  private DirHandlerConfig getDirHandlerConf(final ConfigurationStore cfs,
+                                             final String configName) {
     try {
-      /* Try to load it */
-
-      ConfigurationType config = cfs.getConfig(configName);
-
-      if (config == null) {
-        return null;
-      }
-
-      DirHandlerConfig cfg =
-          (DirHandlerConfig)makeObject(DirHandlerConfig.getConfClass(config));
-
-      cfg.setConfig(config);
-
-      return cfg;
+      return (DirHandlerConfig)cfs.getConfig(configName);
     } catch (Throwable t) {
       error(t);
       return null;

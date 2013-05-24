@@ -18,54 +18,44 @@
  */
 package org.bedework.carddav.util;
 
-import edu.rpi.cmt.config.ConfigBase;
-import edu.rpi.cmt.config.ConfigurationStringValueType;
-import edu.rpi.cmt.config.ConfigurationType;
+import edu.rpi.cmt.config.ConfInfo;
+import edu.rpi.cmt.config.HibernateConfigBase;
 import edu.rpi.sss.util.ToString;
-
-import javax.xml.namespace.QName;
 
 /** Class defining the configuration for a directory handler.
  *
  * @author douglm
  * @param <T>
  */
-public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends ConfigBase<T> {
-  /** */
-  public final static QName confElement = new QName(ns, "bwcarddav-dirhandler");
+@ConfInfo(elementName = "bwcarddav-dirhandler")
+public abstract class DirHandlerConfig<T extends DirHandlerConfig>
+        extends HibernateConfigBase<T> {
+  private String confClass;
 
-  /** */
-  public static final QName confClass = new QName(ns, "confClass");
+  private String confBeanClass;
 
-  private static final QName confBeanClass = new QName(ns, "confBeanClass");
+  private String pathPrefix;
 
-  private static final QName pathPrefix = new QName(ns, "pathPrefix");
+  private String cardPathPrefix;
 
-  private static final QName cardPathPrefix = new QName(ns, "cardPathPrefix");
+  private String cardPathPrefixes;
 
-  private static final QName cardPathPrefixes = new QName(ns, "cardPathPrefixes");
+  private boolean addressBook;
 
-  private static final QName addressBook = new QName(ns, "addressBook");
+  private boolean directory;
 
-  private static final QName directory = new QName(ns, "directory");
+  private String className;
 
-  private static final QName className = new QName(ns, "className");
+  private String ownerHref;
 
-  private static final QName ownerHref = new QName(ns, "ownerHref");
-
-  private static final QName cardKind = new QName(ns, "cardKind");
-
-  @Override
-  public QName getConfElement() {
-    return confElement;
-  }
+  private String cardKind;
 
   /** set the class for the conf wrapper object class
    *
    * @param val
    */
   public void setConfClass(final String val) {
-    setProperty(confClass, val);
+    confClass = val;
   }
 
   /** Get the class for the conf wrapper object class
@@ -73,21 +63,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String   path
    */
   public String getConfClass() {
-    return getPropertyValue(confClass);
-  }
-
-  /** Get the class for the conf wrapper object class given a configuration
-   * object.
-   *
-   * @param conf
-   * @return String   path
-   */
-  public static String getConfClass(final ConfigurationType conf) {
-    try {
-      return ((ConfigurationStringValueType)conf.findAll(confClass).get(0)).getValue();
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
-    }
+    return confClass;
   }
 
   /** set the class for the jmx conf bean
@@ -95,7 +71,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val
    */
   public void setConfBeanClass(final String val) {
-    setProperty(confBeanClass, val);
+    confBeanClass = val;
   }
 
   /** Get the class for the jmx conf bean
@@ -103,7 +79,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String   path
    */
   public String getConfBeanClass() {
-    return getPropertyValue(confBeanClass);
+    return confBeanClass;
   }
 
   /** Set the pathPrefix which defines the paths for which we call this handler.
@@ -122,7 +98,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val    String path
    */
   public void setPathPrefix(final String val) {
-    setProperty(pathPrefix, val);
+    pathPrefix = val;
   }
 
   /** Get the pathPrefix
@@ -130,7 +106,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String   path
    */
   public String getPathPrefix() {
-    return getPropertyValue(pathPrefix);
+    return pathPrefix;
   }
 
   /** Set the cardPathPrefix which defines the prefix for principal cards.
@@ -152,7 +128,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val    String path
    */
   public void setCardPathPrefix(final String val) {
-    setProperty(cardPathPrefix, val);
+    cardPathPrefix = val;
   }
 
   /** Get the cardPathPrefix
@@ -160,7 +136,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String   path
    */
   public String getCardPathPrefix() {
-    return getPropertyValue(cardPathPrefix);
+    return cardPathPrefix;
   }
 
   /** Set the cardPathPrefixes which defines the prefixes for principal cards based
@@ -176,7 +152,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val    String
    */
   public void setCardPathPrefixes(final String val) {
-    setProperty(cardPathPrefixes, val);
+    cardPathPrefixes = val;
   }
 
   /** Get the cardPathPrefixes
@@ -184,7 +160,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String
    */
   public String getCardPathPrefixes() {
-    return getPropertyValue(cardPathPrefixes);
+    return cardPathPrefixes;
   }
 
   /** True if this prefix represents an addressbook. Only required if we have no
@@ -193,7 +169,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val
    */
   public void setAddressBook(final boolean val)  {
-    setBooleanProperty(addressBook, val);
+    addressBook = val;
   }
 
   /** Is this an addressbook?
@@ -201,7 +177,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return boolean val
    */
   public boolean getAddressBook() {
-    return getBooleanPropertyValue(addressBook);
+    return addressBook;
   }
 
   /** True if this prefix represents a directory. This is part of the gateway
@@ -210,7 +186,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val
    */
   public void setDirectory(final boolean val)  {
-    setBooleanProperty(directory, val);
+    directory = val;
   }
 
   /** Is this a directory?
@@ -218,7 +194,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return boolean val
    */
   public boolean getDirectory() {
-    return getBooleanPropertyValue(directory);
+    return directory;
   }
 
   /** Set the interface implementation
@@ -226,7 +202,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val    String
    */
   public void setClassName(final String val) {
-    setProperty(className, val);
+    className = val;
   }
 
   /** get the interface implementation
@@ -234,7 +210,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String
    */
   public String getClassName() {
-    return getPropertyValue(className);
+    return className;
   }
 
   /** Set the href for the owner
@@ -242,7 +218,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val    String
    */
   public void setOwnerHref(final String val) {
-    setProperty(ownerHref, val);
+    ownerHref = val;
   }
 
   /** get the href for the owner
@@ -250,7 +226,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String
    */
   public String getOwnerHref() {
-    return getPropertyValue(ownerHref);
+    return ownerHref;
   }
 
   /** If set defines the default kind in this directory
@@ -258,7 +234,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @param val
    */
   public void setCardKind(final String val)  {
-    setProperty(cardKind, val);
+    cardKind = val;
   }
 
   /** If set defines the default kind in this directory
@@ -266,10 +242,10 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
    * @return String val
    */
   public String getCardKind()  {
-    return getPropertyValue(cardKind);
+    return cardKind;
   }
 
-  /** Add our stuff to the StringBuilder
+  /** Add our stuff
    *
    * @param sb    StringBuilder for result
    * @param indent
@@ -278,8 +254,16 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig> extends Confi
   public void toStringSegment(final ToString ts) {
     super.toStringSegment(ts);
 
+    ts.append("confClass", getConfClass());
+    ts.append("confBeanClass", getConfBeanClass());
     ts.append("pathPrefix", getPathPrefix());
+    ts.append("cardPathPrefix", getCardPathPrefix());
+    ts.append("cardPathPrefixes", getCardPathPrefixes());
+    ts.append("addressBook", getAddressBook());
+    ts.append("directory", getDirectory());
+    ts.append("className", getClassName());
     ts.append("ownerHref", getOwnerHref());
+    ts.append("cardKind", getCardKind());
   }
 
   /* ====================================================================

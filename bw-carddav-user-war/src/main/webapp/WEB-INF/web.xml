@@ -11,7 +11,7 @@
     <param-name>bwappname</param-name>
     <param-value>usercarddav</param-value>
   </context-param>
-
+ 
   <!-- One and only one context should register the jmx mbeans -->
   <context-param>
     <param-name>register-jmx</param-name>

@@ -18,10 +18,9 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 
 import edu.rpi.cmt.config.ConfigurationStore;
-import edu.rpi.cmt.config.ConfigurationType;
 import edu.rpi.cmt.jmx.ConfBase;
 
 import java.util.ArrayList;
@@ -31,9 +30,7 @@ import java.util.List;
  * @author douglm
  *
  */
-public class CardDavContext extends ConfBase<CardDAVConfig> implements CardDavContextMBean {
-  private CardDAVConfig cfg;
-
+public class CardDavContext extends ConfBase<CardDAVContextConfig> implements CardDavContextMBean {
   /**
    * @param configStore
    * @param serviceName
@@ -48,18 +45,13 @@ public class CardDavContext extends ConfBase<CardDAVConfig> implements CardDavCo
     setConfigName(configName);
   }
 
-  @Override
-  public ConfigurationType getConfigObject() {
-    return getConf().getConfig();
-  }
-
   /**
    * @throws Throwable
    */
   public void loadConfig() throws Throwable {
     /* Load up the config */
 
-    cfg = getConfigInfo(getConfigName(), CardDAVConfig.class);
+    cfg = getConfigInfo(getConfigName(), CardDAVContextConfig.class);
 
     if (cfg == null) {
       throw new Exception("Unable to read configuration " + getConfigName());
@@ -248,18 +240,18 @@ public class CardDavContext extends ConfBase<CardDAVConfig> implements CardDavCo
   /**
    * @return current state of config
    */
-  public synchronized CardDAVConfig getConf() {
+  public synchronized CardDAVContextConfig getConf() {
     try {
       if (cfg != null) {
         return cfg;
       }
 
-      cfg = getConfigInfo(getConfigName(), CardDAVConfig.class);
+      cfg = getConfigInfo(getConfigName(), CardDAVContextConfig.class);
 
       return cfg;
     } catch (Throwable t) {
       error(t);
-      cfg = new CardDAVConfig();
+      cfg = new CardDAVContextConfig();
       return cfg;
     }
   }

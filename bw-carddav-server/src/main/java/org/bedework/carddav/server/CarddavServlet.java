@@ -24,7 +24,6 @@ import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
 import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cmt.config.ConfigurationType;
 import edu.rpi.cmt.jmx.ConfBase;
 
 import javax.servlet.ServletContextEvent;
@@ -71,11 +70,6 @@ public class CarddavServlet extends WebdavServlet
 
     Configurator() {
       super("org.bedework.synch:service=Synch");
-    }
-
-    @Override
-    public ConfigurationType getConfigObject() {
-      return cd.getConfigObject();
     }
 
     void start() {

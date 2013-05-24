@@ -23,7 +23,7 @@ import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 
@@ -69,7 +69,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param urlHandler - to allow creation of urls in returned objects.
    * @throws WebdavException
    */
-  public void init(CardDAVConfig cdConfig,
+  public void init(CardDAVContextConfig cdConfig,
                    DirHandlerConfig dhConfig,
                    UrlHandler urlHandler) throws WebdavException;
 

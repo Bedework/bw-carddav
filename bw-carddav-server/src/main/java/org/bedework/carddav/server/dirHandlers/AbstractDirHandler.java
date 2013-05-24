@@ -19,7 +19,7 @@
 package org.bedework.carddav.server.dirHandlers;
 
 import org.bedework.carddav.bwserver.DirHandler;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.DirectoryInfo;
 import org.bedework.carddav.util.Group;
@@ -51,7 +51,7 @@ import java.util.TreeSet;
 */
 public abstract class AbstractDirHandler implements DirHandler {
   /** */
-  protected CardDAVConfig cdConfig;
+  protected CardDAVContextConfig cdConfig;
   /** */
   protected DirHandlerConfig dhConfig;
 
@@ -130,7 +130,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     this.cdConfig = cdConfig;

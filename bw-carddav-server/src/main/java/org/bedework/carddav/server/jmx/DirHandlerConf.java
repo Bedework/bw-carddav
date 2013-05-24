@@ -21,7 +21,6 @@ package org.bedework.carddav.server.jmx;
 import org.bedework.carddav.util.DirHandlerConfig;
 
 import edu.rpi.cmt.config.ConfigurationStore;
-import edu.rpi.cmt.config.ConfigurationType;
 import edu.rpi.cmt.jmx.ConfBase;
 
 /**
@@ -29,8 +28,6 @@ import edu.rpi.cmt.jmx.ConfBase;
  *
  */
 public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHandlerConfMBean {
-  private DirHandlerConfig cfg;
-
   /**
    * @param configStore
    * @param cfg
@@ -47,11 +44,6 @@ public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHan
     setConfigName(configName);
 
     this.cfg = cfg;
-  }
-
-  @Override
-  public ConfigurationType getConfigObject() {
-    return getConf().getConfig();
   }
 
   /**

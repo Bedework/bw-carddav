@@ -20,7 +20,7 @@ package org.bedework.carddav.server;
 
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.vcard.Card;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
@@ -57,7 +57,7 @@ public interface SysIntf {
    */
   public void init(HttpServletRequest req,
                    String account,
-                   CardDAVConfig conf,
+                   CardDAVContextConfig conf,
                    boolean debug) throws WebdavException;
 
   /** Return the current principal

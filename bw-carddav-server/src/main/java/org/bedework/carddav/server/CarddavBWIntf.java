@@ -24,7 +24,7 @@ import org.bedework.carddav.server.SysIntf.PrincipalInfo;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.carddav.server.query.AddressData;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
@@ -116,7 +116,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   SysIntf sysi;
 
-  private CardDAVConfig config;
+  private CardDAVContextConfig config;
 
   /** We store CaldavURI objects here
    * /
@@ -219,7 +219,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     return super.getDavHeader(node) + ", addressbook";
   }
 
-  protected CardDAVConfig getConfig() {
+  protected CardDAVContextConfig getConfig() {
     return config;
   }
 
@@ -1515,7 +1515,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       config = CardDav.getConf(appName);
       if (config == null) {
-        config = new CardDAVConfig();
+        config = new CardDAVContextConfig();
       }
     } catch (Throwable t) {
       throw new WebdavException(t);

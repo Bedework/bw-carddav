@@ -101,26 +101,32 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
    * Schema attributes
    * ======================================================================== */
 
+  @Override
   public void setDrop(final boolean val) {
     drop = val;
   }
 
+  @Override
   public boolean getDrop() {
     return drop;
   }
 
+  @Override
   public void setExport(final boolean val) {
     export = val;
   }
 
+  @Override
   public boolean getExport() {
     return export;
   }
 
+  @Override
   public void setSchemaOutFile(final String val) {
     schemaOutFile = val;
   }
 
+  @Override
   public String getSchemaOutFile() {
     return schemaOutFile;
   }
@@ -129,26 +135,32 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
    * Attributes
    * ======================================================================== */
 
+  @Override
   public void setRootAccess(final String val)  {
     getConf().setRootAccess(val);
   }
 
+  @Override
   public String getRootAccess()  {
     return getConf().getRootAccess();
   }
 
+  @Override
   public void setRootOwner(final String val)  {
     getConf().setRootOwner(val);
   }
 
+  @Override
   public String getRootOwner()  {
     return getConf().getRootOwner();
   }
 
+  @Override
   public void setQueryLimit(final int val)  {
     getConf().setQueryLimit(val);
   }
 
+  @Override
   public int getQueryLimit()  {
     return getConf().getQueryLimit();
   }
@@ -157,6 +169,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
    * Operations
    * ======================================================================== */
 
+  @Override
   public String schema() {
     try {
 //      buildSchema = new SchemaThread();
@@ -184,6 +197,17 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
     return buildSchema.infoLines;
   }
 
+  @Override
+  public void setHibernateDialect(final String value) {
+    getConf().setHibernateDialect(value);
+  }
+
+  @Override
+  public String getHibernateDialect() {
+    return getConf().getHibernateDialect();
+  }
+
+  @Override
   public String listHibernateProperties() {
     StringBuilder res = new StringBuilder();
 
@@ -197,6 +221,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
     return res.toString();
   }
 
+  @Override
   public String displayHibernateProperty(final String name) {
     String val = getConf().getHibernateProperty(name);
 
@@ -207,15 +232,18 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
     return "Not found";
   }
 
+  @Override
   public void removeHibernateProperty(final String name) {
     getConf().removeHibernateProperty(name);
   }
 
+  @Override
   public void addHibernateProperty(final String name,
                                    final String value) {
     getConf().addHibernateProperty(name, value);
   }
 
+  @Override
   public void setHibernateProperty(final String name,
                                    final String value) {
     getConf().setHibernateProperty(name, value);

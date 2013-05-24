@@ -27,7 +27,7 @@ import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.util.CardDAVBadData;
-import org.bedework.carddav.util.CardDAVConfig;
+import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 
@@ -49,7 +49,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
   @Override
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);

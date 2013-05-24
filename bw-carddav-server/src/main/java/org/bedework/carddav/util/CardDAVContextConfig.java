@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.util;
 
+import edu.rpi.cmt.config.ConfInfo;
 import edu.rpi.cmt.config.ConfigBase;
 import edu.rpi.sss.util.ToString;
 import edu.rpi.sss.util.Util;
@@ -27,80 +28,56 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.namespace.QName;
-
 /** This class defines the various properties we need for a carddav server
  *
  * @author Mike Douglass
  */
-public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
-  private final static QName confElement = new QName(ns, "bwcarddav");
-
+@ConfInfo(elementName = "bwcarddav")
+public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
   /* Default vcard version */
-  private static final QName defaultVcardVersion = new QName(ns,
-      "defaultVcardVersion");
+  private String defaultVcardVersion;
 
   /* System interface implementation */
-  private static final QName sysintfImpl = new QName(ns,
-      "sysintfImpl");
+  private String sysintfImpl;
 
   /* Web address service uri - null for no web address service */
-  private static final QName webaddrServiceURI = new QName(ns,
-      "webaddrServiceURI");
+  private String webaddrServiceURI;
 
-  private static final QName webaddrServicePropertiesList = new QName(ns,
-      "webaddrServicePropertiesList");
+  private String webaddrServicePropertiesList;
 
   /* Path prefix for public searches */
-  private static final QName webaddrPublicAddrbook = new QName(ns,
-      "webaddrPublicAddrbook");
+  private String webaddrPublicAddrbook;
 
-  private static final QName directoryBrowsingDisallowed = new QName(ns,
-      "directoryBrowsingDisallowed");
+  private boolean directoryBrowsingDisallowed;
 
-  private static final QName defaultAddressbook = new QName(ns,
-      "defaultAddressbook");
+  private String defaultAddressbook;
 
-  private static final QName addressBookHandlerPrefix = new QName(ns,
-      "addressBookHandlerPrefix");
+  private String addressBookHandlerPrefix;
 
-  private static final QName userHomeRoot = new QName(ns,
-      "userHomeRoot");
+  private String userHomeRoot;
 
-  private static final QName principalRoot = new QName(ns,
-                                                       "principalRoot");
+  private String principalRoot;
 
-  private static final QName userPrincipalRoot = new QName(ns,
-                                                           "userPrincipalRoot");
+  private String userPrincipalRoot;
 
-  private static final QName groupPrincipalRoot = new QName(ns,
-                                                            "groupPrincipalRoot");
+  private String groupPrincipalRoot;
 
-  private static final QName resourcePrincipalRoot = new QName(ns,
-                                                               "resourcePrincipalRoot");
+  private String resourcePrincipalRoot;
 
-  private static final QName venuePrincipalRoot = new QName(ns,
-                                                            "venuePrincipalRoot");
+  private String venuePrincipalRoot;
 
-  private static final QName ticketPrincipalRoot = new QName(ns,
-                                                             "ticketPrincipalRoot");
+  private String ticketPrincipalRoot;
 
-  private static final QName hostPrincipalRoot = new QName(ns,
-                                                           "hostPrincipalRoot");
+  private String hostPrincipalRoot;
 
   private Set<DirHandlerConfig> handlerConfigs;
-
-  @Override
-  public QName getConfElement() {
-    return confElement;
-  }
 
   /** Set the default vcard version
    *
    * @param val    String
    */
   public void setDefaultVcardVersion(final String val) {
-    setProperty(defaultVcardVersion, val);
+    defaultVcardVersion = val;
   }
 
   /** get the default vcard version
@@ -108,7 +85,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getDefaultVcardVersion() {
-    return getPropertyValue(defaultVcardVersion);
+    return defaultVcardVersion;
   }
 
   /** Set the System interface implementation
@@ -116,7 +93,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setSysintfImpl(final String val) {
-    setProperty(sysintfImpl, val);
+    sysintfImpl = val;
   }
 
   /** get the System interface implementation
@@ -124,7 +101,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getSysintfImpl() {
-    return getPropertyValue(sysintfImpl);
+    return sysintfImpl;
   }
 
   /** Set the web address service uri - null for no web address service
@@ -132,7 +109,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setWebaddrServiceURI(final String val) {
-    setProperty(webaddrServiceURI, val);
+    webaddrServiceURI = val;
   }
 
   /** get the web address service uri - null for no web address service
@@ -140,7 +117,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getWebaddrServiceURI() {
-    return getPropertyValue(webaddrServiceURI);
+    return webaddrServiceURI;
   }
 
   /** Set the comma separated list of web addr book searchable properties
@@ -148,14 +125,14 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setWebaddrServicePropertiesList(final String val) {
-    setProperty(webaddrServicePropertiesList, val);
+    webaddrServicePropertiesList = val;
   }
 
   /**
    * @return comma separated list of web addr book searchable properties
    */
   public String getWebaddrServicePropertiesList() {
-    return getPropertyValue(webaddrServicePropertiesList);
+    return webaddrServicePropertiesList;
   }
 
   /**
@@ -163,7 +140,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setWebaddrPublicAddrbook(final String val) {
-    setProperty(webaddrPublicAddrbook, val);
+    webaddrPublicAddrbook = val;
   }
 
   /**
@@ -171,21 +148,21 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getWebaddrPublicAddrbook() {
-    return getPropertyValue(webaddrPublicAddrbook);
+    return webaddrPublicAddrbook;
   }
 
   /**
    * @param val
    */
   public void setDirectoryBrowsingDisallowed(final boolean val) {
-    setBooleanProperty(directoryBrowsingDisallowed, val);
+    directoryBrowsingDisallowed = val;
   }
 
   /**
    * @return boolean
    */
   public boolean getDirectoryBrowsingDisallowed() {
-    return getBooleanPropertyValue(directoryBrowsingDisallowed);
+    return directoryBrowsingDisallowed;
   }
 
   /** Set the default addressbook name
@@ -193,7 +170,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setDefaultAddressbook(final String val) {
-    setProperty(defaultAddressbook, val);
+    defaultAddressbook = val;
   }
 
   /** get the default addressbook name
@@ -201,7 +178,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getDefaultAddressbook() {
-    return getPropertyValue(defaultAddressbook);
+    return defaultAddressbook;
   }
 
   /** Handler prefix for address books
@@ -209,7 +186,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setAddressBookHandlerPrefix(final String val) {
-    setProperty(addressBookHandlerPrefix, val);
+    addressBookHandlerPrefix = val;
   }
 
   /** Handler prefix for address books
@@ -217,7 +194,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getAddressBookHandlerPrefix() {
-    return getPropertyValue(addressBookHandlerPrefix);
+    return addressBookHandlerPrefix;
   }
 
   /** Set the user home root e.g. "/user"
@@ -225,7 +202,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setUserHomeRoot(final String val) {
-    setProperty(userHomeRoot, val);
+    userHomeRoot = val;
   }
 
   /** Set the user home root e.g. "/user"
@@ -233,12 +210,13 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getUserHomeRoot() {
-    return getPropertyValue(userHomeRoot);
+    return userHomeRoot;
   }
 
   /**
    * @return List derived from webaddrServicePropertiesList
    */
+  @ConfInfo(dontSave = true)
   public List<String> getWebaddrServiceProperties() {
     List<String> webaddrServiceProperties = new ArrayList<String>();
 
@@ -253,7 +231,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setPrincipalRoot(final String val) {
-    setProperty(principalRoot, val);
+    principalRoot = val;
   }
 
   /** get the principal root e.g. "/principals"
@@ -261,7 +239,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getPrincipalRoot() {
-    return getPropertyValue(principalRoot);
+    return principalRoot;
   }
 
   /** Set the user principal root e.g. "/principals/users"
@@ -269,7 +247,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setUserPrincipalRoot(final String val) {
-    setProperty(userPrincipalRoot, val);
+    userPrincipalRoot = val;
   }
 
   /** get the principal root e.g. "/principals/users"
@@ -277,7 +255,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getUserPrincipalRoot() {
-    return getPropertyValue(userPrincipalRoot);
+    return userPrincipalRoot;
   }
 
   /** Set the group principal root e.g. "/principals/groups"
@@ -285,7 +263,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setGroupPrincipalRoot(final String val) {
-    setProperty(groupPrincipalRoot, val);
+    groupPrincipalRoot = val;
   }
 
   /** get the group principal root e.g. "/principals/groups"
@@ -293,7 +271,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getGroupPrincipalRoot() {
-    return getPropertyValue(groupPrincipalRoot);
+    return groupPrincipalRoot;
   }
 
   /** Set the resource principal root e.g. "/principals/resources"
@@ -301,7 +279,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setResourcePrincipalRoot(final String val) {
-    setProperty(resourcePrincipalRoot, val);
+    resourcePrincipalRoot = val;
   }
 
   /** get the resource principal root e.g. "/principals/resources"
@@ -309,7 +287,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getResourcePrincipalRoot() {
-    return getPropertyValue(resourcePrincipalRoot);
+    return resourcePrincipalRoot;
   }
 
   /** Set the venue principal root e.g. "/principals/locations"
@@ -317,7 +295,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setVenuePrincipalRoot(final String val) {
-    setProperty(venuePrincipalRoot, val);
+    venuePrincipalRoot = val;
   }
 
   /** get the venue principal root e.g. "/principals/locations"
@@ -325,7 +303,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getVenuePrincipalRoot() {
-    return getPropertyValue(venuePrincipalRoot);
+    return venuePrincipalRoot;
   }
 
   /** Set the ticket principal root e.g. "/principals/tickets"
@@ -333,7 +311,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setTicketPrincipalRoot(final String val) {
-    setProperty(ticketPrincipalRoot, val);
+    ticketPrincipalRoot = val;
   }
 
   /** get the ticket principal root e.g. "/principals/tickets"
@@ -341,7 +319,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getTicketPrincipalRoot() {
-    return getPropertyValue(ticketPrincipalRoot);
+    return ticketPrincipalRoot;
   }
 
   /** Set the host principal root e.g. "/principals/hosts"
@@ -349,7 +327,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @param val    String
    */
   public void setHostPrincipalRoot(final String val) {
-    setProperty(hostPrincipalRoot, val);
+    hostPrincipalRoot = val;
   }
 
   /** get the host principal root e.g. "/principals/hosts"
@@ -357,7 +335,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig> {
    * @return String
    */
   public String getHostPrincipalRoot() {
-    return getPropertyValue(hostPrincipalRoot);
+    return hostPrincipalRoot;
   }
 
   /** Add our stuff to the StringBuilder
