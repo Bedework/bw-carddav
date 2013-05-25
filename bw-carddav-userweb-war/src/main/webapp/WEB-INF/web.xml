@@ -9,7 +9,7 @@
 
   <context-param>
     <param-name>bwappname</param-name>
-    <param-value>usercarddavweb</param-value>
+    <param-value>usercarddav</param-value>
   </context-param>
 
   <listener>
