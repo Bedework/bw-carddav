@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.util;
 
+import edu.rpi.cmt.config.ConfInfo;
 import edu.rpi.sss.util.ToString;
 
 /** This class defines the various properties we need to make a connection
@@ -25,6 +26,7 @@ import edu.rpi.sss.util.ToString;
  *
  * @author Mike Douglass
  */
+@ConfInfo(elementName = "bwcarddav-dirhandler")
 public class DbDirHandlerConfig extends DirHandlerConfig<DbDirHandlerConfig> {
   private String rootAccess;
 

@@ -340,8 +340,7 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
 
   /** Add our stuff to the StringBuilder
    *
-   * @param sb    StringBuilder for result
-   * @param indent
+   * @param ts    ToString for result
    */
   @Override
   public void toStringSegment(final ToString ts) {
