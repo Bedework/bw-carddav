@@ -26,7 +26,7 @@ import edu.rpi.cct.webdav.servlet.shared.WdEntity;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
-import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
+import org.bedework.util.xml.tagdefs.CarddavTags;
 
 import java.util.ArrayList;
 import java.util.Collection;

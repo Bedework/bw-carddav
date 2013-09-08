@@ -18,6 +18,12 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.carddav.vcard.Card;
+import org.bedework.util.misc.Util;
+
+import edu.rpi.cct.webdav.servlet.access.AccessState;
+import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.LastModified;
@@ -30,12 +36,6 @@ import net.fortuna.ical4j.vcard.property.Kind;
 import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
-
-import org.bedework.carddav.vcard.Card;
-
-import edu.rpi.cct.webdav.servlet.access.AccessState;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.sss.util.Util;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -83,7 +83,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
     vcard.getProperties().add(Version.VERSION_4_0);
 
     setFn(fn);
-    setUid(edu.rpi.sss.util.Uid.getUid());
+    setUid(org.bedework.util.misc.Uid.getUid());
   }
 
   /** Create DbCard with supplied vcard
@@ -377,7 +377,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
   @Override
   public int compareTo(final DbCard that) {
     try {
-      int res = Util.compareStrings(getParentPath(), that.getParentPath());
+      int res = Util.compareStrings(getParentPath(),
+                                    that.getParentPath());
 
       if (res != 0) {
         return res;
@@ -432,7 +433,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
     Uid uid = (Uid)findProperty(Property.Id.UID);
 
     if (uid == null) {
-      setUid(edu.rpi.sss.util.Uid.getUid());
+      setUid(org.bedework.util.misc.Uid.getUid());
     } else {
       setUid(uid.getValue());
     }
@@ -455,7 +456,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param id
+   * @param name
    * @return property or null
    */
   private DbCardProperty findDbProperty(final String name) {

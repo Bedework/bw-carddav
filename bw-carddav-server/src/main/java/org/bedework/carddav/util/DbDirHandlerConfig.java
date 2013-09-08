@@ -18,8 +18,8 @@
 */
 package org.bedework.carddav.util;
 
-import edu.rpi.cmt.config.ConfInfo;
-import edu.rpi.sss.util.ToString;
+import org.bedework.util.config.ConfInfo;
+import org.bedework.util.misc.ToString;
 
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information from a db.

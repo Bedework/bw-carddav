@@ -19,9 +19,8 @@
 package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.util.DirHandlerConfig;
-
-import edu.rpi.cmt.config.ConfigurationStore;
-import edu.rpi.cmt.jmx.ConfBase;
+import org.bedework.util.config.ConfigurationStore;
+import org.bedework.util.jmx.ConfBase;
 
 /**
  * @author douglm

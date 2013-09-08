@@ -31,6 +31,10 @@ import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
+import org.bedework.util.misc.Util;
+import org.bedework.util.xml.XmlUtil;
+import org.bedework.util.xml.tagdefs.CarddavTags;
+import org.bedework.util.xml.tagdefs.WebdavTags;
 
 import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
 import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
@@ -50,10 +54,6 @@ import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.cmt.access.Privilege;
-import edu.rpi.sss.util.Util;
-import edu.rpi.sss.util.xml.XmlUtil;
-import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
-import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
 
 import org.apache.log4j.Logger;
 
@@ -204,7 +204,8 @@ public class BwSysIntfImpl implements SysIntf {
    * @see org.bedework.carddav.server.SysIntf#getPrincipal()
    */
   public AccessPrincipal getPrincipal() throws WebdavException {
-    return getPrincipal(Util.buildPath(true, conf.getUserPrincipalRoot(),
+    return getPrincipal(Util.buildPath(true,
+                                       conf.getUserPrincipalRoot(),
                                        "/", account));
   }
 

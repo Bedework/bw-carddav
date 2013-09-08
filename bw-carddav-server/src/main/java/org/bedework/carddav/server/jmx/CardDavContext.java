@@ -20,8 +20,8 @@ package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.util.CardDAVContextConfig;
 
-import edu.rpi.cmt.config.ConfigurationStore;
-import edu.rpi.cmt.jmx.ConfBase;
+import org.bedework.util.config.ConfigurationStore;
+import org.bedework.util.jmx.ConfBase;
 
 import java.util.ArrayList;
 import java.util.List;

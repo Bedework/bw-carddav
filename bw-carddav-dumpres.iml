@@ -4,6 +4,7 @@
     <output url="file://$MODULE_DIR$/bw-carddav-dumpres/target/classes" />
     <output-test url="file://$MODULE_DIR$/bw-carddav-dumpres/target/test-classes" />
     <content url="file://$MODULE_DIR$/bw-carddav-dumpres">
+      <sourceFolder url="file://$MODULE_DIR$/bw-carddav-dumpres/src/main/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/bw-carddav-dumpres/target" />
     </content>
     <orderEntry type="inheritedJdk" />

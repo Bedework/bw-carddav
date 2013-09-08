@@ -11,10 +11,14 @@
 	<name>bw-carddav-tools</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.bedework</groupId>
-			<artifactId>bw-util</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-util-args</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-util-http</artifactId>
+    </dependency>
 		<dependency>
 			<groupId>org.bedework</groupId>
 			<artifactId>bw-access</artifactId>

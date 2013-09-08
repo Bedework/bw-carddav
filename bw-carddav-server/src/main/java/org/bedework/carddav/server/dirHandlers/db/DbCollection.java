@@ -18,9 +18,10 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.misc.Util;
+
 import edu.rpi.cct.webdav.servlet.access.AccessState;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.sss.util.Util;
 
 /** A representation of a vcard and properties for database persistence in cardDAV
  *
@@ -124,7 +125,8 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
   @Override
   public int compareTo(final DbCollection that) {
     try {
-      int res = Util.compareStrings(getParentPath(), that.getParentPath());
+      int res = Util.compareStrings(getParentPath(),
+                                    that.getParentPath());
 
       if (res != 0) {
         return res;

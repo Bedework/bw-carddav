@@ -18,10 +18,10 @@
 */
 package org.bedework.carddav.util;
 
-import edu.rpi.cmt.config.ConfInfo;
-import edu.rpi.cmt.config.ConfigBase;
-import edu.rpi.sss.util.ToString;
-import edu.rpi.sss.util.Util;
+import org.bedework.util.config.ConfInfo;
+import org.bedework.util.config.ConfigBase;
+import org.bedework.util.misc.ToString;
+import org.bedework.util.misc.Util;
 
 import java.util.ArrayList;
 import java.util.List;

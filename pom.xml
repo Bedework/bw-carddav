@@ -69,9 +69,40 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.bedework</groupId>
-				<artifactId>bw-util</artifactId>
+				<artifactId>bw-util-args</artifactId>
 				<version>${bw-util.version}</version>
 			</dependency>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-config</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-http</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-jmx</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-json</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-misc</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-timezones</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+
 			<dependency>
 				<groupId>org.bedework</groupId>
 				<artifactId>bw-access</artifactId>
@@ -171,7 +202,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<!-- Only needed for JBoss 5 dependencies. We should remove this when we 
+		<!-- Only needed for JBoss 5 dependencies. We should remove this when we
 			move Bedework off of JBoss 5. -->
 		<repository>
 			<id>jboss-deprecated</id>

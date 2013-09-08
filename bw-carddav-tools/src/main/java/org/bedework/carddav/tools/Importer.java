@@ -18,8 +18,8 @@
 */
 package org.bedework.carddav.tools;
 
-import edu.rpi.sss.util.Args;
-import edu.rpi.sss.util.http.BasicHttpClient;
+import org.bedework.util.args.Args;
+import org.bedework.util.http.BasicHttpClient;
 
 import org.apache.log4j.Logger;
 

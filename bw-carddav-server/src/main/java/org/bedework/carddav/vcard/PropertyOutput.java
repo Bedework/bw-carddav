@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,11 +18,10 @@
 */
 package org.bedework.carddav.vcard;
 
-import net.fortuna.ical4j.vcard.Property;
-
 import org.bedework.carddav.vcard.VcardDefs.PropertyDef;
+import org.bedework.util.json.JsonUtil;
 
-import edu.rpi.sss.util.Util;
+import net.fortuna.ical4j.vcard.Property;
 
 import java.util.List;
 
@@ -135,7 +134,7 @@ public class PropertyOutput {
       nm = p.getId().toString();
     }
 
-    sb.append(Util.jsonName(nm));
+    sb.append(JsonUtil.jsonName(nm));
 
     if (cardinalityZeroOrMore) {
       sb.append("\" : [\n");
@@ -148,7 +147,7 @@ public class PropertyOutput {
    * @param pval
    * @param indent
    * @param sb
-   * @param def
+   * @param first
    */
   private void outputJsonValue(final Property pval,
                                String indent,
@@ -198,9 +197,9 @@ public class PropertyOutput {
     }
 
     if (val == null) {
-      sb.append(Util.jsonEncode(""));
+      sb.append(JsonUtil.jsonEncode(""));
     } else {
-      sb.append(Util.jsonEncode(val));
+      sb.append(JsonUtil.jsonEncode(val));
     }
     sb.append("}");
 
@@ -210,9 +209,9 @@ public class PropertyOutput {
   /**
    * @param indent
    * @param sb
-   * @param def
    */
-  private void outputJsonEnd(final String indent, final StringBuilder sb) {
+  private void outputJsonEnd(final String indent,
+                             final StringBuilder sb) {
     boolean cardinalityZeroOrMore = (def == null) ||
                (def.getCardinality() == VcardDefs.cardinalityZeroOrMore);
 

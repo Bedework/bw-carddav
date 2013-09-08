@@ -18,8 +18,7 @@
 */
 package org.bedework.carddav.util;
 
-import edu.rpi.cmt.config.ConfInfo;
-
+import org.bedework.util.config.ConfInfo;
 
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information via ldap.

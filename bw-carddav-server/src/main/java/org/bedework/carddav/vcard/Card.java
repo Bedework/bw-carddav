@@ -18,6 +18,11 @@
 */
 package org.bedework.carddav.vcard;
 
+import org.bedework.carddav.server.CarddavCollection;
+
+import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import edu.rpi.cmt.access.AccessPrincipal;
+
 import net.fortuna.ical4j.data.FoldingWriter;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Escapable;
@@ -31,11 +36,6 @@ import net.fortuna.ical4j.vcard.VCardBuilder;
 import net.fortuna.ical4j.vcard.property.Revision;
 import net.fortuna.ical4j.vcard.property.Uid;
 import net.fortuna.ical4j.vcard.property.Version;
-
-import org.bedework.carddav.server.CarddavCollection;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -192,7 +192,7 @@ public class Card {
     Uid uid = (Uid)findProperty(Property.Id.UID);
 
     if (uid == null) {
-      setUid(edu.rpi.sss.util.Uid.getUid());
+      setUid(org.bedework.util.misc.Uid.getUid());
       uid = (Uid)findProperty(Property.Id.UID);
     }
 

@@ -29,6 +29,12 @@ import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.carddav.vcard.VcardDefs;
+import org.bedework.util.misc.Util;
+import org.bedework.util.xml.XmlEmit;
+import org.bedework.util.xml.XmlEmit.NameSpace;
+import org.bedework.util.xml.XmlUtil;
+import org.bedework.util.xml.tagdefs.CarddavTags;
+import org.bedework.util.xml.tagdefs.WebdavTags;
 
 import edu.rpi.cct.webdav.servlet.common.AccessUtil;
 import edu.rpi.cct.webdav.servlet.common.Headers;
@@ -58,15 +64,8 @@ import edu.rpi.cmt.access.AceWho;
 import edu.rpi.cmt.access.Acl;
 import edu.rpi.cmt.access.PrivilegeDefs;
 import edu.rpi.cmt.access.WhoDefs;
-import edu.rpi.sss.util.Util;
-import edu.rpi.sss.util.xml.XmlEmit;
-import edu.rpi.sss.util.xml.XmlEmit.NameSpace;
-import edu.rpi.sss.util.xml.XmlUtil;
-import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
-import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
 
 import net.fortuna.ical4j.util.CompatibilityHints;
-
 import org.w3c.dom.Element;
 
 import java.io.CharArrayReader;
@@ -394,7 +393,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#addNamespace(edu.rpi.sss.util.xml.XmlEmit)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#addNamespace(org.bedework.util.xml.XmlEmit)
    */
   @Override
   public void addNamespace(final XmlEmit xml) throws WebdavException {
@@ -1109,7 +1108,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
       pnodes.add(new WebdavPrincipalNode(sysi.getUrlHandler(),
                                          cui.principalPathPrefix,
                                          new User(cui.account), true,
-                                         Util.buildPath(true, cui.principalPathPrefix,
+                                         Util.buildPath(true,
+                                                        cui.principalPathPrefix,
                                                         "/",
                                                         cui.account)));
     }

@@ -19,11 +19,11 @@
 package org.bedework.carddav.server;
 
 import org.bedework.carddav.vcard.Card;
+import org.bedework.util.misc.Util;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Ace;
-import edu.rpi.sss.util.Util;
 
 /** We map uris onto an object which may be a calendar or an
  * entity contained within that calendar.
@@ -173,7 +173,8 @@ public class CarddavURI {
     }
 
     if (entity != null) {
-      return Util.buildPath(false, col.getPath(), "/", entity.getName());
+      return Util.buildPath(false, col.getPath(), "/",
+                            entity.getName());
     }
 
     return col.getPath();

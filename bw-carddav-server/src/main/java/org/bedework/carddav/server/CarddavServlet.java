@@ -24,7 +24,7 @@ import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
 import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cmt.jmx.ConfBase;
+import org.bedework.util.jmx.ConfBase;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

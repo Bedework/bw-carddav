@@ -29,11 +29,11 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cmt.access.AccessPrincipal;
 import edu.rpi.cmt.access.Acl.CurrentAccess;
 import edu.rpi.cmt.access.PrivilegeDefs;
-import edu.rpi.sss.util.xml.XmlEmit;
-import edu.rpi.sss.util.xml.XmlUtil;
-import edu.rpi.sss.util.xml.tagdefs.AppleServerTags;
-import edu.rpi.sss.util.xml.tagdefs.CarddavTags;
-import edu.rpi.sss.util.xml.tagdefs.WebdavTags;
+import org.bedework.util.xml.XmlEmit;
+import org.bedework.util.xml.XmlUtil;
+import org.bedework.util.xml.tagdefs.AppleServerTags;
+import org.bedework.util.xml.tagdefs.CarddavTags;
+import org.bedework.util.xml.tagdefs.WebdavTags;
 
 import org.w3c.dom.Element;
 
