@@ -18,15 +18,15 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.vcard.Card;
+import org.bedework.util.xml.XmlEmit;
+import org.bedework.util.xml.tagdefs.CarddavTags;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.Acl.CurrentAccess;
-import edu.rpi.cmt.access.PrivilegeDefs;
-import org.bedework.util.xml.XmlEmit;
-import org.bedework.util.xml.tagdefs.CarddavTags;
 
 import org.w3c.dom.Element;
 

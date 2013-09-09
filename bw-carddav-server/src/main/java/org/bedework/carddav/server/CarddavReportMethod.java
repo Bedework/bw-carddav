@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  * url refers to and send a response which shows the allowable methods on that
  * resource.
  *
- *   @author Mike Douglass   douglm@rpi.edu
+ *   @author Mike Douglass   douglm@bedework.edu
  */
 public class CarddavReportMethod extends ReportMethod {
   /* The parsed results go here. We see:

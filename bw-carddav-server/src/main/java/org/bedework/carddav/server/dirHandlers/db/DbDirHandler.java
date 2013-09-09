@@ -33,12 +33,12 @@ import edu.rpi.cct.webdav.servlet.access.AccessHelperI;
 import edu.rpi.cct.webdav.servlet.access.SharedEntity;
 import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.Access;
-import edu.rpi.cmt.access.AccessException;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.Acl.CurrentAccess;
-import edu.rpi.cmt.access.PrivilegeDefs;
-import edu.rpi.cmt.access.WhoDefs;
+import org.bedework.access.Access;
+import org.bedework.access.AccessException;
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.PrivilegeDefs;
+import org.bedework.access.WhoDefs;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -107,7 +107,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.Access.AccessCb#makeHref(java.lang.String, int)
+     * @see Access.AccessCb#makeHref(java.lang.String, int)
      */
     public String makeHref(final String id, final int whoType) throws AccessException {
       try {
@@ -141,7 +141,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
+   * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
   @Override
   public void init(final CardDAVContextConfig cdConfig,

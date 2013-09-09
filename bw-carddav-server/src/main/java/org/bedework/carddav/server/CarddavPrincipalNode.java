@@ -18,14 +18,14 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
+import org.bedework.util.xml.XmlEmit;
+import org.bedework.util.xml.tagdefs.CarddavTags;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import edu.rpi.cct.webdav.servlet.shared.WebdavPrincipalNode;
-import edu.rpi.cmt.access.AccessPrincipal;
-import org.bedework.util.xml.XmlEmit;
-import org.bedework.util.xml.tagdefs.CarddavTags;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +36,7 @@ import javax.xml.namespace.QName;
 /** Class to represent a principal in cardav.
  *
  *
- *   @author Mike Douglass   douglm  rpi.edu
+ *   @author Mike Douglass   douglm  bedework.edu
  */
 public class CarddavPrincipalNode extends WebdavPrincipalNode {
 
@@ -73,7 +73,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
    * ==================================================================== */
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.bedework.sss.util.xml.QName)
    */
   @Override
   public boolean knownProperty(final QName tag) {
@@ -86,7 +86,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.rpi.sss.util.xml.QName, edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.bedework.sss.util.xml.QName, edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
    */
   @Override
   public boolean generatePropertyValue(final QName tag,
@@ -133,7 +133,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getPropertyNames()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getPropertyNames()
    */
   @Override
   public Collection<PropertyTagEntry> getPropertyNames() throws WebdavException {

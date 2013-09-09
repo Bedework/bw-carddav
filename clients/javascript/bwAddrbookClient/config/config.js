@@ -1,4 +1,4 @@
-/* 
+/*
     Licensed to Jasig under one or more contributor license
     agreements. See the NOTICE file distributed with this work
     for additional information regarding copyright ownership.
@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-    
+
     http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,24 +20,24 @@
 
 /** Bedework Address Book configuration settings
  *
- * @author Arlen Johnson       johnsa - rpi.edu
+ * @author Arlen Johnson       johnsa - bedework.edu
  */
 
 /* Define address books for inclusion in the client.
  * We will assume for now that there is only one writable
  * personal address book.  It is indicated by setting
- * "type".  We will likewise assume for now that all 
+ * "type".  We will likewise assume for now that all
  * subscribed books are read-only.
- * 
- * Note that when vcard subscriptions are supported, they will 
+ *
+ * Note that when vcard subscriptions are supported, they will
  * appear dynamically.  This listing allows us to specify
  * the user carddav path and any other public paths we
  * want present for all users.
- * 
+ *
  * label:         String - the display title for the book
  * carddavUrl:    String - root of the carddav server; may be a full
  *                         URL and may include first part of the path
- *                         information (e.g. the context, as we do) 
+ *                         information (e.g. the context, as we do)
  * path:          String - more path information
  * bookName:      String - last part of the path information.  If we
  *                         are using a personal book the userid will
@@ -46,12 +46,12 @@
  *                         personal-default  - the default personal book: there may be only one
  *                         personal          - another personal book
  *                         subscription      - a subscribed address book
- *                                             For the present this client assumes books 
- *                                             that are not personal are read-only.      
+ *                                             For the present this client assumes books
+ *                                             that are not personal are read-only.
  * listDisp       Object - list of fields to display (or not) in the address book list
- * detailDisp     Object - list of fields to display (or not) in a contact's detail view                                                               
+ * detailDisp     Object - list of fields to display (or not) in a contact's detail view
  * vcards:        Array  - an empty array; this will be filled with
- *                         vcard objects when the client connects to 
+ *                         vcard objects when the client connects to
  *                         the server on page load.
  */
 var bwBooks = [
@@ -83,13 +83,13 @@ var bwBooks = [
           "url" : true
        },
        "vcards" : [
-           
-       ] 
+
+       ]
    }
-   
+
 ];
 
-/* Define public CardDAV servers on which to allow 
+/* Define public CardDAV servers on which to allow
  * searches.  These will appear in a drop-down list next
  * to the search input field.  The responses must be in json format
  */
@@ -106,13 +106,13 @@ var bwPublicCardDAV = [
 
 
 
-/*  
- * Load language file for javascript functions.  
- * To internationalize, you must also translate 
+/*
+ * Load language file for javascript functions.
+ * To internationalize, you must also translate
  * the index.html file (or swap in a translated
- * copy).  We will keep a copy of 
- * translations in the repository  
- * as they are made available.  
+ * copy).  We will keep a copy of
+ * translations in the repository
+ * as they are made available.
  */
 
 // Define the language file to be used in the client

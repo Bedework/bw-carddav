@@ -18,6 +18,8 @@
 */
 package org.bedework.carddav.server.dirHandlers.ldap;
 
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Ace;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
@@ -35,8 +37,6 @@ import org.bedework.util.misc.Util;
 
 import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.Ace;
 
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.property.Kind;

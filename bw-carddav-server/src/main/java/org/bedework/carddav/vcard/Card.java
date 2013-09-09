@@ -18,10 +18,10 @@
 */
 package org.bedework.carddav.vcard;
 
+import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.server.CarddavCollection;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
 
 import net.fortuna.ical4j.data.FoldingWriter;
 import net.fortuna.ical4j.model.DateTime;

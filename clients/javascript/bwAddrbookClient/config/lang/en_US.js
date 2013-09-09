@@ -1,4 +1,4 @@
-/* 
+/*
     Licensed to Jasig under one or more contributor license
     agreements. See the NOTICE file distributed with this work
     for additional information regarding copyright ownership.
@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-    
+
     http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,7 +19,7 @@
 
 /** English language strings
  *
- * @author Arlen Johnson       johnsa - rpi.edu
+ * @author Arlen Johnson       johnsa - bedework.edu
  */
 
 // list headings
@@ -78,7 +78,7 @@ var bwAbDispUnsupported = "unsupported";
 var bwAbDispUnimplementedTitle = "Unimplemented";
 var bwAbDispUnimplemented = "This feature is unimplemented.";
 var bwAbDispErrorTitle = "Error";
-var bwAbDispError404 = "<h3>You cannot access the current address book.</h3><p>It is likely that you are still authenticated as another user.  You must invalidate your HTTP authentication or close your browser and try again.</p>"; 
+var bwAbDispError404 = "<h3>You cannot access the current address book.</h3><p>It is likely that you are still authenticated as another user.  You must invalidate your HTTP authentication or close your browser and try again.</p>";
 var bwAbDispError500 = '<h3>Internal Server Error</h3><p>If you do not see an address book listing and expect one, please try <a href="javascript:window.location.reload();">reloading</a> your browser.</p><p>(You may otherwise ignore and close this message.)</p>';
 var bwAbDispErrorAccessDenied = "Access Denied";
 var bwAbDispDisallowed = "Not Allowed";

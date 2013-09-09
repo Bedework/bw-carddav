@@ -56,14 +56,14 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
 import edu.rpi.cct.webdav.servlet.shared.WebdavServerError;
 import edu.rpi.cct.webdav.servlet.shared.WebdavUnauthorized;
 import edu.rpi.cct.webdav.servlet.shared.WebdavUnsupportedMediaType;
-import edu.rpi.cmt.access.AccessException;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb;
-import edu.rpi.cmt.access.Ace;
-import edu.rpi.cmt.access.AceWho;
-import edu.rpi.cmt.access.Acl;
-import edu.rpi.cmt.access.PrivilegeDefs;
-import edu.rpi.cmt.access.WhoDefs;
+import org.bedework.access.AccessException;
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.AccessXmlUtil.AccessXmlCb;
+import org.bedework.access.Ace;
+import org.bedework.access.AceWho;
+import org.bedework.access.Acl;
+import org.bedework.access.PrivilegeDefs;
+import org.bedework.access.WhoDefs;
 
 import net.fortuna.ical4j.util.CompatibilityHints;
 import org.w3c.dom.Element;
@@ -99,7 +99,7 @@ import javax.xml.namespace.QName;
  * delivered. We may want the entire calendar (or what we show by default) or
  * a single event from the calendar
  *
- *   @author Mike Douglass   douglm @ rpi.edu
+ *   @author Mike Douglass   douglm @ bedework.edu
  */
 public class CarddavBWIntf extends WebdavNsIntf {
   /** Namespace prefix based on the request url.
@@ -211,7 +211,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getDavHeader(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getDavHeader(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public String getDavHeader(final WebdavNsNode node) throws WebdavException {
@@ -235,7 +235,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#makeHref(java.lang.String, int)
+     * @see AccessXmlUtil.AccessXmlCb#makeHref(java.lang.String, int)
      */
     @Override
     public String makeHref(final String id, final int whoType) throws AccessException {
@@ -253,7 +253,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getPrincipal()
+     * @see AccessXmlUtil.AccessXmlCb#getPrincipal()
      */
     @Override
     public AccessPrincipal getPrincipal() throws AccessException {
@@ -274,7 +274,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#setErrorTag(edu.rpi.sss.util.xml.QName)
+     * @see AccessXmlUtil.AccessXmlCb#setErrorTag(edu.bedework.sss.util.xml.QName)
      */
     @Override
     public void setErrorTag(final QName tag) throws AccessException {
@@ -282,7 +282,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getErrorTag()
+     * @see AccessXmlUtil.AccessXmlCb#getErrorTag()
      */
     @Override
     public QName getErrorTag() throws AccessException {
@@ -290,7 +290,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#setErrorMsg(java.lang.String)
+     * @see AccessXmlUtil.AccessXmlCb#setErrorMsg(java.lang.String)
      */
     @Override
     public void setErrorMsg(final String val) throws AccessException {
@@ -298,7 +298,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     /* (non-Javadoc)
-     * @see edu.rpi.cmt.access.AccessXmlUtil.AccessXmlCb#getErrorMsg()
+     * @see AccessXmlUtil.AccessXmlCb#getErrorMsg()
      */
     @Override
     public String getErrorMsg() throws AccessException {
@@ -307,7 +307,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getAccessUtil()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getAccessUtil()
    */
   @Override
   public AccessUtil getAccessUtil() throws WebdavException {
@@ -315,7 +315,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#canPut(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#canPut(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public boolean canPut(final WebdavNsNode node) throws WebdavException {
@@ -341,7 +341,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getDirectoryBrowsingDisallowed()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getDirectoryBrowsingDisallowed()
    */
   @Override
   public boolean getDirectoryBrowsingDisallowed() throws WebdavException {
@@ -349,7 +349,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#rollback()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#rollback()
    */
   @Override
   public void rollback() {
@@ -357,7 +357,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#close()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#close()
    */
   @Override
   public void close() throws WebdavException {
@@ -372,7 +372,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getSupportedLocks()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getSupportedLocks()
    */
   @Override
   public String getSupportedLocks() {
@@ -393,7 +393,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#addNamespace(org.bedework.util.xml.XmlEmit)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#addNamespace(org.bedework.util.xml.XmlEmit)
    */
   @Override
   public void addNamespace(final XmlEmit xml) throws WebdavException {
@@ -407,7 +407,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getNode(java.lang.String, int, int)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getNode(java.lang.String, int, int)
    */
   @Override
   public WebdavNsNode getNode(final String uri,
@@ -452,7 +452,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getChildren(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getChildren(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public Collection<WebdavNsNode> getChildren(final WebdavNsNode node) throws WebdavException {
@@ -496,7 +496,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public Content getContent(final HttpServletRequest req,
@@ -585,7 +585,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getBinaryContent(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getBinaryContent(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public Content getBinaryContent(final WebdavNsNode node) throws WebdavException {
@@ -620,7 +620,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, edu.rpi.cct.webdav.servlet.common.Headers.IfHeaders)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, edu.bedework.cct.webdav.servlet.common.Headers.IfHeaders)
    */
   @Override
   public PutContentResult putContent(final HttpServletRequest req,
@@ -674,7 +674,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#putBinaryContent(javax.servlet.http.HttpServletRequest, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.InputStream, edu.rpi.cct.webdav.servlet.common.Headers.IfHeaders)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#putBinaryContent(javax.servlet.http.HttpServletRequest, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.InputStream, edu.bedework.cct.webdav.servlet.common.Headers.IfHeaders)
    */
   @Override
   public PutContentResult putBinaryContent(final HttpServletRequest req,
@@ -824,21 +824,21 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#create(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#create(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public void create(final WebdavNsNode node) throws WebdavException {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#createAlias(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#createAlias(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public void createAlias(final WebdavNsNode alias) throws WebdavException {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#acceptMkcolContent(javax.servlet.http.HttpServletRequest)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#acceptMkcolContent(javax.servlet.http.HttpServletRequest)
    */
   @Override
   public void acceptMkcolContent(final HttpServletRequest req) throws WebdavException {
@@ -1027,7 +1027,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#specialUri(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#specialUri(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
    */
   @Override
   public boolean specialUri(final HttpServletRequest req,
@@ -1055,7 +1055,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * ==================================================================== */
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getGroups(java.lang.String, java.lang.String)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getGroups(java.lang.String, java.lang.String)
    */
   @Override
   public Collection<WebdavNsNode> getGroups(final String resourceUri,
@@ -1081,7 +1081,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getPrincipalCollectionSet(java.lang.String)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getPrincipalCollectionSet(java.lang.String)
    */
   @Override
   public Collection<String> getPrincipalCollectionSet(final String resourceUri)
@@ -1096,7 +1096,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getPrincipals(java.lang.String, edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getPrincipals(java.lang.String, edu.bedework.cct.webdav.servlet.shared.PrincipalPropertySearch)
    */
   @Override
   public Collection<WebdavNsNode> getPrincipals(final String resourceUri,
@@ -1118,7 +1118,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#makeUserHref(java.lang.String)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#makeUserHref(java.lang.String)
    */
   @Override
   public String makeUserHref(final String id) throws WebdavException {
@@ -1126,7 +1126,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#updateAccess(edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf.AclInfo)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#updateAccess(edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf.AclInfo)
    */
   @Override
   public void updateAccess(final AclInfo info) throws WebdavException {
@@ -1164,7 +1164,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#getAclPrincipalInfo(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#getAclPrincipalInfo(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode)
    */
   @Override
   public Collection<String> getAclPrincipalInfo(final WebdavNsNode node) throws WebdavException {
@@ -1223,7 +1223,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   };
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#knownProperty(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, edu.rpi.cct.webdav.servlet.shared.WebdavProperty)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#knownProperty(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode, edu.bedework.cct.webdav.servlet.shared.WebdavProperty)
    */
   @Override
   public boolean knownProperty(final WebdavNsNode node,
@@ -1242,7 +1242,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf#generatePropValue(edu.rpi.cct.webdav.servlet.shared.WebdavNsNode, edu.rpi.cct.webdav.servlet.shared.WebdavProperty, boolean)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#generatePropValue(edu.bedework.cct.webdav.servlet.shared.WebdavNsNode, edu.bedework.cct.webdav.servlet.shared.WebdavProperty, boolean)
    */
   @Override
   public boolean generatePropValue(final WebdavNsNode node,

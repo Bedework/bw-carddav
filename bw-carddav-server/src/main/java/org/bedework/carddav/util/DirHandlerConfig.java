@@ -86,7 +86,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
    *
    * <p>For example we might put the enterprise directory on a path like
    * <pre>
-   *   /public/rpi.edu
+   *   /public/bedework.edu
    * <pre>
    * while we put users personal directories on a path like
    * <pre>

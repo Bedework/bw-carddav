@@ -18,6 +18,15 @@
 */
 package org.bedework.carddav.bwserver;
 
+import org.bedework.access.Access;
+import org.bedework.access.Access.AccessCb;
+import org.bedework.access.AccessException;
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Ace;
+import org.bedework.access.AceWho;
+import org.bedework.access.Acl;
+import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.Privilege;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavColNode;
 import org.bedework.carddav.server.CarddavCollection;
@@ -45,15 +54,6 @@ import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
 import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
 import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
-import edu.rpi.cmt.access.Access;
-import edu.rpi.cmt.access.Access.AccessCb;
-import edu.rpi.cmt.access.AccessException;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.Ace;
-import edu.rpi.cmt.access.AceWho;
-import edu.rpi.cmt.access.Acl;
-import edu.rpi.cmt.access.Acl.CurrentAccess;
-import edu.rpi.cmt.access.Privilege;
 
 import org.apache.log4j.Logger;
 
@@ -273,7 +273,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#makeHref(edu.rpi.cmt.access.AccessPrincipal)
+   * @see org.bedework.carddav.server.SysIntf#makeHref(AccessPrincipal)
    */
   public String makeHref(final AccessPrincipal p) throws WebdavException {
     try {
@@ -307,7 +307,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPrincipalInfo(edu.rpi.cmt.access.AccessPrincipal, boolean)
+   * @see org.bedework.carddav.server.SysIntf#getPrincipalInfo(AccessPrincipal, boolean)
    */
   public PrincipalInfo getPrincipalInfo(final AccessPrincipal pcpl,
                                         final boolean getDirInfo) throws WebdavException {

@@ -21,7 +21,7 @@ package org.bedework.carddav.server;
 import org.bedework.util.misc.Util;
 import org.bedework.util.timezones.DateTimeUtil;
 
-import edu.rpi.cmt.access.AccessPrincipal;
+import org.bedework.access.AccessPrincipal;
 
 import java.io.Serializable;
 import java.util.Date;

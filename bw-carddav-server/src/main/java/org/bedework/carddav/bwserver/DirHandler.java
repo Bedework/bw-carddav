@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.bwserver;
 
+import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
@@ -30,7 +31,6 @@ import org.bedework.carddav.vcard.Card;
 import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WdCollection;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
 
 import java.util.Collection;
 

@@ -18,12 +18,12 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Ace;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.util.misc.Util;
 
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.Ace;
 
 /** We map uris onto an object which may be a calendar or an
  * entity contained within that calendar.
@@ -35,7 +35,7 @@ import edu.rpi.cmt.access.Ace;
  * available calendar or a user and the access to a calendar will, of course,
  * depend upon the authentication state of the user.
  *
- *   @author Mike Douglass   douglm rpi.edu
+ *   @author Mike Douglass   douglm bedework.edu
  */
 public class CarddavURI {
   boolean exists;

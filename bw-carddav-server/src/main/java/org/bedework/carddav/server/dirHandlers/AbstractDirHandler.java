@@ -29,8 +29,8 @@ import org.bedework.util.misc.Util;
 import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
 import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
 import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.access.AccessPrincipal;
-import edu.rpi.cmt.access.Ace;
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Ace;
 
 import org.apache.log4j.Logger;
 
@@ -46,7 +46,7 @@ import java.util.TreeSet;
 * might have a user account "jim" or a ticket "TKT12345". These could be mapped
 * on to "/principals/users/jim" and "/principals/tickets/12345".
 *
-* @author Mike Douglass douglm rpi.edu
+* @author Mike Douglass douglm bedework.edu
 * @version 1.0
 */
 public abstract class AbstractDirHandler implements DirHandler {
@@ -128,7 +128,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
+   * @see org.bedework.carddav.bwserver.DirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
@@ -265,7 +265,7 @@ public abstract class AbstractDirHandler implements DirHandler {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#makePrincipalUri(edu.rpi.cmt.access.AccessPrincipal)
+   * @see org.bedework.carddav.bwserver.DirHandler#makePrincipalUri(AccessPrincipal)
    */
   public String makePrincipalUri(final AccessPrincipal p) throws WebdavException {
     if (isPrincipal(p.getAccount())) {
