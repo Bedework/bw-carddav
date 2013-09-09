@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,12 +18,10 @@
 */
 package org.bedework.carddav.server.filter;
 
-import net.fortuna.ical4j.vcard.Property;
-
 import org.bedework.carddav.vcard.Card;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-
+import net.fortuna.ical4j.vcard.Property;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

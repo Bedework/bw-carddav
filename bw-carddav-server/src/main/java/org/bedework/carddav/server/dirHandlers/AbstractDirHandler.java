@@ -18,6 +18,8 @@
 */
 package org.bedework.carddav.server.dirHandlers;
 
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Ace;
 import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
@@ -25,12 +27,9 @@ import org.bedework.carddav.util.DirectoryInfo;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.util.misc.Util;
-
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Ace;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import org.apache.log4j.Logger;
 

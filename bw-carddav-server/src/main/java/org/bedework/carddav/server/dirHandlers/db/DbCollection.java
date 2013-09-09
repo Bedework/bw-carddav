@@ -19,9 +19,8 @@
 package org.bedework.carddav.server.dirHandlers.db;
 
 import org.bedework.util.misc.Util;
-
-import edu.rpi.cct.webdav.servlet.access.AccessState;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.access.AccessState;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 /** A representation of a vcard and properties for database persistence in cardDAV
  *

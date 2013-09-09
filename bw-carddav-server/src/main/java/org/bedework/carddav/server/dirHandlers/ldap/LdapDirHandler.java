@@ -34,9 +34,8 @@ import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.carddav.vcard.PropertyBuilder;
 import org.bedework.util.misc.Util;
-
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.property.Kind;
@@ -74,7 +73,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   private String[] attrIdList;
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
+   * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
    */
   @Override
   public void init(final CardDAVContextConfig cdConfig,

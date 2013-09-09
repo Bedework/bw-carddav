@@ -20,13 +20,12 @@ package org.bedework.carddav.server;
 
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
 import org.bedework.carddav.server.SysIntf.GetLimits;
-
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WdEntity;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
 import org.bedework.util.xml.tagdefs.CarddavTags;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WdEntity;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsIntf;
+import org.bedework.webdav.servlet.shared.WebdavNsNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +35,7 @@ import javax.xml.namespace.QName;
 
 /** Class to represent a caldav node.
  *
- *   @author Mike Douglass   douglm - rpi.edu
+ *   @author Mike Douglass   douglm - bedework.edu
  */
 public abstract class CarddavNode extends WebdavNsNode {
   protected CarddavCollection col;
@@ -146,7 +145,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    * ==================================================================== */
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentBinary()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentBinary()
    */
   @Override
   public boolean getContentBinary() throws WebdavException {
@@ -154,7 +153,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getChildren()
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getChildren()
    */
   @Override
   public Collection<? extends WdEntity> getChildren() throws WebdavException {
@@ -166,7 +165,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    * ==================================================================== */
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.bedework.sss.util.xml.QName)
    */
   @Override
   public boolean knownProperty(final QName tag) {
@@ -179,7 +178,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.rpi.sss.util.xml.QName, edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
+   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.bedework.sss.util.xml.QName, edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
    */
   @Override
   public boolean generatePropertyValue(final QName tag,

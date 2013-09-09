@@ -30,10 +30,9 @@ import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.AppleServerTags;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.util.xml.tagdefs.WebdavTags;
-
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsIntf;
 
 import org.w3c.dom.Element;
 

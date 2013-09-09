@@ -18,10 +18,10 @@
 */
 package org.bedework.carddav.server.filter;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -177,7 +177,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
  * </pre>
  *
- *   @author Mike Douglass   douglm @ rpi.edu
+ *   @author Mike Douglass   douglm @ bedework.edu
  */
 public class CarddavFilter {
   /** */

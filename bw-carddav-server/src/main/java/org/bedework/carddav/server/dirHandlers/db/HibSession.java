@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;

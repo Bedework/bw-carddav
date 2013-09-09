@@ -25,7 +25,7 @@ import java.util.TreeSet;
 
 /** Group object for access suite tests.
  *
- *   @author Mike Douglass douglm@rpi.edu
+ *   @author Mike Douglass douglm@bedework.edu
  *  @version 1.0
  */
 public class Group extends Principal {

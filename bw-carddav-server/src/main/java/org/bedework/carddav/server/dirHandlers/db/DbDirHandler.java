@@ -18,6 +18,12 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.access.Access;
+import org.bedework.access.AccessException;
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.PrivilegeDefs;
+import org.bedework.access.WhoDefs;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
@@ -27,18 +33,11 @@ import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DbDirHandlerConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
-
-import edu.rpi.cct.webdav.servlet.access.AccessHelper;
-import edu.rpi.cct.webdav.servlet.access.AccessHelperI;
-import edu.rpi.cct.webdav.servlet.access.SharedEntity;
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import org.bedework.access.Access;
-import org.bedework.access.AccessException;
-import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Acl.CurrentAccess;
-import org.bedework.access.PrivilegeDefs;
-import org.bedework.access.WhoDefs;
+import org.bedework.webdav.servlet.access.AccessHelper;
+import org.bedework.webdav.servlet.access.AccessHelperI;
+import org.bedework.webdav.servlet.access.SharedEntity;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

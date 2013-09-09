@@ -18,8 +18,8 @@
 */
 package org.bedework.carddav.server;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import org.bedework.access.AccessPrincipal;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 /** Class to represent a group in caldav.
  *

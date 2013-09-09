@@ -26,7 +26,7 @@ import java.util.TreeSet;
 
 /** Value object to represent a principal to allow testing of the access suite
  *
- *   @author Mike Douglass douglm@rpi.edu
+ *   @author Mike Douglass douglm@bedework.edu
  *  @version 1.0
  */
 public abstract class Principal implements Comparator<Principal>,

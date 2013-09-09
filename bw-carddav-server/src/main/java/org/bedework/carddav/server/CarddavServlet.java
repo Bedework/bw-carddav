@@ -19,12 +19,11 @@
 package org.bedework.carddav.server;
 
 import org.bedework.carddav.server.jmx.CardDav;
-
-import edu.rpi.cct.webdav.servlet.common.MethodBase.MethodInfo;
-import edu.rpi.cct.webdav.servlet.common.WebdavServlet;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
 import org.bedework.util.jmx.ConfBase;
+import org.bedework.webdav.servlet.common.MethodBase.MethodInfo;
+import org.bedework.webdav.servlet.common.WebdavServlet;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsIntf;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -33,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 /** This class extends the webdav servlet class, implementing the abstract
  * methods and overriding others to extend/modify the behaviour.
  *
- * @author Mike Douglass   douglm  rpi . edu
+ * @author Mike Douglass   douglm  bedework . edu
  */
 public class CarddavServlet extends WebdavServlet
     implements ServletContextListener {
@@ -42,7 +41,7 @@ public class CarddavServlet extends WebdavServlet
    * ==================================================================== */
 
   /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.common.WebdavServlet#addMethods()
+   * @see edu.bedework.cct.webdav.servlet.common.WebdavServlet#addMethods()
    */
   @Override
   protected void addMethods() {

@@ -22,8 +22,7 @@ import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.util.misc.Util;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.util.ArrayList;
 import java.util.Collection;

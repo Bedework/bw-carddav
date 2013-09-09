@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-        
+
     http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -21,14 +21,14 @@ package org.bedework.carddav.server.filter;
 import org.bedework.carddav.server.CarddavNode;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
-
-import java.util.Collection;
-import javax.servlet.http.HttpServletResponse;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsNode;
 
 import org.w3c.dom.Node;
+
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletResponse;
 
 /** Class to represent a calendar-query filter
  *  <pre>
@@ -170,7 +170,7 @@ import org.w3c.dom.Node;
 
  * </pre>
  *
- *   @author Mike Douglass   douglm @ rpi.edu
+ *   @author Mike Douglass   douglm @ bedework.edu
  */
 public class Filter extends CarddavFilter {
   /** Constructor

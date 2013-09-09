@@ -44,16 +44,15 @@ import org.bedework.util.misc.Util;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.util.xml.tagdefs.WebdavTags;
-
-import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
-import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
+import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavForbidden;
+import org.bedework.webdav.servlet.shared.WebdavNotFound;
+import org.bedework.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
+import org.bedework.webdav.servlet.shared.WebdavProperty;
 
 import org.apache.log4j.Logger;
 
@@ -68,7 +67,7 @@ import javax.xml.namespace.QName;
 
 /** Bedework implementation of carddav SysIntf.
  *
- * @author Mike Douglass douglm at rpi.edu
+ * @author Mike Douglass douglm at bedework.edu
  */
 public class BwSysIntfImpl implements SysIntf {
   private boolean debug;
@@ -433,7 +432,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPrincipals(java.lang.String, edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch)
+   * @see org.bedework.carddav.server.SysIntf#getPrincipals(java.lang.String, edu.bedework.cct.webdav.servlet.shared.PrincipalPropertySearch)
    */
   public Collection<PrincipalInfo> getPrincipals(String resourceUri,
                                                final PrincipalPropertySearch pps)
@@ -681,7 +680,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#copyMove(edu.rpi.cct.webdav.servlet.shared.WdCollection, edu.rpi.cct.webdav.servlet.shared.WdCollection, boolean, boolean)
+   * @see org.bedework.carddav.server.SysIntf#copyMove(edu.bedework.cct.webdav.servlet.shared.WdCollection, edu.bedework.cct.webdav.servlet.shared.WdCollection, boolean, boolean)
    */
   public void copyMove(final WdCollection from,
                        final WdCollection to,
@@ -746,7 +745,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#updateCollection(edu.rpi.cct.webdav.servlet.shared.WdCollection)
+   * @see org.bedework.carddav.server.SysIntf#updateCollection(edu.bedework.cct.webdav.servlet.shared.WdCollection)
    */
   public void updateCollection(final WdCollection val) throws WebdavException {
     try {

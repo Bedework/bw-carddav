@@ -27,10 +27,9 @@ import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
-
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.util.Collection;
 

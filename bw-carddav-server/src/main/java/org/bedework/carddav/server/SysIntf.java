@@ -18,18 +18,17 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.access.AccessPrincipal;
+import org.bedework.access.Acl;
+import org.bedework.access.Acl.CurrentAccess;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.vcard.Card;
-
-import edu.rpi.cct.webdav.servlet.shared.PrincipalPropertySearch;
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Acl;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -43,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * we don't have distinct event, todo and journal classes. They are all currently
  * the BwEvent class with an entityType defining what the object represents.
  *
- * @author Mike Douglass douglm at rpi.edu
+ * @author Mike Douglass douglm at bedework.edu
  */
 public interface SysIntf {
   /** Called before any other method is called to allow initialisation to

@@ -22,18 +22,17 @@ import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.query.AddressData;
-
-import edu.rpi.cct.webdav.servlet.common.PropFindMethod.PropRequest;
-import edu.rpi.cct.webdav.servlet.common.ReportMethod;
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
-import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
-import edu.rpi.cct.webdav.servlet.shared.WebdavStatusCode;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.util.xml.tagdefs.WebdavTags;
+import org.bedework.webdav.servlet.common.PropFindMethod.PropRequest;
+import org.bedework.webdav.servlet.common.ReportMethod;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsIntf;
+import org.bedework.webdav.servlet.shared.WebdavNsNode;
+import org.bedework.webdav.servlet.shared.WebdavProperty;
+import org.bedework.webdav.servlet.shared.WebdavStatusCode;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

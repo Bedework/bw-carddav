@@ -20,9 +20,8 @@ package org.bedework.carddav.server.dirHandlers.db;
 
 import org.bedework.carddav.vcard.Card;
 import org.bedework.util.misc.Util;
-
-import edu.rpi.cct.webdav.servlet.access.AccessState;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.access.AccessState;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.property.Created;

@@ -18,10 +18,6 @@
 */
 package org.bedework.carddav.server.dirHandlers.ldap;
 
-import net.fortuna.ical4j.vcard.Group;
-import net.fortuna.ical4j.vcard.Parameter;
-import net.fortuna.ical4j.vcard.Property;
-
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapping;
@@ -29,11 +25,14 @@ import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrValue;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import net.fortuna.ical4j.vcard.Group;
+import net.fortuna.ical4j.vcard.Parameter;
+import net.fortuna.ical4j.vcard.Property;
 
 import java.util.Collection;
 import java.util.List;

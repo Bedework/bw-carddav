@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import edu.rpi.cct.webdav.servlet.access.SharedEntity;
+import org.bedework.webdav.servlet.access.SharedEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;

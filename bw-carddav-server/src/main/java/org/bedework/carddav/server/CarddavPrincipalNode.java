@@ -22,10 +22,9 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.tagdefs.CarddavTags;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf;
-import edu.rpi.cct.webdav.servlet.shared.WebdavPrincipalNode;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsIntf;
+import org.bedework.webdav.servlet.shared.WebdavPrincipalNode;
 
 import java.util.ArrayList;
 import java.util.Collection;

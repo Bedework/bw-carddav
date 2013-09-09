@@ -18,11 +18,6 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.property.Created;
-import net.fortuna.ical4j.model.property.LastModified;
-import net.fortuna.ical4j.vcard.VCard;
-
 import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
@@ -30,13 +25,17 @@ import org.bedework.carddav.util.CardDAVBadData;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavForbidden;
+import org.bedework.webdav.servlet.shared.WebdavNotFound;
 
-import edu.rpi.cct.webdav.servlet.shared.UrlHandler;
-import edu.rpi.cct.webdav.servlet.shared.WdCollection;
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavForbidden;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNotFound;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.vcard.VCard;
 
 import java.util.Collection;
 
@@ -45,9 +44,6 @@ import java.util.Collection;
  *
  */
 public class DbAddrBookDirHandler extends DbDirHandler {
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
-   */
   @Override
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,

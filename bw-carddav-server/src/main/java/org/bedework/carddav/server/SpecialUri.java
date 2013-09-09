@@ -26,9 +26,8 @@ import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.util.misc.Util;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.io.IOException;
 import java.io.Writer;

@@ -19,8 +19,8 @@
 
 package org.bedework.carddav.util;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
 import org.bedework.util.xml.tagdefs.CarddavTags;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import javax.servlet.http.HttpServletResponse;
 

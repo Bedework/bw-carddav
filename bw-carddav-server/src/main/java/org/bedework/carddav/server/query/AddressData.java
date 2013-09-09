@@ -25,11 +25,10 @@ import org.bedework.util.misc.Util;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavBadRequest;
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cct.webdav.servlet.shared.WebdavNsNode;
-import edu.rpi.cct.webdav.servlet.shared.WebdavProperty;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavNsNode;
+import org.bedework.webdav.servlet.shared.WebdavProperty;
 
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.property.Kind;
@@ -48,7 +47,7 @@ import javax.xml.namespace.QName;
 
 /** Class to represent a address-query address-data element
  *
- *   @author Mike Douglass   douglm@rpi.edu
+ *   @author Mike Douglass   douglm@bedework.edu
  */
 public class AddressData extends WebdavProperty {
   /*

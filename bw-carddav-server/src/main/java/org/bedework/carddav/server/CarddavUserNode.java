@@ -19,13 +19,12 @@
 package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
-
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 /** Class to represent a user in caldav.
  *
  *
- *   @author Mike Douglass   douglm  rpi.edu
+ *   @author Mike Douglass   douglm  bedework.edu
  */
 public class CarddavUserNode extends CarddavPrincipalNode {
   /**
