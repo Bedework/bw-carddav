@@ -203,7 +203,7 @@ public class CarddavColNode extends CarddavNode {
    * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentString()
    */
   @Override
-  public String getContentString() throws WebdavException {
+  public String getContentString(final String contentType) throws WebdavException {
     return null;
   }
 
@@ -237,11 +237,8 @@ public class CarddavColNode extends CarddavNode {
     return "en";
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentLen()
-   */
   @Override
-  public long getContentLen() throws WebdavException {
+  public long getContentLen(final String contentType) throws WebdavException {
     return 0;
   }
 

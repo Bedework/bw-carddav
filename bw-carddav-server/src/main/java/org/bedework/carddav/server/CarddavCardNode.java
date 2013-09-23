@@ -244,7 +244,7 @@ public boolean generatePropertyValue(final QName tag,
   */
 
   @Override
-  public String getContentString() throws WebdavException {
+  public String getContentString(final String contentType) throws WebdavException {
     return card.output(vcardVersion);
   }
 
@@ -345,7 +345,7 @@ public boolean generatePropertyValue(final QName tag,
    * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentLen()
    */
   @Override
-  public long getContentLen() throws WebdavException {
+  public long getContentLen(final String contentType) throws WebdavException {
     if (card != null) {
       return card.output(vcardVersion).length();
     }
