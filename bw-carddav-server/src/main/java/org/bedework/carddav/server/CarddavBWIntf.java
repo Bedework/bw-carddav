@@ -618,6 +618,31 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
   }
 
+  @Override
+  public String getAcceptContentType(HttpServletRequest req) {
+    String accept = req.getHeader("Accept");
+
+    if (accept != null) {
+      return accept;
+    }
+
+    String[] contentTypePars = null;
+    String contentType = req.getContentType();
+
+    String ctype = null;
+
+    if (contentType != null) {
+      contentTypePars = contentType.split(";");
+      ctype = contentTypePars[0];
+    }
+
+    if (ctype == null) {
+      return ctype;
+    }
+
+    return "text/vcard";
+  }
+
   /* (non-Javadoc)
    * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf#putContent(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode, java.lang.String[], java.io.Reader, edu.bedework.cct.webdav.servlet.common.Headers.IfHeaders)
    */
@@ -1329,7 +1354,6 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * empty collection will be returned if no objects match.
    *
    * @param wdnode    WebdavNsNode defining root of search
-   * @param retrieveRecur  How we retrieve recurring events
    * @param fltr      Filter object defining search
    * @param limits    to limit result size
    * @param vcardVersion
