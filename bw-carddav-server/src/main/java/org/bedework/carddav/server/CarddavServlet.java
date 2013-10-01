@@ -71,13 +71,18 @@ public class CarddavServlet extends WebdavServlet
       super("org.bedework.synch:service=Synch");
     }
 
+    @Override
+    public String loadConfig() {
+      return null;
+    }
+
     void start() {
       try {
         getManagementContext().start();
 
         cd = new CardDav();
         register("cardDav", "cardDav", cd);
-        cd.loadConfigs();
+        cd.loadConfig();
       } catch (Throwable t){
         t.printStackTrace();
       }

@@ -160,7 +160,7 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
   }
 
   @Override
-  public String loadConfigs() {
+  public String loadConfig() {
     try {
       /* Load up the end-point configs */
 

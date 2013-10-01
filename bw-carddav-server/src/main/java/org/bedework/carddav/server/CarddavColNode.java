@@ -238,7 +238,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   @Override
-  public long getContentLen(final String contentType) throws WebdavException {
+  public long getContentLen() throws WebdavException {
     return 0;
   }
 

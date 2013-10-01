@@ -45,19 +45,9 @@ public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHan
     this.cfg = cfg;
   }
 
-  /**
-   * @throws Throwable
-   */
-  public void loadConfig() throws Throwable {
-    /* Load up the config */
-
-    cfg = getConfigInfo(getConfigName(), DirHandlerConfig.class);
-
-    if (cfg == null) {
-      throw new Exception("Unable to read configuration " + getConfigName());
-    }
-
-    saveConfig(); // Just to ensure we have it for next time
+  @Override
+  public String loadConfig() {
+    return loadConfig(DirHandlerConfig.class);
   }
 
   /* ========================================================================

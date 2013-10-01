@@ -341,11 +341,8 @@ public boolean generatePropertyValue(final QName tag,
     return "en";
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentLen()
-   */
   @Override
-  public long getContentLen(final String contentType) throws WebdavException {
+  public long getContentLen() throws WebdavException {
     if (card != null) {
       return card.output(vcardVersion).length();
     }

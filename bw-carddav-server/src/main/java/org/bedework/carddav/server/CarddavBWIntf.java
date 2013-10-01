@@ -608,7 +608,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       c.stream = bwnode.getContentStream();
       c.contentType = node.getContentType();
-      c.contentLength = node.getContentLen(c.contentType);
+      c.contentLength = node.getContentLen();
 
       return c;
     } catch (WebdavException we) {

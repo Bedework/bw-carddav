@@ -304,7 +304,7 @@ public class CarddavResourceNode extends CarddavNode {
    * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentString()
    */
   @Override
-  public String getContentString() throws WebdavException {
+  public String getContentString(String contentType) throws WebdavException {
     init(true);
     throw new WebdavException("binary content");
   }

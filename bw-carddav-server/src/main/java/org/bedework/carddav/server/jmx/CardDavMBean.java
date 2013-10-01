@@ -48,11 +48,4 @@ public interface CardDavMBean extends ConfBaseMBean {
    */
   @MBeanInfo("Lists the dir handler mappings to the principal hierarchy ")
   String ListDirHandlers();
-
-  /** (Re)load the configurations
-   *
-   * @return status
-   */
-  @MBeanInfo("(Re)load the configurations")
-  String loadConfigs();
 }
