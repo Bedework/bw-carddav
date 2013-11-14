@@ -38,7 +38,7 @@ import javax.xml.namespace.QName;
 
 /** Class to represent an entity such as events in caldav.
  *
- *   @author Mike Douglass   douglm  bedework.edu
+ *   @author Mike Douglass   douglm  rpi.edu
  */
 public class CarddavCardNode extends CarddavNode {
   private Card card;

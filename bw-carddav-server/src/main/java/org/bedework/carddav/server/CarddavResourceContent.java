@@ -27,7 +27,7 @@ import java.io.Serializable;
  * image. The actual content is stored in a BwResourceContent object to allow us
  * to put off retrieval of content - or maybe even store outside of the db.
  *
- *  @author Mike Douglass   douglm - bedework.edu
+ *  @author Mike Douglass   douglm - rpi.edu
  */
 public class CarddavResourceContent implements Comparable<CarddavResourceContent>, Serializable {
   /* The collection this belongs to

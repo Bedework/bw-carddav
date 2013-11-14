@@ -170,7 +170,7 @@ import javax.servlet.http.HttpServletResponse;
 
  * </pre>
  *
- *   @author Mike Douglass   douglm @ bedework.edu
+ *   @author Mike Douglass   douglm @ rpi.edu
  */
 public class Filter extends CarddavFilter {
   /** Constructor

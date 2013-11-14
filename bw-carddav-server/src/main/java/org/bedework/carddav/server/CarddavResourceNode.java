@@ -35,7 +35,7 @@ import javax.xml.namespace.QName;
 
 /** Class to represent a resource such as a file.
  *
- *   @author Mike Douglass   douglm bedework.edu
+ *   @author Mike Douglass   douglm rpi.edu
  */
 public class CarddavResourceNode extends CarddavNode {
   private CarddavResource resource;

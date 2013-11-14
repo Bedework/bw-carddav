@@ -177,7 +177,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
  * </pre>
  *
- *   @author Mike Douglass   douglm @ bedework.edu
+ *   @author Mike Douglass   douglm @ rpi.edu
  */
 public class CarddavFilter {
   /** */

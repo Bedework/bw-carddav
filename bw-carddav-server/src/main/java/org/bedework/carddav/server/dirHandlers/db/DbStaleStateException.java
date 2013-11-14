@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 
 /** Forbidden exception thrown by webdav classes
  *
- *   @author Mike Douglass   douglm  bedework.edu
+ *   @author Mike Douglass   douglm  rpi.edu
  */
 public class DbStaleStateException extends WebdavException {
   /** Constructor

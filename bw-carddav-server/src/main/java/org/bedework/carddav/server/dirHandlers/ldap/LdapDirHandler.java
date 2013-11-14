@@ -72,9 +72,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   private String[] attrIdList;
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
-   */
   @Override
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,

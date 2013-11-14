@@ -24,7 +24,7 @@ import org.bedework.webdav.servlet.shared.WebdavException;
 /** Class to represent a group in caldav.
  *
  *
- *   @author Mike Douglass   douglm  bedework.edu
+ *   @author Mike Douglass   douglm  rpi.edu
  */
 public class CarddavGroupNode extends CarddavPrincipalNode {
   /**

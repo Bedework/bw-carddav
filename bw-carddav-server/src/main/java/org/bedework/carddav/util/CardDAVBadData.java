@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Exception for bad address data
  *
- *   @author Mike Douglass   douglm@bedework.edu
+ *   @author Mike Douglass   douglm rpi.edu
  */
 public class CardDAVBadData extends WebdavException {
   /** Constructor

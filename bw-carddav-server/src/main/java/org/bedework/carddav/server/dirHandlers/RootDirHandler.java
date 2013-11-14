@@ -30,7 +30,7 @@ import org.bedework.webdav.servlet.shared.WebdavForbidden;
 
 /** An implementation of DirHandler which handles the root paths.
 *
-* @author Mike Douglass douglm bedework.edu
+* @author Mike Douglass douglm rpi.edu
 * @version 1.0
 */
 public class RootDirHandler extends AbstractDirHandler {

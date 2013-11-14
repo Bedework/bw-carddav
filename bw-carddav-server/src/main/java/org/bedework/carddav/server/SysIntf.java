@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * we don't have distinct event, todo and journal classes. They are all currently
  * the BwEvent class with an entityType defining what the object represents.
  *
- * @author Mike Douglass douglm at bedework.edu
+ * @author Mike Douglass douglm at rpi.edu
  */
 public interface SysIntf {
   /** Called before any other method is called to allow initialisation to
@@ -329,7 +329,6 @@ public interface SysIntf {
 
   /**
    * @param col   Initialised collection object
-   * @param addressBook
    * @param parentPath
    * @return int status
    * @throws WebdavException

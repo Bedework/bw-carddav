@@ -33,7 +33,7 @@ import java.util.List;
 
 /** Interface to do hibernate interactions.
  *
- * @author Mike Douglass douglm at bedework.edu
+ * @author Mike Douglass douglm at rpi.edu
  */
 public interface HibSession extends Serializable {
   /** Set up for a hibernate interaction. Throw the object away on exception.

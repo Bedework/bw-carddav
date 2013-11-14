@@ -22,7 +22,7 @@ package org.bedework.carddav.server.query;
 import org.apache.log4j.Logger;
 
 /**
- * @author Mike Douglass douglm @ bedework.edu
+ * @author Mike Douglass douglm   rpi.edu
  */
 public class Prop {
   /* Name of property */

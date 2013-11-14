@@ -67,7 +67,7 @@ import javax.xml.namespace.QName;
 
 /** Bedework implementation of carddav SysIntf.
  *
- * @author Mike Douglass douglm at bedework.edu
+ * @author Mike Douglass douglm at rpi.edu
  */
 public class BwSysIntfImpl implements SysIntf {
   private boolean debug;

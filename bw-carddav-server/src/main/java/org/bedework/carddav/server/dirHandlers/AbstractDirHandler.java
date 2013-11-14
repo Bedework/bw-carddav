@@ -45,7 +45,7 @@ import java.util.TreeSet;
 * might have a user account "jim" or a ticket "TKT12345". These could be mapped
 * on to "/principals/users/jim" and "/principals/tickets/12345".
 *
-* @author Mike Douglass douglm bedework.edu
+* @author Mike Douglass douglm rpi.edu
 * @version 1.0
 */
 public abstract class AbstractDirHandler implements DirHandler {

@@ -52,9 +52,6 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   SearchControls constraints;
   NamingEnumeration<SearchResult> sresult;
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
-   */
   @Override
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,

@@ -79,9 +79,6 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WdEntity#resolveAlias(boolean)
-   */
   @Override
   public CarddavCollection resolveAlias(final boolean resolveSubAlias) throws WebdavException {
     return this;

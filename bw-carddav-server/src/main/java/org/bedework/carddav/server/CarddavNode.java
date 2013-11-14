@@ -35,7 +35,7 @@ import javax.xml.namespace.QName;
 
 /** Class to represent a caldav node.
  *
- *   @author Mike Douglass   douglm - bedework.edu
+ *   @author Mike Douglass   douglm - rpi.edu
  */
 public abstract class CarddavNode extends WebdavNsNode {
   protected CarddavCollection col;

@@ -35,7 +35,7 @@ import javax.xml.namespace.QName;
 /** Class to represent a principal in cardav.
  *
  *
- *   @author Mike Douglass   douglm  bedework.edu
+ *   @author Mike Douglass   douglm  rpi.edu
  */
 public class CarddavPrincipalNode extends WebdavPrincipalNode {
 
