@@ -73,7 +73,8 @@ public class CarddavServlet extends WebdavServlet
       return null;
     }
 
-    void start() {
+    @Override
+    public void start() {
       try {
         getManagementContext().start();
 
@@ -85,7 +86,8 @@ public class CarddavServlet extends WebdavServlet
       }
     }
 
-    void stop() {
+    @Override
+    public void stop() {
       try {
         if (cd != null) {
           getManagementContext().stop();
