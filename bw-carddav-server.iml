@@ -5,8 +5,8 @@
     <output-test url="file://$MODULE_DIR$/bw-carddav-server/target/test-classes" />
     <content url="file://$MODULE_DIR$/bw-carddav-server">
       <sourceFolder url="file://$MODULE_DIR$/bw-carddav-server/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bw-carddav-server/src/main/resources" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bw-carddav-server/src/test/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/bw-carddav-server/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/bw-carddav-server/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/bw-carddav-server/target" />
     </content>
     <orderEntry type="inheritedJdk" />
