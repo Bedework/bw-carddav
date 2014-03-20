@@ -45,8 +45,8 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git://github.com/Bedework/bw-carddav.git</connection>
-		<developerConnection>scm:git:git://github.com/Bedework/bw-carddav.git</developerConnection>
+		<connection>scm:git:git@github.com:Bedework/bw-carddav.git</connection>
+		<developerConnection>scm:git:git@github.com:Bedework/bw-carddav.git</developerConnection>
 		<url>https://github.com/Bedework/bw-carddav</url>
 	</scm>
 
