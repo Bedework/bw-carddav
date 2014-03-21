@@ -72,7 +72,7 @@ public class AddressData extends WebdavProperty {
 
   private String returnContentType; // null for defaulted
 
-  private String version; // null for defaulted
+  private String version = "3.0"; // null for defaulted
 
   // true or look at props
   private boolean allprop;

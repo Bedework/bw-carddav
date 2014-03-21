@@ -210,6 +210,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
+  public String getAddMemberSuffix() throws WebdavException {
+    return ";add-member";
+  }
+
+  @Override
   public String getDavHeader(final WebdavNsNode node) throws WebdavException {
     return super.getDavHeader(node) + ", addressbook";
   }
@@ -366,7 +371,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public WebdavNsNode getNode(final String uri,
                               final int existance,
-                              final int nodeType) throws WebdavException {
+                              final int nodeType,
+                              final boolean addMember) throws WebdavException {
     return getNodeInt(uri, existance, nodeType, null, null, null);
   }
 
@@ -454,7 +460,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     try {
       String accept = req.getHeader("ACCEPT");
       String[] acceptPars = {};
-      String requestedVersion = null;
+      String requestedVersion = "3.0";
 
       if (accept != null) {
         acceptPars = accept.split(";");
@@ -1072,7 +1078,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
   public void updateAccess(final AclInfo info) throws WebdavException {
     CarddavNode node = (CarddavNode)getNode(info.what,
                                               WebdavNsIntf.existanceMust,
-                                              WebdavNsIntf.nodeTypeUnknown);
+                                              WebdavNsIntf.nodeTypeUnknown,
+                                              false);
 
     try {
       // May need a real principal hierarchy

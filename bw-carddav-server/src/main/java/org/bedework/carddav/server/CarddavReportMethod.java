@@ -322,7 +322,8 @@ public class CarddavReportMethod extends ReportMethod {
     CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
     WebdavNsNode node = intf.getNode(resourceUri,
                                      WebdavNsIntf.existanceMust,
-                                     WebdavNsIntf.nodeTypeUnknown);
+                                     WebdavNsIntf.nodeTypeUnknown,
+                                     false);
 
     openTag(WebdavTags.multistatus);
 
@@ -346,7 +347,8 @@ public class CarddavReportMethod extends ReportMethod {
           try {
             WebdavNsNode nd = intf.getNode(intf.getUri(hr),
                                            WebdavNsIntf.existanceMust,
-                                           WebdavNsIntf.nodeTypeUnknown);
+                                           WebdavNsIntf.nodeTypeUnknown,
+                                           false);
 
             if (nd instanceof CarddavCardNode) {
               ((CarddavCardNode)nd).setVcardVersion(getVcardVersion());
