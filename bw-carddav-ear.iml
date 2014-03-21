@@ -28,7 +28,7 @@
     <orderEntry type="module" module-name="bw-util-timezones" />
     <orderEntry type="module" module-name="bw-util-caching" />
     <orderEntry type="module" module-name="bw-webdav" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-servlet:4.0.0" level="project" />
+    <orderEntry type="module" module-name="bw-util-servlet" />
     <orderEntry type="module" module-name="bw-access" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.mnode.ical4j:ical4j-vcard:0.9.6-BW-SNAPSHOT" level="project" />
