@@ -15,16 +15,16 @@
 		<!-- Bedework Versions -->
 		<bedework.releases.repo.url>scp://dev.bedework.org/data/repository/maven/maven2</bedework.releases.repo.url>
 		<bedework.snapshots.repo.url>scp://dev.bedework.org/data/repository/maven/maven2</bedework.snapshots.repo.url>
-		<bw-util.version>4.0.0-SNAPSHOT</bw-util.version>
-		<bw-access.version>4.0.0-SNAPSHOT</bw-access.version>
-		<bw-webdav.version>4.0.0-SNAPSHOT</bw-webdav.version>
+		<bw-util.version>4.0.1-SNAPSHOT</bw-util.version>
+		<bw-access.version>4.0.1-SNAPSHOT</bw-access.version>
+		<bw-webdav.version>4.0.1-SNAPSHOT</bw-webdav.version>
 		<!-- Third Party Library Versions -->
 		<ehcache.version>1.6.2</ehcache.version>
 		<hibernate.version>3.6.9.Final</hibernate.version>
 		<hibernate-validator.version>3.1.0.GA</hibernate-validator.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<junit.version>4.8.2</junit.version>
-		<ical4j.version>1.0.2</ical4j.version>
+		<ical4j.version>1.1-BW-SNAPSHOT</ical4j.version>
 		<ical4j-vcard.version>0.9.6-BW-SNAPSHOT</ical4j-vcard.version>
 		<log4j.version>1.2.15</log4j.version>
 		<asm.version>3.2</asm.version>
@@ -115,8 +115,8 @@
 			</dependency>
 			<!-- Third Party Libraries -->
 			<dependency>
-				<groupId>org.mnode.ical4j</groupId>
-				<artifactId>ical4j</artifactId>
+        <groupId>net.fortuna.ical4j</groupId>
+        <artifactId>ical4j</artifactId>
 				<version>${ical4j.version}</version>
 			</dependency>
 			<dependency>
