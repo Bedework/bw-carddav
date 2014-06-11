@@ -220,7 +220,6 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
 
         register("dirhandler", dhn, dhc);
         confBeans.add(dhc);
-        dhc.saveConfig();
       }
 
       return "OK";
