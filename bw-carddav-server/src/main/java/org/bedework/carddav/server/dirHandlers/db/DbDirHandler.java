@@ -412,12 +412,12 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   }
 
   /**
-   * @param dbcard
+   * @param dbcard dbcopy
    * @return a Card object
    * @throws WebdavException
    */
   protected Card makeVcard(final DbCard dbcard) throws WebdavException {
-    Card card = new Card(dbcard.getVcard());
+    final Card card = new Card(dbcard.getVcard());
 
     card.setCreated(dbcard.getCreated());
     card.setLastmod(dbcard.getLastmod());

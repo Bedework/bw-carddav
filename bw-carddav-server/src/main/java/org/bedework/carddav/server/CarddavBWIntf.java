@@ -628,7 +628,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       /** We can only put a single resource - that resource will be a vcard
        */
 
-      Card card = new Card();
+      final Card card = new Card();
       try {
         card.parse(contentRdr);
       } catch (Throwable t) {
@@ -1407,7 +1407,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     try {
-      CarddavURI wi = findURI(uri, existance, nodeType, col, card, r);
+      CarddavURI wi = findURI(uri, existance, nodeType, false, col, card, r);
 
       if (wi == null) {
         throw new WebdavNotFound(uri);
@@ -1470,6 +1470,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param uri        String uri - just the path part
    * @param existance        Say's something about the state of existance
    * @param nodeType         Say's something about the type of node
+   * @param addMember        From POST
    * @param col        Supplied WdCollection object if we already have it.
    * @param card
    * @param rsrc
@@ -1479,6 +1480,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   private CarddavURI findURI(String uri,
                             final int existance,
                             final int nodeType,
+                            final boolean addMember,
                             CarddavCollection col,
                             Card card,
                             CarddavResource rsrc) throws WebdavException {
@@ -1489,31 +1491,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         throw new WebdavServerError();
       }
 
-      /* Normalize the uri - Remove all "." and ".." components */
-
-//      boolean collectionUri = false;
-
-      try {
-        uri = new URI(null, null, uri, null).toString();
-
-        uri = new URI(URLEncoder.encode(uri, "UTF-8")).normalize().getPath();
-
-        uri = URLDecoder.decode(uri, "UTF-8");
-
-        if (uri.endsWith("/")) {
-//          collectionUri = true;
-          uri = uri.substring(0, uri.length() - 1);
-        }
-
-        if (debug) {
-          debugMsg("Normalized uri=" + uri);
-        }
-      } catch (Throwable t) {
-        if (debug) {
-          error(t);
-        }
-        throw new WebdavBadRequest("Bad uri: " + uri);
-      }
+      uri = normalizeUri(uri);
 
       if (!uri.startsWith("/")) {
         return null;
@@ -1528,7 +1506,13 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
 
       if (isPrincipal) {
-        return new CarddavURI(getSysi().getPrincipal(uri));
+        AccessPrincipal p = getSysi().getPrincipal(uri);
+
+        if (p == null) {
+          throw new WebdavNotFound(uri);
+        }
+
+        return new CarddavURI(p);
       }
 
       if (existance == WebdavNsIntf.existanceDoesExist) {
