@@ -43,7 +43,7 @@
 
   <servlet-mapping>
     <servlet-name>action</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
   <session-config>
