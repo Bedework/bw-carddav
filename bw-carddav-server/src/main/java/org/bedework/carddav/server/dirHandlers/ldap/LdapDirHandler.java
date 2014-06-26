@@ -29,6 +29,7 @@ import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
 import org.bedework.carddav.util.CardDAVContextConfig;
+import org.bedework.carddav.util.CardDAVDuplicateUid;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.util.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
@@ -81,9 +82,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     ldapConfig = (LdapDirHandlerConfig)dhConfig;
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCard(java.lang.String, java.lang.String)
-   */
+  @Override
   public Card getCard(final String path, final String name) throws WebdavException {
     verifyPath(path);
 
@@ -104,9 +103,34 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCards(java.lang.String, org.bedework.carddav.server.filter.Filter, org.bedework.carddav.server.SysIntf.GetLimits)
-   */
+  @Override
+  public Card getCardByUid(final String path,
+                           final String uid) throws WebdavException {
+    verifyPath(path);
+
+    final Filter fltr = new Filter(debug);
+
+    final TextMatch tm = new TextMatch(uid);
+    tm.setMatchType(TextMatch.matchTypeEquals);
+
+    final PropFilter pf = new PropFilter("UID", tm);
+
+    fltr.addPropFilter(pf);
+
+    final GetResult gr = getCards(path, fltr, null);
+
+    if (!gr.entriesFound) {
+      return null;
+    }
+
+    if (gr.cards.size() != 1) {
+      throw new CardDAVDuplicateUid();
+    }
+
+    return gr.cards.iterator().next();
+  }
+
+  @Override
   public GetResult getCards(final String path,
                             final Filter filter,
                             final GetLimits limits) throws WebdavException {
@@ -123,7 +147,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         return res;
       }
 
-      res.cards = new ArrayList<Card>();
+      res.cards = new ArrayList<>();
 
       for (;;) {
         CardObject co = nextCard(path, false);

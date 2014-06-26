@@ -64,6 +64,13 @@ public class RootDirHandler extends AbstractDirHandler {
   }
 
   @Override
+  public Card getCardByUid(final String path,
+                           final String uid) throws WebdavException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
   public GetResult getCards(final String path,
                             final Filter filter,
                             final GetLimits limits) throws WebdavException {

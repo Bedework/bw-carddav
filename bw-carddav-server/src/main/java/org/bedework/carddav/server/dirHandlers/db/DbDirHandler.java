@@ -105,9 +105,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
       return hdlr.userHomeRoot;
     }
 
-    /* (non-Javadoc)
-     * @see Access.AccessCb#makeHref(java.lang.String, int)
-     */
+    @Override
     public String makeHref(final String id, final int whoType) throws AccessException {
       try {
         return hdlr.makePrincipalHref(id, whoType);
@@ -139,9 +137,6 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.AbstractDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
-   */
   @Override
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
@@ -205,12 +200,10 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     }
   }
 
-
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCard(java.lang.String, java.lang.String)
-   */
-  public Card getCard(final String path, final String name) throws WebdavException {
-    DbCard card = getDbCard(path, name);
+  @Override
+  public Card getCard(final String path,
+                      final String name) throws WebdavException {
+    final DbCard card = getDbCard(path, name);
 
     if (card == null) {
       return null;
@@ -219,22 +212,33 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     return makeVcard(card);
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCards(java.lang.String, org.bedework.carddav.server.filter.Filter, org.bedework.carddav.server.SysIntf.GetLimits)
-   */
+  @Override
+  public Card getCardByUid(final String path,
+                           final String uid) throws WebdavException {
+    final DbCard card = getDbCardByUid(path, uid);
+
+    if (card == null) {
+      return null;
+    }
+
+    return makeVcard(card);
+  }
+
+  private final static String queryGetCards =
+          "select card from " + DbCard.class.getName() +
+                  " card join card.properties props " +
+                  "where card.parentPath=:path";
+
+  @Override
   @SuppressWarnings("unchecked")
   public GetResult getCards(final String path,
                             final Filter filter,
                             final GetLimits limits) throws WebdavException {
     verifyPath(path);
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder(queryGetCards);
 
-    sb.append("select card from ");
-    sb.append(DbCard.class.getName());
-    sb.append(" card join card.properties props where card.parentPath=:path");
-
-    DbFilter fltr = new DbFilter(sb);
+    final DbFilter fltr = new DbFilter(sb);
 
     fltr.makeFilter(filter);
 
@@ -246,22 +250,20 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
      * distinct with a set
      */
-    Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
+    final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
 
-    GetResult res = new GetResult();
+    final GetResult res = new GetResult();
 
-    res.cards = new ArrayList<Card>();
+    res.cards = new ArrayList<>();
 
-    for (DbCard dbc: cardSet) {
+    for (final DbCard dbc: cardSet) {
       res.cards.add(makeVcard(dbc));
     }
 
     return res;
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCollection(java.lang.String)
-   */
+  @Override
   public CarddavCollection getCollection(final String path) throws WebdavException {
     verifyPath(path);
 
@@ -274,9 +276,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     return makeCdCollection(col);
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCollections(java.lang.String, org.bedework.carddav.server.SysIntf.GetLimits)
-   */
+  @Override
   @SuppressWarnings("unchecked")
   public GetResult getCollections(final String path,
                                   final GetLimits limits)
@@ -313,34 +313,46 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
    *  Protected methods.
    * ==================================================================== */
 
+  private static final String queryGetCardByName =
+          "from " + DbCard.class.getName() +
+                  " card where card.parentPath=:path" +
+                  " and card.name=:name";
+
   protected DbCard getDbCard(final String parentPath,
                              final String name) throws WebdavException {
     verifyPath(parentPath);
 
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("from ");
-    sb.append(DbCard.class.getName());
-    sb.append(" card where card.parentPath=:path");
-    sb.append(" and card.name=:name");
-
-    sess.createQuery(sb.toString());
+    sess.createQuery(queryGetCardByName);
     sess.setString("path", ensureEndSlash(parentPath));
     sess.setString("name", name);
 
     return (DbCard)sess.getUnique();
   }
 
+  private static final String queryGetCardByUid =
+          "from " + DbCard.class.getName() +
+                  " card where card.parentPath=:path" +
+                  " and card.uid=:uid";
+
+  protected DbCard getDbCardByUid(final String parentPath,
+                                  final String uid) throws WebdavException {
+    verifyPath(parentPath);
+
+    sess.createQuery(queryGetCardByUid);
+    sess.setString("path", ensureEndSlash(parentPath));
+    sess.setString("uid", uid);
+
+    return (DbCard)sess.getUnique();
+  }
+
+  private static final String queryGetCard =
+          "from " + DbCard.class.getName() +
+                  " card where card.path=:path";
+
   protected DbCard getDbCard(final String path) throws WebdavException {
     verifyPath(path);
 
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("from ");
-    sb.append(DbCard.class.getName());
-    sb.append(" card where card.path=:path");
-
-    sess.createQuery(sb.toString());
+    sess.createQuery(queryGetCard);
     sess.setString("path", path);
 
     return (DbCard)sess.getUnique();
@@ -383,10 +395,14 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     return cdc;
   }
 
+  private static final String queryGetCollection =
+          "from " + DbCollection.class.getName() +
+                  " col where col.path=:path";
+
   private DbCollection getDbCollection(final String path) throws WebdavException {
     if (path.equals("/")) {
       // Make a root collection
-      DbCollection col = new DbCollection();
+      final DbCollection col = new DbCollection();
       col.setPath("/");
 
       col.setOwnerHref(dbConfig.getRootOwner());
@@ -398,17 +414,43 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
     verifyPath(path);
 
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("from ");
-    sb.append(DbCollection.class.getName());
-    sb.append(" col where col.path=:path");
-
-    sess.createQuery(sb.toString());
-
+    sess.createQuery(queryGetCollection);
     sess.setString("path", ensureEndSlash(path));
 
     return (DbCollection)sess.getUnique();
+  }
+
+  private static final String queryDeleteCollection =
+          "delete " + DbCollection.class.getName() +
+                  " col where col.path=:path";
+
+  private static final String queryGetColCards =
+          "from " + DbCard.class.getName() +
+                  " card where card.parentPath=:path";
+
+  protected int deleteDbCollection(final String path) throws WebdavException {
+    if (path.equals("/")) {
+      return 0;
+    }
+
+    verifyPath(path);
+
+    sess.createQuery(queryGetColCards);
+    sess.setString("path", ensureEndSlash(path));
+
+    /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
+     * distinct with a set
+     */
+    final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
+
+    for (final DbCard cd: cardSet) {
+      deleteDbCard(cd);
+    }
+
+    sess.createQuery(queryDeleteCollection);
+    sess.setString("path", ensureEndSlash(path));
+
+    return cardSet.size() + sess.executeUpdate();
   }
 
   /**

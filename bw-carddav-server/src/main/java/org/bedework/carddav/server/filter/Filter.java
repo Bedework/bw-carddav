@@ -184,7 +184,6 @@ public class Filter extends CarddavFilter {
   /** Parse for the carddav server.
    *
    * @param nd
-   * @param tz
    * @throws WebdavException
    */
   public void carddavParse(Node nd) throws WebdavException {

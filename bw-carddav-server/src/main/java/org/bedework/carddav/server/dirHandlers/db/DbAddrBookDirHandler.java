@@ -23,6 +23,7 @@ import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.util.CardDAVBadData;
 import org.bedework.carddav.util.CardDAVContextConfig;
+import org.bedework.carddav.util.CardDAVDuplicateUid;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.shared.UrlHandler;
@@ -55,6 +56,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    *                   Principals
    * ==================================================================== */
 
+  @Override
   public Card getPrincipalCard(final String href) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
@@ -69,26 +71,32 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    *                   Cards
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#addCard(java.lang.String, org.bedework.carddav.server.Vcard)
-   */
+  @Override
   public void addCard(final String path,
                       final Card card) throws WebdavException {
+    if (card.getUid() == null) {
+      throw new WebdavBadRequest();
+    }
+
+    if (getCardByUid(path, card.getUid()) != null) {
+      throw new CardDAVDuplicateUid();
+    }
+
     /** Build a directory record and add the attributes
      */
 
-    VCard vc = card.getVcard();
+    final VCard vc = card.getVcard();
 
     try {
       vc.validate();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       if (debug) {
         error(t);
       }
       throw new CardDAVBadData(t.getMessage());
     }
 
-    DbCard dc = new DbCard(vc);
+    final DbCard dc = new DbCard(vc);
 
     if (card.getName() == null) {
       throw new WebdavBadRequest();
@@ -103,34 +111,23 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     create(dc);
   }
 
-  private boolean create(final DbCard card) throws WebdavException {
-    card.setDtstamps();
-    card.output(); // Ensure string form exists
-
-    sess.save(card);
-
-    return true;
-  }
-
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#updateCard(java.lang.String, org.bedework.carddav.server.Vcard)
-   */
+  @Override
   public void updateCard(final String path,
                          final Card card) throws WebdavException {
     if (card.getName() == null) {
       throw new WebdavBadRequest();
     }
 
-    VCard vc = card.getVcard();
+    final VCard vc = card.getVcard();
 
     try {
       vc.validate();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new CardDAVBadData(t.getMessage());
     }
 
     //DbCard dc = new DbCard(vc);
-    DbCard dc = getDbCard(path, card.getName());
+    final DbCard dc = getDbCard(path, card.getName());
 
     if (dc == null) {
       throw new WebdavException("Card does not exist");
@@ -146,11 +143,9 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     sess.update(dc);
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#deleteCard(org.bedework.carddav.server.CarddavCardNode)
-   */
+  @Override
   public void deleteCard(final CarddavCardNode val) throws WebdavException {
-    DbCard dcd = getDbCard(val.getPath());
+    final DbCard dcd = getDbCard(val.getPath());
 
     if (dcd == null) {
       throw new WebdavNotFound();
@@ -163,30 +158,33 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    *                   Collections
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#makeCollection(org.bedework.carddav.server.CarddavCollection, java.lang.String)
-   */
+  private final static String queryGetUserRootName =
+          "select col.name from " + DbCollection.class.getName() +
+                  " col where col.name=:name and col.parentPath is null";
+
+  private final static String queryGetCollectionName =
+          "select col.name from " + DbCollection.class.getName() +
+                  " col where col.name=:name and col.parentPath=:pp";
+
+
+  @Override
   public int makeCollection(final CarddavCollection col,
                             final String parentPath) throws WebdavException {
-    boolean home = parentPath.equals(userHomeRoot);
+    final boolean home = parentPath.equals(userHomeRoot);
 
     /* If home ensure the user root exists */
     if (home) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("select col.name from ");
-      sb.append(DbCollection.class.getName());
-      sb.append(" col where col.name=:name and col.parentPath is null");
+      sess.createQuery(queryGetUserRootName);
 
-      sess.createQuery(sb.toString());
-
-      String rootName = userHomeRoot.substring(1, userHomeRoot.length() - 1);
+      final String rootName =
+              userHomeRoot.substring(1, userHomeRoot.length() - 1);
       sess.setString("name", rootName);
 
-      Collection res = sess.getList();
+      final Collection res = sess.getList();
 
       if (res.size() == 0) {
         /* Create user root */
-        DbCollection root = new DbCollection();
+        final DbCollection root = new DbCollection();
 
         root.setName(rootName);
 //        root.setParentPath("/");
@@ -196,7 +194,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
         root.setOwnerHref(dbConfig.getRootOwner());
         root.setCreatorHref(dbConfig.getRootOwner());
 
-        DateTime dt = new DateTime(true);
+        final DateTime dt = new DateTime(true);
 
         root.setLastmod(new LastModified(dt).getValue());
         root.setCreated(new Created(dt).getValue());
@@ -207,17 +205,12 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     }
 
     /* Ensure doesn't exist */
-    StringBuilder sb = new StringBuilder();
-    sb.append("select col.name from ");
-    sb.append(DbCollection.class.getName());
-    sb.append(" col where col.name=:name and col.parentPath=:pp");
-
-    sess.createQuery(sb.toString());
+    sess.createQuery(queryGetCollectionName);
 
     sess.setString("name", col.getName());
     sess.setString("pp", ensureSlashAtEnd(parentPath));
 
-    Collection res = sess.getList();
+    final Collection res = sess.getList();
     if (res.size() > 0) {
       return DirHandler.statusDuplicate;
     }
@@ -229,7 +222,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       }
     }
 
-    DbCollection dbc = new DbCollection();
+    final DbCollection dbc = new DbCollection();
 
     dbc.setName(col.getName());
     dbc.setDescription(col.getDescription());
@@ -241,7 +234,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     dbc.setParentPath(ensureSlashAtEnd(parentPath));
     dbc.setPath(dbc.getParentPath() + dbc.getName() + "/");
 
-    DateTime dt = new DateTime(true);
+    final DateTime dt = new DateTime(true);
 
     if (col.getLastmod() == null) {
       dbc.setLastmod(new LastModified(dt).getValue());
@@ -264,24 +257,18 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     return DirHandler.statusCreated;
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#deleteCollection(org.bedework.webdav.WdCollection)
-   */
+  @Override
   public void deleteCollection(final WdCollection col) throws WebdavException {
-    throw new WebdavException("unimplemented");
+    deleteDbCollection(col.getPath());
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#rename(org.bedework.webdav.WdCollection, java.lang.String)
-   */
+  @Override
   public int rename(final WdCollection col,
                     final String newName) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#copyMove(org.bedework.carddav.server.Vcard, java.lang.String, java.lang.String, boolean, boolean)
-   */
+  @Override
   public int copyMove(final Card from,
                       final String toPath,
                       final String name,
@@ -290,10 +277,17 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     throw new WebdavException("unimplemented");
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#updateCollection(org.bedework.webdav.WdCollection)
-   */
+  @Override
   public void updateCollection(final WdCollection val) throws WebdavException {
     throw new WebdavException("unimplemented");
+  }
+
+  private boolean create(final DbCard card) throws WebdavException {
+    card.setDtstamps();
+    card.output(); // Ensure string form exists
+
+    sess.save(card);
+
+    return true;
   }
 }

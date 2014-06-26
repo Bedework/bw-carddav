@@ -213,6 +213,16 @@ public interface DirHandler /*extends DynamicMBean */ {
   public Card getCard(String path, String name)
           throws WebdavException;
 
+  /** Get card given the collection and the uid.
+   *
+   * @param path       to collection
+   * @param uid        UID value
+   * @return Vcard or null
+   * @throws WebdavException
+   */
+  public Card getCardByUid(String path, String uid)
+          throws WebdavException;
+
   /** Return the cards for the current user in the given collection using the
    * supplied filter.
    *
@@ -223,11 +233,11 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @throws WebdavException
    */
   public GetResult getCards(String path,
-                                 Filter filter,
-                                 GetLimits limits) throws WebdavException;
+                            Filter filter,
+                            GetLimits limits) throws WebdavException;
 
   /**
-   * @param val
+   * @param val node representing card
    * @throws WebdavException
    */
   public void deleteCard(CarddavCardNode val) throws WebdavException;
@@ -238,7 +248,7 @@ public interface DirHandler /*extends DynamicMBean */ {
 
   /**
    * @param col   Initialised collection object
-   * @param parentPath
+   * @param parentPath of its parent
    * @return int status
    * @throws WebdavException
    */
@@ -246,14 +256,14 @@ public interface DirHandler /*extends DynamicMBean */ {
                             String parentPath) throws WebdavException;
 
   /**
-   * @param col
+   * @param col webdav collection object
    * @throws WebdavException
    */
   public void deleteCollection(WdCollection col) throws WebdavException;
 
   /**
    * @param col   Initialised collection object
-   * @param newName
+   * @param newName the name to set
    * @return int status
    * @throws WebdavException
    */

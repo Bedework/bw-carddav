@@ -306,6 +306,8 @@ public class LdapMapping {
     addPropertyAttrMapping("sn", "N", true);
     //                          sn; Given Names; Honorific Prefixes; Honorific Suffixes
 
+    addPropertyAttrMapping("source", "UID", true);
+
     // Common properties
     addPropertyAttrMapping("CalResourceKind", "KIND");
     //                                     "individual" for a single person,

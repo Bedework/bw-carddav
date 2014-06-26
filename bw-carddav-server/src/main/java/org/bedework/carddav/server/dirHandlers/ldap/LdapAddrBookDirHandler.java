@@ -23,6 +23,7 @@ import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapping;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrValue;
 import org.bedework.carddav.util.CardDAVContextConfig;
+import org.bedework.carddav.util.CardDAVDuplicateUid;
 import org.bedework.carddav.util.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.shared.UrlHandler;
@@ -77,17 +78,23 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
    *                   Cards
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#addCard(java.lang.String, org.bedework.carddav.server.Vcard)
-   */
+  @Override
   public void addCard(final String path,
                       final Card card) throws WebdavException {
+    if (card.getUid() == null) {
+      throw new WebdavBadRequest();
+    }
+
+    if (getCardByUid(path, card.getUid()) != null) {
+      throw new CardDAVDuplicateUid();
+    }
+
     /** Build a directory record and add the attributes
      */
-    DirRecord dirRec = new BasicDirRecord();
+    final DirRecord dirRec = new BasicDirRecord();
 
-    String colDn = makeAddrbookDn(path, true);
-    String cn = card.getName();
+    final String colDn = makeAddrbookDn(path, true);
+    final String cn = card.getName();
     if (cn == null) {
       throw new WebdavBadRequest();
     }
