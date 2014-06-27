@@ -36,6 +36,7 @@ import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.naming.NameAlreadyBoundException;
@@ -225,6 +226,12 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
    */
   public void deleteCard(final CarddavCardNode val) throws WebdavException {
     throw new WebdavException("unimplemented");
+  }
+
+  @Override
+  public Iterator<Card> getAll(final String path)
+          throws WebdavException {
+    return null;
   }
 
   /* ====================================================================

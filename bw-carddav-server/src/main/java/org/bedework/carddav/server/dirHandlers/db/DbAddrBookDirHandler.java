@@ -126,11 +126,15 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       throw new CardDAVBadData(t.getMessage());
     }
 
-    //DbCard dc = new DbCard(vc);
     final DbCard dc = getDbCard(path, card.getName());
 
     if (dc == null) {
       throw new WebdavException("Card does not exist");
+    }
+
+    // UID must match
+    if (!card.getUid().equals(dc.getUid())) {
+      throw new CardDAVBadData("Cannot change UID");
     }
 
     dc.setVcard(vc);

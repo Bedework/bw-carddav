@@ -29,6 +29,7 @@ import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attributes;
@@ -48,9 +49,6 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   SearchControls constraints;
   NamingEnumeration<SearchResult> sresult;
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.dirHandlers.LdapDirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
-   */
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
@@ -112,6 +110,12 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
    */
   public void deleteCard(final CarddavCardNode val) throws WebdavException {
     throw new WebdavException("unimplemented");
+  }
+
+  @Override
+  public Iterator<Card> getAll(final String path)
+          throws WebdavException {
+    return null;
   }
 
   /* ====================================================================

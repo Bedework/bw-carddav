@@ -45,6 +45,7 @@ import org.hibernate.cfg.Configuration;
 import java.io.StringReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -263,11 +264,63 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     return res;
   }
 
+  private final static String queryGetCardNames =
+          "select card.name from " + DbCard.class.getName() +
+                  " card where card.parentPath=:path";
+
+  private class CardIterator implements Iterator<Card> {
+    private String parentPath;
+    private List<String> names;
+
+    private Iterator<String> it;
+
+    private HibSession sess;
+
+    @Override
+    public boolean hasNext() {
+      return it.hasNext();
+    }
+
+    @Override
+    public Card next() {
+      if (!it.hasNext()) {
+        return null;
+      }
+
+      try {
+        return getCard(parentPath, it.next());
+      } catch (final WebdavException we) {
+        throw new RuntimeException(we);
+      }
+    }
+
+    @Override
+    public void remove() {
+    }
+  }
+  @Override
+  public Iterator<Card> getAll(final String path) throws WebdavException {
+    verifyPath(path);
+
+    sess.createQuery(queryGetCardNames);
+    sess.setString("path", ensureSlashAtEnd(path));
+
+    final CardIterator ci = new CardIterator();
+    ci.parentPath = path;
+    //noinspection unchecked
+    ci.names = sess.getList();
+    ci.it = ci.names.iterator();
+    ci.sess = sess;
+
+    return ci;
+  }
+
+
   @Override
   public CarddavCollection getCollection(final String path) throws WebdavException {
     verifyPath(path);
 
-    DbCollection col = getDbCollection(ensureEndSlash(path), privRead);
+    final DbCollection col = getDbCollection(ensureEndSlash(path), privRead);
 
     if (col == null) {
       return null;
@@ -276,6 +329,10 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     return makeCdCollection(col);
   }
 
+  private static final String queryGetCollections =
+          "from " + DbCollection.class.getName() +
+                  " col where col.parentPath=:path";
+
   @Override
   @SuppressWarnings("unchecked")
   public GetResult getCollections(final String path,
@@ -283,18 +340,12 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
          throws WebdavException {
     verifyPath(path);
 
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("from ");
-    sb.append(DbCollection.class.getName());
-    sb.append(" col where col.parentPath=:path");
-
-    sess.createQuery(sb.toString());
+    sess.createQuery(queryGetCollections);
     sess.setString("path", ensureSlashAtEnd(path));
 
-    List<DbCollection> l = sess.getList();
+    final List<DbCollection> l = sess.getList();
 
-    GetResult res = new GetResult();
+    final GetResult res = new GetResult();
 
     res.collections = new ArrayList<CarddavCollection>();
 
@@ -302,11 +353,15 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
       return res;
     }
 
-    for (DbCollection col: l) {
+    for (final DbCollection col: l) {
       res.collections.add(makeCdCollection(col));
     }
 
     return res;
+  }
+
+  protected void updateCollection(DbCollection col) throws WebdavException {
+    sess.update(col);
   }
 
   /* ====================================================================
@@ -365,7 +420,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   }
 
   protected CarddavCollection makeCdCollection(final DbCollection col) throws WebdavException {
-    CarddavCollection cdc = new CarddavCollection();
+    final CarddavCollection cdc = new CarddavCollection();
 
     cdc.setAddressBook(col.getAddressBook());
 

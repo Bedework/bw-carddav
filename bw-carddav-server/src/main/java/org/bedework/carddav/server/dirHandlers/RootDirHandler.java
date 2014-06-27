@@ -28,6 +28,8 @@ import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
 
+import java.util.Iterator;
+
 /** An implementation of DirHandler which handles the root paths.
 *
 * @author Mike Douglass douglm rpi.edu
@@ -49,6 +51,12 @@ public class RootDirHandler extends AbstractDirHandler {
   @Override
   public void deleteCard(final CarddavCardNode val) throws WebdavException {
     throw new WebdavForbidden();
+  }
+
+  @Override
+  public Iterator<Card> getAll(final String path)
+          throws WebdavException {
+    return null;
   }
 
   @Override
