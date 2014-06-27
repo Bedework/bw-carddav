@@ -4,7 +4,7 @@
   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <!-- ===================================================================
-     Object to represent a card.
+     Object to represent a property.
      =================================================================== -->
 
 <hibernate-mapping>
