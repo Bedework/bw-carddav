@@ -183,7 +183,7 @@ public class DbFilter {
   private void makePropFilterExpr(final String name, final TextMatch tm) {
     PField pf = pfields.get(name.toLowerCase());
 
-    boolean caseless = tm.getCaseless();
+    boolean caseless = (tm.getCaseless() != null) && tm.getCaseless();
 
     if (pf != null) {
       // Use the column value
