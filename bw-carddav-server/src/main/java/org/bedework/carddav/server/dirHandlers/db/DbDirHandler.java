@@ -45,6 +45,8 @@ import org.hibernate.cfg.Configuration;
 import java.io.StringReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -204,7 +206,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   @Override
   public Card getCard(final String path,
                       final String name) throws WebdavException {
-    final DbCard card = getDbCard(path, name);
+    final DbCard card = getDbCard(path, name, privRead);
 
     if (card == null) {
       return null;
@@ -347,20 +349,50 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
     final GetResult res = new GetResult();
 
-    res.collections = new ArrayList<CarddavCollection>();
+    res.collections = new ArrayList<>();
 
     if (l == null) {
       return res;
     }
 
     for (final DbCollection col: l) {
+      if (checkAccess(col, privRead, true) == null) {
+        continue;
+      }
+
       res.collections.add(makeCdCollection(col));
     }
 
     return res;
   }
 
-  protected void updateCollection(DbCollection col) throws WebdavException {
+  protected class CollectionsBatchImpl implements CollectionBatcher {
+    private Collection<CarddavCollection> cols;
+    private boolean called;
+
+    @Override
+    public Collection<CarddavCollection> next() throws WebdavException {
+      if (called) {
+        return Collections.EMPTY_LIST;
+      }
+
+      called = true;
+      return cols;
+    }
+  }
+
+  @Override
+  public CollectionBatcher getCollections(final String path) throws WebdavException {
+    final CollectionsBatchImpl cbi = new CollectionsBatchImpl();
+
+    GetResult gr = getCollections(path, null);
+
+    cbi.cols = Collections.unmodifiableCollection(gr.collections);
+
+    return cbi;
+  }
+
+  protected void updateCollection(final DbCollection col) throws WebdavException {
     sess.update(col);
   }
 
@@ -374,8 +406,15 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
                   " and card.name=:name";
 
   protected DbCard getDbCard(final String parentPath,
-                             final String name) throws WebdavException {
+                             final String name,
+                             final int access) throws WebdavException {
     verifyPath(parentPath);
+
+    final DbCollection col = getDbCollection(ensureEndSlash(parentPath), access);
+
+    if (col == null) {
+      return null;
+    }
 
     sess.createQuery(queryGetCardByName);
     sess.setString("path", ensureEndSlash(parentPath));
@@ -486,6 +525,10 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   protected int deleteDbCollection(final String path) throws WebdavException {
     if (path.equals("/")) {
       return 0;
+    }
+
+    if (getDbCollection(path, privUnbind) ==null) {
+      throw new WebdavForbidden();
     }
 
     verifyPath(path);

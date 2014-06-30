@@ -322,4 +322,23 @@ public interface DirHandler /*extends DynamicMBean */ {
    */
   GetResult getCollections(String path,
                            GetLimits limits) throws WebdavException;
+
+  interface CollectionBatcher {
+    /** Call repeatedly until empty collection returned
+     *
+     * @return next batch of collections or empty for no more
+     * @throws WebdavException
+     */
+    Collection<CarddavCollection> next() throws WebdavException;
+  }
+
+  /** Return all the children of the current collection to which the
+   * current principal has access. Primarily used by root user to
+   * dump content.
+   *
+   * @param path - to parent.
+   * @return batcher - null for unsupported
+   * @throws WebdavException
+   */
+  CollectionBatcher getCollections(final String path)  throws WebdavException;
 }

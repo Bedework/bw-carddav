@@ -96,6 +96,12 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       throw new CardDAVBadData(t.getMessage());
     }
 
+    final DbCollection col = getDbCollection(ensureEndSlash(path), privBind);
+
+    if (col == null) {
+      throw new WebdavForbidden();
+    }
+
     final DbCard dc = new DbCard(vc);
 
     if (card.getName() == null) {
@@ -126,7 +132,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       throw new CardDAVBadData(t.getMessage());
     }
 
-    final DbCard dc = getDbCard(path, card.getName());
+    final DbCard dc = getDbCard(path, card.getName(), privWriteContent);
 
     if (dc == null) {
       throw new WebdavException("Card does not exist");
@@ -154,6 +160,8 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     if (dcd == null) {
       throw new WebdavNotFound();
     }
+
+    checkAccess(dcd, privUnbind, false);
 
     deleteDbCard(dcd);
   }

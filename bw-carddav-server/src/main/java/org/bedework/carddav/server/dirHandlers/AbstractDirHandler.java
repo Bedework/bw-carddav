@@ -126,9 +126,6 @@ public abstract class AbstractDirHandler implements DirHandler {
   public void close() throws WebdavException {
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#init(org.bedework.carddav.util.CardDAVConfig, org.bedework.carddav.util.DirHandlerConfig, edu.bedework.cct.webdav.servlet.shared.WebdavNsNode.UrlHandler)
-   */
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
@@ -187,9 +184,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     return info;
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#isPrincipal(java.lang.String)
-   */
+  @Override
   public boolean isPrincipal(final String val) throws WebdavException {
     if (val == null) {
       return false;
@@ -198,9 +193,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     return val.startsWith(cdConfig.getPrincipalRoot() + "/");
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getPrincipal(java.lang.String)
-   */
+  @Override
   public AccessPrincipal getPrincipal(final String path) throws WebdavException {
     try {
       if (!isPrincipal(path)) {
@@ -263,9 +256,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#makePrincipalUri(AccessPrincipal)
-   */
+  @Override
   public String makePrincipalUri(final AccessPrincipal p) throws WebdavException {
     if (isPrincipal(p.getAccount())) {
       return p.getAccount();
@@ -288,9 +279,7 @@ public abstract class AbstractDirHandler implements DirHandler {
     return cdConfig.getPrincipalRoot();
   } */
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getGroups(java.lang.String, java.lang.String)
-   */
+  @Override
   public Collection<String>getGroups(String rootUrl,
                                      final String principalUrl) throws WebdavException {
     Collection<String> urls = new TreeSet<String>();
@@ -318,13 +307,19 @@ public abstract class AbstractDirHandler implements DirHandler {
     return urls;
   }
 
+  @Override
   public String getprincipalHome() throws WebdavException {
-    return Util.buildPath(true, dhConfig.getPathPrefix(), "/",
-                          account);
+    return Util.buildPath(true, dhConfig.getPathPrefix(), "/", account);
   }
 
+  @Override
   public String getprincipalHome(final AccessPrincipal p) throws WebdavException {
     return Util.buildPath(true, dhConfig.getPathPrefix(), "/", p.getAccount());
+  }
+
+  @Override
+  public CollectionBatcher getCollections(final String path) throws WebdavException {
+    return null;
   }
 
   /* ====================================================================
@@ -369,8 +364,8 @@ public abstract class AbstractDirHandler implements DirHandler {
   }
 
   /** Make a principal ref from an account
-   * @param account
-   * @param type
+   * @param account id
+   * @param whoType type of principal
    */
   protected String makePrincipalHref(final String account,
                                      final int whoType) throws WebdavException {
