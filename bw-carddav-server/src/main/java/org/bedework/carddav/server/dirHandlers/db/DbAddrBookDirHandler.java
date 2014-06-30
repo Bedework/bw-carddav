@@ -38,7 +38,10 @@ import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.vcard.VCard;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * @author douglm
@@ -50,6 +53,104 @@ public class DbAddrBookDirHandler extends DbDirHandler {
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
+  }
+
+  @Override
+  public boolean exportData(final String dataOutPath) throws WebdavException {
+    final File f = new File(dataOutPath);
+
+    final File dumpDir = makeDir(f, dhConfig.getPathPrefix());
+
+    final CollectionBatcher cb = getCollections(dhConfig.getPathPrefix());
+
+    /* First level should be user home */
+    while (true) {
+      final Collection<CarddavCollection> ccs = cb.next();
+      if (Util.isEmpty(ccs)) {
+        break;
+      }
+
+      for (final CarddavCollection cc: ccs) {
+        if (debug) {
+          trace("Dumping " + cc.getPath());
+        }
+
+        dumpUserDir(cc, dumpDir);
+      }
+    }
+
+    return false;
+  }
+
+  private File makeDir(final File parent,
+                       final String name) throws WebdavException {
+    if (!parent.isDirectory()) {
+      throw new WebdavException(parent.getAbsolutePath() +
+                                        " is not a directory");
+    }
+
+    final File newDir = new File(parent.getAbsolutePath(),
+                                  name);
+    if (!newDir.mkdir()) {
+      throw new WebdavException("Unable to create directory " +
+                                        newDir.getAbsolutePath());
+    }
+
+    return newDir;
+  }
+
+  private void dumpUserDir(final CarddavCollection col,
+                           final File dumpDir) throws WebdavException {
+    final File userDumpDir = makeDir(dumpDir, col.getName());
+
+    if (col.getAddressBook()) {
+      // Dump address data
+
+      final Iterator<Card> cards = getAll(col.getPath());
+      while (cards.hasNext()) {
+        final Card c = cards.next();
+
+        final String vc = c.output(cdConfig.getDefaultVcardVersion());
+
+        FileWriter fw = null;
+        File cardFile = null;
+        try {
+          cardFile = new File(userDumpDir.getAbsolutePath(),
+                              c.getName());
+          fw = new FileWriter(cardFile);
+
+          fw.write(vc);
+        } catch (final Throwable t) {
+          error(t);
+        } finally {
+          try {
+            fw.close();
+          } catch (final Throwable t) {
+            error(t);
+          }
+        }
+      }
+      return;
+    }
+
+    // Might be a resource directory - dump any resources then sub collections.
+
+    final CollectionBatcher cb = getCollections(col.getPath());
+
+    while (true) {
+      final Collection<CarddavCollection> ccs = cb.next();
+      if (Util.isEmpty(ccs)) {
+        break;
+      }
+
+      for (final CarddavCollection cc: ccs) {
+        if (debug) {
+          trace("Dumping " + cc.getPath());
+        }
+
+        dumpUserDir(cc, userDumpDir);
+      }
+    }
   }
 
   /* ====================================================================

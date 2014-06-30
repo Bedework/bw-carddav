@@ -243,7 +243,7 @@ public interface CardDavContextMBean extends ConfBaseMBean {
 
   /** Get info for a user
    *
-   * @param cua
+   * @param cua user address
    * @return List of info lines
    */
   @MBeanInfo("Return information for the given principal or cua")

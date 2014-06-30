@@ -125,12 +125,11 @@ public abstract class AbstractDirHandler implements DirHandler {
                                                     "If set defines the default kind in this directory"));
   } */
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#close()
-   */
+  @Override
   public void close() throws WebdavException {
   }
 
+  @Override
   public void init(final CardDAVContextConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
@@ -164,19 +163,22 @@ public abstract class AbstractDirHandler implements DirHandler {
     } */
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#isOpen()
-   */
+  @Override
   public boolean isOpen() {
     return open;
   }
 
+  @Override
+  public boolean exportData(final String dataOutPath) throws WebdavException {
+    return false;
+  }
+
   /**
-   * @return
+   * @return info
    * @throws WebdavException
    */
   public DirectoryInfo getDirectoryInfo() throws WebdavException {
-    DirectoryInfo info = new DirectoryInfo();
+    final DirectoryInfo info = new DirectoryInfo();
 
     info.setPrincipalRoot(cdConfig.getPrincipalRoot());
     info.setUserPrincipalRoot(cdConfig.getUserPrincipalRoot());
@@ -275,14 +277,6 @@ public abstract class AbstractDirHandler implements DirHandler {
 
     return root + p.getAccount();
   }
-
-  /* *
-   * @return
-   * @throws WebdavException
-   * /
-  public String getPrincipalRoot() throws WebdavException {
-    return cdConfig.getPrincipalRoot();
-  } */
 
   @Override
   public Collection<String>getGroups(String rootUrl,

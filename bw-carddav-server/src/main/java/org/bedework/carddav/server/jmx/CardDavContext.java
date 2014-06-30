@@ -32,9 +32,9 @@ import java.util.List;
  */
 public class CardDavContext extends ConfBase<CardDAVContextConfig> implements CardDavContextMBean {
   /**
-   * @param configStore
-   * @param serviceName
-   * @param configName
+   * @param configStore for configs
+   * @param serviceName of this service
+   * @param configName of the config
    */
   public CardDavContext(final ConfigurationStore configStore,
                         final String serviceName,
@@ -220,7 +220,7 @@ public class CardDavContext extends ConfBase<CardDAVContextConfig> implements Ca
 
   @Override
   public List<String> getUserInfo(final String cua) {
-    return new ArrayList<String>();
+    return new ArrayList<>();
   }
 
   /* ====================================================================
@@ -239,7 +239,7 @@ public class CardDavContext extends ConfBase<CardDAVContextConfig> implements Ca
       cfg = getConfigInfo(getConfigName(), CardDAVContextConfig.class);
 
       return cfg;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error(t);
       cfg = new CardDAVContextConfig();
       return cfg;

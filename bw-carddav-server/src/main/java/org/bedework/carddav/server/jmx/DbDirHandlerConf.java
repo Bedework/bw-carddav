@@ -55,9 +55,9 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
       try {
         infoLines.addLn("Started export of schema");
 
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
 
-        SchemaExport se = new SchemaExport(getConfiguration());
+        final SchemaExport se = new SchemaExport(getConfiguration());
 
 //      if (getDelimiter() != null) {
 //        se.setDelimiter(getDelimiter());
@@ -76,14 +76,13 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
                    getDrop(),
                    true);   //   getCreate());
 
-        long millis = System.currentTimeMillis() - startTime;
-        long seconds = millis / 1000;
-        long minutes = seconds / 60;
-        seconds -= (minutes * 60);
+        final long millis = System.currentTimeMillis() - startTime;
+        final long seconds = millis / 1000;
+        final long minutes = seconds / 60;
 
         infoLines.addLn("Elapsed time: " + minutes + ":" +
-                        twoDigits(seconds));
-      } catch (Throwable t) {
+                                twoDigits(seconds - (minutes * 60)));
+      } catch (final Throwable t) {
         error(t);
         infoLines.exceptionMsg(t);
       } finally {
@@ -94,7 +93,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
     }
   }
 
-  private SchemaThread buildSchema = new SchemaThread();
+  private final SchemaThread buildSchema = new SchemaThread();
 
 
   /* ========================================================================
@@ -177,7 +176,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
       buildSchema.start();
 
       return "OK";
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error(t);
 
       return "Exception: " + t.getLocalizedMessage();
@@ -186,14 +185,6 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   @Override
   public synchronized List<String> schemaStatus() {
-    if (buildSchema == null) {
-      InfoLines infoLines = new InfoLines();
-
-      infoLines.addLn("Schema build has not been started");
-
-      return infoLines;
-    }
-
     return buildSchema.infoLines;
   }
 
@@ -209,11 +200,11 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   @Override
   public String listHibernateProperties() {
-    StringBuilder res = new StringBuilder();
+    final StringBuilder res = new StringBuilder();
 
-    List<String> ps = getConf().getHibernateProperties();
+    final List<String> ps = getConf().getHibernateProperties();
 
-    for (String p: ps) {
+    for (final String p: ps) {
       res.append(p);
       res.append("\n");
     }
@@ -223,7 +214,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   @Override
   public String displayHibernateProperty(final String name) {
-    String val = getConf().getHibernateProperty(name);
+    final String val = getConf().getHibernateProperty(name);
 
     if (val != null) {
       return val;
@@ -277,20 +268,20 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
       try {
         cfg = new Configuration();
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
-        List<String> ps = getConf().getHibernateProperties();
+        final List<String> ps = getConf().getHibernateProperties();
 
-        for (String p: ps) {
+        for (final String p: ps) {
           sb.append(p);
           sb.append("\n");
         }
 
-        Properties hprops = new Properties();
+        final Properties hprops = new Properties();
         hprops.load(new StringReader(sb.toString()));
 
         cfg.addProperties(hprops).configure();
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         // Always bad.
         error(t);
       }
@@ -300,7 +291,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   }
 
   /**
-   * @param val
+   * @param val numeric
    * @return 2 digit val
    */
   private static String twoDigits(final long val) {

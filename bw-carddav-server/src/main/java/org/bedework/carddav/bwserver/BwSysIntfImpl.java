@@ -74,58 +74,13 @@ public class BwSysIntfImpl implements SysIntf {
 
   protected transient Logger log;
 
+  private DirHandlerFactory dhf;
+
   private String account;
 
   private UrlHandler urlHandler;
 
   private CardDAVContextConfig conf;
-
-  private static class HandlerKey {
-    String prefix;
-    String account;
-
-    HandlerKey(final String prefix, final String account) {
-      this.prefix = prefix;
-      this.account = account;
-    }
-
-    @Override
-    public int hashCode() {
-      int hc = prefix.hashCode();
-      if (account != null) {
-        hc *= account.hashCode();
-      }
-
-      return hc;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-      if (!(o instanceof HandlerKey)) {
-        return false;
-      }
-
-      if (this == o) {
-        return true;
-      }
-
-      HandlerKey that = (HandlerKey)o;
-
-      if (!prefix.equals(that.prefix)) {
-        return false;
-      }
-
-      if ((account != null) && (that.account != null)) {
-        return account.equals(that.account);
-      }
-
-      return (account == null) && (that.account == null);
-    }
-  }
-  /* Indexed by the prefix from the config and the account. */
-  private Map<HandlerKey, DirHandler> handlers;
-
-  private ArrayList<DirHandler> openHandlers = new ArrayList<DirHandler>();
 
   private static String userPrincipalRoot;
   private static String groupPrincipalRoot;
@@ -138,6 +93,7 @@ public class BwSysIntfImpl implements SysIntf {
    * @author douglm
    */
   private class CDAccessCb implements AccessCb {
+    @Override
     public String makeHref(final String id, final int whoType) throws AccessException {
       if (id.startsWith("/")) {
         return id;
@@ -171,8 +127,9 @@ public class BwSysIntfImpl implements SysIntf {
     }
   }
 
-  private CDAccessCb accessCb = new CDAccessCb();
+  private final CDAccessCb accessCb = new CDAccessCb();
 
+  @Override
   public void init(final HttpServletRequest req,
                    final String account,
                    final CardDAVContextConfig conf,
@@ -191,17 +148,17 @@ public class BwSysIntfImpl implements SysIntf {
 
       urlHandler = new UrlHandler(req, true);
 
+      dhf = new DirHandlerFactory(conf);
+
       if (account != null) {
         ensureProvisioned();
       }
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPrincipal()
-   */
+  @Override
   public AccessPrincipal getPrincipal() throws WebdavException {
     return getPrincipal(Util.buildPath(true, conf.getUserPrincipalRoot(),
                                        "/", account));
@@ -209,7 +166,7 @@ public class BwSysIntfImpl implements SysIntf {
 
   private static class MyPropertyHandler extends PropertyHandler {
     private final static HashMap<QName, PropertyTagEntry> propertyNames =
-      new HashMap<QName, PropertyTagEntry>();
+      new HashMap<>();
 
     @Override
     public Map<QName, PropertyTagEntry> getPropertyNames() {
@@ -217,37 +174,17 @@ public class BwSysIntfImpl implements SysIntf {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPropertyHandler(org.bedework.carddav.server.PropertyHandler.PropertyType)
-   */
+  @Override
   public PropertyHandler getPropertyHandler(final PropertyType ptype) throws WebdavException {
     return new MyPropertyHandler();
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getUrlHandler()
-   */
+  @Override
   public UrlHandler getUrlHandler() {
     return urlHandler;
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.caldav.server.SysIntf#getUrlPrefix()
-   * /
-  public String getUrlPrefix() {
-    return urlPrefix;
-  }
-
-  /* (non-Javadoc)
-   * @see org.bedework.caldav.server.SysIntf#getRelativeUrls()
-   * /
-  public boolean getRelativeUrls() {
-    return relativeUrls;
-  }*/
-
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#isPrincipal(java.lang.String)
-   */
+  @Override
   public boolean isPrincipal(final String val) throws WebdavException {
     try {
       return getHandler(val).isPrincipal(val);
@@ -869,61 +806,15 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   public void close() throws WebdavException {
-    for (DirHandler handler: openHandlers) {
-      if (handler.isOpen()) {
-        handler.close();
-      }
-    }
-
-    openHandlers.clear();
+    dhf.close();
   }
 
   /* ====================================================================
    *                         Private methods
    * ==================================================================== */
 
-  /**
-   * @return DirHandler
-   * @throws WebdavException
-   */
   private DirHandler getHandler(final String path) throws WebdavException {
-    try {
-      /* First determine which configuration handles this path */
-      final DirHandlerConfig dhc = conf.findDirhandler(path);
-
-      if (dhc == null) {
-        throw new WebdavBadRequest("Bad path " + path);
-      }
-
-      DirHandler dh = null;
-
-      /* See if we have a handler for this path and this account */
-
-      final HandlerKey hk = new HandlerKey(dhc.getPathPrefix(), account);
-
-      if (handlers != null) {
-        dh = handlers.get(hk);
-      }
-
-      if (dh == null) {
-        // Get one from the factory and open it.
-        dh = DirHandlerFactory.getHandler(dhc.getClassName());
-        dh.init(conf, dhc, urlHandler);
-
-        if (handlers == null) {
-          handlers = new HashMap<>();
-        }
-
-        handlers.put(hk, dh);
-      }
-
-      dh.open(account);
-      openHandlers.add(dh);
-
-      return dh;
-    } catch (final Throwable t) {
-      throw new WebdavException(t);
-    }
+    return dhf.getHandler(path, account, urlHandler);
   }
 
   private int handleStatus(final int st) throws WebdavException {

@@ -18,6 +18,8 @@
 */
 package org.bedework.carddav.server.jmx;
 
+import org.bedework.carddav.bwserver.DirHandler;
+import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.DirHandlerConfig;
 
@@ -43,7 +45,8 @@ import javax.management.openmbean.TabularType;
  *
  */
 public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMBean {
-  private static final String serviceName = "org.bedework.carddav:service=CardDav";
+  /** */
+  public static final String serviceName = "org.bedework.carddav:service=CardDav";
 
   /* Name of the property holding the location of the config data */
   private static final String confuriPname = "org.bedework.carddav.confuri";
@@ -101,7 +104,7 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
   }
 
   /**
-   * @param configName
+   * @param configName name of context config
    * @return config for given service
    */
   public static CardDAVContextConfig getConf(final String configName) {
@@ -119,6 +122,16 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
    * Attributes
    * ======================================================================== */
 
+  @Override
+  public void setDataOut(final String val) {
+    getConfig().setDataOut(val);
+  }
+
+  @Override
+  public String getDataOut() {
+    return getConfig().getDataOut();
+  }
+
   /* ========================================================================
    * Operations
    * ======================================================================== */
@@ -127,15 +140,15 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
   public TabularData ListDirHandlersTable() {
     dhData.clear();
 
-    for (DirHandlerConfig dhc: dirhandlerConfigs) {
-      Object[] itemValues = {dhc.getPathPrefix(),
-                             dhc.getName(),
-                             dhc.getClassName()
+    for (final DirHandlerConfig dhc: dirhandlerConfigs) {
+      final Object[] itemValues = {dhc.getPathPrefix(),
+                                   dhc.getName(),
+                                   dhc.getClassName()
       };
       try {
         dhData.put(new CompositeDataSupport(dhType, dhListItemNames,
                                               itemValues));
-      } catch (OpenDataException e) {
+      } catch (final OpenDataException e) {
         e.printStackTrace();
       }
     }
@@ -145,9 +158,9 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
 
   @Override
   public String ListDirHandlers() {
-    StringBuilder res = new StringBuilder();
+    final StringBuilder res = new StringBuilder();
 
-    for (DirHandlerConfig dhc: dirhandlerConfigs) {
+    for (final DirHandlerConfig dhc: dirhandlerConfigs) {
       res.append(dhc.getPathPrefix());
       res.append("\t");
       res.append(dhc.getName());
@@ -160,25 +173,54 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
   }
 
   @Override
+  public List<String> exportData() {
+    final DirHandlerFactory dhf = new DirHandlerFactory(getConfig());
+    final List<String> msgs = new ArrayList<>();
+
+    try {
+      for (final DirHandler dh: dhf.getHandlers("admin", null)) {
+        dh.exportData(getConfig().getDataOut());
+      }
+    } catch (final Throwable t) {
+      error(t);
+      msgs.add(t.getLocalizedMessage());
+    } finally {
+      try {
+        dhf.close();
+      } catch (final Throwable t) {
+        error(t);
+        msgs.add(t.getLocalizedMessage());
+      }
+    }
+
+    return msgs;
+  }
+
+  @Override
   public String loadConfig() {
     try {
       /* Load up the end-point configs */
 
       ConfigurationStore cs = getStore();
 
-      confBeans = new ArrayList<ConfBase>();
+      confBeans = new ArrayList<>();
 
       /* register all our configurations */
-      for (String c: configs) {
-        ObjectName objectName = createObjectName("conf", c);
+      for (final String c: configs) {
+        final ObjectName objectName = createObjectName("conf", c);
 
-        CardDavContext cdc = new CardDavContext(cs,
-                                                objectName.toString(),
-                                                c);
+        final CardDavContext cdc =
+                new CardDavContext(cs,
+                                   objectName.toString(),
+                                   c);
 
         cdc.loadConfig();
         register("conf", c, cdc);
         confBeans.add(cdc);
+
+        if (cfg == null) {
+          cfg = cdc.getConfig();
+        }
       }
 
       /* Now do the dir handlers */
@@ -187,13 +229,13 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
 
       cs = cs.getStore("dirHandlers");
 
-      Collection<String> dirHandlerNames = cs.getConfigs();
+      final Collection<String> dirHandlerNames = cs.getConfigs();
 
       dirhandlerConfigs = new ArrayList<DirHandlerConfig>();
 
-      for (String dhn: dirHandlerNames) {
+      for (final String dhn: dirHandlerNames) {
         /* We have to load the config here to get the class of the bean. */
-        DirHandlerConfig cfg = getDirHandlerConf(cs, dhn);
+        final DirHandlerConfig cfg = getDirHandlerConf(cs, dhn);
 
         if (cfg == null) {
           continue;
@@ -202,16 +244,17 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
         cfg.setName(dhn);
         dirhandlerConfigs.add(cfg);
 
-        for (ConfBase c: confBeans) {
+        for (final ConfBase c: confBeans) {
           if (c instanceof CardDavContext) {
             ((CardDavContext)c).getConf().addDirhandler(cfg);
           }
         }
 
         /* Create and register the mbean */
-        ObjectName objectName = createObjectName("dirhandler", dhn);
+        final ObjectName objectName = createObjectName("dirhandler", dhn);
 
-        DirHandlerConf dhc = (DirHandlerConf)makeObject(cfg.getConfBeanClass());
+        final DirHandlerConf dhc =
+                (DirHandlerConf)makeObject(cfg.getConfBeanClass());
         if (dhc == null) {
           continue;
         }
@@ -223,7 +266,7 @@ public class CardDav extends ConfBase<CardDAVContextConfig> implements CardDavMB
       }
 
       return "OK";
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error("Failed to start management context");
       error(t);
       return "failed";

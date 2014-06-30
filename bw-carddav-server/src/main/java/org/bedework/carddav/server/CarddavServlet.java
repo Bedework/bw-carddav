@@ -51,7 +51,7 @@ public class CarddavServlet extends WebdavServlet
   @Override
   public WebdavNsIntf getNsIntf(final HttpServletRequest req)
       throws WebdavException {
-    CarddavBWIntf wi = new CarddavBWIntf();
+    final CarddavBWIntf wi = new CarddavBWIntf();
 
     wi.init(this, req, methods, dumpContent);
     return wi;
@@ -65,7 +65,7 @@ public class CarddavServlet extends WebdavServlet
     CardDav cd;
 
     Configurator() {
-      super("org.bedework.synch:service=Synch");
+      super(CardDav.serviceName);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CarddavServlet extends WebdavServlet
         cd = new CardDav();
         register("cardDav", "cardDav", cd);
         cd.loadConfig();
-      } catch (Throwable t){
+      } catch (final Throwable t){
         t.printStackTrace();
       }
     }
@@ -92,17 +92,17 @@ public class CarddavServlet extends WebdavServlet
         if (cd != null) {
           getManagementContext().stop();
         }
-      } catch (Throwable t){
+      } catch (final Throwable t){
         t.printStackTrace();
       }
     }
   }
 
-  private Configurator conf = new Configurator();
+  private final Configurator conf = new Configurator();
 
   @Override
   public void contextInitialized(final ServletContextEvent sce) {
-    String s = sce.getServletContext().getInitParameter("register-jmx");
+    final String s = sce.getServletContext().getInitParameter("register-jmx");
 
     if (!Boolean.valueOf(s)) {
       return;

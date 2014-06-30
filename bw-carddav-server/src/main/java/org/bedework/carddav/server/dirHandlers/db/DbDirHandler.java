@@ -373,6 +373,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     @Override
     public Collection<CarddavCollection> next() throws WebdavException {
       if (called) {
+        //noinspection unchecked
         return Collections.EMPTY_LIST;
       }
 
@@ -385,7 +386,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   public CollectionBatcher getCollections(final String path) throws WebdavException {
     final CollectionsBatchImpl cbi = new CollectionsBatchImpl();
 
-    GetResult gr = getCollections(path, null);
+    final GetResult gr = getCollections(path, null);
 
     cbi.cols = Collections.unmodifiableCollection(gr.collections);
 

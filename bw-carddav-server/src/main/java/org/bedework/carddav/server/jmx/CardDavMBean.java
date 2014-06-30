@@ -21,6 +21,8 @@ package org.bedework.carddav.server.jmx;
 import org.bedework.util.jmx.ConfBaseMBean;
 import org.bedework.util.jmx.MBeanInfo;
 
+import java.util.List;
+
 import javax.management.openmbean.TabularData;
 
 /** Run the carddav service
@@ -31,6 +33,18 @@ public interface CardDavMBean extends ConfBaseMBean {
   /* ========================================================================
    * Attributes
    * ======================================================================== */
+
+  /** data output directory name - full path. Used for data export
+   *
+   * @param val path
+   */
+  void setDataOut(String val);
+
+  /**
+   * @return data output full path
+   */
+  @MBeanInfo("data export full path to directory")
+  String getDataOut();
 
   /* ========================================================================
    * Operations
@@ -48,4 +62,11 @@ public interface CardDavMBean extends ConfBaseMBean {
    */
   @MBeanInfo("Lists the dir handler mappings to the principal hierarchy ")
   String ListDirHandlers();
+
+  /** Export data
+   *
+   * @return List of info lines
+   */
+  @MBeanInfo("Export any exportable data")
+  List<String> exportData();
 }

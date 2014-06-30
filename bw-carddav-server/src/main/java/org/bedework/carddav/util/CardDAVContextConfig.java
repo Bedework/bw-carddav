@@ -34,6 +34,8 @@ import java.util.TreeSet;
  */
 @ConfInfo(elementName = "bwcarddav")
 public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
+  private String dataOut;
+
   /* Default vcard version */
   private String defaultVcardVersion;
 
@@ -71,6 +73,21 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
   private String hostPrincipalRoot;
 
   private Set<DirHandlerConfig> handlerConfigs;
+
+  /** data output directory name - full path. Used for data export
+   *
+   * @param val path
+   */
+  public void setDataOut(final String val) {
+    dataOut = val;
+  }
+
+  /**
+   * @return data output full path
+   */
+  public String getDataOut() {
+    return dataOut;
+  }
 
   /** Set the default vcard version
    *
@@ -152,7 +169,7 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
   }
 
   /**
-   * @param val
+   * @param val true to disallow browsing
    */
   public void setDirectoryBrowsingDisallowed(final boolean val) {
     directoryBrowsingDisallowed = val;
@@ -218,9 +235,9 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
    */
   @ConfInfo(dontSave = true)
   public List<String> getWebaddrServiceProperties() {
-    List<String> webaddrServiceProperties = new ArrayList<String>();
+    final List<String> webaddrServiceProperties = new ArrayList<String>();
 
-    for (String s: getWebaddrServicePropertiesList().split(",")) {
+    for (final String s: getWebaddrServicePropertiesList().split(",")) {
       webaddrServiceProperties.add(s.trim());
     }
     return webaddrServiceProperties;
@@ -350,18 +367,18 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
   }
 
   /**
-   * @return true if we already added the dir handler configs.
+   * @return config set
    */
-  public boolean dirHandlersConfigured() {
-    return !Util.isEmpty(handlerConfigs);
+  public Set<DirHandlerConfig> getDirHandlerConfigs() {
+    return handlerConfigs;
   }
 
   /**
-   * @param dhc
+   * @param dhc new config
    */
   public void addDirhandler(final DirHandlerConfig dhc) {
     if (handlerConfigs == null) {
-      handlerConfigs = new TreeSet<DirHandlerConfig>();
+      handlerConfigs = new TreeSet<>();
     }
 
     handlerConfigs.add(dhc);
@@ -371,7 +388,7 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
    * configured with a path prefix. It is require that there be a directory
    * handler to match the principalPath defined above.
    *
-   * @param path
+   * @param path prefix
    * @return DirHandlerConfig or null
    */
   public DirHandlerConfig findDirhandler(final String path) {
@@ -382,9 +399,9 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
       return null;
     }
 
-    for (DirHandlerConfig c: handlerConfigs) {
-      String prefix = c.getPathPrefix();
-      int plen = prefix.length();
+    for (final DirHandlerConfig c: handlerConfigs) {
+      final String prefix = c.getPathPrefix();
+      final int plen = prefix.length();
 
       if ((plen < matchLen) || !path.startsWith(prefix)) {
         continue;

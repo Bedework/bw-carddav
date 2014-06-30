@@ -115,6 +115,13 @@ public interface DirHandler /*extends DynamicMBean */ {
   /** destination already exists */
   final int statusDestinationExists = 7;
 
+  /**
+   * @param dataOutPath where to put data - create sub-directories under this
+   * @return false if not exportable.
+   * @throws WebdavException
+   */
+  boolean exportData(String dataOutPath) throws WebdavException;
+
   /* ====================================================================
    *                   Principals
    * ==================================================================== */
