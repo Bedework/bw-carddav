@@ -67,6 +67,9 @@ public abstract class AbstractDirHandler implements DirHandler {
   protected String account;
 
   /** */
+  protected boolean superUser;
+
+  /** */
   public final static String unknownPrincipalType =
     "org.bedework.webdav.unknownprincipaltype";
 
@@ -77,12 +80,12 @@ public abstract class AbstractDirHandler implements DirHandler {
   private transient Logger log;
 
   /* This DOES NOT have the trailing "/" on the root prefix */
-  private HashMap<String, Integer> toWho = new HashMap<String, Integer>();
+  private final HashMap<String, Integer> toWho = new HashMap<>();
 
   /* This DOES have the trailing "/" on the root prefix */
-  private HashMap<Integer, String> fromWho = new HashMap<Integer, String>();
+  private final HashMap<Integer, String> fromWho = new HashMap<>();
 
-  private HashMap<String, String> validUsers = new HashMap<String, String>();
+  private final HashMap<String, String> validUsers = new HashMap<>();
   private long lastFlush;
   private static long flushTime = 60 * 1000;  // 1 minute
 
@@ -91,6 +94,8 @@ public abstract class AbstractDirHandler implements DirHandler {
    */
   public void open(final String account) throws WebdavException {
     this.account = account;
+    superUser = "root".equals(account) || // allow SuperUser
+            "admin".equals(account);
   }
 
   /* standard mbean attributes - unfinished * /

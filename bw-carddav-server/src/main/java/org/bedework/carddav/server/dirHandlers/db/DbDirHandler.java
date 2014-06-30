@@ -700,7 +700,11 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
       return null;
     }
 
-    boolean noAccessNeeded = desiredAccess == privNone;
+    if (superUser) {
+      return ent;
+    }
+
+    final boolean noAccessNeeded = desiredAccess == privNone;
 
     CurrentAccess ca = access.checkAccess(ent, desiredAccess,
                                           alwaysReturnResult || noAccessNeeded);
