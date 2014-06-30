@@ -57,7 +57,7 @@ public class DbFilter {
   }
 
   int findex;
-  List<String> params = new ArrayList<String>();
+  List<String> params = new ArrayList<>();
   StringBuilder sb;
 
   boolean first = true;
@@ -106,6 +106,7 @@ public class DbFilter {
     TextMatch tm = filter.getMatch();
 
     if (tm == null) {
+      presenceCheck(filter);
       return;
     }
 
@@ -180,10 +181,37 @@ public class DbFilter {
      */
   }
 
+  private void presenceCheck(final PropFilter filter) {
+    final String name = filter.getName();
+
+    final PField pf = pfields.get(name.toLowerCase());
+
+    if (pf != null) {
+      sb.append(pf.col);
+
+      if (filter.getIsNotDefined()) {
+        sb.append(" is null ");
+      } else{
+        sb.append(" is not null ");
+      }
+      return;
+    }
+
+    sb.append("props.name");
+    if (filter.getIsNotDefined()) {
+      sb.append(" not in ('");
+    } else {
+      sb.append(" in ('");
+    }
+
+    sb.append(name);
+    sb.append("') ");
+  }
+
   private void makePropFilterExpr(final String name, final TextMatch tm) {
     PField pf = pfields.get(name.toLowerCase());
 
-    boolean caseless = (tm.getCaseless() != null) && tm.getCaseless();
+    final boolean caseless = tm.testCaseless();
 
     if (pf != null) {
       // Use the column value
@@ -217,9 +245,16 @@ public class DbFilter {
     }
 
     if (mt == TextMatch.matchTypeEquals) {
-      sb.append("=");
+      if (tm.getNegated()) {
+        sb.append("<>");
+      } else {
+        sb.append("=");
+      }
       addPar(sb, parVal);
     } else {
+      if (tm.getNegated()) {
+        sb.append(" not");
+      }
       sb.append(" like ");
 
       String val;
