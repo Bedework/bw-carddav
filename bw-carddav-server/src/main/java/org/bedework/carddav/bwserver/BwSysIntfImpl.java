@@ -34,10 +34,12 @@ import org.bedework.carddav.server.CarddavResource;
 import org.bedework.carddav.server.PropertyHandler;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.SysIntf;
+import org.bedework.carddav.server.config.CardDAVConfig;
+import org.bedework.carddav.server.config.CardDAVContextConfig;
+import org.bedework.carddav.server.config.DirHandlerConfig;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.CardDAVContextConfig;
-import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.util.misc.Util;
@@ -80,7 +82,9 @@ public class BwSysIntfImpl implements SysIntf {
 
   private UrlHandler urlHandler;
 
-  private CardDAVContextConfig conf;
+  private CardDAVConfig conf;
+
+  private CardDAVContextConfig ctxConf;
 
   private static String userPrincipalRoot;
   private static String groupPrincipalRoot;
@@ -132,11 +136,13 @@ public class BwSysIntfImpl implements SysIntf {
   @Override
   public void init(final HttpServletRequest req,
                    final String account,
-                   final CardDAVContextConfig conf,
+                   final CardDAVConfig conf,
+                   final CardDAVContextConfig ctxConf,
                    final boolean debug) throws WebdavException {
     try {
       this.account = account;
       this.conf = conf;
+      this.ctxConf = ctxConf;
       this.debug = debug;
 
       userPrincipalRoot= setRoot(conf.getUserPrincipalRoot());
@@ -193,12 +199,13 @@ public class BwSysIntfImpl implements SysIntf {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPrincipal(java.lang.String)
-   */
+  @Override
   public AccessPrincipal getPrincipal(final String href) throws WebdavException {
-    String path = pathFromHref(href);
-    AccessPrincipal ap = getHandler(path).getPrincipal(path);
+    final String path = pathFromHref(href);
+    final AccessPrincipal ap =
+            dhf.getPrincipalHandler(path,
+                                    account,
+                                    urlHandler).getPrincipal(path);
 
     if (ap == null) {
       throw new WebdavNotFound(href);
@@ -210,7 +217,22 @@ public class BwSysIntfImpl implements SysIntf {
   @Override
   public String makeHref(final AccessPrincipal p) throws WebdavException {
     try {
-      return getUrlHandler().prefix(getHandler(conf.getPrincipalRoot()).makePrincipalUri(p));
+      String principalPrefix = p.getPrincipalRef();
+
+      if (principalPrefix == null) {
+        if (p instanceof User) {
+          principalPrefix = userPrincipalRoot;
+        } else if (p instanceof Group) {
+          principalPrefix = groupPrincipalRoot;
+        } else {
+          principalPrefix = conf.getPrincipalRoot();
+        }
+      }
+
+      return getUrlHandler().prefix(
+              dhf.getPrincipalHandler(principalPrefix,
+                                      account,
+                                      urlHandler).makePrincipalUri(p));
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -223,16 +245,16 @@ public class BwSysIntfImpl implements SysIntf {
                                      final String principalUrl) throws WebdavException {
     try {
       return getHandler(rootUrl).getGroups(rootUrl, principalUrl);
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
   @Override
   public boolean getDirectoryBrowsingDisallowed() throws WebdavException {
-    return conf.getDirectoryBrowsingDisallowed();
+    return ctxConf.getDirectoryBrowsingDisallowed();
   }
 
   @Override
@@ -245,7 +267,7 @@ public class BwSysIntfImpl implements SysIntf {
 
       String principalUri = getHandler(conf.getPrincipalRoot()).makePrincipalUri(pcpl);
 
-      DirHandler addrBookHandler = getHandler(conf.getAddressBookHandlerPrefix());
+      DirHandler addrBookHandler = getHandler(ctxConf.getAddressBookHandlerPrefix());
 
       String userHomePath = addrBookHandler.getprincipalHome(pcpl);
 
@@ -873,13 +895,13 @@ public class BwSysIntfImpl implements SysIntf {
       throw new WebdavException("No default address book");
     }
 
-    if (conf.getAddressBookHandlerPrefix() == null) {
+    if (ctxConf.getAddressBookHandlerPrefix() == null) {
       throw new WebdavException("No default address book handler prefix");
     }
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append(conf.getAddressBookHandlerPrefix());
+    sb.append(ctxConf.getAddressBookHandlerPrefix());
     sb.append("/");
 
     String adbhPfx = sb.toString();

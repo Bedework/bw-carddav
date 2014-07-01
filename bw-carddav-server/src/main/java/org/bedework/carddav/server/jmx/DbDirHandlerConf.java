@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.util.DbDirHandlerConfig;
+import org.bedework.carddav.server.config.DbDirHandlerConfig;
 
 import org.bedework.util.jmx.InfoLines;
 

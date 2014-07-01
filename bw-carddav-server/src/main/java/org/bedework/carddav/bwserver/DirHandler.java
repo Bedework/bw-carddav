@@ -24,8 +24,8 @@ import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.CardDAVContextConfig;
-import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.server.config.CardDAVConfig;
+import org.bedework.carddav.server.config.DirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
@@ -64,12 +64,12 @@ import java.util.Iterator;
 public interface DirHandler /*extends DynamicMBean */ {
   /** Initialise the class, called before open.
    *
-   * @param cdConfig context config
+   * @param cdConfig config
    * @param dhConfig handler config
    * @param urlHandler - to allow creation of urls in returned objects.
    * @throws WebdavException
    */
-  void init(CardDAVContextConfig cdConfig,
+  void init(CardDAVConfig cdConfig,
             DirHandlerConfig dhConfig,
             UrlHandler urlHandler) throws WebdavException;
 

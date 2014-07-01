@@ -57,11 +57,18 @@ public class CarddavServlet extends WebdavServlet
     return wi;
   }
 
+  /**
+   * @return conf bean for service
+   */
+  public CardDav getConf() {
+    return conf.cd;
+  }
+
   /* -----------------------------------------------------------------------
    *                         JMX support
    */
 
-  class Configurator extends ConfBase {
+  static class Configurator extends ConfBase {
     CardDav cd;
 
     Configurator() {
@@ -98,7 +105,7 @@ public class CarddavServlet extends WebdavServlet
     }
   }
 
-  private final Configurator conf = new Configurator();
+  private static final Configurator conf = new Configurator();
 
   @Override
   public void contextInitialized(final ServletContextEvent sce) {

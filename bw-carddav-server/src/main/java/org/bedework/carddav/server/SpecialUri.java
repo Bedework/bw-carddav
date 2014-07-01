@@ -23,7 +23,7 @@ import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.filter.PropFilter;
 import org.bedework.carddav.server.filter.TextMatch;
-import org.bedework.carddav.util.CardDAVContextConfig;
+import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;

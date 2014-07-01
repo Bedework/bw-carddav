@@ -18,6 +18,7 @@
  */
 package org.bedework.carddav.server.jmx;
 
+import org.bedework.carddav.server.config.CardDAVConfigI;
 import org.bedework.util.jmx.ConfBaseMBean;
 import org.bedework.util.jmx.MBeanInfo;
 
@@ -29,7 +30,7 @@ import javax.management.openmbean.TabularData;
  *
  * @author douglm
  */
-public interface CardDavMBean extends ConfBaseMBean {
+public interface CardDavMBean extends ConfBaseMBean, CardDAVConfigI {
   /* ========================================================================
    * Attributes
    * ======================================================================== */

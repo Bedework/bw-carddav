@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.util.CardDAVContextConfig;
+import org.bedework.carddav.server.config.CardDAVContextConfig;
 
 import org.bedework.util.config.ConfigurationStore;
 import org.bedework.util.jmx.ConfBase;
@@ -53,26 +53,6 @@ public class CardDavContext extends ConfBase<CardDAVContextConfig> implements Ca
   /* ========================================================================
    * Attributes
    * ======================================================================== */
-
-  @Override
-  public void setDefaultVcardVersion(final String val) {
-    getConf().setDefaultVcardVersion(val);
-  }
-
-  @Override
-  public String getDefaultVcardVersion() {
-    return getConf().getDefaultVcardVersion();
-  }
-
-  @Override
-  public void setSysintfImpl(final String val) {
-    getConf().setSysintfImpl(val);
-  }
-
-  @Override
-  public String getSysintfImpl() {
-    return getConf().getSysintfImpl();
-  }
 
   @Override
   public void setWebaddrServiceURI(final String val) {
@@ -115,16 +95,6 @@ public class CardDavContext extends ConfBase<CardDAVContextConfig> implements Ca
   }
 
   @Override
-  public void setDefaultAddressbook(final String val) {
-    getConf().setDefaultAddressbook(val);
-  }
-
-  @Override
-  public String getDefaultAddressbook() {
-    return getConf().getDefaultAddressbook();
-  }
-
-  @Override
   public void setAddressBookHandlerPrefix(final String val) {
     getConf().setAddressBookHandlerPrefix(val);
   }
@@ -132,86 +102,6 @@ public class CardDavContext extends ConfBase<CardDAVContextConfig> implements Ca
   @Override
   public String getAddressBookHandlerPrefix() {
     return getConf().getAddressBookHandlerPrefix();
-  }
-
-  @Override
-  public void setUserHomeRoot(final String val) {
-    getConf().setUserHomeRoot(val);
-  }
-
-  @Override
-  public String getUserHomeRoot() {
-    return getConf().getUserHomeRoot();
-  }
-
-  @Override
-  public void setPrincipalRoot(final String val) {
-    getConf().setPrincipalRoot(val);
-  }
-
-  @Override
-  public String getPrincipalRoot() {
-    return getConf().getPrincipalRoot();
-  }
-
-  @Override
-  public void setUserPrincipalRoot(final String val) {
-    getConf().setUserPrincipalRoot(val);
-  }
-
-  @Override
-  public String getUserPrincipalRoot() {
-    return getConf().getUserPrincipalRoot();
-  }
-
-  @Override
-  public void setGroupPrincipalRoot(final String val) {
-    getConf().setGroupPrincipalRoot(val);
-  }
-
-  @Override
-  public String getGroupPrincipalRoot() {
-    return getConf().getGroupPrincipalRoot();
-  }
-
-  @Override
-  public void setResourcePrincipalRoot(final String val) {
-    getConf().setResourcePrincipalRoot(val);
-  }
-
-  @Override
-  public String getResourcePrincipalRoot() {
-    return getConf().getResourcePrincipalRoot();
-  }
-
-  @Override
-  public void setVenuePrincipalRoot(final String val) {
-    getConf().setVenuePrincipalRoot(val);
-  }
-
-  @Override
-  public String getVenuePrincipalRoot() {
-    return getConf().getVenuePrincipalRoot();
-  }
-
-  @Override
-  public void setTicketPrincipalRoot(final String val) {
-    getConf().setTicketPrincipalRoot(val);
-  }
-
-  @Override
-  public String getTicketPrincipalRoot() {
-    return getConf().getTicketPrincipalRoot();
-  }
-
-  @Override
-  public void setHostPrincipalRoot(final String val) {
-    getConf().setHostPrincipalRoot(val);
-  }
-
-  @Override
-  public String getHostPrincipalRoot() {
-    return getConf().getHostPrincipalRoot();
   }
 
   /* ========================================================================

@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.util.LdapDirHandlerConfig;
+import org.bedework.carddav.server.config.LdapDirHandlerConfig;
 
 /**
  * @author douglm

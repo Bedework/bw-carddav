@@ -19,8 +19,8 @@
 package org.bedework.carddav.server.dirHandlers;
 
 import org.bedework.carddav.bwserver.DirHandler;
-import org.bedework.carddav.util.CardDAVContextConfig;
-import org.bedework.carddav.util.DirHandlerConfig;
+import org.bedework.carddav.server.config.CardDAVConfig;
+import org.bedework.carddav.server.config.DirHandlerConfig;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.Set;
  * @author douglm
  */
 public class DirHandlerFactory {
-  private final CardDAVContextConfig conf;
+  private final CardDAVConfig conf;
 
   private static class HandlerKey {
     String prefix;
@@ -87,7 +87,7 @@ public class DirHandlerFactory {
   /**
    * @param conf - configuration
    */
-  public DirHandlerFactory(final CardDAVContextConfig conf) {
+  public DirHandlerFactory(final CardDAVConfig conf) {
     this.conf = conf;
   }
 
@@ -126,6 +126,23 @@ public class DirHandlerFactory {
 
     if (dhc == null) {
       throw new WebdavBadRequest("Bad path " + path);
+    }
+
+    return getHandler(dhc, account, urlHandler);
+  }
+
+  /**
+   * @return DirHandler
+   * @throws WebdavException
+   */
+  public DirHandler getPrincipalHandler(final String principalHref,
+                                        final String account,
+                                        final UrlHandler urlHandler) throws WebdavException {
+    /* First determine which configuration handles this path */
+    final DirHandlerConfig dhc = conf.findPrincipalDirhandler(principalHref);
+
+    if (dhc == null) {
+      throw new WebdavBadRequest("No handler for " + principalHref);
     }
 
     return getHandler(dhc, account, urlHandler);

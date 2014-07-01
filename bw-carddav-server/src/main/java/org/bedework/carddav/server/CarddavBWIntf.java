@@ -29,10 +29,10 @@ import org.bedework.access.WhoDefs;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
+import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.carddav.server.query.AddressData;
-import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.util.Group;
 import org.bedework.carddav.util.User;
 import org.bedework.carddav.vcard.Card;
@@ -71,9 +71,6 @@ import java.io.CharArrayReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -106,6 +103,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
   private String namespacePrefix;
 
   private AccessUtil accessUtil;
+
+  private CardDav confBean;
 
   /** Namespace based on the request url.
    */
@@ -148,6 +147,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
       namespacePrefix = WebdavUtils.getUrlPrefix(req);
       namespace = namespacePrefix + "/schema";
 
+      confBean = ((CarddavServlet)servlet).getConf();
+
       loadConfig(sc.getInitParameter("bwappname"));
 
       /* Set ical4j so that it allows some older constructs */
@@ -155,7 +156,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                         true);
 
       sysi = getSysIntf();
-      sysi.init(req, account, config, debug);
+      sysi.init(req, account, confBean.getConfig(),
+                config, debug);
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
                                   new CardDavAccessXmlCb(sysi));
@@ -177,7 +179,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
       this.account = account;
 
       sysi = getSysIntf();
-      sysi.init(req, account, config, debug);
+      sysi.init(req, account, confBean.getConfig(),
+                config, debug);
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
                                   new CardDavAccessXmlCb(sysi));
@@ -187,7 +190,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   private SysIntf getSysIntf() throws WebdavException {
-    String className = config.getSysintfImpl();
+    String className = confBean.getSysintfImpl();
 
     Object o = null;
     try {
@@ -1373,8 +1376,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
       return checkVersion(requested);
     }
 
-    if (config.getDefaultVcardVersion() != null) {
-      return checkVersion(config.getDefaultVcardVersion());
+    if (confBean.getDefaultVcardVersion() != null) {
+      return checkVersion(confBean.getDefaultVcardVersion());
     }
 
     return "3.0";
@@ -1450,7 +1453,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         appName = "unknown-app-name";
       }
 
-      config = CardDav.getConf(appName);
+      config = confBean.getConf(appName);
       if (config == null) {
         config = new CardDAVContextConfig();
       }

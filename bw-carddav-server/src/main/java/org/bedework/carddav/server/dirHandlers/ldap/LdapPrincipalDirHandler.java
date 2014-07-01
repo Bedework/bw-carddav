@@ -20,9 +20,9 @@ package org.bedework.carddav.server.dirHandlers.ldap;
 
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.util.CardDAVContextConfig;
-import org.bedework.carddav.util.DirHandlerConfig;
-import org.bedework.carddav.util.LdapDirHandlerConfig;
+import org.bedework.carddav.server.config.CardDAVConfig;
+import org.bedework.carddav.server.config.DirHandlerConfig;
+import org.bedework.carddav.server.config.LdapDirHandlerConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
@@ -49,7 +49,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   SearchControls constraints;
   NamingEnumeration<SearchResult> sresult;
 
-  public void init(final CardDAVContextConfig cdConfig,
+  public void init(final CardDAVConfig cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);

@@ -22,8 +22,9 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Acl;
 import org.bedework.access.Acl.CurrentAccess;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
+import org.bedework.carddav.server.config.CardDAVConfig;
+import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.CardDAVContextConfig;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
 import org.bedework.webdav.servlet.shared.UrlHandler;
@@ -50,13 +51,15 @@ public interface SysIntf {
    *
    * @param req
    * @param account
-   * @param conf  per application type configuration
+   * @param conf  global service configuration
+   * @param ctxConf  per application type configuration
    * @param debug
    * @throws WebdavException
    */
   public void init(HttpServletRequest req,
                    String account,
-                   CardDAVContextConfig conf,
+                   CardDAVConfig conf,
+                   CardDAVContextConfig ctxConf,
                    boolean debug) throws WebdavException;
 
   /** Return the current principal
