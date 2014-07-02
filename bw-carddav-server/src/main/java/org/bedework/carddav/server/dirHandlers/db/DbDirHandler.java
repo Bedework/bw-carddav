@@ -18,40 +18,29 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import org.bedework.access.Access;
-import org.bedework.access.AccessException;
-import org.bedework.access.AccessPrincipal;
+import org.bedework.access.*;
 import org.bedework.access.Acl.CurrentAccess;
-import org.bedework.access.PrivilegeDefs;
-import org.bedework.access.WhoDefs;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.dirHandlers.AbstractDirHandler;
-import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.config.CardDAVConfig;
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.carddav.server.config.DirHandlerConfig;
+import org.bedework.carddav.server.dirHandlers.AbstractDirHandler;
+import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.access.AccessHelper;
 import org.bedework.webdav.servlet.access.AccessHelperI;
 import org.bedework.webdav.servlet.access.SharedEntity;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavException;
-
+import org.bedework.webdav.servlet.shared.WebdavForbidden;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import java.io.StringReader;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /** Provide some common methods for db based directory handlers.
  *

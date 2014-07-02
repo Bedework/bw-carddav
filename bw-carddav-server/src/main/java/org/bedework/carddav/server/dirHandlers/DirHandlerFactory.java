@@ -21,13 +21,11 @@ package org.bedework.carddav.server.dirHandlers;
 import org.bedework.carddav.bwserver.DirHandler;
 import org.bedework.carddav.server.config.CardDAVConfig;
 import org.bedework.carddav.server.config.DirHandlerConfig;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** Create a directory handler for CardDAV
  *
