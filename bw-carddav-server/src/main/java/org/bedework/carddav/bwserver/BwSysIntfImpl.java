@@ -304,7 +304,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   private String getCardPath(final AccessPrincipal pcpl) throws WebdavException {
-    DirHandlerConfig dhc = conf.findDirhandler(pcpl.getPrincipalRef());
+    final DirHandlerConfig dhc = conf.findPrincipalDirhandler(pcpl.getPrincipalRef());
 
     // XXX This is a temp fix to get us a linkage to our vcard
     // It needs more work
@@ -313,9 +313,10 @@ public class BwSysIntfImpl implements SysIntf {
 
     // Try the prefixes
 
-    String cardPathPrefixes = dhc.getCardPathPrefixes();
+    final String cardPathPrefixes = dhc.getCardPathPrefixes();
 
     /* The dirhandler prefix */
+    /*
     String pfx = dhc.getPathPrefix();
 
     if (!pfx.endsWith("/")) {
@@ -326,13 +327,14 @@ public class BwSysIntfImpl implements SysIntf {
       // Something wrong
       return null;
     }
+    */
 
-    String account = pcpl.getPrincipalRef().substring(pfx.length());
+    String account = pcpl.getAccount();
 
     if (cardPathPrefixes != null) {
-      String[] prefixInfo = cardPathPrefixes.split(",");
+      final String[] prefixInfo = cardPathPrefixes.split(",");
 
-      for (String pi: prefixInfo) {
+      for (final String pi: prefixInfo) {
         if (pi == null) {
           continue;
         }
@@ -343,7 +345,7 @@ public class BwSysIntfImpl implements SysIntf {
           continue;
         }
 
-        String[] pfxPath = pi.split(":");
+        final String[] pfxPath = pi.split(":");
 
         if (account.startsWith(pfxPath[0])) {
           cardPathPrefix = pfxPath[1];
@@ -359,15 +361,15 @@ public class BwSysIntfImpl implements SysIntf {
     }
 
     if (cardPathPrefix == null) {
-      return null;
+      // Use the path prefix for this handler.
+      cardPathPrefix = dhc.getPathPrefix();
+//      return null;
     }
 
     return Util.buildPath(false, cardPathPrefix, "/", account, ".vcf");
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getPrincipalCollectionSet(java.lang.String)
-   */
+  @Override
   public Collection<String> getPrincipalCollectionSet(final String resourceUri)
           throws WebdavException {
     try {
