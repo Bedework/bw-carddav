@@ -7,6 +7,7 @@
          version="2.4">
   <display-name>Bedework public caldav</display-name>
 
+  <!-- identifies which configuration we load -->
   <context-param>
     <param-name>bwappname</param-name>
     <param-value>pubcarddav</param-value>

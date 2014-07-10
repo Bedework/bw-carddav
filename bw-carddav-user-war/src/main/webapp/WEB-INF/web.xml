@@ -7,6 +7,7 @@
          version="2.4">
   <display-name>Bedework user caldav</display-name>
 
+  <!-- identifies which configuration we load -->
   <context-param>
     <param-name>bwappname</param-name>
     <param-value>usercarddav</param-value>
@@ -71,18 +72,18 @@
     </auth-constraint>
     <user-data-constraint>
       <description>no description</description>
-      <transport-guarantee>NONE</transport-guarantee>
+      <transport-guarantee>${app.transport.guarantee}</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>bedeworkdemo</realm-name>
+    <realm-name>${app.security.domain}</realm-name>
   </login-config>
 
   <security-role>
     <description>A calendar system user</description>
-    <role-name>demo.user</role-name>
+    <role-name>bedework.user</role-name>
   </security-role>
 
   <!-- Insert ejb-ref here -->
