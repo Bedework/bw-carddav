@@ -40,7 +40,14 @@ import org.hibernate.cfg.Configuration;
 
 import java.io.StringReader;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Provide some common methods for db based directory handlers.
  *
@@ -245,8 +252,6 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
 
     final GetResult res = new GetResult();
-
-    res.cards = new ArrayList<>();
 
     for (final DbCard dbc: cardSet) {
       res.cards.add(makeVcard(dbc));

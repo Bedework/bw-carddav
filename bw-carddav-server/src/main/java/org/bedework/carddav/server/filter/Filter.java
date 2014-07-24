@@ -219,17 +219,22 @@ public class Filter extends CarddavFilter {
       }
     }*/
 
-      GetResult  res = wdnode.getSysi().getCards(wdnode.getWdCollection(),
+      final GetResult  res =
+              wdnode.getSysi().getCards(wdnode.getWdCollection(),
                                                  this, limits);
 
       if (debug) {
+        if (!res.entriesFound || (res.cards == null)) {
+          trace("Query returned nothing");
+        } else {
         trace("Query returned " + res.cards.size());
+      }
       }
 
       return res;
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error(t);
       throw new WebdavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
@@ -242,7 +247,7 @@ public class Filter extends CarddavFilter {
    * @throws WebdavException
    */
   public Collection<WebdavNsNode> postFilter(
-                   Collection<WebdavNsNode> nodes) throws WebdavException {
+                   final Collection<WebdavNsNode> nodes) throws WebdavException {
 //    if (!eventq.postFilter) {
       return nodes;
   /*  }

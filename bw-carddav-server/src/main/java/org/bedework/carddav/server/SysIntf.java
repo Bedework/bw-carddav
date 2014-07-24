@@ -32,6 +32,7 @@ import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -262,7 +263,7 @@ public interface SysIntf {
     public boolean overLimit;
 
     /** The possibly truncated result from getCards */
-    public Collection<Card> cards;
+    public Collection<Card> cards = new ArrayList<>();
 
     /** The possibly truncated result from getCollections */
     public Collection<CarddavCollection> collections;

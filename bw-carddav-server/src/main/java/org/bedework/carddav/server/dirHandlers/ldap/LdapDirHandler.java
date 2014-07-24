@@ -137,20 +137,18 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     verifyPath(path);
 
     try {
-      String ldapFilter = makeFilter(filter);
+      final String ldapFilter = makeFilter(filter);
 
       openContext();
 
-      GetResult res = searchChildren(path, ldapFilter, limits, true);
+      final GetResult res = searchChildren(path, ldapFilter, limits, true);
 
       if (!res.entriesFound) {
         return res;
       }
 
-      res.cards = new ArrayList<>();
-
       for (;;) {
-        CardObject co = nextCard(path, false);
+        final CardObject co = nextCard(path, false);
 
         if (co == null) {
           break;
