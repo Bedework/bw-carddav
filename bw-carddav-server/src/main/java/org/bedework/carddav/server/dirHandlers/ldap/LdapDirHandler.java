@@ -696,11 +696,22 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       paramProp(card, "WORK", "TEL", "TYPE", "pager", attrs, "pager");
 
       simpleProp(card, "EMAIL", attrs, "mail");
+     */
 
-      String mail = stringAttr(attrs, "mail");
+      final String mail = stringAttr(attrs, "mail");
       if (mail != null) {
         simpleProp(card, "CALADRURI", "mailto:" + mail);
       }
+
+      if (dhConfig.getPrincipalPrefix() != null) {
+        final String account = stringAttr(attrs, "uid");
+        if (account != null) {
+          simpleProp(card, "X-BW-PRINCIPALHREF",
+                     Util.buildPath(true, dhConfig.getPrincipalPrefix(),
+                                    "/", account));
+        }
+      }
+      /*
 
       //ORG                            organization name;
       //                               one or more levels of org unit names
@@ -886,9 +897,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   private void simpleProp(final Card card,
                           final String propname,
                           final String value) throws WebdavException {
-    Property p = PropertyBuilder.getProperty(propname, value);
+    final Property p = PropertyBuilder.getProperty(propname, value);
 
-    card.addProperty(p);
+    if (p != null) {
+      card.addProperty(p);
+    }
   }
 
   private void simpleProp(final Card card, final String propname,

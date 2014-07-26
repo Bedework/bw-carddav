@@ -28,6 +28,8 @@ import net.fortuna.ical4j.vcard.ParameterFactoryRegistry;
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.PropertyFactory;
 import net.fortuna.ical4j.vcard.PropertyFactoryRegistry;
+import net.fortuna.ical4j.vcard.property.Xproperty;
+import net.fortuna.ical4j.vcard.property.Xproperty.ExtendedFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,22 +52,27 @@ public class PropertyBuilder {
   }
 
   /**
-   * @param name
-   * @param value
+   * @param name property name
+   * @param value its value
    * @return Property or null
    * @throws WebdavException
    */
   public static Property getProperty(final String name,
                                      final String value) throws WebdavException {
-    PropertyFactory<?> factory = propertyFactoryRegistry.getFactory(name);
-
-    if (factory == null) {
-        return null;
-    }
-
     try {
-      return factory.createProperty(new ArrayList<Parameter>(), value);
-    } catch (Throwable t) {
+      final PropertyFactory<?> factory =
+              propertyFactoryRegistry.getFactory(name);
+
+      if (factory != null) {
+        return factory.createProperty(new ArrayList<Parameter>(), value);
+      }
+
+      final ExtendedFactory xfactory = (ExtendedFactory)Xproperty.FACTORY;
+
+      return xfactory.createProperty(name,
+                                     new ArrayList<Parameter>(),
+                                     value);
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

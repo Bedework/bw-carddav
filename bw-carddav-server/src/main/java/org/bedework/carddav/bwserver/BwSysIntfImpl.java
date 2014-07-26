@@ -418,39 +418,25 @@ public class BwSysIntfImpl implements SysIntf {
     String matchVal = null;
     boolean addressbookHomeSet = false;
 
-    for (PrincipalPropertySearch.PropertySearch ps: pps.propertySearches) {
-      for (WebdavProperty prop: ps.props) {
+    for (final WebdavProperty prop: pps.props) {
         if (CarddavTags.addressbookHomeSet.equals(prop.getTag())) {
-          addressbookHomeSet = true;
-        } else {
+        if ((matchVal != null) && (!matchVal.equals(prop.getPval()))) {
           return principals;
         }
-      }
 
-      String mval;
-      try {
-        mval = XmlUtil.getElementContent(ps.match);
-      } catch (Throwable t) {
-        throw new WebdavException("org.bedework.carddavintf.badvalue");
-      }
-
-      if (debug) {
-        debugMsg("Try to match " + mval);
-      }
-
-      if ((matchVal != null) && (!matchVal.equals(mval))) {
+        addressbookHomeSet = true;
+        matchVal = prop.getPval();
+      } else {
         return principals;
       }
-
-      matchVal = mval;
     }
 
     PrincipalInfo cui = null;
 
     if (addressbookHomeSet) {
-      String path = getUrlHandler().unprefix(matchVal);
+      final String path = getUrlHandler().unprefix(matchVal);
 
-      CarddavCollection col = getCollection(path);
+      final CarddavCollection col = getCollection(path);
       if (col != null) {
         cui = getPrincipalInfo(col.getOwner(), true);
       }
