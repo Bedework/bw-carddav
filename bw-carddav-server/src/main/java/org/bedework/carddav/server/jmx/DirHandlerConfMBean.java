@@ -43,6 +43,24 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
   @MBeanInfo("The pathPrefix which defines the paths for which we call this handler.")
   String getPathPrefix();
 
+  /** Set the prefix for principals which correspond to cards within
+   * this hierarchy
+   *
+   * <p>For example "/principals.users" might be a principal prefix
+   * handled by "/directory/users"
+   *
+   * @param val    String path
+   */
+  void setPrincipalPrefix(String val);
+
+  /** Get the pathPrefix
+   *
+   * @return String   path
+   */
+  @MBeanInfo("The pathPrefix for principals which correspond to cards within" +
+                     " this hierarchy.")
+  String getPrincipalPrefix();
+
   /** Set the cardPathPrefix which defines the prefix for principal cards.
    *
    * @param val    String

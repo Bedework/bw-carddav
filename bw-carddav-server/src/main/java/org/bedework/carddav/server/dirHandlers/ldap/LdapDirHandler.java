@@ -704,7 +704,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       if (dhConfig.getPrincipalPrefix() != null) {
-        final String account = stringAttr(attrs, "uid");
+        final String account =
+                stringAttr(attrs, ldapConfig.getAddressbookEntryIdAttr());
+
         if (account != null) {
           simpleProp(card, "X-BW-PRINCIPALHREF",
                      Util.buildPath(true, dhConfig.getPrincipalPrefix(),

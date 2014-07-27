@@ -65,6 +65,16 @@ public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHan
   }
 
   @Override
+  public void setPrincipalPrefix(final String val) {
+    getConf().setPrincipalPrefix(val);
+  }
+
+  @Override
+  public String getPrincipalPrefix() {
+    return getConf().getPrincipalPrefix();
+  }
+
+  @Override
   public void setCardPathPrefix(final String val) {
     getConf().setCardPathPrefix(val);
   }
