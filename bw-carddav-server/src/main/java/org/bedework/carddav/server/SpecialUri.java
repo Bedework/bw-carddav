@@ -70,7 +70,12 @@ public class SpecialUri {
 
     if (fromGetAccept) {
       addrbook = resourceUri;
-      format = accept;
+
+      if ("text/vcard".equals(accept)) {
+        format = formatVcard;
+      } else {
+        format = formatJson;
+      }
     } else {
       if (config.getWebaddrServiceURI() == null) {
         return false;
@@ -96,7 +101,7 @@ public class SpecialUri {
     if (format.equals(formatVcard)) {
       resp.setContentType("text/vcard"); // TODO - add version parameter
     } else if (format.equals(formatJson)) {
-      resp.setContentType("application/json");
+      resp.setContentType("application/vcard+json");
     }
 
     startResponse(resp, format);
@@ -264,7 +269,7 @@ public class SpecialUri {
         } else {
           wtr.write(",\n");
         }
-        wtr.write(card.outputJson("      "));
+        wtr.write(card.outputJson(false, vcardVersion));
       }
 
       wtr.write("\n    ]\n");

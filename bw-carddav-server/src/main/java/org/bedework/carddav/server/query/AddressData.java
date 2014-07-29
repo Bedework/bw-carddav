@@ -124,7 +124,7 @@ public class AddressData extends WebdavProperty {
 
   /** The given node must be the Filter element
    *
-   * @param nd
+   * @param nd filter element
    * @throws WebdavException
    */
   public void parse(final Node nd) throws WebdavException {
@@ -132,11 +132,11 @@ public class AddressData extends WebdavProperty {
               comp + optional (expand-recurrence-set or
                                limit-recurrence-set)
      */
-    NamedNodeMap nnm = nd.getAttributes();
+    final NamedNodeMap nnm = nd.getAttributes();
 
     if (nnm != null) {
       for (int nnmi = 0; nnmi < nnm.getLength(); nnmi++) {
-        Node attr = nnm.item(nnmi);
+        final Node attr = nnm.item(nnmi);
 
         if (attr.getNodeName().equals("content-type")) {
           returnContentType = attr.getNodeValue();
@@ -156,11 +156,11 @@ public class AddressData extends WebdavProperty {
       }
     }
 
-    Element[] children = getChildren(nd);
+    final Element[] children = getChildren(nd);
     boolean hadProps = false;
 
     try {
-      for (Element curnode : children) {
+      for (final Element curnode : children) {
         if (debug) {
           trace("calendar-data node type: " +
               curnode.getNodeType() + " name:" +
@@ -195,22 +195,24 @@ public class AddressData extends WebdavProperty {
     }
   }
 
-  /** Given the CaldavBwNode, returns the transformed content.
-  *
-  * @param wdnode
-  * @param xml
-  * @throws WebdavException
-  */
- public void process(final WebdavNsNode wdnode,
-                     final XmlEmit xml) throws WebdavException {
+  /** Given the WebdavNsNode, returns the transformed content.
+   *
+   * @param wdnode the node
+   * @param xml output
+   * @param contentType - first element from content type or null
+   * @throws WebdavException
+   */
+  public void process(final WebdavNsNode wdnode,
+                      final XmlEmit xml,
+                      final String contentType) throws WebdavException {
     if (!(wdnode instanceof CarddavCardNode)) {
       return;
     }
 
-    CarddavCardNode node = (CarddavCardNode)wdnode;
+    final CarddavCardNode node = (CarddavCardNode)wdnode;
 
     if (allprop || (props == null)) {
-      node.writeContent(xml, null, returnContentType);
+      node.writeContent(xml, null, contentType);
       return;
     }
 

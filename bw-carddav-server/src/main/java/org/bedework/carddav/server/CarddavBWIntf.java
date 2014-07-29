@@ -505,7 +505,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           (acceptPars[0].trim().equals("text/vcard") ||
               acceptPars[0].trim().startsWith("application/json"))) {
         SpecialUri.process(req, resp, getResourceUri(req), getSysi(), config,
-                           true, accept, requestedVersion);
+                           true, acceptPars[0], requestedVersion);
 
         Content c = new Content();
 
@@ -1189,8 +1189,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
   public boolean generatePropValue(final WebdavNsNode node,
                                    WebdavProperty pr,
                                    final boolean allProp) throws WebdavException {
-    QName tag = pr.getTag();
-    String ns = tag.getNamespaceURI();
+    final QName tag = pr.getTag();
+    final String ns = tag.getNamespaceURI();
 
     try {
       /* Deal with anything but webdav properties */
@@ -1200,26 +1200,46 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
 
       if (tag.equals(CarddavTags.addressData)) {
-        // pr may be a CalendarData object - if not it's probably allprops
+        // pr may be an AddressData object - if not it's probably allprops
         if (!(pr instanceof AddressData)) {
           pr = new AddressData(tag, debug);
         }
 
-        AddressData addrdata = (AddressData)pr;
+        final AddressData addrdata = (AddressData)pr;
 
         if (debug) {
-          trace("do CalendarData for " + node.getUri());
+          trace("do AddressData for " + node.getUri());
         }
 
-        int status = HttpServletResponse.SC_OK;
+        String contentType = addrdata.getReturnContentType();
+        String[] contentTypePars = null;
+
+        if (contentType != null) {
+          contentTypePars = contentType.split(";");
+        }
+
+        String ctype = null;
+        if (contentTypePars !=null) {
+          ctype = contentTypePars[0];
+        }
+
         try {
-          xml.openTagSameLine(CarddavTags.addressData);
-          addrdata.process(node, xml);
+          /* Output the (transformed) node.
+           */
+
+          if (ctype != null) {
+            xml.openTagNoNewline(CarddavTags.addressData,
+                                 "content-type", ctype);
+          } else {
+            xml.openTagNoNewline(CarddavTags.addressData);
+          }
+
+          addrdata.process(node, xml, ctype);
           xml.closeTagSameLine(CarddavTags.addressData);
 
           return true;
-        } catch (WebdavException wde) {
-          status = wde.getStatusCode();
+        } catch (final WebdavException wde) {
+          final int status = wde.getStatusCode();
           if (debug && (status != HttpServletResponse.SC_NOT_FOUND)) {
             error(wde);
           }

@@ -107,9 +107,6 @@ public class CarddavCardNode extends CarddavNode {
     return col;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getOwner()
-   */
   @Override
   public AccessPrincipal getOwner() throws WebdavException {
     if (col == null) {
@@ -130,9 +127,6 @@ public class CarddavCardNode extends CarddavNode {
     vcardVersion = val;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#removeProperty(org.w3c.dom.Element)
-   */
   @Override
   public boolean removeProperty(final Element val,
                                 final SetPropertyResult spr) throws WebdavException {
@@ -141,9 +135,6 @@ public class CarddavCardNode extends CarddavNode {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#setProperty(org.w3c.dom.Element)
-   */
   @Override
   public boolean setProperty(final Element val,
                              final SetPropertyResult spr) throws WebdavException {
@@ -257,6 +248,15 @@ public boolean generatePropertyValue(final QName tag,
                              final Writer wtr,
                              final String contentType) throws WebdavException {
     try {
+      if ("application/vcard+json".equals(contentType)) {
+        if (xml == null) {
+          wtr.write(card.outputJson(debug, vcardVersion));
+        } else {
+          xml.cdataValue(card.outputJson(debug, vcardVersion));
+        }
+        return contentType;
+      }
+
       if (xml == null) {
         wtr.write(card.output(vcardVersion));
         return "text/vcard";
@@ -264,7 +264,7 @@ public boolean generatePropertyValue(final QName tag,
 
       xml.cdataValue(card.output(vcardVersion));
       return "application/vcard+xml";
-    } catch (WebdavException we) {
+    } catch (final WebdavException we) {
       throw we;
     } catch (Throwable t) {
       throw new WebdavException(t);
@@ -333,9 +333,6 @@ public boolean generatePropertyValue(final QName tag,
    *                   Required webdav properties
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
-   */
   @Override
   public String getContentLang() throws WebdavException {
     return "en";
@@ -350,17 +347,11 @@ public boolean generatePropertyValue(final QName tag,
     return 0;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
-   */
   @Override
   public String getContentType() throws WebdavException {
     return "text/vcard; version=\"4.0\"; charset=UTF-8";
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
-   */
   @Override
   public String getCreDate() throws WebdavException {
     init(false);
@@ -373,17 +364,11 @@ public boolean generatePropertyValue(final QName tag,
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getDisplayname()
-   */
   @Override
   public String getDisplayname() throws WebdavException {
     return getEntityName();
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getLastmodDate()
-   */
   @Override
   public String getLastmodDate() throws WebdavException {
     init(false);

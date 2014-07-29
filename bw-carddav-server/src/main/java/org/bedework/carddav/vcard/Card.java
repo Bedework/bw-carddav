@@ -22,6 +22,9 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import net.fortuna.ical4j.data.FoldingWriter;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Escapable;
@@ -71,12 +74,22 @@ public class Card {
 
   private String prevLastmod;
 
+  private final static JsonFactory jsonFactory;
+
+  static {
+    jsonFactory = new JsonFactory();
+    jsonFactory.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+    jsonFactory.configure(JsonGenerator.Feature.QUOTE_FIELD_NAMES, true);
+    jsonFactory.configure(Feature.ALLOW_COMMENTS, true);
+  }
+
   /** Create Card with a new embedded VCard
    *
    */
   public Card() {
-    vcard = new VCard();
+    this(new VCard());
     vcard.getProperties().add(Version.VERSION_4_0);
+
     version = 4;
   }
 
@@ -383,57 +396,96 @@ public class Card {
   }
 
   /**
-   * @param indent level
-   * @return String
+   * @param indent true for pretty
+   * @param version V4 or V3
+   * @return String json value
+   * @throws WebdavException
    */
-  public String outputJson(String indent) {
+  public String outputJson(final boolean indent,
+                           final String version) throws WebdavException {
     if (jsonStrForm != null) {
       return jsonStrForm;
     }
 
-    final StringBuilder sb = new StringBuilder();
+    final StringWriter sw = new StringWriter();
 
-    sb.append(indent);
-    sb.append("{\n");
+    try {
+      final JsonGenerator jgen = jsonFactory.createJsonGenerator(sw);
 
-    indent += "";
-
-    new PropertyOutput(vcard.getProperty(Property.Id.VERSION),
-                       true).outputJson(indent, sb);
-
-    final Set<String> pnames = VcardDefs.getPropertyNames();
-
-    /* Output known properties first */
-
-    for (final String pname: pnames) {
-      if ("VERSION".equals(pname)) {
-        continue;
+      if (indent) {
+        jgen.useDefaultPrettyPrinter();
       }
 
-      final List<Property> props = findProperties(pname);
+      jgen.writeStartArray(); // for vcard
 
-      if (!props.isEmpty()) {
-        new PropertyOutput(props, false).outputJson(indent, sb);
-      }
-    }
+      jgen.writeString("vcard");
+      jgen.writeStartArray();       // Array of properties
 
-    /* Now output any extra unknown properties */
+      /* Version should come before anything else. */
+      boolean version4 = false;
 
-    final List<Property> props = vcard.getProperties();
+      if (version != null) {
+        version4 = version.equals("4.0");
+      } else {
+        final Version v = (Version)vcard.getProperty(Property.Id.VERSION);
 
-    if (props != null) {
-      for (final Property p: props) {
-        if (!pnames.contains(p.getId().toString())) {
-          new PropertyOutput(p, false).outputJson(indent, sb);
+        if (v != null) {
+          version4 = v.equals(Version.VERSION_4_0);
         }
       }
+
+      final Property pversion;
+
+      if (version4) {
+        pversion = Version.VERSION_4_0;
+      } else {
+        pversion = new Version("3.0");
+      }
+
+      JsonProperty.addFields(jgen, pversion);
+
+      final Set<String> pnames = VcardDefs.getPropertyNames();
+
+      /* Output known properties first */
+
+      for (final String pname: pnames) {
+        if ("VERSION".equals(pname)) {
+          continue;
+        }
+
+        final List<Property> props = findProperties(pname);
+
+        if (!props.isEmpty()) {
+          for (final Property p: props) {
+            JsonProperty.addFields(jgen, p);
+          }
+        }
+      }
+
+      /* Now output any extra unknown properties */
+
+      final List<Property> props = vcard.getProperties();
+
+      if (props != null) {
+        for (final Property p: props) {
+          if (!pnames.contains(p.getId().toString())) {
+            JsonProperty.addFields(jgen, p);
+          }
+        }
+      }
+
+      jgen.writeEndArray(); // End event properties
+
+      jgen.writeEndArray(); // for vcard
+
+      jgen.flush();
+    } catch (final WebdavException wde) {
+      throw wde;
+    } catch (final Throwable t) {
+      throw new WebdavException(t);
     }
 
-    sb.append("\n");
-    sb.append(indent);
-    sb.append("}");
-
-    jsonStrForm = sb.toString();
+    jsonStrForm = sw.toString();
 
     return jsonStrForm;
   }
