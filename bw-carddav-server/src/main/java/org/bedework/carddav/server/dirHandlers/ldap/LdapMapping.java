@@ -303,7 +303,7 @@ public class LdapMapping {
 
     // Required
     addPropertyAttrMapping("cn", "FN", true);
-    addPropertyAttrMapping("sn", "N", true);
+    //addPropertyAttrMapping("sn", "N", true);
     //                          sn; Given Names; Honorific Prefixes; Honorific Suffixes
 
     addPropertyAttrMapping("source", "UID", true);
@@ -414,6 +414,9 @@ public class LdapMapping {
     //WORK  TEL         TYPE=video
 
     /* Add extra default attributes */
+    addDefaultAttrId("sn");
+    addDefaultAttrId("givenName");
+    addDefaultAttrId("displayName");
     addDefaultAttrId("createTimestamp");
     addDefaultAttrId("modifyTimestamp");
     addDefaultAttrId("o");

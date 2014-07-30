@@ -698,6 +698,23 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       simpleProp(card, "EMAIL", attrs, "mail");
      */
 
+      final String sn = stringAttr(attrs, "sn");
+      final String givenName = stringAttr(attrs, "givenName");
+
+      if ((sn != null) || (givenName != null)) {
+        final String nval = notNull(sn) + ";" + notNull(givenName);
+        simpleProp(card, "N", nval);
+
+        final String displayName = stringAttr(attrs, "displayName");
+
+        if (displayName == null) {
+          simpleProp(card, "NICKNAME", notNull(givenName) + " " + notNull(sn));
+        } else {
+          simpleProp(card, "NICKNAME", displayName);
+        }
+      }
+
+
       final String mail = stringAttr(attrs, "mail");
       if (mail != null) {
         simpleProp(card, "CALADRURI", "mailto:" + mail);
@@ -741,6 +758,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     } catch (NamingException ne) {
       throw new WebdavException(ne);
     }
+  }
+
+  private String notNull(final String val) {
+    if (val == null) {
+      return "";
+    }
+
+    return val;
   }
 
   private String makeIsoDatetime(final String val) {
