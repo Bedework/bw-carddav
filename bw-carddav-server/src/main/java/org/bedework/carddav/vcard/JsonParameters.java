@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.vcard;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import net.fortuna.ical4j.vcard.Parameter;

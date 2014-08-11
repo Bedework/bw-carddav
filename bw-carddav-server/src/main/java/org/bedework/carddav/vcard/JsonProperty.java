@@ -18,10 +18,10 @@
 */
 package org.bedework.carddav.vcard;
 
-import edu.rpi.cct.webdav.servlet.shared.WebdavException;
-import edu.rpi.cmt.calendar.XcalUtil;
-import edu.rpi.cmt.vcard.CardPropertyIndex.DataType;
-import edu.rpi.cmt.vcard.CardPropertyIndex.PropertyInfoIndex;
+import org.bedework.util.calendar.XcalUtil;
+import org.bedework.util.vcard.CardPropertyIndex.DataType;
+import org.bedework.util.vcard.CardPropertyIndex.PropertyInfoIndex;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import net.fortuna.ical4j.model.TextList;
@@ -139,7 +139,8 @@ public class JsonProperty implements Serializable {
         case DATE:
         case DATE_AND_OR_TIME:
         case DATE_TIME:
-          jgen.writeString(XcalUtil.getXmlFormatDateTime(prop.getValue()));
+          jgen.writeString(XcalUtil.getXmlFormatDateTime(
+                  prop.getValue()));
           break;
         case FLOAT:
           jgen.writeNumber(Float.valueOf(prop.getValue()));
