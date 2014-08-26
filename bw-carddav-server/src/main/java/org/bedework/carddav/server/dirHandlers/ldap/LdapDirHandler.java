@@ -580,13 +580,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
              CALURI
      */
 
-    Card card;
+    final Card card;
     try {
       card = new Card();
 
       card.setCreated(makeIsoDatetime(stringAttr(attrs, "createTimestamp")));
 
-      String lastMod = stringAttr(attrs, "modifyTimestamp");
+      final String lastMod = stringAttr(attrs, "modifyTimestamp");
 
       if (lastMod != null) {
         card.setLastmod(makeIsoDatetime(lastMod));
@@ -618,10 +618,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       simpleProp(card, "UID", source);
 
       /* The kind for the card either comes from a custom attribute in the
-       * directory or from an explicitly defined kind in the configuration.
+       * directory, an examination of the object classes or from an
+       * explicitly defined kind in the configuration.
        */
 
-      String attrId = LdapMapping.getKindAttrId();
+      final String attrId = LdapMapping.getKindAttrId();
       Attribute attr = null;
 
       if (attrId != null) {
@@ -630,8 +631,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       if ((attr != null) && (attr.get() != null)) {
         simpleProp(card, "KIND", (String)attr.get());
-      } else if (ldapConfig.getCardKind() != null) {
-        simpleProp(card, "KIND", ldapConfig.getCardKind());
+      } else {
+        final String k = kindFromObjectClass(attrs);
+
+        if (k != null) {
+          simpleProp(card, "KIND", k);
+        } else if (ldapConfig.getCardKind() != null) {
+          simpleProp(card, "KIND", ldapConfig.getCardKind());
+        }
       }
 
       Kind kind = (Kind)card.findProperty(Property.Id.KIND);
@@ -766,6 +773,30 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
 
     return val;
+  }
+
+  private String kindFromObjectClass(final Attributes attrs) throws WebdavException {
+    try {
+      final Attribute attr = attrs.get("objectclass");
+
+      if (attr == null) {
+        return null;
+      }
+
+      final NamingEnumeration ocs = attr.getAll();
+      while (ocs.hasMore()) {
+        final String s = (String)ocs.next();
+
+        Kind k = LdapMapping.getOcKindMapping(s);
+        if (k != null) {
+          return k.getValue();
+        }
+      }
+
+      return null;
+    } catch (final Throwable t) {
+      throw new WebdavException(t);
+    }
   }
 
   private String makeIsoDatetime(final String val) {
@@ -969,14 +1000,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   private String stringAttr(final Attributes attrs,
                            final String attrId) throws WebdavException {
     try {
-      Attribute attr = attrs.get(attrId);
+      final Attribute attr = attrs.get(attrId);
 
       if (attr == null) {
         return null;
       }
 
       return String.valueOf(attr.get());
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -1059,9 +1090,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       return search(makeAddrbookDn(path, true),
                     ldapFilter, limits, SearchControls.ONELEVEL_SCOPE);
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

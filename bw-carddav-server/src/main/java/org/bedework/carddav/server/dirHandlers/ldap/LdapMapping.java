@@ -117,7 +117,7 @@ public class LdapMapping {
     private boolean required;
 
     /* What kind of vcard - empty for any */
-    private List<Kind> kinds = new ArrayList<Kind>();
+    private List<Kind> kinds = new ArrayList<>();
 
     /** Simple not-required attr<->property
      *
@@ -275,27 +275,37 @@ public class LdapMapping {
   /** Mappings
    */
   public static final Map<String, LdapMapping> attrToVcardProperty =
-    new HashMap<String, LdapMapping>();
+    new HashMap<>();
 
   /** property name -> attribute names
    */
   public static final Map<String, Collection<String>> toLdapAttrNoGroup =
-    new HashMap<String, Collection<String>>();
+    new HashMap<>();
 
   /** Map property info to attribute
    */
   private static final Map<String, String> simplePropertyToLdapAttrMap =
-    new HashMap<String, String>();
+    new HashMap<>();
 
   /** We have to explicitly fetch attributes to get system attributes. This is
    * the default list we obtain. The config can name extra attributes.
    */
-  public static final List<String> defaultAttrIdList = new ArrayList<String>();
+  public static final List<String> defaultAttrIdList = new ArrayList<>();
 
   /** If non null this is the mapping for the KIND property */
   private static AttrPropertyMapping kindProperty = null;
 
+  /** Object classes and KIND */
+  private static Map<String, Kind> ocKindMapping = new HashMap<>();
+
   static {
+    addOcKindMapping("person", Kind.INDIVIDUAL);
+    addOcKindMapping("organizationalPerson", Kind.INDIVIDUAL);
+    addOcKindMapping("inetOrgPerson", Kind.INDIVIDUAL);
+
+    addOcKindMapping("groupofnames", Kind.GROUP);
+    addOcKindMapping("groupofuniquenames", Kind.GROUP);
+
     addAttrValue("objectclass", "top");
     addAttrValue("objectclass", "person");
     addAttrValue("objectclass", "organizationalPerson");
@@ -427,10 +437,14 @@ public class LdapMapping {
     addDefaultAttrId("uniqueMember");
   }
 
+  private static void addOcKindMapping(final String objectClass,
+                                       final Kind k) {
+    ocKindMapping.put(objectClass.toLowerCase(), k);
+  }
 
   private static void addAttrValue(final String aname,
                                    final String pname) {
-    AttrValue av = new AttrValue(aname, pname);
+    final AttrValue av = new AttrValue(aname, pname);
     attrToVcardProperty.put(aname, av);
   }
 
@@ -491,6 +505,14 @@ public class LdapMapping {
    */
   public static String simplePropertyToLdapAttr(final String pname) {
     return simplePropertyToLdapAttrMap.get(pname.toUpperCase());
+  }
+
+  /**
+   * @param val  object class
+   * @return KIND for object class
+   */
+  public static Kind getOcKindMapping(final String val) {
+    return ocKindMapping.get(val.toLowerCase());
   }
 
   /**
