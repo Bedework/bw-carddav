@@ -507,11 +507,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
+  private static final String[] memberAttrList = {"mail"};
+
   /**
    * @param path path to this card
    * @param fullPath - path includes card name
-   * @param attrs
-   * @return
+   * @param attrs attributes for the entry
+   * @return a card
    * @throws WebdavException
    */
   protected Card makeVcard(final String path,
@@ -648,14 +650,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         kind = Kind.INDIVIDUAL;
       }
 
-      AttrPropertyMapping kindMapping = LdapMapping.getKindMapping();
+      final AttrPropertyMapping kindMapping = LdapMapping.getKindMapping();
 
-      for (LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
+      for (final LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
         if (!(lm instanceof AttrPropertyMapping)) {
           continue;
         }
 
-        AttrPropertyMapping apm = (AttrPropertyMapping)lm;
+        final AttrPropertyMapping apm = (AttrPropertyMapping)lm;
 
         if ((kindMapping != null) &&
             kindMapping.equals(apm)) {
@@ -665,6 +667,40 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
         /* Skip this property mapping if it isn't for this kind of vcard */
         if (!apm.getKinds().isEmpty() && !apm.getKinds().contains(kind)) {
+          continue;
+        }
+
+        if (apm.getAttrId().equals("member")) {
+          /* We have to look up the referenced entry and get the mail address */
+
+          final Attribute memberAttr = attrs.get("member");
+
+          if (memberAttr == null) {
+            continue;
+          }
+
+          final NamingEnumeration dns = memberAttr.getAll();
+
+          while (dns.hasMore()) {
+            final String dn = (String)dns.next();
+
+            final Attributes memberAttrs =
+                    ctx.getAttributes(dn, memberAttrList);
+
+            final Attribute mailAttr = memberAttrs.get("mail");
+
+            if (mailAttr == null) {
+              continue;
+            }
+
+            String mail = String.valueOf(mailAttr.get());
+            if (!mail.toLowerCase().startsWith("mailto:")) {
+              mail = "mailto:" + mail;
+            }
+
+            simpleProp(card, apm.getPropertyName(), mail);
+          }
+
           continue;
         }
 
@@ -966,14 +1002,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                           final Attributes attrs,
                           final String attrId) throws WebdavException {
     try {
-      Attribute attr = attrs.get(attrId);
+      final Attribute attr = attrs.get(attrId);
 
       if (attr == null) {
         return;
       }
 
       simpleProp(card, propname, String.valueOf(attr.get()));
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -1015,15 +1051,15 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   /* Do the search for a single object in the directory
    */
   protected Attributes getObject(final String path,
-                             final boolean isCollection) throws WebdavException {
+                                 final boolean isCollection) throws WebdavException {
     try {
       AccessPrincipal ap = null;
       try {
         ap = getPrincipal(path);
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
       }
 
-      String dn;
+      final String dn;
 
       if ((ap != null) && (ap.getKind() == Ace.whoTypeUser)) {
         // Do principals
@@ -1179,7 +1215,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   protected void openContext() throws WebdavException {
     try {
-      Properties pr = new Properties();
+      final Properties pr = new Properties();
 
       pr.put(Context.PROVIDER_URL, ldapConfig.getProviderUrl());
       pr.put(Context.INITIAL_CONTEXT_FACTORY, ldapConfig.getInitialContextFactory());
@@ -1198,7 +1234,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
               pr.get(Context.PROVIDER_URL));
       }
       ctx = new InitialDirContext(pr);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -1207,7 +1243,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     if (ctx != null) {
       try {
         ctx.close();
-      } catch (Throwable t) {}
+      } catch (final Throwable ignored) {}
     }
   }
 
@@ -1216,12 +1252,12 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       return attrIdList;
     }
 
-    List<String> a = new ArrayList<String>(LdapMapping.defaultAttrIdList);
+    final List<String> a = new ArrayList<>(LdapMapping.defaultAttrIdList);
 
     if (ldapConfig.getAttrIdList() != null) {
       a.addAll(Arrays.asList(ldapConfig.getAttrIdList()));
     }
-    attrIdList = a.toArray(new String[0]);
+    attrIdList = a.toArray(new String[a.size()]);
 
     return attrIdList;
   }

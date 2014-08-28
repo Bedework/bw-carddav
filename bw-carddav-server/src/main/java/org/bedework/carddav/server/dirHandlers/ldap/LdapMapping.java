@@ -67,8 +67,8 @@ public class LdapMapping {
 
     /** Simple not-required attr<->property
      *
-     * @param attrId
-     * @param value
+     * @param attrId the id
+     * @param value the value
      */
     public AttrValue(final String attrId,
                      final String value) {
@@ -100,7 +100,7 @@ public class LdapMapping {
         return false;
       }
 
-      AttrValue that = (AttrValue)o;
+      final AttrValue that = (AttrValue)o;
 
       return (Util.compareStrings(getAttrId(), that.getAttrId()) == 0) &&
              (Util.compareStrings(value, that.value) == 0);
@@ -400,7 +400,9 @@ public class LdapMapping {
     //      LOGO
     //      ORG                            organization name;
     //                                     one or more levels of org unit names
-    //      MEMBER                         urls of group members
+
+    addPropertyAttrMapping("member", "MEMBER",
+                           Kind.GROUP);
     //      RELATED
     //      CATEGORIES
     //      PRODID
@@ -469,14 +471,15 @@ public class LdapMapping {
                                              final String paramVal,
                                              final boolean required,
                                              final Kind... kinds) {
-    AttrPropertyMapping apm = new AttrPropertyMapping(aname, group, propertyName,
-                                                      paramName, paramVal,
-                                                      required, kinds);
+    final AttrPropertyMapping apm =
+            new AttrPropertyMapping(aname, group, propertyName,
+                                    paramName, paramVal,
+                                    required, kinds);
     attrToVcardProperty.put(aname, apm);
 
     Collection<String> anames = toLdapAttrNoGroup.get(propertyName);
     if (anames == null) {
-      anames = new ArrayList<String>();
+      anames = new ArrayList<>();
       toLdapAttrNoGroup.put(propertyName, anames);
     }
     anames.add(aname);
@@ -500,7 +503,7 @@ public class LdapMapping {
 
   /** Return the ldap attribute for a simple property name
    *
-   * @param pname
+   * @param pname name of parameter
    * @return ldap attribute
    */
   public static String simplePropertyToLdapAttr(final String pname) {
