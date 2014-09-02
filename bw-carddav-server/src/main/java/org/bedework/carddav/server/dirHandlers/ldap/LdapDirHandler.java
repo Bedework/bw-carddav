@@ -1224,15 +1224,21 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         pr.put(Context.SECURITY_AUTHENTICATION, "simple");
         pr.put(Context.SECURITY_PRINCIPAL, ldapConfig.getAuthDn());
         pr.put(Context.SECURITY_CREDENTIALS, ldapConfig.getAuthPw());
+
+        if (debug) {
+          trace("Directory: get new authenticated context for " +
+                        pr.get(Context.PROVIDER_URL));
+        }
+      } else {
+        // No authentication
+        pr.put(Context.SECURITY_AUTHENTICATION, "none");
+
+        if (debug) {
+          trace("Directory: get new unauthenticated context for " +
+                        pr.get(Context.PROVIDER_URL));
+        }
       }
 
-      // Make simple authentication the default
-      pr.put(Context.SECURITY_AUTHENTICATION, "simple");
-
-      if (debug) {
-        trace("Directory: get new context for " +
-              pr.get(Context.PROVIDER_URL));
-      }
       ctx = new InitialDirContext(pr);
     } catch (final Throwable t) {
       throw new WebdavException(t);
