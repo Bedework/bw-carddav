@@ -436,6 +436,7 @@ public class LdapMapping {
     addDefaultAttrId("org");
     addDefaultAttrId("ou");
     addDefaultAttrId("uid");
+    addDefaultAttrId("employeeNumber");
     addDefaultAttrId("uniqueMember");
   }
 
