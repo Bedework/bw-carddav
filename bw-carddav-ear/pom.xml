@@ -189,8 +189,10 @@
 					<!-- Exclude eclipse generated application.xml during mvn package -->
 					<earSourceExcludes>**/application.xml</earSourceExcludes>
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
+          <skinnyWars>true</skinnyWars>
 					<!-- use maven generated application.xml instead -->
 					<generateApplicationXml>true</generateApplicationXml>
+          <unpackTypes>sar,rar,war</unpackTypes>
 					<modules>
 						<webModule>
 							<groupId>${project.groupId}</groupId>
