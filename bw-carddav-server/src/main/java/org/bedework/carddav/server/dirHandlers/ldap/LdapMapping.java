@@ -33,6 +33,10 @@ import java.util.Map;
 /** Define information to allow us to map between ldap attributes and vcard
  * properties. The mapping is not complete but should handle most cases
  *
+ * <p>We might want to make use of the entryUUID attribute - see RFC4530</p>
+ *
+ * <p>Failing that - generate a uid for the vcard using the ldap scheme
+ * and use the dn value</p>
  * @author douglm
  *
  */

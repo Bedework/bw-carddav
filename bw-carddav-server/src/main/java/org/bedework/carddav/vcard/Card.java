@@ -144,6 +144,8 @@ public class Card {
    */
   public void setCreated(final String val) {
     created = val;
+
+    changed();
   }
 
   /**
@@ -161,6 +163,8 @@ public class Card {
     final DateTime dt = new DateTime(true);
 
     setLastmod(new LastModified(dt).getValue());
+
+    changed();
   }
 
   /**
@@ -234,6 +238,8 @@ public class Card {
         (findProperty(Property.Id.VERSION) == null)) {
       vcard.getProperties().add(val);
     }
+
+    changed();
   }
 
   /**
@@ -296,6 +302,8 @@ public class Card {
     } catch (final Throwable t) {
       throw new WebdavException(t);
     }
+
+    changed();
 
     /* Make sure we have a UID - this may be difficult */
     final Version vp = (Version)vcard.getProperty(Id.VERSION);
@@ -509,6 +517,8 @@ public class Card {
     }
 
     ps.add(val);
+
+    changed();
   }
 
   private void appendDowngraded(final Writer wtr,
@@ -640,5 +650,10 @@ public class Card {
 
     par = prop.getParameter(Parameter.Id.PID);
     return par == null;
+  }
+
+  private void changed() {
+    jsonStrForm = null;
+    strForm = null;
   }
 }

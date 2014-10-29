@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.naming.NamingEnumeration;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -67,13 +66,13 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     try {
       openContext();
 
-      Attributes attrs = getObject(path, false);
+      LdapObject ldo = getObject(path, false);
 
-      if (attrs == null) {
+      if (ldo.getAttrs() == null) {
         return null;
       }
 
-      return makeVcard(path, true, attrs);
+      return makeVcard(path, true, ldo.getAttrs(), ldo.getFullname());
     } finally {
       closeContext();
     }

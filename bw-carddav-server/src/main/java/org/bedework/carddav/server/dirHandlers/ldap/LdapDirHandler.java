@@ -91,13 +91,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       String fullPath = Util.buildPath(false, path, "/", name);
 
-      Attributes attrs = getObject(fullPath, false);
+      LdapObject ldo = getObject(fullPath, false);
 
-      if (attrs == null) {
+      if (ldo == null) {
         return null;
       }
 
-      return makeVcard(fullPath, true, attrs);
+      return makeVcard(fullPath, true, ldo.attrs, ldo.fullname);
     } finally {
       closeContext();
     }
@@ -178,13 +178,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       openContext();
 
-      Attributes attrs = getObject(path, true);
+      LdapObject ldo = getObject(path, true);
 
-      if (attrs == null) {
+      if (ldo == null) {
         return null;
       }
 
-      return makeCdCollection(path, true, attrs);
+      return makeCdCollection(path, true, ldo.attrs);
     } finally {
       closeContext();
     }
@@ -311,7 +311,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       return co;
     }
 
-    co.card = makeVcard(path, fullPath, ldo.attrs);
+    co.card = makeVcard(path, fullPath, ldo.attrs, ldo.fullname);
 
     return co;
   }
@@ -445,21 +445,41 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return cdc;
   }
 
-  private static class LdapObject {
+  public static class LdapObject {
     boolean limitExceeded;
 
     Attributes attrs;
     String name;
+    String fullname;
 
     LdapObject() {
     }
 
-    LdapObject(final Attributes attrs, final String name) {
+    LdapObject(final Attributes attrs,
+               final String name,
+               final String fullname) {
       this.attrs = attrs;
       this.name = name;
+      this.fullname = fullname;
       if ((name != null) && (name.length() == 0)) {
         this.name = null;
       }
+    }
+
+    public boolean isLimitExceeded() {
+      return limitExceeded;
+    }
+
+    public Attributes getAttrs() {
+      return attrs;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getFullname() {
+      return fullname;
     }
   }
 
@@ -496,7 +516,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         return null;
       }
 
-      return new LdapObject(s.getAttributes(), s.getName());
+      return new LdapObject(s.getAttributes(), s.getName(), s.getNameInNamespace());
     } catch (SizeLimitExceededException slee) {
       LdapObject le = new LdapObject();
 
@@ -518,7 +538,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
    */
   protected Card makeVcard(final String path,
                             final boolean fullPath,
-                            final Attributes attrs) throws WebdavException {
+                            final Attributes attrs,
+                            final String dn) throws WebdavException {
     /* Map ldap attributes onto vcard. The following represents a best guess
      *
      * Group Attr        Param              ldap attr
@@ -616,8 +637,18 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       source = urlHandler.prefix(source);
 
       simpleProp(card, "SOURCE", source);
-      // XXX Use the source as the uid as well.
-      simpleProp(card, "UID", source);
+
+      /* See if we have an entryUUID attribute */
+      Attribute attr = attrs.get("entryuuid");
+      if ((attr != null) && (attr.get() != null)) {
+        simpleProp(card, "UID", (String)attr.get());
+      } else if (dn != null) {
+        // Use the dn to make an ldap uri.
+        simpleProp(card, "UID", "ldap:///" + dn);
+      } else {
+        // Use the source
+        simpleProp(card, "UID", source);
+      }
 
       /* The kind for the card either comes from a custom attribute in the
        * directory, an examination of the object classes or from an
@@ -625,7 +656,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
        */
 
       final String attrId = LdapMapping.getKindAttrId();
-      Attribute attr = null;
 
       if (attrId != null) {
         attr = attrs.get(attrId);
@@ -673,19 +703,21 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         if (apm.getAttrId().equals("member")) {
           /* We have to look up the referenced entry and get the mail address */
 
+          // TODO - only works for individual
+
           final Attribute memberAttr = attrs.get("member");
 
           if (memberAttr == null) {
             continue;
           }
 
-          final NamingEnumeration dns = memberAttr.getAll();
+          final NamingEnumeration memberDns = memberAttr.getAll();
 
-          while (dns.hasMore()) {
-            final String dn = (String)dns.next();
+          while (memberDns.hasMore()) {
+            final String memberDn = (String)memberDns.next();
 
             final Attributes memberAttrs =
-                    ctx.getAttributes(dn, memberAttrList);
+                    ctx.getAttributes(memberDn, memberAttrList);
 
             final Attribute mailAttr = memberAttrs.get("mail");
 
@@ -1050,7 +1082,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   /* Do the search for a single object in the directory
    */
-  protected Attributes getObject(final String path,
+  protected LdapObject getObject(final String path,
                                  final boolean isCollection) throws WebdavException {
     try {
       AccessPrincipal ap = null;
@@ -1072,7 +1104,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         dn = makeAddrbookDn(path, isCollection);
       }
 
-      return ctx.getAttributes(dn, getAttrIdList());
+      return new LdapObject(ctx.getAttributes(dn, getAttrIdList()),
+              null, dn);
     } catch (NameNotFoundException nnfe) {
       return null;
     } catch (WebdavException wde) {
