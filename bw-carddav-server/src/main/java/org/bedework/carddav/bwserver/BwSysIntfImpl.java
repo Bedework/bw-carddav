@@ -193,8 +193,8 @@ public class BwSysIntfImpl implements SysIntf {
   @Override
   public boolean isPrincipal(final String val) throws WebdavException {
     try {
-      return getHandler(val).isPrincipal(val);
-    } catch (Throwable t) {
+      return getPrincipalHandler(val).isPrincipal(val);
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -203,9 +203,7 @@ public class BwSysIntfImpl implements SysIntf {
   public AccessPrincipal getPrincipal(final String href) throws WebdavException {
     final String path = pathFromHref(href);
     final AccessPrincipal ap =
-            dhf.getPrincipalHandler(path,
-                                    account,
-                                    urlHandler).getPrincipal(path);
+            getPrincipalHandler(path).getPrincipal(path);
 
     if (ap == null) {
       throw new WebdavNotFound(href);
@@ -419,7 +417,7 @@ public class BwSysIntfImpl implements SysIntf {
     boolean addressbookHomeSet = false;
 
     for (final WebdavProperty prop: pps.props) {
-        if (CarddavTags.addressbookHomeSet.equals(prop.getTag())) {
+      if (CarddavTags.addressbookHomeSet.equals(prop.getTag())) {
         if ((matchVal != null) && (!matchVal.equals(prop.getPval()))) {
           return principals;
         }
@@ -825,6 +823,10 @@ public class BwSysIntfImpl implements SysIntf {
 
   private DirHandler getHandler(final String path) throws WebdavException {
     return dhf.getHandler(path, account, urlHandler);
+  }
+
+  private DirHandler getPrincipalHandler(final String href) throws WebdavException {
+    return dhf.getPrincipalHandler(href, account, urlHandler);
   }
 
   private int handleStatus(final int st) throws WebdavException {
