@@ -47,6 +47,8 @@ public abstract class Principal implements Comparator<Principal>,
   // For acl evaluation
   protected AccessPrincipal aclPrincipal;
 
+  private String description;
+
   /* ====================================================================
    *                   Constructors
    * ==================================================================== */
@@ -135,6 +137,16 @@ public abstract class Principal implements Comparator<Principal>,
     }
 
     return groups;
+  }
+
+  @Override
+  public void setDescription(final String val) {
+    description = val;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   /* ====================================================================
