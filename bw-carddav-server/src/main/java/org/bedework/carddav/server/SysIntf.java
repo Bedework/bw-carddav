@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Mike Douglass douglm at rpi.edu
  */
-public interface SysIntf {
+public interface SysIntf extends WdSysIntf {
   /** Called before any other method is called to allow initialisation to
    * take place at the first or subsequent requests
    *
@@ -77,11 +77,6 @@ public interface SysIntf {
    * @throws WebdavException
    */
   public PropertyHandler getPropertyHandler(PropertyType ptype) throws WebdavException;
-
-  /**
-   * @return UrlHandler object to manipulate urls.
-   */
-  public UrlHandler getUrlHandler();
 
   /* *
    * @return String url prefix derived from request.

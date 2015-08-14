@@ -1032,7 +1032,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       AccessPrincipal ap = getSysi().getPrincipal(href);
 
-      res.add(new WebdavPrincipalNode(getSysi().getUrlHandler(),
+      res.add(new WebdavPrincipalNode(getSysi(),
+                                      getSysi().getUrlHandler(),
                                       ap.getPrincipalRef(),
                                       ap, false,
                                       ap.getPrincipalRef()));
@@ -1060,7 +1061,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
     ArrayList<WebdavNsNode> pnodes = new ArrayList<WebdavNsNode>();
 
     for (PrincipalInfo cui: sysi.getPrincipals(resourceUri, pps)) {
-      pnodes.add(new WebdavPrincipalNode(sysi.getUrlHandler(),
+      pnodes.add(new WebdavPrincipalNode(sysi,
+                                         sysi.getUrlHandler(),
                                          cui.principalPathPrefix,
                                          new User(cui.account), true,
                                          Util.buildPath(true,

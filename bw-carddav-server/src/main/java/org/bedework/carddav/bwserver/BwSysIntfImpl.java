@@ -165,6 +165,16 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   @Override
+  public String getDefaultContentType() throws WebdavException {
+    return "application/vcard";
+  }
+
+  @Override
+  public String getNotificationURL() throws WebdavException {
+    return null;
+  }
+
+  @Override
   public AccessPrincipal getPrincipal() throws WebdavException {
     return getPrincipal(Util.buildPath(true, conf.getUserPrincipalRoot(),
                                        "/", account));
@@ -188,6 +198,12 @@ public class BwSysIntfImpl implements SysIntf {
   @Override
   public UrlHandler getUrlHandler() {
     return urlHandler;
+  }
+
+  @Override
+  public boolean allowsSyncReport(final WdCollection col)
+          throws WebdavException {
+    return false;
   }
 
   @Override

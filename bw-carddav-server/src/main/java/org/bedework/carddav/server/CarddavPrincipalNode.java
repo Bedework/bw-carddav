@@ -61,7 +61,8 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
    */
   public CarddavPrincipalNode(final CarddavURI cdURI, final SysIntf sysi,
                              final AccessPrincipal ap) throws WebdavException {
-    super(sysi.getUrlHandler(), cdURI.getPath(),
+    super(sysi,
+          sysi.getUrlHandler(), cdURI.getPath(),
           ap,
           cdURI.isCollection(), cdURI.getUri());
     this.sysi = sysi;
@@ -71,9 +72,6 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
    *                   Property methods
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.bedework.sss.util.xml.QName)
-   */
   @Override
   public boolean knownProperty(final QName tag) {
     if (propertyNames.get(tag) != null) {
@@ -84,9 +82,6 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
     return super.knownProperty(tag);
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.bedework.sss.util.xml.QName, edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
-   */
   @Override
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,
@@ -131,9 +126,6 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
     }
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getPropertyNames()
-   */
   @Override
   public Collection<PropertyTagEntry> getPropertyNames() throws WebdavException {
     Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();

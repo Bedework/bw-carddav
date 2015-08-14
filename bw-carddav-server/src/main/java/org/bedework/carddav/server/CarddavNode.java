@@ -57,7 +57,8 @@ public abstract class CarddavNode extends WebdavNsNode {
 
   CarddavNode(final CarddavURI cdURI,
               final SysIntf sysi) throws WebdavException {
-    super(sysi.getUrlHandler(), cdURI.getPath(), cdURI.isCollection(),
+    super(sysi, sysi.getUrlHandler(), cdURI.getPath(),
+          cdURI.isCollection(),
           cdURI.getUri());
 
     //this.cdURI = cdURI;
@@ -71,7 +72,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   CarddavNode(final boolean collection,
               final SysIntf sysi,
               final String uri) {
-    super(sysi.getUrlHandler(), null, collection, uri);
+    super(sysi, sysi.getUrlHandler(), null, collection, uri);
 
     //this.cdURI = cdURI;
     this.sysi = sysi;
@@ -144,17 +145,11 @@ public abstract class CarddavNode extends WebdavNsNode {
    *                   Required webdav properties
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentBinary()
-   */
   @Override
   public boolean getContentBinary() throws WebdavException {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getChildren()
-   */
   @Override
   public Collection<? extends WdEntity> getChildren() throws WebdavException {
     return null;
