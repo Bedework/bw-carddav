@@ -100,10 +100,13 @@ public abstract class Principal implements Comparator<Principal>,
     account = val;
   }
 
-  /**
-   * @return  String account name
-   */
+  @Override
   public String getAccount() {
+    return account;
+  }
+
+  @Override
+  public String getAclAccount() {
     return account;
   }
 
