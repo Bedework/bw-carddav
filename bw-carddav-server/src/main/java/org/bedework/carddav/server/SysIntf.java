@@ -27,8 +27,8 @@ import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.vcard.Card;
 import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
-import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WdSysIntf;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.io.Serializable;
