@@ -209,7 +209,13 @@ public class BwSysIntfImpl implements SysIntf {
   @Override
   public boolean isPrincipal(final String val) throws WebdavException {
     try {
-      return getPrincipalHandler(val).isPrincipal(val);
+      final DirHandler dh = getPrincipalHandler(val, false);
+
+      if (dh == null) {
+        return false;
+      }
+
+      return dh.isPrincipal(val);
     } catch (final Throwable t) {
       throw new WebdavException(t);
     }
@@ -219,7 +225,7 @@ public class BwSysIntfImpl implements SysIntf {
   public AccessPrincipal getPrincipal(final String href) throws WebdavException {
     final String path = pathFromHref(href);
     final AccessPrincipal ap =
-            getPrincipalHandler(path).getPrincipal(path);
+            getPrincipalHandler(path, true).getPrincipal(path);
 
     if (ap == null) {
       throw new WebdavNotFound(href);
@@ -246,7 +252,8 @@ public class BwSysIntfImpl implements SysIntf {
       return getUrlHandler().prefix(
               dhf.getPrincipalHandler(principalPrefix,
                                       account,
-                                      urlHandler).makePrincipalUri(p));
+                                      urlHandler,
+                                      true).makePrincipalUri(p));
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {
@@ -841,8 +848,9 @@ public class BwSysIntfImpl implements SysIntf {
     return dhf.getHandler(path, account, urlHandler);
   }
 
-  private DirHandler getPrincipalHandler(final String href) throws WebdavException {
-    return dhf.getPrincipalHandler(href, account, urlHandler);
+  private DirHandler getPrincipalHandler(final String href,
+                                         final boolean required) throws WebdavException {
+    return dhf.getPrincipalHandler(href, account, urlHandler, required);
   }
 
   private int handleStatus(final int st) throws WebdavException {

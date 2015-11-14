@@ -25,7 +25,11 @@ import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Create a directory handler for CardDAV
  *
@@ -135,12 +139,17 @@ public class DirHandlerFactory {
    */
   public DirHandler getPrincipalHandler(final String principalHref,
                                         final String account,
-                                        final UrlHandler urlHandler) throws WebdavException {
+                                        final UrlHandler urlHandler,
+                                        final boolean required) throws WebdavException {
     /* First determine which configuration handles this path */
     final DirHandlerConfig dhc = conf.findPrincipalDirhandler(principalHref);
 
     if (dhc == null) {
-      throw new WebdavBadRequest("No handler for " + principalHref);
+      if (required) {
+        throw new WebdavBadRequest("No handler for " + principalHref);
+      }
+
+      return null;
     }
 
     return getHandler(dhc, account, urlHandler);
