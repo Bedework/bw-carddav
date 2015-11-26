@@ -33,7 +33,7 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val access set at the root. Needs to be an XML value
    */
   public void setRootAccess(final String val);
 
@@ -45,44 +45,32 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val owner of the user root and user home
    */
   public void setRootOwner(final String val);
 
   /**
-   * @return String
+   * @return  owner of the user root and user home
    */
   @MBeanInfo("This is the owner of the user root and user home")
   public String getRootOwner();
 
   /** Set the query limit - 0 for no limit
    *
-   * @param val
+   * @param val Max number of entries returned
    */
   public void setQueryLimit(final int val);
 
   /**
    *
-   * @return int val
+   * @return int Max number of entries returned
    */
   @MBeanInfo("Max number of entries returned")
   public int getQueryLimit();
 
-  /** Do we drop tables?
-   *
-   * @param val
-   */
-  public void setDrop(boolean val);
-
-  /**
-   * @return true for drop tables
-   */
-  @MBeanInfo("Drop tables on export (write) schema to database?")
-  public boolean getDrop();
-
   /** Export schema to database?
    *
-   * @param val
+   * @param val true to export
    */
   public void setExport(boolean val);
 
@@ -94,7 +82,7 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /** Output file name - full path
    *
-   * @param val
+   * @param val Output file name - full path
    */
   public void setSchemaOutFile(String val);
 
@@ -128,7 +116,7 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
   public List<String> schemaStatus();
 
   /**
-   * @param value
+   * @param value the hibernate dialect
    */
   @MBeanInfo("Set the hibernate dialect")
   void setHibernateDialect(@MBeanInfo("value: a valid hibernate dialect class") final String value);
@@ -148,7 +136,7 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /** Display the named property
    *
-   * @param name
+   * @param name of property
    * @return value
    */
   @MBeanInfo("Display the named hibernate property")
@@ -156,22 +144,22 @@ public interface DbDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /** Remove the named property
    *
-   * @param name
+   * @param name of property
    */
   @MBeanInfo("Remove the named hibernate property")
   void removeHibernateProperty(@MBeanInfo("name") final String name);
 
   /**
-   * @param name
-   * @param value
+   * @param name of property
+   * @param value of property
    */
   @MBeanInfo("Add a hibernate property")
   void addHibernateProperty(@MBeanInfo("name") final String name,
                             @MBeanInfo("value") final String value);
 
   /**
-   * @param name
-   * @param value
+   * @param name of property
+   * @param value of property
    */
   @MBeanInfo("Set a hibernate property")
   void setHibernateProperty(@MBeanInfo("name") final String name,

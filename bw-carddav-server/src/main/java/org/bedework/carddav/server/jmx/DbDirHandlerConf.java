@@ -34,14 +34,12 @@ import java.util.Properties;
  *
  */
 public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConfMBean {
-  private boolean drop;
-
   /* Be safe - default to false */
   private boolean export;
 
   private String schemaOutFile;
 
-  private Configuration cfg;
+  private Configuration hibCfg;
 
   private class SchemaThread extends Thread {
     InfoLines infoLines = new InfoLines();
@@ -57,11 +55,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
         final long startTime = System.currentTimeMillis();
 
-        final SchemaExport se = new SchemaExport(getConfiguration());
-
-//      if (getDelimiter() != null) {
-//        se.setDelimiter(getDelimiter());
-//      }
+        final SchemaExport se = new SchemaExport(getHibConfiguration());
 
         se.setFormat(true);       // getFormat());
         se.setHaltOnError(false); // getHaltOnError());
@@ -73,7 +67,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
         se.execute(false, // script - causes write to System.out if true
                    getExport(),
-                   getDrop(),
+                   false,   // drop
                    true);   //   getCreate());
 
         final long millis = System.currentTimeMillis() - startTime;
@@ -87,7 +81,6 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
         infoLines.exceptionMsg(t);
       } finally {
         infoLines.addLn("Schema build completed");
-        drop = false;
         export = false;
       }
     }
@@ -99,16 +92,6 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   /* ========================================================================
    * Schema attributes
    * ======================================================================== */
-
-  @Override
-  public void setDrop(final boolean val) {
-    drop = val;
-  }
-
-  @Override
-  public boolean getDrop() {
-    return drop;
-  }
 
   @Override
   public void setExport(final boolean val) {
@@ -263,10 +246,10 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
    *                   Private methods
    * ==================================================================== */
 
-  private synchronized Configuration getConfiguration() {
-    if (cfg == null) {
+  private synchronized Configuration getHibConfiguration() {
+    if (hibCfg == null) {
       try {
-        cfg = new Configuration();
+        hibCfg = new Configuration();
 
         final StringBuilder sb = new StringBuilder();
 
@@ -280,14 +263,14 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
         final Properties hprops = new Properties();
         hprops.load(new StringReader(sb.toString()));
 
-        cfg.addProperties(hprops).configure();
+        hibCfg.addProperties(hprops).configure();
       } catch (final Throwable t) {
         // Always bad.
         error(t);
       }
     }
 
-    return cfg;
+    return hibCfg;
   }
 
   /**
