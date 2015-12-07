@@ -1185,14 +1185,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       return ldapConfig.getBaseDn();
     }
 
-    remPath = path.substring(dhConfig.getPathPrefix().length() + 1);
+    remPath = remPath.substring(dhConfig.getPathPrefix().length() + 1);
     if (remPath.endsWith(".vcf")) {
       remPath = remPath.substring(0, remPath.length() - 4);
     }
 
-    String[] elements = remPath.split("/");
+    final String[] elements = remPath.split("/");
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     int i = elements.length - 1;
 
     if (i >= 0) {
@@ -1206,7 +1206,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       sb.append(dnEscape(elements[i]));
       i--;
 
-      while (i > 0) {
+      while (i >= 0) {
         sb.append(",");
         sb.append(ldapConfig.getFolderIdAttr());
         sb.append("=");
@@ -1223,11 +1223,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   }
 
   protected String dnEscape(final String val) {
-    if (val.indexOf(",") < 0) {
+    if (!val.contains(",")) {
       return val;
     }
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
 
     int pos = 0;
     while (pos < val.length()) {
