@@ -168,9 +168,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCollection(java.lang.String)
-   */
+  @Override
   public CarddavCollection getCollection(final String path) throws WebdavException {
     verifyPath(path);
 
@@ -178,7 +176,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       openContext();
 
-      LdapObject ldo = getObject(path, true);
+      final LdapObject ldo = getObject(path, true);
 
       if (ldo == null) {
         return null;
@@ -190,9 +188,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#getCollections(java.lang.String, org.bedework.carddav.server.SysIntf.GetLimits)
-   */
+  @Override
   public GetResult getCollections(final String path,
                                   final GetLimits limits)
          throws WebdavException {
@@ -201,7 +197,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       openContext();
 
-      GetResult res = searchChildren(path, null, limits, false);
+      final GetResult res = searchChildren(path, null, limits, false);
 
       if (!res.entriesFound) {
         return res;
@@ -209,7 +205,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       res.collections = new ArrayList<CarddavCollection>();
       for (;;) {
-        CollectionObject co = nextCdCollection(path, false);
+        final CollectionObject co = nextCdCollection(path, false);
 
         if (co == null) {
           break;
