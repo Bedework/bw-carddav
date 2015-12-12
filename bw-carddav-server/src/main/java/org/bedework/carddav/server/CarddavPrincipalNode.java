@@ -66,6 +66,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
           ap,
           cdURI.isCollection(), cdURI.getUri());
     this.sysi = sysi;
+    allowsGet = true;
   }
 
   /* ====================================================================

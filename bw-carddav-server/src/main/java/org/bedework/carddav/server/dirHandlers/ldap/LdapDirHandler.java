@@ -1167,8 +1167,18 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   }
 
   protected String makePrincipalDn(final String account) {
-    return ldapConfig.getPrincipalIdAttr() + account + "," +
-                       ldapConfig.getBaseDn();
+    final StringBuilder sb = new StringBuilder(ldapConfig.getPrincipalIdAttr());
+    sb.append("=");
+
+    if (account.endsWith(".vcf")) {
+      sb.append(account.substring(0, account.length() - 4));
+    } else {
+      sb.append(account);
+    }
+    sb.append(",");
+    sb.append(ldapConfig.getBaseDn());
+
+    return sb.toString();
   }
 
   protected String makeAddrbookDn(final String path,

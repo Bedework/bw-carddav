@@ -209,6 +209,9 @@ public class BwSysIntfImpl implements SysIntf {
   @Override
   public boolean isPrincipal(final String val) throws WebdavException {
     try {
+      if ((val == null) || val.endsWith(".vcf")) {
+        return false;
+      }
       final DirHandler dh = getPrincipalHandler(val, false);
 
       if (dh == null) {

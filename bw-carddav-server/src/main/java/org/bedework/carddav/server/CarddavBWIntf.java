@@ -1554,8 +1554,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
         return curi;
       }
 
-      if ((nodeType == WebdavNsIntf.nodeTypeCollection) ||
-          (nodeType == WebdavNsIntf.nodeTypeUnknown)) {
+      if (uri.endsWith("/") &&
+              ((nodeType == WebdavNsIntf.nodeTypeCollection) ||
+                       (nodeType == WebdavNsIntf.nodeTypeUnknown))) {
         // For unknown we try the full path first as a calendar.
         if (debug) {
           debugMsg("search for collection uri \"" + uri + "\"");

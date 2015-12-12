@@ -32,7 +32,7 @@
     <orderEntry type="library" name="Maven: org.bedework:bw-util-caching:4.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-vcard:4.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-ical4j-vcard:1.0.1" level="project" />
-    <orderEntry type="module" module-name="bw-webdav" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-webdav:4.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-servlet:4.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-access:4.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.2" level="project" />
