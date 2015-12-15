@@ -54,8 +54,8 @@
 		</dependency>
 		<!-- Third Party Libraries -->
 		<dependency>
-			<groupId>org.mnode.ical4j</groupId>
-			<artifactId>ical4j-vcard</artifactId>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-ical4j-cl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -84,10 +84,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>

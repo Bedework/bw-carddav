@@ -15,17 +15,17 @@
 		<!-- Bedework Versions -->
 		<bedework.releases.repo.url>scp://dev.bedework.org/data/repository/maven/maven2</bedework.releases.repo.url>
 		<bedework.snapshots.repo.url>scp://dev.bedework.org/data/repository/maven/maven2</bedework.snapshots.repo.url>
-		<bw-util.version>4.0.1-SNAPSHOT</bw-util.version>
-		<bw-access.version>4.0.1-SNAPSHOT</bw-access.version>
-		<bw-webdav.version>4.0.1-SNAPSHOT</bw-webdav.version>
+		<bw-util.version>4.0.2</bw-util.version>
+		<bw-access.version>4.0.1</bw-access.version>
+		<bw-webdav.version>4.0.1</bw-webdav.version>
 		<!-- Third Party Library Versions -->
 		<ehcache.version>1.6.2</ehcache.version>
 		<hibernate.version>3.6.9.Final</hibernate.version>
 		<hibernate-validator.version>3.1.0.GA</hibernate-validator.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<junit.version>4.8.2</junit.version>
-		<ical4j.version>1.1-BW-SNAPSHOT</ical4j.version>
-		<ical4j-vcard.version>0.9.6a-BW-SNAPSHOT</ical4j-vcard.version>
+		<ical4j.version>1.1.1</ical4j.version>
+		<ical4j-vcard.version>1.0.2-SNAPSHOT</ical4j-vcard.version>
 		<log4j.version>1.2.15</log4j.version>
 		<asm.version>3.2</asm.version>
 		<asm-attrs.version>2.2.3</asm-attrs.version>
@@ -64,6 +64,34 @@
 		<module>bw-carddav-userweb-war</module>
 		<module>bw-carddav-ear</module>
 	</modules>
+
+  <developers>
+    <developer>
+      <name>Mike Douglass</name>
+      <organization>
+        Spherical Cow Group
+      </organization>
+      <organizationUrl>http://sphericalcowgroup.com/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Arlen Johnson</name>
+      <organization>
+        Spherical Cow Group
+      </organization>
+      <organizationUrl>http://sphericalcowgroup.com/</organizationUrl>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
@@ -123,17 +151,20 @@
 				<artifactId>bw-webdav</artifactId>
 				<version>${bw-webdav.version}</version>
 			</dependency>
-			<!-- Third Party Libraries -->
+
 			<dependency>
-        <groupId>net.fortuna.ical4j</groupId>
-        <artifactId>ical4j</artifactId>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-ical4j-cl</artifactId>
 				<version>${ical4j.version}</version>
 			</dependency>
+
 			<dependency>
-				<groupId>org.mnode.ical4j</groupId>
-				<artifactId>ical4j-vcard</artifactId>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-ical4j-vcard</artifactId>
 				<version>${ical4j-vcard.version}</version>
 			</dependency>
+
+      <!-- Third Party Libraries -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
@@ -199,59 +230,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<repositories>
-		<repository>
-			<id>jboss.repository</id>
-			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<!-- Only needed for JBoss 5 dependencies. We should remove this when we
-			move Bedework off of JBoss 5. -->
-		<repository>
-			<id>jboss-deprecated</id>
-			<name>JBoss Deprecated Repository</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/deprecated</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>bedework.repository</id>
-			<name>Bedework Maven Repository</name>
-			<url>http://repository.bedework.org/maven2/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>bedework-releases-repository</id>
-			<name>Bedework Releases Repository</name>
-			<url>${bedework.releases.repo.url}</url>
-		</repository>
-		<snapshotRepository>
-			<id>bedework-snapshots-repository</id>
-			<name>Bedework Snapshots Repository</name>
-			<url>${bedework.snapshots.repo.url}</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<build>
 		<extensions>
 			<extension>
@@ -289,7 +267,81 @@
 					</execution>
 				</executions>
 			</plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
 		</plugins>
 	</build>
 
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+              <failOnError>false</failOnError>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
