@@ -5,6 +5,8 @@
 	<version>1.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>bw-carddav</name>
+  <description>A CardDAV servlet</description>
+  <url>https://github.com/Bedework/bw-carddav</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
