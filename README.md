@@ -48,3 +48,5 @@ Then:
   * First maven central release.
   * Refactored to provide a common jar used for directory handler builds.
   * Use post-build plugin to deploy in server.
+#### 1.0.4
+  * Fix pom for sonatype
