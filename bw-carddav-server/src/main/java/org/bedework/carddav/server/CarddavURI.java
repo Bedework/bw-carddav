@@ -20,7 +20,8 @@ package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Ace;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.vcard.Card;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavException;
 

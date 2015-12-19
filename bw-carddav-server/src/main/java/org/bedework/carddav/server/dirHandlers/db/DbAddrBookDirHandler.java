@@ -18,20 +18,25 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.DirHandler;
+import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.DirHandlerConfig;
+import org.bedework.carddav.common.vcard.Card;
+import org.bedework.carddav.common.util.CardDAVBadData;
+import org.bedework.carddav.common.util.CardDAVDuplicateUid;
+import org.bedework.util.misc.Util;
+import org.bedework.webdav.servlet.shared.UrlHandler;
+import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WebdavBadRequest;
+import org.bedework.webdav.servlet.shared.WebdavException;
+import org.bedework.webdav.servlet.shared.WebdavForbidden;
+import org.bedework.webdav.servlet.shared.WebdavNotFound;
+
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.vcard.VCard;
-import org.bedework.carddav.bwserver.DirHandler;
-import org.bedework.carddav.server.CarddavCardNode;
-import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.server.config.CardDAVConfig;
-import org.bedework.carddav.server.config.DirHandlerConfig;
-import org.bedework.carddav.util.CardDAVBadData;
-import org.bedework.carddav.util.CardDAVDuplicateUid;
-import org.bedework.carddav.vcard.Card;
-import org.bedework.util.misc.Util;
-import org.bedework.webdav.servlet.shared.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -250,8 +255,8 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   @Override
-  public void deleteCard(final CarddavCardNode val) throws WebdavException {
-    final DbCard dcd = getDbCard(val.getPath());
+  public void deleteCard(final String path) throws WebdavException {
+    final DbCard dcd = getDbCard(path);
 
     if (dcd == null) {
       throw new WebdavNotFound();

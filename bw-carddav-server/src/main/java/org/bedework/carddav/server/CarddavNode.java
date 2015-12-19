@@ -18,8 +18,9 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
-import org.bedework.carddav.server.SysIntf.GetLimits;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WdEntity;
@@ -159,9 +160,6 @@ public abstract class CarddavNode extends WebdavNsNode {
    *                   Property methods
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.bedework.sss.util.xml.QName)
-   */
   @Override
   public boolean knownProperty(final QName tag) {
     if (propertyNames.get(tag) != null) {
@@ -172,9 +170,6 @@ public abstract class CarddavNode extends WebdavNsNode {
     return super.knownProperty(tag);
   }
 
-  /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.bedework.sss.util.xml.QName, edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
-   */
   @Override
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,

@@ -27,29 +27,30 @@ import org.bedework.access.AceWho;
 import org.bedework.access.Acl;
 import org.bedework.access.Acl.CurrentAccess;
 import org.bedework.access.Privilege;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.DirHandler;
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.GetResult;
+import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.CardDAVContextConfig;
+import org.bedework.carddav.common.config.DirHandlerConfig;
+import org.bedework.carddav.common.filter.Filter;
+import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.carddav.server.CarddavColNode;
-import org.bedework.carddav.server.CarddavCollection;
 import org.bedework.carddav.server.CarddavResource;
 import org.bedework.carddav.server.PropertyHandler;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
 import org.bedework.carddav.server.SysIntf;
-import org.bedework.carddav.server.config.CardDAVConfig;
-import org.bedework.carddav.server.config.CardDAVContextConfig;
-import org.bedework.carddav.server.config.DirHandlerConfig;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
-import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.util.Group;
-import org.bedework.carddav.util.User;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.common.util.Group;
+import org.bedework.carddav.common.util.User;
 import org.bedework.util.misc.Util;
-import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.util.xml.tagdefs.WebdavTags;
 import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
-import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
 import org.bedework.webdav.servlet.shared.WebdavNotFound;
@@ -514,8 +515,8 @@ public class BwSysIntfImpl implements SysIntf {
    * @see org.bedework.carddav.server.SysIntf#getCards(org.bedework.carddav.server.CarddavCollection, org.bedework.carddav.server.filter.Filter, org.bedework.carddav.server.SysIntf.GetLimits)
    */
   public GetResult getCards(final CarddavCollection col,
-                                 final Filter filter,
-                                 final GetLimits limits) throws WebdavException {
+                            final Filter filter,
+                            final GetLimits limits) throws WebdavException {
     try {
       return getHandler(col.getPath()).getCards(col.getPath(),
                                                 filter, limits);
@@ -545,7 +546,7 @@ public class BwSysIntfImpl implements SysIntf {
    */
   public void deleteCard(final CarddavCardNode card) throws WebdavException {
     try {
-      getHandler(card.getPath()).deleteCard(card);
+      getHandler(card.getPath()).deleteCard(card.getPath());
     } catch (WebdavException wde) {
       throw wde;
     } catch (Throwable t) {

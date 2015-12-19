@@ -26,17 +26,18 @@ import org.bedework.access.AceWho;
 import org.bedework.access.Acl;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.access.WhoDefs;
-import org.bedework.carddav.server.SysIntf.GetLimits;
-import org.bedework.carddav.server.SysIntf.GetResult;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.GetResult;
+import org.bedework.carddav.common.config.CardDAVContextConfig;
+import org.bedework.carddav.common.filter.Filter;
+import org.bedework.carddav.common.vcard.Card;
+import org.bedework.carddav.common.vcard.VcardDefs;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
-import org.bedework.carddav.server.config.CardDAVContextConfig;
-import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.carddav.server.query.AddressData;
-import org.bedework.carddav.util.Group;
-import org.bedework.carddav.util.User;
-import org.bedework.carddav.vcard.Card;
-import org.bedework.carddav.vcard.VcardDefs;
+import org.bedework.carddav.common.util.Group;
+import org.bedework.carddav.common.util.User;
 import org.bedework.util.misc.Util;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlEmit.NameSpace;
@@ -1303,15 +1304,27 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                         final Filter fltr,
                                         final GetLimits limits,
                                         final String vcardVersion) throws WebdavException {
-    QueryResult qr = new QueryResult();
-    CarddavNode node = getBwnode(wdnode);
+    try {
+      QueryResult qr = new QueryResult();
+      CarddavNode node = getBwnode(wdnode);
 
-    GetResult res = fltr.query(node, limits);
+//      GetResult res = fltr.query(node, limits);
+      final GetResult res =
+              node.getSysi().getCards(node.getWdCollection(),
+                                      fltr, limits);
 
-    qr.overLimit = res.overLimit;
-    qr.serverTruncated = res.serverTruncated;
+      if (debug) {
+        if (!res.entriesFound || (res.cards == null)) {
+          trace("Query returned nothing");
+        } else {
+          trace("Query returned " + res.cards.size());
+        }
+      }
 
-    /* We now need to build a node for each of the cards in the collection.
+      qr.overLimit = res.overLimit;
+      qr.serverTruncated = res.serverTruncated;
+
+      /* We now need to build a node for each of the cards in the collection.
        For each card we must determine what collection it's in. We then take the
        incoming uri, strip any collection names off it and append the collection
        name and card name to create the new uri.
@@ -1319,11 +1332,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
        If there is no name for the card we just give it the default.
      */
 
-    qr.nodes = new ArrayList<WebdavNsNode>();
+      qr.nodes = new ArrayList<>();
 
-    try {
       for (Card card: res.cards) {
-
         CarddavCollection col = node.getWdCollection();
         card.setParent(col);
 
@@ -1347,7 +1358,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         qr.nodes.add(cnode);
       }
 
-      qr.nodes = fltr.postFilter(qr.nodes);
+      //qr.nodes = fltr.postFilter(qr.nodes);
 
       return qr;
     } catch (WebdavException we) {

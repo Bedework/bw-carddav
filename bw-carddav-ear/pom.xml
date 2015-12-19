@@ -220,6 +220,27 @@
 					</modules>
 				</configuration>
 			</plugin>
+
+      <plugin>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-deploy-maven-plugin</artifactId>
+        <version>4.0.4</version>
+        <configuration>
+          <baseDirPath>${project.basedir}/../../</baseDirPath>
+          <noversion>true</noversion>
+          <delete>true</delete>
+          <propsPath>${org.bedework.deployment.properties}</propsPath>
+          <earName>bw-carddav</earName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-ears</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 		</plugins>
 	</build>
 

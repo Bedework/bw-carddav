@@ -18,9 +18,9 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.server.filter.PropFilter;
-import org.bedework.carddav.server.filter.TextMatch;
+import org.bedework.carddav.common.filter.Filter;
+import org.bedework.carddav.common.filter.PropFilter;
+import org.bedework.carddav.common.filter.TextMatch;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavException;
 

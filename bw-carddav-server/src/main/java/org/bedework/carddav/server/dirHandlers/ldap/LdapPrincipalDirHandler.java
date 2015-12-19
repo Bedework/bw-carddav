@@ -18,12 +18,11 @@
 */
 package org.bedework.carddav.server.dirHandlers.ldap;
 
-import org.bedework.carddav.server.CarddavCardNode;
-import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.server.config.CardDAVConfig;
-import org.bedework.carddav.server.config.DirHandlerConfig;
-import org.bedework.carddav.server.config.LdapDirHandlerConfig;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.DirHandlerConfig;
+import org.bedework.carddav.common.config.LdapDirHandlerConfig;
+import org.bedework.carddav.common.vcard.Card;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -90,7 +89,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   }
 
   @Override
-  public void deleteCard(final CarddavCardNode val) throws WebdavException {
+  public void deleteCard(final String path) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 

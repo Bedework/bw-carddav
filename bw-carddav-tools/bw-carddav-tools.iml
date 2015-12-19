@@ -10,17 +10,17 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-args:4.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-http:4.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-config:4.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-jmx:4.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-args:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-http:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-config:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-jmx:4.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.2" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-access:4.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-caching:4.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-misc:4.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-misc:4.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-xml:4.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-ws-tzsvr:4.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-ws-calws-soap:4.0.3" level="project" />

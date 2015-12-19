@@ -18,12 +18,12 @@
 */
 package org.bedework.carddav.server.dirHandlers;
 
-import org.bedework.carddav.server.CarddavCardNode;
-import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.server.SysIntf.GetLimits;
-import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.common.AbstractDirHandler;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.GetResult;
+import org.bedework.carddav.common.filter.Filter;
+import org.bedework.carddav.common.vcard.Card;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
@@ -49,7 +49,7 @@ public class RootDirHandler extends AbstractDirHandler {
   }
 
   @Override
-  public void deleteCard(final CarddavCardNode val) throws WebdavException {
+  public void deleteCard(final String path) throws WebdavException {
     throw new WebdavForbidden();
   }
 

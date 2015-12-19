@@ -18,7 +18,7 @@
  */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.server.config.CardDAVConfigI;
+import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.util.jmx.ConfBaseMBean;
 import org.bedework.util.jmx.MBeanInfo;
 

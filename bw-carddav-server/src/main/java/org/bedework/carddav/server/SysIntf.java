@@ -21,18 +21,20 @@ package org.bedework.carddav.server;
 import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Acl;
 import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.GetResult;
+import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.CardDAVContextConfig;
+import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.PropertyHandler.PropertyType;
-import org.bedework.carddav.server.config.CardDAVConfig;
-import org.bedework.carddav.server.config.CardDAVContextConfig;
-import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.common.filter.Filter;
 import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WdSysIntf;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -239,33 +241,6 @@ public interface SysIntf extends WdSysIntf {
    */
   public void updateCard(String path,
                          Card card) throws WebdavException;
-
-  /** limits for getCards and getCollections */
-  public static class GetLimits {
-    /** 0 for no limits applied */
-    public int limit;
-
-    /** Number of results received already */
-    public int curCount;
-  }
-
-  /** Result from getCards and getCollections */
-  public static class GetResult {
-    /** Server truncated the query result */
-    public boolean serverTruncated;
-
-    /** Exceeded user limit */
-    public boolean overLimit;
-
-    /** The possibly truncated result from getCards */
-    public Collection<Card> cards = new ArrayList<>();
-
-    /** The possibly truncated result from getCollections */
-    public Collection<CarddavCollection> collections;
-
-    /** Something found with last search */
-    public boolean entriesFound;
-  }
 
   /** Return the cards for the current user in the given collection using the
    * supplied filter.

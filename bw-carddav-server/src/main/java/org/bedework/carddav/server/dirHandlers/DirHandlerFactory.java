@@ -18,9 +18,9 @@
 */
 package org.bedework.carddav.server.dirHandlers;
 
-import org.bedework.carddav.bwserver.DirHandler;
-import org.bedework.carddav.server.config.CardDAVConfig;
-import org.bedework.carddav.server.config.DirHandlerConfig;
+import org.bedework.carddav.common.DirHandler;
+import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;

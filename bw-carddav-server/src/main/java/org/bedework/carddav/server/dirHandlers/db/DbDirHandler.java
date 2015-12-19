@@ -18,23 +18,28 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import org.bedework.access.*;
+import org.bedework.access.Access;
+import org.bedework.access.AccessException;
+import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Acl.CurrentAccess;
-import org.bedework.carddav.server.CarddavCollection;
-import org.bedework.carddav.server.SysIntf.GetLimits;
-import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.config.CardDAVConfig;
-import org.bedework.carddav.server.config.DbDirHandlerConfig;
-import org.bedework.carddav.server.config.DirHandlerConfig;
-import org.bedework.carddav.server.dirHandlers.AbstractDirHandler;
-import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.access.PrivilegeDefs;
+import org.bedework.access.WhoDefs;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.GetResult;
+import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.DbDirHandlerConfig;
+import org.bedework.carddav.common.config.DirHandlerConfig;
+import org.bedework.carddav.common.filter.Filter;
+import org.bedework.carddav.common.vcard.Card;
+import org.bedework.carddav.common.AbstractDirHandler;
 import org.bedework.webdav.servlet.access.AccessHelper;
 import org.bedework.webdav.servlet.access.AccessHelperI;
 import org.bedework.webdav.servlet.access.SharedEntity;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

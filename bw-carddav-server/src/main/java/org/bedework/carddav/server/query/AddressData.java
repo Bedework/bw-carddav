@@ -19,8 +19,8 @@
 package org.bedework.carddav.server.query;
 
 import org.bedework.carddav.server.CarddavCardNode;
-import org.bedework.carddav.vcard.Card;
-import org.bedework.carddav.vcard.VcardDefs;
+import org.bedework.carddav.common.vcard.Card;
+import org.bedework.carddav.common.vcard.VcardDefs;
 import org.bedework.util.misc.Util;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlUtil;

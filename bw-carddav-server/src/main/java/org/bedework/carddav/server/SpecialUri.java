@@ -18,13 +18,14 @@
 */
 package org.bedework.carddav.server;
 
-import org.bedework.carddav.server.SysIntf.GetLimits;
-import org.bedework.carddav.server.SysIntf.GetResult;
-import org.bedework.carddav.server.filter.Filter;
-import org.bedework.carddav.server.filter.PropFilter;
-import org.bedework.carddav.server.filter.TextMatch;
-import org.bedework.carddav.server.config.CardDAVContextConfig;
-import org.bedework.carddav.vcard.Card;
+import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.GetResult;
+import org.bedework.carddav.common.config.CardDAVContextConfig;
+import org.bedework.carddav.common.filter.Filter;
+import org.bedework.carddav.common.filter.PropFilter;
+import org.bedework.carddav.common.filter.TextMatch;
+import org.bedework.carddav.common.vcard.Card;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;

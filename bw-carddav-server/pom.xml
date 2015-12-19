@@ -10,11 +10,13 @@
 	<name>bw-carddav-server</name>
 
 	<dependencies>
-		<!-- Bedework Dependencies -->
     <dependency>
       <groupId>org.bedework</groupId>
-      <artifactId>bw-util-args</artifactId>
+      <artifactId>bw-carddav-common</artifactId>
+      <version>1.0.3-SNAPSHOT</version>
     </dependency>
+
+		<!-- Bedework Dependencies -->
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-calendar</artifactId>

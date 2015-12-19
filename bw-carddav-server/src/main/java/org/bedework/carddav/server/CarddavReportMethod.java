@@ -18,9 +18,9 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.carddav.common.GetLimits;
+import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
-import org.bedework.carddav.server.SysIntf.GetLimits;
-import org.bedework.carddav.server.filter.Filter;
 import org.bedework.carddav.server.query.AddressData;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;

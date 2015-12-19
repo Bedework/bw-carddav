@@ -18,10 +18,10 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.access.AccessPrincipal;
+import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.util.misc.Util;
 import org.bedework.util.timezones.DateTimeUtil;
-
-import org.bedework.access.AccessPrincipal;
 
 import java.io.Serializable;
 import java.util.Date;
