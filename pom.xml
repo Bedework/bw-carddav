@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bedework</groupId>
 	<artifactId>bw-carddav</artifactId>
-	<version>1.0.5-SNAPSHOT</version>
+	<version>4.0.0</version>
 	<packaging>pom</packaging>
 	<name>bw-carddav</name>
   <description>A CardDAV servlet</description>
@@ -48,7 +48,7 @@
 		<connection>scm:git:git@github.com:Bedework/bw-carddav.git</connection>
 		<developerConnection>scm:git:git@github.com:Bedework/bw-carddav.git</developerConnection>
 		<url>https://github.com/Bedework/bw-carddav</url>
-	  <tag>HEAD</tag>
+	  <tag>bw-carddav-4.0.0</tag>
   </scm>
 
 	<issueManagement>
