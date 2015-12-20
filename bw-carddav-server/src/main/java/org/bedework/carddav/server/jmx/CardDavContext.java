@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.jmx;
 
-import org.bedework.carddav.common.config.CardDAVContextConfig;
+import org.bedework.carddav.server.config.CardDAVContextConfig;
 
 import org.bedework.util.config.ConfigurationStore;
 import org.bedework.util.jmx.ConfBase;

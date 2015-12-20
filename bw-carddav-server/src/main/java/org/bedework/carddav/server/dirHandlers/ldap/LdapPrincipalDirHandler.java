@@ -19,10 +19,10 @@
 package org.bedework.carddav.server.dirHandlers.ldap;
 
 import org.bedework.carddav.common.CarddavCollection;
-import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.carddav.common.config.DirHandlerConfig;
-import org.bedework.carddav.common.config.LdapDirHandlerConfig;
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.carddav.server.config.LdapDirHandlerConfig;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -36,7 +36,7 @@ import java.util.Iterator;
  *
  */
 public class LdapPrincipalDirHandler extends LdapDirHandler {
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);

@@ -19,12 +19,12 @@
 package org.bedework.carddav.server.dirHandlers.ldap;
 
 import org.bedework.carddav.common.CarddavCollection;
-import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.carddav.common.config.DirHandlerConfig;
+import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapping;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrValue;
-import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
@@ -54,7 +54,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   NamingEnumeration<SearchResult> sresult;
 
   @Override
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);

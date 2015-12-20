@@ -24,15 +24,15 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Acl.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.access.WhoDefs;
+import org.bedework.carddav.common.AbstractDirHandler;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.common.GetResult;
-import org.bedework.carddav.common.config.CardDAVConfig;
-import org.bedework.carddav.common.config.DbDirHandlerConfig;
+import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.carddav.common.AbstractDirHandler;
+import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.webdav.servlet.access.AccessHelper;
 import org.bedework.webdav.servlet.access.AccessHelperI;
 import org.bedework.webdav.servlet.access.SharedEntity;
@@ -142,7 +142,7 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   }
 
   @Override
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);

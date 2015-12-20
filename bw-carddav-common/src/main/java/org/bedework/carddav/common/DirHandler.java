@@ -19,7 +19,7 @@
 package org.bedework.carddav.common;
 
 import org.bedework.access.AccessPrincipal;
-import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
@@ -44,10 +44,10 @@ import java.util.Iterator;
  *
  * <p>Each of the DirHandler interfaces will handle part of that styructure
  * specified by the path prefix, e.g. a path prefix of "/principal" means that
- * the handler manages anythign wit a path starting with that prefix, unless
+ * the handler manages anything wit a path starting with that prefix, unless
  * that is, there is a handler defined with a longer prefix wich also matches.
  *
- * <p>In the methods below, wherever we have a path liek parameter it is always
+ * <p>In the methods below, wherever we have a path like parameter it is always
  * a path rooted at the path prefix for the handler. Hrefs have been processed
  * and only the path part is passed to these methods.
  *
@@ -65,7 +65,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param urlHandler - to allow creation of urls in returned objects.
    * @throws WebdavException
    */
-  void init(CardDAVConfig cdConfig,
+  void init(CardDAVConfigI cdConfig,
             DirHandlerConfig dhConfig,
             UrlHandler urlHandler) throws WebdavException;
 

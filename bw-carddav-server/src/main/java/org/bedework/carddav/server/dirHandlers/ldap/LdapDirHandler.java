@@ -20,20 +20,20 @@ package org.bedework.carddav.server.dirHandlers.ldap;
 
 import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Ace;
+import org.bedework.carddav.common.AbstractDirHandler;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.common.GetResult;
-import org.bedework.carddav.common.config.CardDAVConfig;
+import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.carddav.common.config.DirHandlerConfig;
-import org.bedework.carddav.common.config.LdapDirHandlerConfig;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.filter.PropFilter;
 import org.bedework.carddav.common.filter.TextMatch;
+import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.common.vcard.PropertyBuilder;
-import org.bedework.carddav.common.AbstractDirHandler;
+import org.bedework.carddav.server.config.LdapDirHandlerConfig;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapping;
-import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -74,7 +74,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   private String[] attrIdList;
 
   @Override
-  public void init(final CardDAVConfig cdConfig,
+  public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
