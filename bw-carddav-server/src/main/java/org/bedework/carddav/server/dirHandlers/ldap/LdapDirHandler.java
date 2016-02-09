@@ -1016,16 +1016,6 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-  private void simpleProp(final Card card,
-                          final String propname,
-                          final String value) throws WebdavException {
-    final Property p = PropertyBuilder.getProperty(propname, value);
-
-    if (p != null) {
-      card.addProperty(p);
-    }
-  }
-
   private void simpleProp(final Card card, final String propname,
                           final Attributes attrs,
                           final String attrId) throws WebdavException {

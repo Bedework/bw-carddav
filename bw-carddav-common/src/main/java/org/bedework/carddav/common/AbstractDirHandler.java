@@ -25,11 +25,14 @@ import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.util.DirectoryInfo;
 import org.bedework.carddav.common.util.Group;
 import org.bedework.carddav.common.util.User;
+import org.bedework.carddav.common.vcard.Card;
+import org.bedework.carddav.common.vcard.PropertyBuilder;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
+import net.fortuna.ical4j.vcard.Property;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -359,6 +362,16 @@ public abstract class AbstractDirHandler implements DirHandler {
    */
   protected void addValidUser(final String account) {
     validUsers.put(account, account);
+  }
+
+  protected void simpleProp(final Card card,
+                            final String propname,
+                            final String value) throws WebdavException {
+    final Property p = PropertyBuilder.getProperty(propname, value);
+
+    if (p != null) {
+      card.addProperty(p);
+    }
   }
 
   /** Make a principal ref from an account

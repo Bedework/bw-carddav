@@ -50,6 +50,10 @@ Then:
   * Use post-build plugin to deploy in server.
 #### 1.0.4
   * Fix pom for sonatype
+
 #### 4.0.1
   * Further refactoring of carddav to reduce the impact on configs. Moved implementations of configs back into server module.
   * Fixed version numbering - should have been set to 4 initially
+
+#### 4.0.2
+  * Copy some useful methods into AbstractDirHandler
