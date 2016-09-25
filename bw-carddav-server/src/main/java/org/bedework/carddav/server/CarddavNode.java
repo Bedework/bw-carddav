@@ -88,6 +88,11 @@ public abstract class CarddavNode extends WebdavNsNode {
     return col;
   }
 
+  @Override
+  public WdCollection getImmediateTargetCollection() throws WebdavException {
+    return (WdCollection)col.resolveAlias(false); // False => don't resolve all subaliases
+  }
+
   /**
    * @return WdCollection containing or represented by this entity
    * @throws WebdavException
