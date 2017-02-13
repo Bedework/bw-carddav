@@ -14,13 +14,15 @@
 		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
 		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
 		<!-- Bedework Versions -->
-		<bw-util.version>4.0.4</bw-util.version>
+		<bw-util.version>4.0.11-SNAPSHOT</bw-util.version>
 		<bw-access.version>4.0.1</bw-access.version>
-		<bw-webdav.version>4.0.1</bw-webdav.version>
+		<bw-webdav.version>4.0.2-SNAPSHOT</bw-webdav.version>
 		<!-- Third Party Library Versions -->
-		<ehcache.version>1.6.2</ehcache.version>
-		<hibernate.version>3.6.9.Final</hibernate.version>
-		<hibernate-validator.version>3.1.0.GA</hibernate-validator.version>
+    <classmate.version>1.3.0</classmate.version>
+    <ehcache.version>2.10.3</ehcache.version>
+		<hibernate.version>5.2.5.Final</hibernate.version>
+    <hibernate-annotations.version>5.0.1.Final</hibernate-annotations.version>
+    <hibernate-ehcache.version>5.2.5.Final</hibernate-ehcache.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<junit.version>4.8.2</junit.version>
 		<ical4j.version>1.1.1</ical4j.version>
@@ -102,41 +104,55 @@
 				<artifactId>bw-util-args</artifactId>
 				<version>${bw-util.version}</version>
 			</dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-calendar</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-config</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-hibernate</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-http</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-jmx</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-json</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-misc</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-timezones</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-vcard</artifactId>
@@ -167,27 +183,43 @@
 			</dependency>
 
       <!-- Third Party Libraries -->
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate-validator.version}</version>
-			</dependency>
-			<dependency>
+      <dependency>
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache</artifactId>
+        <version>${ehcache.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-ehcache</artifactId>
+        <version>${hibernate-ehcache.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate.common</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+        <version>${hibernate-annotations.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml</groupId>
+        <artifactId>classmate</artifactId>
+        <version>${classmate.version}</version>
+      </dependency>
+
+      <dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>${servlet-api.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			<dependency>
-				<groupId>net.sf.ehcache</groupId>
-				<artifactId>ehcache</artifactId>
-				<version>${ehcache.version}</version>
-			</dependency>
+
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
@@ -206,21 +238,6 @@
 						<groupId>javax.jms</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>asm</groupId>
-				<artifactId>asm</artifactId>
-				<version>${asm.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>asm</groupId>
-				<artifactId>asm-attrs</artifactId>
-				<version>${asm-attrs.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cglib</groupId>
-				<artifactId>cglib</artifactId>
-				<version>${cglib.version}</version>
 			</dependency>
 
       <dependency>
