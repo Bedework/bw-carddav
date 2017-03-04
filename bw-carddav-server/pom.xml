@@ -27,6 +27,10 @@
     </dependency>
     <dependency>
       <groupId>org.bedework</groupId>
+      <artifactId>bw-util-hibernate</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bedework</groupId>
       <artifactId>bw-util-http</artifactId>
     </dependency>
     <dependency>
@@ -55,8 +59,8 @@
 		</dependency>
 		<!-- Third Party Libraries -->
 		<dependency>
-      <groupId>org.bedework</groupId>
-      <artifactId>bw-ical4j-cl</artifactId>
+      <groupId>${ical4j.groupId}</groupId>
+      <artifactId>${ical4j.artifactId}</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -85,10 +89,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-    </dependency>
 	</dependencies>
 
 </project>

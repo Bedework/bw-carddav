@@ -245,19 +245,19 @@ public class HibSessionImpl implements HibSession {
     }
     try {
       if ((tx != null) &&
-          !tx.wasCommitted() &&
-          !tx.wasRolledBack()) {
+          !rolledBack) {
         if (getLogger().isDebugEnabled()) {
           getLogger().debug("About to rollback");
         }
         tx.rollback();
         //tx = null;
         clear();
-        rolledBack = true;
       }
     } catch (Throwable t) {
       exc = t;
       throw new WebdavException(t);
+    } finally {
+      rolledBack = true;
     }
   }
 

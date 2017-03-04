@@ -19,13 +19,9 @@
 package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
+import org.bedework.util.hibernate.HibConfig;
+import org.bedework.util.hibernate.SchemaThread;
 
-import org.bedework.util.jmx.InfoLines;
-
-import org.hibernate.cfg.Configuration;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
-
-import java.io.StringReader;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,55 +35,22 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   private String schemaOutFile;
 
-  private Configuration hibCfg;
+  private class SchemaBuilder extends SchemaThread {
 
-  private class SchemaThread extends Thread {
-    InfoLines infoLines = new InfoLines();
-
-    SchemaThread() {
-      super("BuildSchema");
+    SchemaBuilder(final String outFile,
+                  final boolean export,
+                  final Properties hibConfig) {
+      super(outFile, export, hibConfig);
     }
 
     @Override
-    public void run() {
-      try {
-        infoLines.addLn("Started export of schema");
-
-        final long startTime = System.currentTimeMillis();
-
-        final SchemaExport se = new SchemaExport(getHibConfiguration());
-
-        se.setFormat(true);       // getFormat());
-        se.setHaltOnError(false); // getHaltOnError());
-        se.setOutputFile(getSchemaOutFile());
-        /* There appears to be a bug in the hibernate code. Everybody initialises
-        this to /import.sql. Set to null causes an NPE
-        Make sure it refers to a non-existant file */
-        //se.setImportFile("not-a-file.sql");
-
-        se.execute(false, // script - causes write to System.out if true
-                   getExport(),
-                   false,   // drop
-                   true);   //   getCreate());
-
-        final long millis = System.currentTimeMillis() - startTime;
-        final long seconds = millis / 1000;
-        final long minutes = seconds / 60;
-
-        infoLines.addLn("Elapsed time: " + minutes + ":" +
-                                twoDigits(seconds - (minutes * 60)));
-      } catch (final Throwable t) {
-        error(t);
-        infoLines.exceptionMsg(t);
-      } finally {
-        infoLines.addLn("Schema build completed");
-        export = false;
-      }
+    public void completed(final String status) {
+      setExport(false);
+      info("Schema build completed with status " + status);
     }
   }
 
-  private final SchemaThread buildSchema = new SchemaThread();
-
+  private SchemaBuilder buildSchema;
 
   /* ========================================================================
    * Schema attributes
@@ -154,7 +117,11 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   @Override
   public String schema() {
     try {
-//      buildSchema = new SchemaThread();
+      final HibConfig hc = new HibConfig(getConfig());
+
+      buildSchema = new SchemaBuilder(getSchemaOutFile(),
+                                      getExport(),
+                                      hc.getHibConfiguration().getProperties());
 
       buildSchema.start();
 
@@ -246,50 +213,4 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
    *                   Private methods
    * ==================================================================== */
 
-  private synchronized Configuration getHibConfiguration() {
-    if (hibCfg == null) {
-      try {
-        hibCfg = new Configuration();
-
-        final StringBuilder sb = new StringBuilder();
-
-        final List<String> ps = getConf().getHibernateProperties();
-
-        for (final String p: ps) {
-          sb.append(p);
-          sb.append("\n");
-        }
-
-        final Properties hprops = new Properties();
-        hprops.load(new StringReader(sb.toString()));
-
-        hibCfg.addProperties(hprops).configure();
-      } catch (final Throwable t) {
-        // Always bad.
-        error(t);
-      }
-    }
-
-    return hibCfg;
-  }
-
-  /**
-   * @param val numeric
-   * @return 2 digit val
-   */
-  private static String twoDigits(final long val) {
-    if (val < 10) {
-      return "0" + val;
-    }
-
-    return String.valueOf(val);
-  }
-
-  /* ========================================================================
-   * Lifecycle
-   * ======================================================================== */
-
-  /* ====================================================================
-   *                   Protected methods
-   * ==================================================================== */
 }
