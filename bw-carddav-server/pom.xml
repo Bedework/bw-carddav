@@ -19,7 +19,7 @@
 		<!-- Bedework Dependencies -->
     <dependency>
       <groupId>org.bedework</groupId>
-      <artifactId>bw-util-calendar</artifactId>
+      <artifactId>bw-util2-calendar</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bedework</groupId>
@@ -45,13 +45,15 @@
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-misc</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-timezones</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.bedework</groupId>
-      <artifactId>bw-util-vcard</artifactId>
+      <artifactId>bw-util2-vcard</artifactId>
     </dependency>
 		<dependency>
 			<groupId>org.bedework</groupId>

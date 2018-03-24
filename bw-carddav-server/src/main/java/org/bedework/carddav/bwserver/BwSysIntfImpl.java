@@ -166,7 +166,7 @@ public class BwSysIntfImpl implements SysIntf {
   }
 
   @Override
-  public String getDefaultContentType() throws WebdavException {
+  public String getDefaultContentType() {
     return "application/vcard";
   }
 

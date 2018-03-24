@@ -81,9 +81,13 @@
     <realm-name>${app.security.domain}</realm-name>
   </login-config>
 
+  <!-- Roles are not used
   <security-role>
     <description>A calendar system user</description>
     <role-name>bedework.user</role-name>
+  </security-role>-->
+  <security-role>
+    <role-name>*</role-name>
   </security-role>
 
   <!-- Insert ejb-ref here -->

@@ -21,6 +21,7 @@ package org.bedework.carddav.server.config;
 import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.util.config.ConfInfo;
 
+
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information via ldap.
  *

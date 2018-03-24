@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 
 /** Class to represent a collection in carddav.
  *
- *   @author Mike Douglass   douglm@bedework.edu
+ *   @author Mike Douglass   douglm@rpi.edu
  */
 public class CarddavColNode extends CarddavNode {
   private AccessPrincipal owner;
@@ -103,7 +103,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getOwner()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getOwner()
    */
   @Override
   public AccessPrincipal getOwner() throws WebdavException {
@@ -147,7 +147,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#setDefaults(javax.xml.namespace.QName)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#setDefaults(javax.xml.namespace.QName)
    */
   @Override
   public void setDefaults(final QName methodTag) throws WebdavException {
@@ -201,7 +201,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentString()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentString()
    */
   @Override
   public String getContentString(final String contentType) throws WebdavException {
@@ -209,7 +209,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#update()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#update()
    */
   @Override
   public void update() throws WebdavException {
@@ -231,7 +231,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
    */
   @Override
   public String getContentLang() throws WebdavException {
@@ -244,7 +244,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
    */
   @Override
   public String getContentType() throws WebdavException {
@@ -252,7 +252,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
    */
   @Override
   public String getCreDate() throws WebdavException {
@@ -260,7 +260,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getDisplayname()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getDisplayname()
    */
   @Override
   public String getDisplayname() throws WebdavException {
@@ -272,7 +272,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#getLastmodDate()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getLastmodDate()
    */
   @Override
   public String getLastmodDate() throws WebdavException {
@@ -309,7 +309,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#trailSlash()
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#trailSlash()
    */
   @Override
   public boolean trailSlash() {
@@ -321,7 +321,7 @@ public class CarddavColNode extends CarddavNode {
    * ==================================================================== */
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#removeProperty(org.w3c.dom.Element)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#removeProperty(org.w3c.dom.Element)
    */
   @Override
   public boolean removeProperty(final Element val,
@@ -332,7 +332,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#setProperty(org.w3c.dom.Element)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#setProperty(org.w3c.dom.Element)
    */
   @Override
   public boolean setProperty(final Element val,
@@ -387,7 +387,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.bedework.sss.util.xml.QName)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
    */
   @Override
   public boolean knownProperty(final QName tag) {
@@ -400,7 +400,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /* (non-Javadoc)
-   * @see edu.bedework.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.bedework.sss.util.xml.QName, edu.bedework.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
+   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.rpi.sss.util.xml.QName, edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
    */
   @Override
   public boolean generatePropertyValue(final QName tag,

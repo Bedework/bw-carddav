@@ -6,9 +6,9 @@
     Version 2.0 (the "License"); you may not use this file
     except in compliance with the License. You may obtain a
     copy of the License at:
-
+        
     http://www.apache.org/licenses/LICENSE-2.0
-
+        
     Unless required by applicable law or agreed to in writing,
     software distributed under the License is distributed on
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -21,7 +21,6 @@ package org.bedework.carddav.server;
 import org.bedework.util.misc.Util;
 
 import java.io.Serializable;
-
 
 /** Represent the content for a resource stored within the system, e.g an attachment or an
  * image. The actual content is stored in a BwResourceContent object to allow us

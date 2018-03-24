@@ -19,6 +19,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="bw-carddav-server" />
     <orderEntry type="module" module-name="bw-carddav-dumpres" />
+    <orderEntry type="module" module-name="bw-carddav-client" />
     <orderEntry type="module" module-name="bw-carddav-public-war" />
     <orderEntry type="module" module-name="bw-carddav-user-war" />
     <orderEntry type="module" module-name="bw-carddav-userweb-war" />

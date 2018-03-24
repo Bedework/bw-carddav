@@ -19,11 +19,10 @@
 package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.common.DirHandler;
-import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
+import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.server.config.CardDAVConfig;
 import org.bedework.carddav.server.config.CardDAVContextConfig;
-import org.bedework.carddav.common.config.DirHandlerConfig;
-
+import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
 import org.bedework.util.config.ConfigurationStore;
 import org.bedework.util.jmx.ConfBase;
 

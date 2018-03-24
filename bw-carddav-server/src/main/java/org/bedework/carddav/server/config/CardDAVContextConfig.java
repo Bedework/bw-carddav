@@ -30,8 +30,7 @@ import java.util.List;
  * @author Mike Douglass
  */
 @ConfInfo(elementName = "bwcarddav")
-public class CardDAVContextConfig extends
-        ConfigBase<CardDAVContextConfig> {
+public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
   private boolean directoryBrowsingDisallowed;
 
   private String addressBookHandlerPrefix;

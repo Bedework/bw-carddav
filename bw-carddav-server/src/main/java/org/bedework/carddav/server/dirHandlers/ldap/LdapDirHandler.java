@@ -395,7 +395,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 //                                   ldapConfig.getAddressbookEntryIdAttr());
 //      simpleProp(card, "SOURCE",
 //                 urlHandler.prefix(path + cardName + ".vcf"));
-      cdc.setPath(Util.buildPath(true, path, "/", cdc.getName()));
+      cdc.setPath(Util.buildPath(false, path, "/", cdc.getName()));
     }
 
     //private String path;
@@ -1014,6 +1014,16 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     sb.append(")");
 
     return sb.toString();
+  }
+
+  private void simpleProp(final Card card,
+                          final String propname,
+                          final String value) throws WebdavException {
+    final Property p = PropertyBuilder.getProperty(propname, value);
+
+    if (p != null) {
+      card.addProperty(p);
+    }
   }
 
   private void simpleProp(final Card card, final String propname,

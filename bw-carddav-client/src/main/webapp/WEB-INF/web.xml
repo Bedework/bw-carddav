@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+  <display-name>bedework-common</display-name>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Calendar common context</web-resource-name>
+      <description>Deliver common files from their own context</description>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+  </security-constraint>
+</web-app>
+

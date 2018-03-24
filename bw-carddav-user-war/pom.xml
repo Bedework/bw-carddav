@@ -10,7 +10,6 @@
 	<name>bw-carddav-user-war</name>
 	<packaging>war</packaging>
 
-
   <build>
     <plugins>
       <plugin>

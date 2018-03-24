@@ -173,8 +173,7 @@ public class CarddavURI {
     }
 
     if (entity != null) {
-      return Util.buildPath(false, col.getPath(), "/",
-                            entity.getName());
+      return Util.buildPath(false, col.getPath(), "/", entity.getName());
     }
 
     return col.getPath();

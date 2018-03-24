@@ -256,15 +256,11 @@ public class SpecialUri {
       }
 
       // vcard
-      wtr.write("  \"microformats\": {");
-      wtr.write("\n");
-
-      wtr.write("    \"vcard\": [");
-      wtr.write("\n");
+      wtr.write("  \"microformats\": [\n");
 
       boolean first = true;
 
-      for (Card card: cards) {
+      for (final Card card: cards) {
         if (first) {
           first = false;
         } else {
@@ -273,11 +269,10 @@ public class SpecialUri {
         wtr.write(card.outputJson(false, vcardVersion));
       }
 
-      wtr.write("\n    ]\n");
-      wtr.write("  }\n");
+      wtr.write("]\n");
 
       resp.setStatus(HttpServletResponse.SC_OK);
-    } catch (IOException ie) {
+    } catch (final IOException ie) {
       throw new WebdavException(ie);
     }
   }

@@ -6,6 +6,7 @@
 		<version>4.0.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
+
 	<artifactId>bw-carddav-ear</artifactId>
 	<name>bw-carddav-ear</name>
 	<packaging>ear</packaging>
@@ -34,12 +35,21 @@
         </exclusion>
       </exclusions>
 		</dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-addrbook-client</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
 		<dependency>
 			<groupId>org.bedework</groupId>
 			<artifactId>bw-carddav-public-war</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
+
 		<dependency>
 			<groupId>org.bedework</groupId>
 			<artifactId>bw-carddav-user-war</artifactId>
@@ -108,6 +118,11 @@
 					<generateApplicationXml>true</generateApplicationXml>
           <unpackTypes>sar,rar,war</unpackTypes>
 					<modules>
+            <webModule>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>bw-addrbook-client</artifactId>
+              <contextRoot>/bwAddrbookClient</contextRoot>
+            </webModule>
 						<webModule>
 							<groupId>${project.groupId}</groupId>
 							<artifactId>bw-carddav-public-war</artifactId>
@@ -135,25 +150,26 @@
 				</configuration>
 			</plugin>
 
+
       <plugin>
         <groupId>org.bedework</groupId>
-        <artifactId>bw-deploy-maven-plugin</artifactId>
-        <version>4.0.4</version>
-        <configuration>
-          <baseDirPath>${project.basedir}/../../</baseDirPath>
-          <noversion>true</noversion>
-          <delete>true</delete>
-          <propsPath>${org.bedework.deployment.properties}</propsPath>
-          <earName>bw-carddav</earName>
-        </configuration>
+        <artifactId>bw-util-maven-deploy</artifactId>
+        <version>${bw-util.version}</version>
         <executions>
           <execution>
-            <phase>deploy</phase>
+            <phase>install</phase>
             <goals>
-              <goal>deploy-ears</goal>
+              <goal>bw-deploy</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <noversion>true</noversion>
+          <delete>true</delete>
+          <earName>bw-carddav</earName>
+          <baseDirPath>${project.basedir}/../..</baseDirPath>
+          <propsPath>${org.bedework.deployment.properties}</propsPath>
+        </configuration>
       </plugin>
 		</plugins>
 	</build>

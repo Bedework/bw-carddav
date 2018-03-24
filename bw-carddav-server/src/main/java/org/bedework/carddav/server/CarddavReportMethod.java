@@ -164,7 +164,7 @@ public class CarddavReportMethod extends ReportMethod {
 
       if (preq != null) {
         if (debug) {
-          trace("REPORT: preq not null");
+          debug("REPORT: preq not null");
         }
 
         if (preq.reqType == PropRequest.ReqType.prop) {
@@ -199,7 +199,7 @@ public class CarddavReportMethod extends ReportMethod {
         filter.carddavParse(curnode);
 
         if (debug) {
-          trace("REPORT: query");
+          debug("REPORT: query");
           filter.dump();
         }
 
@@ -279,10 +279,10 @@ public class CarddavReportMethod extends ReportMethod {
         }
 
         if (debug) {
-          trace("REPORT: multi-get");
+          debug("REPORT: multi-get");
 
           for (String href: hrefs) {
-            trace("    <DAV:href>" + href + "</DAV:href>");
+            debug("    <DAV:href>" + href + "</DAV:href>");
           }
         }
 
@@ -290,7 +290,7 @@ public class CarddavReportMethod extends ReportMethod {
       }
 
       if (debug) {
-        trace("REPORT: unexpected element " + curnode.getNodeName() +
+        debug("REPORT: unexpected element " + curnode.getNodeName() +
               " with type " + curnode.getNodeType());
       }
       throw new WebdavBadRequest("REPORT: unexpected element " + curnode.getNodeName() +
@@ -371,7 +371,7 @@ public class CarddavReportMethod extends ReportMethod {
 
     if (status != HttpServletResponse.SC_OK) {
       if (debug) {
-        trace("REPORT status " + status);
+        debug("REPORT status " + status);
       }
       // Entire request failed.
       node.setStatus(status);
@@ -414,7 +414,7 @@ public class CarddavReportMethod extends ReportMethod {
     }
 
     if (debug) {
-      trace("doNodeAndChildren: curDepth=" + curDepth +
+      debug("doNodeAndChildren: curDepth=" + curDepth +
             " maxDepth=" + maxDepth + " uri=" + node.getUri());
     }
 

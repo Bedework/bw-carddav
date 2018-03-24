@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!-- 
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+    
+    @author Arlen Johnson       johnsa - rpi.edu
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Bedework Address Book</title>    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>    
+    <link href="resources/icons/bedework.ico" type="image/ico" rel="icon"/>
+    <link href="resources/icons/bedework.ico" type="image/ico" rel="shortcut icon"/>
+    <link href="resources/reset.css" rel="stylesheet" type="text/css"/>
+    <link href="resources/addressbook.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="resources/esapi4js/esapi-compressed.js"></script>
+    <script type="text/javascript" src="resources/esapi4js/resources/i18n/ESAPI_Standard_en_US.properties.js"></script>
+    <script type="text/javascript" src="resources/esapi4js/resources/Base.esapi.properties.js"></script>
+    <script type="text/javascript" src="resources/jquery/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="resources/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+    <link href="resources/jquery/css/bw-theme-3p7/jquery-ui-1.8.2.custom.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="resources/jquery/layout/jquery.layout.min-1.2.0.js"></script>
+    <link href="resources/jquery/layout/layout.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="resources/jquery/tablesorter/jquery.tablesorter.min.js"></script>
+    <!-- script type="text/javascript" src="resources/jquery/jquery.cookie.js"></script-->
+    <script type="text/javascript" src="resources/Math.uuid.js"></script>
+    <script type="text/javascript" src="config/config.js"></script>
+    <script type="text/javascript" src="resources/addressbook.js"></script>
+    <script type="text/javascript" src="resources/addressbookUtil.js"></script>
+    <script type="text/javascript" src="resources/vcardParser.js"></script>
+    
+  </head>
+  <body>
+    <div id="searchBar" class="ui-layout-north">
+      <!-- The search box performs a search across public carddav servers
+           listed in the config. -->
+      <div id="searchBox">
+        <select id="searchUrls">
+          <option value="">loading...</option>
+        </select>
+        <input type="text" id="search" value=""/>
+        <button id="showButton" disabled="disabled">show...</button>
+      </div>
+      <ul id="add" class="topMenu">
+        <li>
+          <ul>
+            <li class="contact" id="addContact">
+              contact
+            </li>
+            <li class="group" id="addGroup">
+              group
+            </li>
+            <li class="location" id="addLocation">
+              location
+            </li>
+          </ul>
+          add...
+        </li>
+      </ul>
+      <ul id="tools" class="topMenu">
+        <li>
+          <ul>
+            <li class="import" id="importContacts">
+              import
+            </li>
+            <!-- 
+            <li class="export" id="exportContacts">
+              export
+            </li>
+            -->
+            <li class="viewUrl" id="viewBookUrl">
+              view book url
+            </li>
+          </ul>
+          tools...
+        </li>
+      </ul>
+    </div>
+    <div id="booksAndGroups" class="ui-layout-west">
+      <h3>personal address book</h3>
+      <ul class="books" id="bwBooks">
+        <!-- Books will be built here if any exist  -->
+        <li>loading...</li>
+      </ul>
+      <!-- Uncomment the following block to include subscriptions in the client -->
+      <!--   
+      <h3>subscribed address books</h3>
+      <ul class="subscriptions" id="bwSubscriptions">
+        <li>loading...</li>
+      </ul>
+      -->
+    </div>
+    <div id="content" class="ui-layout-center">
+      <!-- Each page of the application is modeled below as a list item.
+           We make each visible or invisible as needed using javascript. -->
+      <ul id="bw-pages">
+        <li id="bw-list">
+          <div id="filterLetters">
+            <ul>
+              <li><a href="#A">A</a></li>
+              <li><a href="#B">B</a></li>
+              <li><a href="#C">C</a></li>
+              <li><a href="#D">D</a></li>
+              <li><a href="#E">E</a></li>
+              <li><a href="#F">F</a></li>
+              <li><a href="#G">G</a></li>
+              <li><a href="#H">H</a></li>
+              <li><a href="#I">I</a></li>
+              <li><a href="#J">J</a></li>
+              <li><a href="#K">K</a></li>
+              <li><a href="#L">L</a></li>
+              <li><a href="#M">M</a></li>
+              <li><a href="#N">N</a></li>
+              <li><a href="#O">O</a></li>
+              <li><a href="#P">P</a></li>
+              <li><a href="#Q">Q</a></li>
+              <li><a href="#R">R</a></li>
+              <li><a href="#S">S</a></li>
+              <li><a href="#T">T</a></li>
+              <li><a href="#U">U</a></li>
+              <li><a href="#V">V</a></li>
+              <li><a href="#W">W</a></li>
+              <li><a href="#X">X</a></li>
+              <li><a href="#Y">Y</a></li>
+              <li><a href="#Z">Z</a></li>
+            </ul>
+          </div>
+          <div id="bwAddrBookOutputList"></div>
+        </li>
+        <li id="bw-details" class="invisible content-block">
+          <div class="bwActionButtons">
+            <button id="editEntry" class="contact" type="button">edit</button>
+            <button id="deleteEntry" type="button">delete</button>
+          </div>
+          <div id="bwAddrBookOutputDetails"></div>
+          <button id="backToList" type="button">return to list</button>
+        </li>
+        <li id="bw-modContact" class="content-block invisible">
+          <div class="bwActionButtons">
+            <button id="cancelContactTop" class="view cancelContactButton" type="button">view</button>
+          </div>
+          <h3>Add Contact</h3>
+          <form id="contactForm" action="#add" method="post">
+            <fieldset> 
+              <legend>Name</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="FIRSTNAME">First Name:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="FIRSTNAME"/></div>
+                
+                <label class="bwField" for="LASTNAME">Last Name:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LASTNAME"/></div>
+                
+                <label class="bwField" for="TITLE">Title:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="TITLE"/></div>
+                
+                <label class="bwField" for="ORG">Organization:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="ORG"/></div>
+                
+                <label class="bwField" for="NICKNAME">Nickname:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="NICKNAME"/></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Contact information</legend>
+              <div class="bwFormData">
+              
+                <div id="bwContactEmailHolder">
+                  <div class="emailFields" id="emailFields-0">
+                    <label class="bwField"  for="EMAIL-0">Email:</label>
+                    <div class="bwValue">
+                      <select id="EMAILTYPE-0">
+                        <option value="work">work</option>
+                        <option value="home">home</option>
+                      </select>
+                      <input type="text" size="40" value="" id="EMAIL-0"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="bwAppend" id="bwAppendEmail"></div>
+                
+                <div id="bwContactPhoneHolder">
+                  <div class="phoneFields" id="phoneFields-0">
+                    <label class="bwField" for="PHONE-0">Phone:</label>
+                    <div class="bwValue">
+                      <select id="PHONETYPE-0">
+                        <option value="work">work</option>
+                        <option value="home">home</option>
+                      </select>
+                      <select id="TELTYPE-0">
+                        <option value="voice">voice</option>
+                        <option value="cell">mobile</option>
+                        <option value="fax">fax</option>
+                        <option value="text">text</option>
+                        <option value="pager">pager</option>
+                      </select>
+                      <input type="text" size="30" value="" id="PHONE-0"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="bwAppend" id="bwAppendPhone"></div>
+                                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Address</legend>
+              <div class="bwFormData">
+                <div id="bwContactAddrHolder">
+                  <div class="addrFields" id="addrFields-0">
+                    <label class="bwField"  for="ADDRTYPE-0">Type:</label>
+                    <div class="bwValue">
+                      <select id="ADDRTYPE-0">
+                        <option value="work">work</option>
+                        <option value="home">home</option>
+                      </select>
+                      <label class="bwInternalField"  for="POBOX-0">P.O. Box:</label>
+                      <input type="text" size="6" value="" id="POBOX-0"/>
+                      <label class="bwInternalField"  for="EXTADDR-0">Apt/Suite:</label>
+                      <input type="text" size="12" value="" id="EXTADDR-0"/>
+                    </div>
+                    
+                    <label class="bwField"  for="STREET-0">Street:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="STREET-0"/></div>
+                    
+                    <label class="bwField"  for="CITY-0">City:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="CITY-0"/></div>
+                                    
+                    <label class="bwField"  for="STATE-0">State/Province:</label>
+                    <div class="bwValue">
+                      <input type="text" size="20" value="" id="STATE-0"/>
+                      <label class="bwInternalField" for="POSTAL-0">Postal Code:</label>
+                      <input type="text" size="20" value="" id="POSTAL-0"/>
+                    </div>
+                    
+                    <label class="bwField"  for="COUNTRY-0">Country:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="COUNTRY-0"/></div>
+                    
+                    <!-- GEO gets its type (work or home) from this address block;
+                         GEO-0 corresponds with ADDRTYPE-0 -->
+                    <label class="bwField"  for="GEO-0">GEO:</label>
+                    <div class="bwValue"><input type="text" size="60" value="" id="GEO-0" disabled="disabled"/></div>
+                    <div class="bwHelpLink">
+                      ?
+                      <div class="bwHelp">
+                        Geographic coordinates<br/>
+                        Example: 47.251056,-68.594527<br/>
+                        (unimeplemented)
+                      </div>
+                    </div>
+                    
+                    <br class="clear"/>
+                  </div>
+                </div>
+                <div class="bwAppend bwRightAppend" id="bwAppendAddr"></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Details</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField"  for="WEBPAGE">Webpage:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="WEBPAGE"/></div>
+                <label class="bwField"  for="PHOTOURL">Photo URL:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="PHOTOURL"/></div>
+                <label class="bwField"  for="NOTE">Note:</label>
+                <div class="bwValue"><textarea cols="47" rows="4" id="NOTE"></textarea></div>
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitContact" class="add" type="button">Add Contact</button>
+              <button id="cancelContact" class="cancel cancelContactButton" type="button">Cancel</button>
+            </div>
+          </form>
+        </li>
+        <li id="bw-modGroup" class="invisible content-block">
+          <div class="bwActionButtons">
+            <button id="cancelGroupTop" class="view cancelGroupButton" type="button">view</button>
+          </div>
+          <h3>Add Group</h3>
+          
+          <form id="groupForm" action="#add" method="post">
+            <fieldset> 
+              <legend>Name</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="GROUP-NAME">Name:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="GROUP-NAME"/></div>
+                
+                <label class="bwField" for="GROUP-ORG">Organization:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="GROUP-ORG"/></div>
+                
+                <label class="bwField" for="GROUP-NICKNAME">Nickname:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="GROUP-NICKNAME"/></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Details</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField"  for="GROUP-NOTE">Note:</label>
+                <div class="bwValue"><textarea cols="47" rows="4" id="GROUP-NOTE"></textarea></div>
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitGroup" class="add" type="button">Add Group</button>
+              <button id="cancelGroup" class="cancel cancelContactButton" type="button">Cancel</button>
+            </div>
+          </form>
+        </li>
+        <li id="bw-modLocation" class="invisible content-block">
+          <div class="bwActionButtons">
+            <button id="cancelLocationTop" class="view cancelLocationButton" type="button">view</button>
+          </div>
+          <h3>Add Location</h3>
+          <form id="locationForm" action="#add" method="post">
+            <fieldset> 
+              <legend>Name</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="LOCATION-NAME">Name:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-NAME"/></div>
+                
+                <label class="bwField" for="LOCATION-ORG">Organization:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-ORG"/></div>
+                
+                <label class="bwField" for="LOCATION-NICKNAME">Nickname:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-NICKNAME"/></div>
+                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Address</legend>
+              <div class="bwFormData">
+                <div class="bwAddrBlock">
+                  <label class="bwField"  for="LOCATION-EXTADDR">Room/Suite:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-EXTADDR"/></div>
+                  <label class="bwField"  for="LOCATION-STREET">Street:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-STREET"/></div>
+                  
+                  <label class="bwField"  for="LOCATION-CITY">City:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-CITY"/></div>
+                                  
+                  <label class="bwField"  for="LOCATION-STATE">State/Province:</label>
+                  <div class="bwValue">
+                    <input type="text" size="20" value="" id="LOCATION-STATE"/>
+                    <label class="bwInternalField" for="LOCATION-POSTAL">Postal Code:</label>
+                    <input type="text" size="20" value="" id="LOCATION-POSTAL"/>
+                  </div>
+                  
+                  <label class="bwField"  for="LOCATION-COUNTRY">Country:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-COUNTRY"/></div>
+                  
+                  <label class="bwField"  for="LOCATION-GEO">GEO:</label>
+                  <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-GEO" disabled="disabled"/></div>
+                  <div class="bwHelpLink">
+                    ?
+                    <div class="bwHelp">
+                      Geographic coordinates<br/>
+                      Example: 47.251056,-68.594527<br/>
+                      (unimeplemented)
+                    </div>
+                  </div>
+                  
+                  <br class="clear"/>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Contact information</legend>
+              <div class="bwFormData">
+                
+                <label class="bwField"  for="LOCATION-EMAIL">Email:</label>
+                <div class="bwValue">
+                  <input type="text" size="60" value="" id="LOCATION-EMAIL"/>
+                </div>
+                
+                <label class="bwField" for="LOCATION-PHONE">Phone:</label>
+                <div class="bwValue">
+                  <select id="LOCATION-TELTYPE">
+                    <option value="voice">voice</option>
+                    <option value="cell">mobile</option>
+                    <option value="fax">fax</option>
+                    <option value="text">text</option>
+                    <option value="pager">pager</option>
+                  </select>
+                  <input type="text" size="30" value="" id="LOCATION-PHONE"/>
+                </div>
+                                
+              </div>
+            </fieldset>
+            <fieldset> 
+              <legend>Details</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField"  for="LOCATION-WEBPAGE">Webpage:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-WEBPAGE"/></div>
+                <label class="bwField"  for="LOCATION-PHOTOURL">Photo URL:</label>
+                <div class="bwValue"><input type="text" size="60" value="" id="LOCATION-PHOTOURL"/></div>
+                <label class="bwField"  for="LOCATION-NOTE">Note:</label>
+                <div class="bwValue"><textarea cols="47" rows="4" id="LOCATION-NOTE"></textarea></div>
+                
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitLocation" class="add" type="button">Add Location</button>
+              <button id="cancelLocation" class="cancel" type="button">Cancel</button>
+            </div>
+          </form>
+        </li>
+        <li id="bw-import"  class="invisible content-block">
+          <h3>Import Contacts</h3>
+          <form id="importForm" action="#import" method="post">
+            <fieldset> 
+              <legend>vCard Data</legend>
+              <div class="bwFormData">
+                              
+                <label class="bwField" for="bwImportFilename">
+                  Copy the contents of a vCard file into the box and click "import".
+                </label>
+                <div class="bwValue">
+                  <textarea rows="12" cols="60" id="bwImportText"></textarea>
+                </div>
+                
+              </div>
+            </fieldset>
+            <div class="submitBlock">
+              <button id="submitImport" class="add" type="button">Import</button>
+              <button id="cancelImport" class="cancel cancelContactButton" type="button">Cancel</button>
+            </div>
+          </form>
+        </li>
+        <li id="bw-lastSearch"  class="invisible content-block">
+          <h3>Search Result</h3>
+          <div id="bwSearchOutput"></div>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

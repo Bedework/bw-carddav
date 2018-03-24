@@ -37,7 +37,7 @@
 
     <dependency>
       <groupId>org.bedework</groupId>
-      <artifactId>bw-util-vcard</artifactId>
+      <artifactId>bw-util2-vcard</artifactId>
     </dependency>
 
     <dependency>

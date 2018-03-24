@@ -398,7 +398,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         sysi.deleteFile(r);
       } else if (cnode instanceof CarddavCardNode) {
         if (debug) {
-          trace("About to delete card " + cnode);
+          debug("About to delete card " + cnode);
         }
         sysi.deleteCard((CarddavCardNode)cnode);
       } else {
@@ -424,7 +424,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
 
       if (debug) {
-        debugMsg("About to get children for " + node.getUri());
+        debug("About to get children for " + node.getUri());
       }
 
       Collection<WebdavNsNode> ch = null;
@@ -759,7 +759,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     boolean created = false;
 
     if (debug) {
-      debugMsg("putContent: intf has card with name " + entityName);
+      debug("putContent: intf has card with name " + entityName);
     }
 
     Card oldCard = sysi.getCard(col.getPath(), entityName);
@@ -785,14 +785,14 @@ public class CarddavBWIntf extends WebdavNsIntf {
       if ((ifHeaders.ifEtag != null) &&
           (!ifHeaders.ifEtag.equals(bwnode.getPrevEtagValue(true)))) {
         if (debug) {
-          debugMsg("putContent: etag mismatch if=" + ifHeaders.ifEtag +
+          debug("putContent: etag mismatch if=" + ifHeaders.ifEtag +
                    "prev=" + bwnode.getPrevEtagValue(true));
         }
         throw new WebdavException(HttpServletResponse.SC_PRECONDITION_FAILED);
       }
 
       if (debug) {
-        debugMsg("putContent: update event " + card);
+        debug("putContent: update event " + card);
       }
       sysi.updateCard(col.getPath(), card);
     }
@@ -1211,7 +1211,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         final AddressData addrdata = (AddressData)pr;
 
         if (debug) {
-          trace("do AddressData for " + node.getUri());
+          debug("do AddressData for " + node.getUri());
         }
 
         String contentType = addrdata.getReturnContentType();
@@ -1315,9 +1315,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       if (debug) {
         if (!res.entriesFound || (res.cards == null)) {
-          trace("Query returned nothing");
+          debug("Query returned nothing");
         } else {
-          trace("Query returned " + res.cards.size());
+          debug("Query returned " + res.cards.size());
         }
       }
 
@@ -1435,7 +1435,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                   final Card card,
                                   final CarddavResource r) throws WebdavException {
     if (debug) {
-      debugMsg("About to get node for " + uri);
+      debug("About to get node for " + uri);
     }
 
     if (uri == null)  {
@@ -1503,7 +1503,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * <br/>followed by one or more calendar path elements possibly followed by an
    * entity name.
    *
-   * @param uri        String uri - just the path part
+   * @param theUri           String uri - just the path part
    * @param existance        Say's something about the state of existance
    * @param nodeType         Say's something about the type of node
    * @param addMember        From POST
@@ -1513,7 +1513,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @return CaldavURI object representing the uri
    * @throws WebdavException
    */
-  private CarddavURI findURI(String uri,
+  private CarddavURI findURI(final String theUri,
                             final int existance,
                             final int nodeType,
                             final boolean addMember,
@@ -1527,7 +1527,8 @@ public class CarddavBWIntf extends WebdavNsIntf {
         throw new WebdavServerError();
       }
 
-      uri = normalizeUri(uri);
+      final String uri = Util.buildPath(theUri.endsWith("/"),
+                                        normalizeUri(theUri));
 
       if (!uri.startsWith("/")) {
         return null;
@@ -1535,7 +1536,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       CarddavURI curi = null;
 
-      boolean isPrincipal = sysi.isPrincipal(uri);
+      final boolean isPrincipal = sysi.isPrincipal(uri);
 
       if ((nodeType == WebdavNsIntf.nodeTypePrincipal) && !isPrincipal) {
         throw new WebdavNotFound(uri);
@@ -1570,7 +1571,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                        (nodeType == WebdavNsIntf.nodeTypeUnknown))) {
         // For unknown we try the full path first as a calendar.
         if (debug) {
-          debugMsg("search for collection uri \"" + uri + "\"");
+          debug("search for collection uri \"" + uri + "\"");
         }
         col = sysi.getCollection(uri);
 
@@ -1589,7 +1590,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           }
 
           if (debug) {
-            debugMsg("create collection uri - col=\"" + col.getPath() + "\"");
+            debug("create collection uri - col=\"" + col.getPath() + "\"");
           }
 
           curi = new CarddavURI(col, true);
@@ -1635,7 +1636,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       if (col.getAddressBook()) {
         if (debug) {
-          debugMsg("find card - col=\"" + col.getPath() + "\" name=\"" +
+          debug("find card - col=\"" + col.getPath() + "\" name=\"" +
                    split.name + "\"");
         }
 
@@ -1648,7 +1649,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         curi = new CarddavURI(col, card, split.name, card != null);
       } else {
         if (debug) {
-          debugMsg("find resource - col=\"" + col.getPath() + "\" name=\"" +
+          debug("find resource - col=\"" + col.getPath() + "\" name=\"" +
                    split.name + "\"");
         }
 

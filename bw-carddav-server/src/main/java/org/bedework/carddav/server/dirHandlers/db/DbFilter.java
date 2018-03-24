@@ -49,7 +49,7 @@ public class DbFilter {
     }
   }
 
-  private static Map<String, PField> pfields = new HashMap<String, PField>();
+  private final static Map<String, PField> pfields = new HashMap<>();
 
   static {
     pfields.put("fn", new PField("fn", "fn"));

@@ -18,10 +18,9 @@
 */
 package org.bedework.carddav.server.dirHandlers.ldap;
 
-
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.NamingException;
 
 /** This class represents a directory record which may be built from a
     number of attributes represented as a BasicAttributes object.

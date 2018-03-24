@@ -14,9 +14,11 @@
 		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
 		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
 		<!-- Bedework Versions -->
-		<bw-util.version>4.0.12-SNAPSHOT</bw-util.version>
+		<bw-util.version>4.0.17-SNAPSHOT</bw-util.version>
+    <bw-util2.version>4.0.0-SNAPSHOT</bw-util2.version>
 		<bw-access.version>4.0.2-SNAPSHOT</bw-access.version>
 		<bw-webdav.version>4.0.2-SNAPSHOT</bw-webdav.version>
+    <bw-xml.version>4.0.5-SNAPSHOT</bw-xml.version>
 		<!-- Third Party Library Versions -->
     <classmate.version>1.3.0</classmate.version>
     <ehcache.version>2.10.3</ehcache.version>
@@ -75,6 +77,7 @@
 		<module>bw-carddav-userweb-war</module>
 		<module>bw-carddav-ear</module>
     <module>bw-carddav-common</module>
+    <module>bw-carddav-client</module>
   </modules>
 
   <developers>
@@ -112,13 +115,7 @@
 				<artifactId>bw-util-args</artifactId>
 				<version>${bw-util.version}</version>
 			</dependency>
-      
-      <dependency>
-        <groupId>org.bedework</groupId>
-        <artifactId>bw-util-calendar</artifactId>
-        <version>${bw-util.version}</version>
-      </dependency>
-      
+
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-config</artifactId>
@@ -160,11 +157,17 @@
         <artifactId>bw-util-timezones</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.bedework</groupId>
-        <artifactId>bw-util-vcard</artifactId>
-        <version>${bw-util.version}</version>
+        <artifactId>bw-util2-calendar</artifactId>
+        <version>${bw-util2.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util2-vcard</artifactId>
+        <version>${bw-util2.version}</version>
       </dependency>
 
 			<dependency>
@@ -172,6 +175,7 @@
 				<artifactId>bw-access</artifactId>
 				<version>${bw-access.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.bedework</groupId>
 				<artifactId>bw-webdav</artifactId>

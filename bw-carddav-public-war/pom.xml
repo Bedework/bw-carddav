@@ -6,10 +6,9 @@
 		<version>4.0.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>bw-carddav-public-war</artifactId>
-	<name>bw-carddav-public-war</name>
-	<packaging>war</packaging>
 
+	<artifactId>bw-carddav-public-war</artifactId>
+	<packaging>war</packaging>
 
   <build>
     <plugins>
