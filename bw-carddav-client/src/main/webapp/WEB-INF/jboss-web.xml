@@ -2,5 +2,5 @@
 <jboss-web>
   <!-- Virtual host -->
 
-  <context-root>${app.context}</context-root>
+  <!-- <context-root>${app.context}</context-root> -->
 </jboss-web>

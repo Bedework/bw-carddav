@@ -151,10 +151,22 @@
         <artifactId>bw-util-misc</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
-      
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-servlet</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-timezones</artifactId>
+        <version>${bw-util.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-xml</artifactId>
         <version>${bw-util.version}</version>
       </dependency>
 
