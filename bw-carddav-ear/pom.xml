@@ -125,6 +125,17 @@
 
     <dependency>
       <groupId>org.bedework</groupId>
+      <artifactId>bw-util-caching</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
       <artifactId>bw-util-config</artifactId>
       <exclusions>
         <exclusion>
@@ -224,6 +235,11 @@
 
     <dependency>
       <groupId>org.bedework</groupId>
+      <artifactId>bw-util2-calendar</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
       <artifactId>bw-util2-vcard</artifactId>
       <exclusions>
         <exclusion>
@@ -244,22 +260,29 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-xml-calws-soap</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
 		<!-- Third Party Dependencies (needed by the above) -->
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
 			<version>${hibernate.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>ehcache-core</artifactId>
-					<groupId>net.sf.ehcache</groupId>
-				</exclusion>
-			</exclusions>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
 		</dependency>
 
 		<dependency>
@@ -287,6 +310,39 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.3.2</version>
     </dependency>
 	</dependencies>
 

@@ -134,7 +134,7 @@ public class PropertyOutput {
       nm = p.getId().toString();
     }
 
-    sb.append(JsonUtil.jsonName(nm));
+    sb.append(nm.toLowerCase());
 
     if (cardinalityZeroOrMore) {
       sb.append("\" : [\n");

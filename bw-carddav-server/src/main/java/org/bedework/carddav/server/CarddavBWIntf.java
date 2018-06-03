@@ -194,9 +194,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
     String className = confBean.getSysintfImpl();
 
     Object o = null;
+
     try {
       o = Class.forName(className).newInstance();
     } catch (Throwable t) {
+      error(t);
       o = null;
     }
 
