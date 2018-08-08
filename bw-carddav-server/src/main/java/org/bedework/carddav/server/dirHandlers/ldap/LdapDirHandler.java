@@ -1179,19 +1179,15 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   protected String makeAddrbookDn(final String path,
                                  final boolean isCollection) throws WebdavException {
-    String remPath;
+    String remPath = Util.buildPath(false, path);
+    final String confPath = Util.buildPath(false,
+                                           dhConfig.getPathPrefix());
 
-    if (path.endsWith("/")) {
-      remPath = path.substring(0, path.length() - 1);
-    } else {
-      remPath = path;
-    }
-
-    if (dhConfig.getPathPrefix().equals(remPath)) {
+    if (confPath.equals(remPath)) {
       return ldapConfig.getBaseDn();
     }
 
-    remPath = remPath.substring(dhConfig.getPathPrefix().length() + 1);
+    remPath = remPath.substring(confPath.length() + 1);
     if (remPath.endsWith(".vcf")) {
       remPath = remPath.substring(0, remPath.length() - 4);
     }

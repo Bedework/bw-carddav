@@ -39,25 +39,25 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.naming.NameAlreadyBoundException;
-import javax.naming.NamingEnumeration;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 
 /**
  * @author douglm
  *
  */
 public class LdapAddrBookDirHandler extends LdapDirHandler {
+  /*
   String searchBase; // searchBase which resulted in sresult;
 
   SearchControls constraints;
   NamingEnumeration<SearchResult> sresult;
+  */
 
   @Override
   public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
                    final UrlHandler urlHandler) throws WebdavException {
     super.init(cdConfig, dhConfig, urlHandler);
+    addToPrincipal(dhConfig.getPathPrefix(), cdConfig.getUserPrincipalRoot());
   }
 
   /* ====================================================================
@@ -89,7 +89,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
       throw new CardDAVDuplicateUid();
     }
 
-    /** Build a directory record and add the attributes
+    /* Build a directory record and add the attributes
      */
     final DirRecord dirRec = new BasicDirRecord();
 
@@ -101,39 +101,40 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
 
     dirRec.setDn("cn=" + dnEscape(cn) + ", " + colDn);
 
-    for (LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
+    for (final LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
       if (lm instanceof AttrValue) {
-        AttrValue av = (AttrValue)lm;
+        final AttrValue av = (AttrValue)lm;
 
         setAttr(dirRec, av.getAttrId(), av.getValue());
         continue;
       }
 
-      if (lm instanceof AttrPropertyMapping) {
-        AttrPropertyMapping apm = (AttrPropertyMapping)lm;
+      if (!(lm instanceof AttrPropertyMapping)) {
+        continue;
+      }
 
-        if (apm.getParameterName() == null) {
-          if (!setAttr(dirRec, card, apm.getAttrId(), apm.getPropertyName())) {
-            if (apm.getRequired()) {
-              throw new WebdavBadRequest();
-            }
+      final AttrPropertyMapping apm = (AttrPropertyMapping)lm;
+
+      if (apm.getParameterName() == null) {
+        if (!setAttr(dirRec, card, apm.getAttrId(), apm.getPropertyName())) {
+          if (apm.getRequired()) {
+            throw new WebdavBadRequest();
           }
         }
-        continue;
       }
 
     }
 
-    Collection<Property> props = card.findProperties("TEL");
-    for (Property prop: props) {
-      Group work = prop.getGroup();
-      List<Parameter> params = prop.getParameters();
+    final Collection<Property> props = card.findProperties("TEL");
+    for (final Property prop: props) {
+      final Group work = prop.getGroup();
+      final List<Parameter> params = prop.getParameters();
 
       Parameter par = null;
 
       if (params != null) {
         // XXX Fix this
-        for (Parameter p: params) {
+        for (final Parameter p: params) {
           if (p.getId().equals(Parameter.Id.TYPE)) {
             par = p;
             break;
@@ -167,16 +168,18 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     try {
       ctx.createSubcontext(rec.getDn(), rec.getAttributes());
       return true;
-    } catch (NameAlreadyBoundException nabe) {
+    } catch (final NameAlreadyBoundException nabe) {
       return false;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  private boolean setAttr(final DirRecord dirRec, final Card card,
-                       final String name, final String vpropName) throws WebdavException {
-    Property vprop = card.findProperty(vpropName);
+  private boolean setAttr(final DirRecord dirRec,
+                          final Card card,
+                          final String name,
+                          final String vpropName) throws WebdavException {
+    final Property vprop = card.findProperty(vpropName);
     if (vprop == null) {
       return false;
     }
@@ -184,14 +187,14 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
     try {
       dirRec.setAttr(name, vprop.getValue());
       return true;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
   private String findProp(final Card card,
                           final String vpropName) throws WebdavException {
-    Property vprop = card.findProperty(vpropName);
+    final Property vprop = card.findProperty(vpropName);
     if (vprop == null) {
       return null;
     }
@@ -200,14 +203,15 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   }
 
   private void setAttr(final DirRecord dirRec,
-                       final String name, final String val) throws WebdavException {
+                       final String name,
+                       final String val) throws WebdavException {
     if (val == null) {
       return;
     }
 
     try {
       dirRec.setAttr(name, val);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

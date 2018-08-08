@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 
 /** A base implementation of DirHandler which handles some generic directory
@@ -86,7 +87,7 @@ public abstract class AbstractDirHandler implements DirHandler {
 
   private final HashMap<String, String> validUsers = new HashMap<>();
   private long lastFlush;
-  private static long flushTime = 60 * 1000;  // 1 minute
+  private final static long flushTime = 60 * 1000;  // 1 minute
 
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
@@ -471,6 +472,24 @@ public abstract class AbstractDirHandler implements DirHandler {
     return null;
   }
   */
+
+  private final Map<String, String> toPrincipalPrefix = new HashMap<>();
+
+  /** Convert the prefix that selects the dir handler e.g. "/public/people/"
+   * to a valid principal prefix, e.g. "/principals/users/"
+   *
+   * @param ourPrefix
+   * @param principalPrefix
+   */
+  public void addToPrincipal(final String ourPrefix,
+                             final String principalPrefix) {
+    toPrincipalPrefix.put(ourPrefix, principalPrefix);
+  }
+
+  public String getToPrincipal(final String ourPrefix) {
+    return toPrincipalPrefix.get(ourPrefix);
+  }
+
   /* ====================================================================
    *  Private methods.
    * ==================================================================== */
