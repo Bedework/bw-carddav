@@ -325,7 +325,7 @@ public abstract class AbstractDirHandler implements DirHandler {
    *  Protected methods.
    * ==================================================================== */
 
-  /** Ensure path matches our prefix.
+  /** Ensure path matches our prefix - without any trailing "/".
    *
    * @param path
    * @throws WebdavException
