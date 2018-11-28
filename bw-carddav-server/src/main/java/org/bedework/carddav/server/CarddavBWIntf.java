@@ -52,6 +52,7 @@ import org.bedework.webdav.servlet.common.WebdavServlet;
 import org.bedework.webdav.servlet.common.WebdavUtils;
 import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
 import org.bedework.webdav.servlet.shared.WdCollection;
+import org.bedework.webdav.servlet.shared.WdEntity;
 import org.bedework.webdav.servlet.shared.WdSynchReport;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -76,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -418,7 +420,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public Collection<WebdavNsNode> getChildren(final WebdavNsNode node) throws WebdavException {
+  public Collection<WebdavNsNode> getChildren(
+          final WebdavNsNode node,
+          final Supplier<Object> filterGetter) throws WebdavException {
     try {
       if (!node.isCollection()) {
         // Don't think we should have been called
@@ -429,22 +433,23 @@ public class CarddavBWIntf extends WebdavNsIntf {
         debug("About to get children for " + node.getUri());
       }
 
-      Collection<WebdavNsNode> ch = null;
+      Collection<? extends WdEntity> children = null;
 
       if (node instanceof CarddavNode) {
         CarddavNode cdnode = getBwnode(node);
 
         // XXX We'd like to be applying limits here as well I guess
-        ch = cdnode.getChildren(null).nodes;
+        children = cdnode.getChildren(filterGetter);
       } else {
 //        ch = node.getChildren().nodes;
       }
 
-      if (ch == null) {
+      if (children == null) {
         return new ArrayList<WebdavNsNode>();
       }
 
-      return ch;
+      // TODO - fix this
+      return new ArrayList<WebdavNsNode>();
     } catch (WebdavException we) {
       throw we;
     } catch (Throwable t) {

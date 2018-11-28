@@ -434,7 +434,8 @@ public class CarddavReportMethod extends ReportMethod {
       return qr;
     }
 
-    for (WebdavNsNode child: getNsIntf().getChildren(node)) {
+    for (WebdavNsNode child: getNsIntf().getChildren(node,
+                                                     null)) {
       int sz = qr.nodes.size();
       if ((limit != null) && (sz > limit.limit)) {
         qr.overLimit = true;

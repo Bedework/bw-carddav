@@ -21,6 +21,7 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
+import org.bedework.util.misc.ToString;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WdEntity;
@@ -31,6 +32,7 @@ import org.bedework.webdav.servlet.shared.WebdavNsNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import javax.xml.namespace.QName;
 
@@ -42,9 +44,9 @@ public abstract class CarddavNode extends WebdavNsNode {
   protected CarddavCollection col;
 
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
-    new HashMap<QName, PropertyTagEntry>();
+    new HashMap<>();
 
-  private final static Collection<QName> supportedReports = new ArrayList<QName>();
+  private final static Collection<QName> supportedReports = new ArrayList<>();
 
   static {
     addPropEntry(propertyNames, CarddavTags.addressbookHomeSet);
@@ -90,12 +92,12 @@ public abstract class CarddavNode extends WebdavNsNode {
 
   @Override
   public WdCollection getImmediateTargetCollection() throws WebdavException {
-    return (WdCollection)col.resolveAlias(false); // False => don't resolve all subaliases
+    return col.resolveAlias(false); // False => don't resolve all subaliases
   }
 
   /**
    * @return WdCollection containing or represented by this entity
-   * @throws WebdavException
+   * @throws WebdavException on fatal error
    */
   public abstract CarddavCollection getWdCollection() throws WebdavException ;
 
@@ -103,9 +105,9 @@ public abstract class CarddavNode extends WebdavNsNode {
    *
    * <p>Default is to return null
    *
-   * @param limits
+   * @param limits to limit fetch
    * @return Collection
-   * @throws WebdavException
+   * @throws WebdavException on fatal error
    */
   public QueryResult getChildren(final GetLimits limits) throws WebdavException {
     return null;
@@ -121,11 +123,11 @@ public abstract class CarddavNode extends WebdavNsNode {
   /** Return a set of Qname defining reports this node supports.
    *
    * @return Collection of QName
-   * @throws WebdavException
+   * @throws WebdavException on fatal error
    */
   @Override
   public Collection<QName> getSupportedReports() throws WebdavException {
-    Collection<QName> res = new ArrayList<QName>();
+    Collection<QName> res = new ArrayList<>();
     res.addAll(super.getSupportedReports());
     res.addAll(supportedReports);
 
@@ -157,7 +159,8 @@ public abstract class CarddavNode extends WebdavNsNode {
   }
 
   @Override
-  public Collection<? extends WdEntity> getChildren() throws WebdavException {
+  public Collection<? extends WdEntity> getChildren(
+          final Supplier<Object> filterGetter) throws WebdavException {
     return null;
   }
 
@@ -195,13 +198,10 @@ public abstract class CarddavNode extends WebdavNsNode {
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer(this.getClass().getName());
+    final ToString ts = new ToString(this);
 
-    sb.append("{");
-    sb.append("path=");
-    sb.append(getPath());
-    sb.append("}");
+    ts.append("path", getPath());
 
-    return sb.toString();
+    return ts.toString();
   }
 }
