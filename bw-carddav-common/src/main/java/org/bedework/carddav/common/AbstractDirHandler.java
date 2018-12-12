@@ -25,12 +25,11 @@ import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.util.DirectoryInfo;
 import org.bedework.carddav.common.util.Group;
 import org.bedework.carddav.common.util.User;
+import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
-
-import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +47,8 @@ import java.util.TreeSet;
 * @author Mike Douglass douglm rpi.edu
 * @version 1.0
 */
-public abstract class AbstractDirHandler implements DirHandler {
+public abstract class AbstractDirHandler
+        implements Logged, DirHandler {
   /** */
   protected CardDAVConfigI cdConfig;
   /** */
@@ -59,9 +59,6 @@ public abstract class AbstractDirHandler implements DirHandler {
 
   /** */
   protected boolean open;
-
-  /** */
-  protected boolean debug;
 
   /** */
   protected String account;
@@ -76,8 +73,6 @@ public abstract class AbstractDirHandler implements DirHandler {
   /** */
   public final static String principalNotFound =
     "org.bedework.webdav.principalnotfound";
-
-  private transient Logger log;
 
   /* This DOES NOT have the trailing "/" on the root prefix */
   private final HashMap<String, Integer> toWho = new HashMap<>();
@@ -136,8 +131,6 @@ public abstract class AbstractDirHandler implements DirHandler {
     this.cdConfig = cdConfig;
     this.dhConfig = dhConfig;
     this.urlHandler = urlHandler;
-
-    debug = getLogger().isDebugEnabled();
 
     initWhoMaps(cdConfig.getUserPrincipalRoot(), Ace.whoTypeUser);
     initWhoMaps(cdConfig.getGroupPrincipalRoot(), Ace.whoTypeGroup);
@@ -421,38 +414,6 @@ public abstract class AbstractDirHandler implements DirHandler {
     }
 
     return  val + "/";
-  }
-
-  /**
-   * @return Logger
-   */
-  protected Logger getLogger() {
-    if (log == null) {
-      log = Logger.getLogger(this.getClass());
-    }
-
-    return log;
-  }
-
-  /**
-   * @param t
-   */
-  protected void error(final Throwable t) {
-    getLogger().error(this, t);
-  }
-
-  /**
-   * @param msg
-   */
-  protected void warn(final String msg) {
-    getLogger().warn(msg);
-  }
-
-  /**
-   * @param msg
-   */
-  protected void trace(final String msg) {
-    getLogger().debug(msg);
   }
 
   /* ====================================================================

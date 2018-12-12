@@ -20,7 +20,7 @@ package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Acl;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.CurrentAccess;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.common.GetResult;
@@ -56,14 +56,12 @@ public interface SysIntf extends WdSysIntf {
    * @param account
    * @param conf  global service configuration
    * @param ctxConf  per application type configuration
-   * @param debug
    * @throws WebdavException
    */
   public void init(HttpServletRequest req,
                    String account,
                    CardDAVConfig conf,
-                   CardDAVContextConfig ctxConf,
-                   boolean debug) throws WebdavException;
+                   CardDAVContextConfig ctxConf) throws WebdavException;
 
   /** Return the current principal
   *

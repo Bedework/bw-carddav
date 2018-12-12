@@ -108,7 +108,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                            final String uid) throws WebdavException {
     verifyPath(path);
 
-    final Filter fltr = new Filter(debug);
+    final Filter fltr = new Filter();
 
     final TextMatch tm = new TextMatch(uid);
     tm.setMatchType(TextMatch.matchTypeEquals);
@@ -236,8 +236,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     GetResult res = new GetResult();
 
     try {
-      if (debug) {
-        trace("About to search: base=" + base + " filter=" + filter +
+      if (debug()) {
+        debug("About to search: base=" + base + " filter=" + filter +
               " scope=" + scope);
       }
 
@@ -271,13 +271,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
           res.entriesFound = true;
         }
 
-        if (debug) {
-          trace("About to return from search with " + res.entriesFound);
+        if (debug()) {
+          debug("About to return from search with " + res.entriesFound);
         }
       } catch (NameNotFoundException e) {
         // Allow that one.
-        if (debug) {
-          trace("NameNotFoundException: return with null");
+        if (debug()) {
+          debug("NameNotFoundException: return with null");
         }
         sresult = null;
       }
@@ -488,8 +488,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       if (!sresult.hasMore()) {
-        if (debug) {
-          trace("nextItem: no more");
+        if (debug()) {
+          debug("nextItem: no more");
         }
 
         sresult = null;
@@ -1260,16 +1260,16 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         pr.put(Context.SECURITY_PRINCIPAL, ldapConfig.getAuthDn());
         pr.put(Context.SECURITY_CREDENTIALS, ldapConfig.getAuthPw());
 
-        if (debug) {
-          trace("Directory: get new authenticated context for " +
+        if (debug()) {
+          debug("Directory: get new authenticated context for " +
                         pr.get(Context.PROVIDER_URL));
         }
       } else {
         // No authentication
         pr.put(Context.SECURITY_AUTHENTICATION, "none");
 
-        if (debug) {
-          trace("Directory: get new unauthenticated context for " +
+        if (debug()) {
+          debug("Directory: get new unauthenticated context for " +
                         pr.get(Context.PROVIDER_URL));
         }
       }

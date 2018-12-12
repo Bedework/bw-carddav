@@ -18,11 +18,11 @@
 */
 package org.bedework.carddav.common.filter;
 
-import org.apache.log4j.Logger;
+import org.bedework.util.logging.Logged;
 
 /**
  */
-public class TextMatch {
+public class TextMatch implements Logged {
   /** "equals" - an exact match to the target string */
   public static final int matchTypeEquals = 0;
 
@@ -171,11 +171,10 @@ public class TextMatch {
   }
 
   /** Debug
-   * @param log
    * @param indent
    */
-  public void dump(Logger log, String indent) {
-    StringBuffer sb = new StringBuffer(indent);
+  public void dump(String indent) {
+    final StringBuilder sb = new StringBuilder(indent);
 
     sb.append("<text-match");
     if (caseless != null) {
@@ -187,10 +186,10 @@ public class TextMatch {
     sb.append(matchTypes[getMatchType()]);
 
     sb.append(">");
-    log.debug(sb.toString());
+    debug(sb.toString());
 
-    log.debug(val);
+    debug(val);
 
-    log.debug(indent + "</text-match>\n");
+    debug(indent + "</text-match>\n");
   }
 }

@@ -21,6 +21,7 @@ package org.bedework.carddav.server.query;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.common.vcard.VcardDefs;
 import org.bedework.carddav.server.CarddavCardNode;
+import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlUtil;
@@ -32,7 +33,6 @@ import org.bedework.webdav.servlet.shared.WebdavProperty;
 
 import net.fortuna.ical4j.vcard.Property;
 import net.fortuna.ical4j.vcard.property.Kind;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -49,7 +49,7 @@ import javax.xml.namespace.QName;
  *
  *   @author Mike Douglass   douglm   rpi.edu
  */
-public class AddressData extends WebdavProperty {
+public class AddressData extends WebdavProperty implements Logged {
   /*
       <!ELEMENT address-data (allprop | prop*)>
 
@@ -66,10 +66,6 @@ public class AddressData extends WebdavProperty {
       <!ATTLIST prop name CDATA #REQUIRED
                      novalue (yes|no) "no">
    */
-  private boolean debug;
-
-  protected transient Logger log;
-
   private String returnContentType; // null for defaulted
 
   private String version = "3.0"; // null for defaulted
@@ -82,12 +78,9 @@ public class AddressData extends WebdavProperty {
   /** Constructor
    *
    * @param tag  QName name
-   * @param debug
    */
-  public AddressData(final QName tag,
-                      final boolean debug) {
+  public AddressData(final QName tag) {
     super(tag, null);
-    this.debug = debug;
   }
 
   /**
@@ -161,8 +154,8 @@ public class AddressData extends WebdavProperty {
 
     try {
       for (final Element curnode : children) {
-        if (debug) {
-          trace("calendar-data node type: " +
+        if (debug()) {
+          debug("calendar-data node type: " +
               curnode.getNodeType() + " name:" +
               curnode.getNodeName());
         }
@@ -281,7 +274,7 @@ public class AddressData extends WebdavProperty {
 
       return ncard.output(getVersion());
     } catch (Throwable t) {
-      if (debug) {
+      if (debug()) {
         getLogger().error("transformVcard exception: ", t);
       }
 
@@ -330,8 +323,8 @@ public class AddressData extends WebdavProperty {
     try {
       return XmlUtil.getElementsArray(nd);
     } catch (Throwable t) {
-      if (debug) {
-        getLogger().error("<filter>: parse exception: ", t);
+      if (debug()) {
+        error("<filter>: parse exception: ", t);
       }
 
       throw new WebdavBadRequest();
@@ -360,33 +353,9 @@ public class AddressData extends WebdavProperty {
       sb.append("\"");
     }
     sb.append(">");
-    trace(sb.toString());
+    debug(sb.toString());
 
-    trace("  </address-data>");
-  }
-
-  /* ====================================================================
-   *                   Logging methods
-   * ==================================================================== */
-
-  protected Logger getLogger() {
-    if (log == null) {
-      log = Logger.getLogger(this.getClass());
-    }
-
-    return log;
-  }
-
-  protected void debugMsg(final String msg) {
-    getLogger().debug(msg);
-  }
-
-  protected void logIt(final String msg) {
-    getLogger().info(msg);
-  }
-
-  protected void trace(final String msg) {
-    getLogger().debug(msg);
+    debug("  </address-data>");
   }
 }
 

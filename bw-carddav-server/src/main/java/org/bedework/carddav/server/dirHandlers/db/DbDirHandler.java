@@ -21,7 +21,7 @@ package org.bedework.carddav.server.dirHandlers.db;
 import org.bedework.access.Access;
 import org.bedework.access.AccessException;
 import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.access.WhoDefs;
 import org.bedework.carddav.common.AbstractDirHandler;
@@ -59,7 +59,8 @@ import java.util.TreeSet;
  * @author douglm
  *
  */
-public abstract class DbDirHandler extends AbstractDirHandler implements PrivilegeDefs {
+public abstract class DbDirHandler extends AbstractDirHandler
+        implements PrivilegeDefs {
   protected DbDirHandlerConfig dbConfig;
 
   protected String userHomeRoot;
@@ -599,12 +600,12 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
     }
 
     if (sess == null) {
-      if (debug) {
-        trace("New hibernate session for " + objTimestamp);
+      if (debug()) {
+        debug("New hibernate session for " + objTimestamp);
       }
       sess = new HibSessionImpl();
-      sess.init(getSessionFactory(), getLogger());
-      trace("Open session for " + objTimestamp);
+      sess.init(getSessionFactory());
+      debug("Open session for " + objTimestamp);
     }
 
     beginTransaction();
@@ -612,14 +613,14 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
   protected synchronized void closeSession() throws WebdavException {
     if (!isOpen()) {
-      if (debug) {
-        trace("Close for " + objTimestamp + " closed session");
+      if (debug()) {
+        debug("Close for " + objTimestamp + " closed session");
       }
       return;
     }
 
-    if (debug) {
-      trace("Close for " + objTimestamp);
+    if (debug()) {
+      debug("Close for " + objTimestamp);
     }
 
     try {
@@ -649,8 +650,8 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   protected void beginTransaction() throws WebdavException {
     checkOpen();
 
-    if (debug) {
-      trace("Begin transaction for " + objTimestamp);
+    if (debug()) {
+      debug("Begin transaction for " + objTimestamp);
     }
     sess.beginTransaction();
   }
@@ -658,8 +659,8 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
   protected void endTransaction() throws WebdavException {
     checkOpen();
 
-    if (debug) {
-      trace("End transaction for " + objTimestamp);
+    if (debug()) {
+      debug("End transaction for " + objTimestamp);
     }
 
     if (!sess.rolledback()) {
@@ -677,8 +678,8 @@ public abstract class DbDirHandler extends AbstractDirHandler implements Privile
 
   /*
   private void flush() throws WebdavException {
-    if (debug) {
-      trace("flush for " + objTimestamp);
+    if (debug()) {
+      debug("flush for " + objTimestamp);
     }
     if (sess.isOpen()) {
       sess.flush();

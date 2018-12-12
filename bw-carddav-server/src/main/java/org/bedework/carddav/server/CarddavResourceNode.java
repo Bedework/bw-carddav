@@ -19,7 +19,7 @@
 package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.util.timezones.DateTimeUtil;

@@ -18,9 +18,9 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.logging.Logged;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
@@ -44,9 +44,7 @@ import java.util.List;
  *
  * @author Mike Douglass douglm     rpi.edu
  */
-public class HibSessionImpl implements HibSession {
-  transient Logger log;
-
+public class HibSessionImpl implements HibSession, Logged {
   Session sess;
   transient Transaction tx;
   boolean rolledBack;
@@ -62,13 +60,10 @@ public class HibSessionImpl implements HibSession {
   /** Set up for a hibernate interaction. Throw the object away on exception.
    *
    * @param sessFactory
-   * @param log
    * @throws WebdavException
    */
-  public void init(final SessionFactory sessFactory,
-                   final Logger log) throws WebdavException {
+  public void init(final SessionFactory sessFactory) throws WebdavException {
     try {
-      this.log = log;
       sess = sessFactory.openSession();
       rolledBack = false;
       //sess.setFlushMode(FlushMode.COMMIT);
@@ -240,14 +235,14 @@ public class HibSessionImpl implements HibSession {
       throw new WebdavException(exc);
     }
 */
-    if (getLogger().isDebugEnabled()) {
-      getLogger().debug("Enter rollback");
+    if (debug()) {
+      debug("Enter rollback");
     }
     try {
       if ((tx != null) &&
           !rolledBack) {
-        if (getLogger().isDebugEnabled()) {
-          getLogger().debug("About to rollback");
+        if (debug()) {
+          debug("About to rollback");
         }
         tx.rollback();
         //tx = null;
@@ -938,8 +933,8 @@ public class HibSessionImpl implements HibSession {
       throw new WebdavException(exc);
     }
 
-    if (getLogger().isDebugEnabled()) {
-      getLogger().debug("About to flush");
+    if (debug()) {
+      debug("About to flush");
     }
     try {
       sess.flush();
@@ -991,12 +986,12 @@ public class HibSessionImpl implements HibSession {
   private void handleException(final Throwable t,
                                final Object o) throws WebdavException {
     try {
-      if (getLogger().isDebugEnabled()) {
-        getLogger().debug("handleException called");
+      if (debug()) {
+        debug("handleException called");
         if (o != null) {
-          getLogger().debug(o.toString());
+          debug(o.toString());
         }
-        getLogger().error(this, t);
+        error(t);
       }
     } catch (Throwable dummy) {}
 
@@ -1068,17 +1063,6 @@ public class HibSessionImpl implements HibSession {
    * @param t   Throwable from the rollback
    */
   private void rollbackException(final Throwable t) {
-    if (getLogger().isDebugEnabled()) {
-      getLogger().debug("HibSession: ", t);
-    }
-    getLogger().error(this, t);
-  }
-
-  protected Logger getLogger() {
-    if (log == null) {
-      log = Logger.getLogger(this.getClass());
-    }
-
-    return log;
+    error(t);
   }
 }

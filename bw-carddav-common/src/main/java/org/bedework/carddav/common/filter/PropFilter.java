@@ -19,10 +19,10 @@
 package org.bedework.carddav.common.filter;
 
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.util.logging.Logged;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
 import net.fortuna.ical4j.vcard.Property;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import java.util.Collection;
  *
  *   @author Mike Douglass
  */
-public class PropFilter {
+public class PropFilter implements Logged {
   /* Name of property */
   private String name;
 
@@ -175,30 +175,29 @@ public class PropFilter {
 
   /** Debug
    *
-   * @param log
    * @param indent
    */
-  public void dump(final Logger log, final String indent) {
-    StringBuffer sb = new StringBuffer(indent);
+  public void dump(final String indent) {
+    final StringBuffer sb = new StringBuffer(indent);
 
     sb.append("<prop-filter name=\"");
     sb.append(name);
     sb.append("\">\n");
-    log.debug(sb.toString());
+    debug(sb.toString());
 
     if (isNotDefined) {
-      log.debug(indent + "  " + "<is-not-defined/>\n");
+      debug(indent + "  " + "<is-not-defined/>\n");
     } else if (match != null) {
-      match.dump(log, indent + "  ");
+      match.dump(indent + "  ");
     }
 
     if (paramFilters != null) {
       for (ParamFilter pf: paramFilters) {
-        pf.dump(log, indent + "  ");
+        pf.dump(indent + "  ");
       }
     }
 
-    log.debug(indent + "</prop-filter>");
+    debug(indent + "</prop-filter>");
   }
 }
 

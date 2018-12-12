@@ -18,14 +18,14 @@
 */
 package org.bedework.carddav.common.filter;
 
-import org.apache.log4j.Logger;
+import org.bedework.util.logging.Logged;
 
 /** Represent a param filter
  *
  * @author Mike Douglass
  *
  */
-public class ParamFilter {
+public class ParamFilter implements Logged {
   private String name;
 
   private boolean isNotDefined;
@@ -96,24 +96,23 @@ public class ParamFilter {
 
   /** Debug
    *
-   * @param log
    * @param indent
    */
-  public void dump(Logger log, String indent) {
+  public void dump(String indent) {
     StringBuffer sb = new StringBuffer(indent);
 
     sb.append("<param-filter name=\"");
     sb.append(name);
     sb.append(">\n");
-    log.debug(sb.toString());
+    debug(sb.toString());
 
     if (isNotDefined) {
-      log.debug(indent + "  " + "<is-not-defined/>\n");
+      debug(indent + "  " + "<is-not-defined/>\n");
     } else {
-      match.dump(log, indent + "  ");
+      match.dump(indent + "  ");
     }
 
-    log.debug(indent + "</param-filter>");
+    debug(indent + "</param-filter>");
   }
 }
 

@@ -71,8 +71,8 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       }
 
       for (final CarddavCollection cc: ccs) {
-        if (debug) {
-          trace("Dumping " + cc.getPath());
+        if (debug()) {
+          debug("Dumping " + cc.getPath());
         }
 
         dumpUserDir(cc, dumpDir);
@@ -144,8 +144,8 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       }
 
       for (final CarddavCollection cc: ccs) {
-        if (debug) {
-          trace("Dumping " + cc.getPath());
+        if (debug()) {
+          debug("Dumping " + cc.getPath());
         }
 
         dumpUserDir(cc, userDumpDir);
@@ -191,7 +191,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     try {
       vc.validate();
     } catch (final Throwable t) {
-      if (debug) {
+      if (debug()) {
         error(t);
       }
       throw new CardDAVBadData(t.getMessage());

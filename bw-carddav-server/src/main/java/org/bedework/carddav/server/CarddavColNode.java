@@ -19,7 +19,7 @@
 package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.GetLimits;
@@ -243,25 +243,16 @@ public class CarddavColNode extends CarddavNode {
     return 0;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentType()
-   */
   @Override
   public String getContentType() throws WebdavException {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getCreDate()
-   */
   @Override
   public String getCreDate() throws WebdavException {
     return col.getCreated();
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getDisplayname()
-   */
   @Override
   public String getDisplayname() throws WebdavException {
     if (col == null) {
@@ -271,9 +262,6 @@ public class CarddavColNode extends CarddavNode {
     return col.getName();
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getLastmodDate()
-   */
   @Override
   public String getLastmodDate() throws WebdavException {
     init(false);
@@ -413,8 +401,8 @@ public class CarddavColNode extends CarddavNode {
         // dav 13.9
         xml.openTag(WebdavTags.resourcetype);
         xml.emptyTag(WebdavTags.collection);
-        if (debug) {
-          debugMsg("generatePropResourcetype for " + col);
+        if (debug()) {
+          debug("generatePropResourcetype for " + col);
         }
 
         if (col.getAddressBook()) {

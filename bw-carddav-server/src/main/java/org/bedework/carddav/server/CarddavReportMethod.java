@@ -119,7 +119,7 @@ public class CarddavReportMethod extends ReportMethod {
       return -1;
     } catch (Throwable t) {
       System.err.println(t.getMessage());
-      if (debug) {
+      if (debug()) {
         t.printStackTrace();
       }
 
@@ -163,7 +163,7 @@ public class CarddavReportMethod extends ReportMethod {
       preq = pm.tryPropRequest(chiter.next());
 
       if (preq != null) {
-        if (debug) {
+        if (debug()) {
           debug("REPORT: preq not null");
         }
 
@@ -195,10 +195,10 @@ public class CarddavReportMethod extends ReportMethod {
           throw new WebdavBadRequest("Expected filter");
         }
 
-        filter = new Filter(debug);
+        filter = new Filter();
         filter.carddavParse(curnode);
 
-        if (debug) {
+        if (debug()) {
           debug("REPORT: query");
           filter.dump();
         }
@@ -278,7 +278,7 @@ public class CarddavReportMethod extends ReportMethod {
           throw new WebdavBadRequest("Expected href");
         }
 
-        if (debug) {
+        if (debug()) {
           debug("REPORT: multi-get");
 
           for (String href: hrefs) {
@@ -289,7 +289,7 @@ public class CarddavReportMethod extends ReportMethod {
         return;
       }
 
-      if (debug) {
+      if (debug()) {
         debug("REPORT: unexpected element " + curnode.getNodeName() +
               " with type " + curnode.getNodeType());
       }
@@ -370,7 +370,7 @@ public class CarddavReportMethod extends ReportMethod {
     }
 
     if (status != HttpServletResponse.SC_OK) {
-      if (debug) {
+      if (debug()) {
         debug("REPORT status " + status);
       }
       // Entire request failed.
@@ -413,7 +413,7 @@ public class CarddavReportMethod extends ReportMethod {
       throw new WebdavBadRequest();
     }
 
-    if (debug) {
+    if (debug()) {
       debug("doNodeAndChildren: curDepth=" + curDepth +
             " maxDepth=" + maxDepth + " uri=" + node.getUri());
     }

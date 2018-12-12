@@ -25,7 +25,8 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Ace;
 import org.bedework.access.AceWho;
 import org.bedework.access.Acl;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.CurrentAccess;
+import org.bedework.access.EvaluatedAccessCache;
 import org.bedework.access.Privilege;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.DirHandler;
@@ -45,6 +46,7 @@ import org.bedework.carddav.server.SysIntf;
 import org.bedework.carddav.server.config.CardDAVConfig;
 import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
+import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.util.xml.tagdefs.WebdavTags;
@@ -56,8 +58,6 @@ import org.bedework.webdav.servlet.shared.WebdavForbidden;
 import org.bedework.webdav.servlet.shared.WebdavNotFound;
 import org.bedework.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
 import org.bedework.webdav.servlet.shared.WebdavProperty;
-
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,11 +72,7 @@ import javax.xml.namespace.QName;
  *
  * @author Mike Douglass douglm at rpi.edu
  */
-public class BwSysIntfImpl implements SysIntf {
-  private boolean debug;
-
-  protected transient Logger log;
-
+public class BwSysIntfImpl implements Logged, SysIntf {
   private DirHandlerFactory dhf;
 
   private String account;
@@ -138,13 +134,11 @@ public class BwSysIntfImpl implements SysIntf {
   public void init(final HttpServletRequest req,
                    final String account,
                    final CardDAVConfig conf,
-                   final CardDAVContextConfig ctxConf,
-                   final boolean debug) throws WebdavException {
+                   final CardDAVContextConfig ctxConf) throws WebdavException {
     try {
       this.account = account;
       this.conf = conf;
       this.ctxConf = ctxConf;
-      this.debug = debug;
 
       userPrincipalRoot= setRoot(conf.getUserPrincipalRoot());
       groupPrincipalRoot = setRoot(conf.getGroupPrincipalRoot());
@@ -592,12 +586,12 @@ public class BwSysIntfImpl implements SysIntf {
                                    final boolean returnResult)
           throws WebdavException {
     try {
-      return Acl.evaluateAccess(accessCb,
-                                getPrincipal(),
-                                ent.getOwner(),
-                                Access.privSetAny,
-                                accessString.toCharArray(),
-                                null);
+      return EvaluatedAccessCache.evaluateAccess(accessCb,
+                                                 getPrincipal(),
+                                                 ent.getOwner(),
+                                                 Access.privSetAny,
+                                                 accessString.toCharArray(),
+                                                 null);
     } catch (Throwable t) {
       throw new WebdavException(t);
     }
@@ -992,37 +986,5 @@ public class BwSysIntfImpl implements SysIntf {
     owner.setPrincipalRef(userPrincipalRoot + account);
 
     return owner;
-  }
-
-  /* ====================================================================
-   *                        Protected methods
-   * ==================================================================== */
-
-  protected Logger getLogger() {
-    if (log == null) {
-      log = Logger.getLogger(this.getClass());
-    }
-
-    return log;
-  }
-
-  protected void trace(final String msg) {
-    getLogger().debug(msg);
-  }
-
-  protected void debugMsg(final String msg) {
-    getLogger().debug(msg);
-  }
-
-  protected void warn(final String msg) {
-    getLogger().warn(msg);
-  }
-
-  protected void error(final Throwable t) {
-    getLogger().error(this, t);
-  }
-
-  protected void logIt(final String msg) {
-    getLogger().info(msg);
   }
 }

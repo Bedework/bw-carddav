@@ -169,10 +169,8 @@ import javax.servlet.http.HttpServletResponse;
 public class Filter extends CarddavFilter {
   /** Constructor
    *
-   * @param debug
    */
-  public Filter(boolean debug) {
-    super(debug);
+  public Filter() {
   }
 
   /** Parse for the carddav server.

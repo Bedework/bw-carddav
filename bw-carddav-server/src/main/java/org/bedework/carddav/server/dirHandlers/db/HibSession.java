@@ -20,7 +20,6 @@ package org.bedework.carddav.server.dirHandlers.db;
 
 import org.bedework.webdav.servlet.shared.WebdavException;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
@@ -39,11 +38,9 @@ public interface HibSession extends Serializable {
   /** Set up for a hibernate interaction. Throw the object away on exception.
    *
    * @param sessFactory
-   * @param log
    * @throws WebdavException
    */
-  public void init(SessionFactory sessFactory,
-                   Logger log) throws WebdavException;
+  public void init(SessionFactory sessFactory) throws WebdavException;
 
   /**
    * @return Session

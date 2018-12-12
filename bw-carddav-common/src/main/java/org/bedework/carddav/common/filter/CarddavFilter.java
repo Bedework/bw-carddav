@@ -18,12 +18,12 @@
 */
 package org.bedework.carddav.common.filter;
 
+import org.bedework.util.logging.Logged;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -179,7 +179,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *
  *   @author Mike Douglass   douglm @ rpi.edu
  */
-public class CarddavFilter {
+public class CarddavFilter implements Logged {
   /** */
   public static int testAnyOf = 0;
 
@@ -188,18 +188,12 @@ public class CarddavFilter {
 
   protected int testAllAny;
 
-  protected boolean debug;
-
-  protected transient Logger log;
-
   private Collection<PropFilter> propFilters;
 
   /** Constructor
    *
-   * @param debug
    */
-  public CarddavFilter(final boolean debug) {
-    this.debug = debug;
+  public CarddavFilter() {
   }
 
   /** Given a caldav like xml filter parse it
@@ -247,8 +241,8 @@ public class CarddavFilter {
 
     try {
       for (Element curnode : children) {
-        if (debug) {
-          trace("filter element: " +
+        if (debug()) {
+          debug("filter element: " +
               curnode.getNamespaceURI() + ":" +
               curnode.getLocalName());
         }
@@ -304,16 +298,16 @@ public class CarddavFilter {
         i++;
       }
 
-      if (debug) {
-        trace("propFilter element: " +
+      if (debug()) {
+        debug("propFilter element: " +
               curnode.getNamespaceURI() + " " +
               curnode.getLocalName());
       }
 
       while (i < children.length) {
         curnode = children[i];
-        if (debug) {
-          trace("propFilter element: " +
+        if (debug()) {
+          debug("propFilter element: " +
                 curnode.getNamespaceURI() + " " +
                 curnode.getLocalName());
         }
@@ -348,8 +342,8 @@ public class CarddavFilter {
     // Only one child - either is-defined | text-match
     Element child = getOnlyChild(nd);
 
-    if (debug) {
-      trace("paramFilter element: " +
+    if (debug()) {
+      debug("paramFilter element: " +
             child.getNamespaceURI() + " " +
             child.getLocalName());
     }
@@ -482,7 +476,7 @@ public class CarddavFilter {
     try {
       return XmlUtil.getElementsArray(nd);
     } catch (Throwable t) {
-      if (debug) {
+      if (debug()) {
         getLogger().error("<filter>: parse exception: ", t);
       }
 
@@ -494,7 +488,7 @@ public class CarddavFilter {
     try {
       return XmlUtil.getOnlyElement(nd);
     } catch (Throwable t) {
-      if (debug) {
+      if (debug()) {
         getLogger().error("<filter>: parse exception: ", t);
       }
 
@@ -546,46 +540,15 @@ public class CarddavFilter {
    *  =================================================================== */
 
   public void dump() {
-    trace("<filter>");
+    debug("<filter>");
 
     if (propFilters != null) {
       for (PropFilter pf: propFilters) {
-        pf.dump(log, "  ");
+        pf.dump("  ");
       }
     }
 
-    trace("</filter>");
-  }
-
-  /** ===================================================================
-   *                   Logging methods
-   *  =================================================================== */
-
-  /**
-   * @return Logger
-   */
-  protected Logger getLogger() {
-    if (log == null) {
-      log = Logger.getLogger(this.getClass());
-    }
-
-    return log;
-  }
-
-  protected void debugMsg(final String msg) {
-    getLogger().debug(msg);
-  }
-
-  protected void error(final Throwable t) {
-    getLogger().error(this, t);
-  }
-
-  protected void logIt(final String msg) {
-    getLogger().info(msg);
-  }
-
-  protected void trace(final String msg) {
-    getLogger().debug(msg);
+    debug("</filter>");
   }
 }
 

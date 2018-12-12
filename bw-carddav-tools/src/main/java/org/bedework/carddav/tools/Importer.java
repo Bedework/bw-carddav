@@ -16,12 +16,12 @@
     specific language governing permissions and limitations
     under the License.
 */
-package org.bedework.carddav.tools;
+package org.bedework.carddav.common.util;
 
 import org.bedework.util.args.Args;
 import org.bedework.util.http.BasicHttpClient;
-
-import org.apache.log4j.Logger;
+import org.bedework.util.logging.Logged;
+import org.bedework.util.misc.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
@@ -30,17 +30,17 @@ import java.io.LineNumberReader;
 
 /** Import a file into CardDAV.
  *
- *   @author Mike Douglass douglm@rpi.edu
+ *   @author Mike Douglass douglm   rpi.edu
  *  @version 1.0
  */
-public class Importer {
+public class Importer implements Logged {
   private static String host = "localhost";
 
   private static int port = 8080;
 
-  private String urlPrefix;
+  private static String scheme = "http";
 
-  private boolean debug;
+  private String urlPrefix;
 
   private String infileName;
 
@@ -49,8 +49,6 @@ public class Importer {
   private String pw;
 
   private LineNumberReader lnr;
-
-  private transient Logger log;
 
   boolean importData() throws Throwable {
     FileReader frdr = null;
@@ -116,11 +114,7 @@ public class Importer {
         continue;
       }
 
-      if (args.ifMatch("-debug")) {
-        debug = true;
-      } else if (args.ifMatch("-ndebug")) {
-        debug = false;
-      } else if (args.ifMatch("-f")) {
+      if (args.ifMatch("-f")) {
         infileName = args.next();
       } else if (args.ifMatch("-host")) {
         host = args.next();
@@ -175,37 +169,19 @@ public class Importer {
     }
   }
 
-  protected Logger getLog() {
-    if (log == null) {
-      log = Logger.getLogger(this.getClass());
-    }
-
-    return log;
-  }
-
-  protected void info(final String msg) {
-    getLog().info(msg);
-  }
-
-  protected void error(final String msg) {
-    getLog().error(msg);
-  }
-
-  protected void trace(final String msg) {
-    getLog().debug(msg);
-  }
-
   private boolean putCard(final String name, final byte[] content) {
     BasicHttpClient client = null;
 
     try {
       int respCode;
 
-      client = new BasicHttpClient(host, port, "http", 0);
+      client = new BasicHttpClient(host, port, scheme, 0);
 
       client.setCredentials(user, pw);
 
-      respCode = client.sendRequest("PUT", urlPrefix + "/" + name + ".vcf",
+      respCode = client.sendRequest("PUT",
+                                    Util.buildPath(false, urlPrefix,
+                                                   "/", name, ".vcf"),
                                     null,
                                     "text/vcard", content.length,
                                     content);

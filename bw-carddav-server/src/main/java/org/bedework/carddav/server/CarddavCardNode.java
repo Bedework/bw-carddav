@@ -19,7 +19,7 @@
 package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
-import org.bedework.access.Acl.CurrentAccess;
+import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.vcard.Card;
@@ -236,9 +236,9 @@ public boolean generatePropertyValue(final QName tag,
     try {
       if ("application/vcard+json".equals(contentType)) {
         if (xml == null) {
-          wtr.write(card.outputJson(debug, vcardVersion));
+          wtr.write(card.outputJson(debug(), vcardVersion));
         } else {
-          xml.cdataValue(card.outputJson(debug, vcardVersion));
+          xml.cdataValue(card.outputJson(debug(), vcardVersion));
         }
         return contentType;
       }

@@ -191,7 +191,7 @@ public class SpecialUri {
 
     boolean orThem = true;
 
-    Filter fltr = new Filter(false);
+    Filter fltr = new Filter();
 
     if (orThem) {
       fltr.setTestAllAny(Filter.testAnyOf);

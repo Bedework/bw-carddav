@@ -19,12 +19,12 @@
 
 package org.bedework.carddav.server.query;
 
-import org.apache.log4j.Logger;
+import org.bedework.util.logging.Logged;
 
 /**
  * @author Mike Douglass douglm   rpi.edu
  */
-public class Prop {
+public class Prop implements Logged {
   /* Name of property */
   private String name;
 
@@ -66,10 +66,9 @@ public class Prop {
   }
 
   /**
-   * @param log
    * @param indent
    */
-  public void dump(Logger log, String indent) {
+  public void dump(String indent) {
     StringBuffer sb = new StringBuffer(indent);
 
     sb.append("<calddav:prop name=");
@@ -78,7 +77,7 @@ public class Prop {
     sb.append(novalue);
     sb.append("/>");
 
-    log.debug(sb.toString());
+    debug(sb.toString());
   }
 }
 
