@@ -22,7 +22,7 @@
     <bw-util-hibernate.version>4.0.20-SNAPSHOT</bw-util-hibernate.version>
     <bw-util2.version>4.0.2-SNAPSHOT</bw-util2.version>
     <bw-webdav.version>4.0.5-SNAPSHOT</bw-webdav.version>
-    <bw-xml.version>4.0.6</bw-xml.version>
+    <bw-xml.version>4.0.7-SNAPSHOT</bw-xml.version>
 
 		<!-- Third Party Library Versions -->
     <classmate.version>1.3.0</classmate.version>
