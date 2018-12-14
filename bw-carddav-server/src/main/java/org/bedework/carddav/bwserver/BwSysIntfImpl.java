@@ -46,6 +46,7 @@ import org.bedework.carddav.server.SysIntf;
 import org.bedework.carddav.server.config.CardDAVConfig;
 import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.server.dirHandlers.DirHandlerFactory;
+import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
 import org.bedework.util.xml.tagdefs.CarddavTags;
@@ -986,5 +987,20 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     owner.setPrincipalRef(userPrincipalRoot + account);
 
     return owner;
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }

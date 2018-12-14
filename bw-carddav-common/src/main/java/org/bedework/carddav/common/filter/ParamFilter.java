@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.common.filter;
 
+import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 
 /** Represent a param filter
@@ -113,6 +114,21 @@ public class ParamFilter implements Logged {
     }
 
     debug(indent + "</param-filter>");
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }
 

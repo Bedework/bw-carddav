@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -424,5 +425,20 @@ public class DumpEntity<T> implements Logged {
     }
 
     return val.substring(3, 4).toLowerCase() + val.substring(4);
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }

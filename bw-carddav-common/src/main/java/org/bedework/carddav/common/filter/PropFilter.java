@@ -19,6 +19,7 @@
 package org.bedework.carddav.common.filter;
 
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
@@ -198,6 +199,21 @@ public class PropFilter implements Logged {
     }
 
     debug(indent + "</prop-filter>");
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }
 

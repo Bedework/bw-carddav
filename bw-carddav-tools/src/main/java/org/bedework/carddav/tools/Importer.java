@@ -20,6 +20,7 @@ package org.bedework.carddav.common.util;
 
 import org.bedework.util.args.Args;
 import org.bedework.util.http.BasicHttpClient;
+import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
 
@@ -270,5 +271,20 @@ public class Importer implements Logged {
 
       System.out.println(ln);
     }
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }

@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.common.filter;
 
+import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 
 /**
@@ -191,5 +192,20 @@ public class TextMatch implements Logged {
     debug(val);
 
     debug(indent + "</text-match>\n");
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }
