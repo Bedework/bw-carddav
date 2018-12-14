@@ -20,6 +20,7 @@ package org.bedework.carddav.server;
 
 import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.util.jmx.ConfBase;
+import org.bedework.util.logging.BwLogger;
 import org.bedework.webdav.servlet.common.MethodBase.MethodInfo;
 import org.bedework.webdav.servlet.common.WebdavServlet;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -121,5 +122,20 @@ public class CarddavServlet extends WebdavServlet
   @Override
   public void contextDestroyed(final ServletContextEvent sce) {
     conf.stop();
+  }
+
+  /* ====================================================================
+   *                   Logged methods
+   * ==================================================================== */
+
+  private BwLogger logger = new BwLogger();
+
+  @Override
+  public BwLogger getLogger() {
+    if ((logger.getLoggedClass() == null) && (logger.getLoggedName() == null)) {
+      logger.setLoggedClass(getClass());
+    }
+
+    return logger;
   }
 }
