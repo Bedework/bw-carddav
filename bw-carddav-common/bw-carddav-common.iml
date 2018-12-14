@@ -17,7 +17,7 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.8" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-jmx:4.0.20" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-misc:4.0.20" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-webdav:4.0.5" level="project" />
+    <orderEntry type="module" module-name="bw-webdav" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-xml:4.0.20" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-servlet:4.0.20" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-access:4.0.4" level="project" />
