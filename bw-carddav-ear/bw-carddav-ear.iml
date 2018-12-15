@@ -41,6 +41,7 @@
     <orderEntry type="library" name="Maven: org.bedework:bw-xml-icalendar:4.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util2-vcard:4.0.2" level="project" />
     <orderEntry type="module" module-name="bw-webdav" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-logging:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-xml-calws-soap:4.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-ehcache:5.2.5.Final" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:2.10.3" level="project" />
