@@ -26,7 +26,7 @@
     <orderEntry type="library" name="Maven: org.bedework:bw-util-caching:4.0.21" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-misc:4.0.21" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-xml:4.0.21" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-webdav:4.0.6" level="project" />
+    <orderEntry type="module" module-name="bw-webdav" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-servlet:4.0.21" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.15" level="project" />
     <orderEntry type="library" name="Maven: javax.mail:mail:1.4" level="project" />
