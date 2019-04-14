@@ -42,7 +42,7 @@
     <ical4j.version>1.1.4</ical4j.version>
     -->
     <ical4j-vcard.version>1.0.4</ical4j-vcard.version>
-    <jackson.version>2.9.6</jackson.version>
+    <jackson.version>2.9.8</jackson.version>
 		<asm.version>3.2</asm.version>
 		<asm-attrs.version>2.2.3</asm-attrs.version>
 		<cglib.version>2.1_3</cglib.version>
