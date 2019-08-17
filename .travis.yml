@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk8
+  - openjdk11
 sudo: false
 install:
-    mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dorg.bedework.deployment.properties=.travis.deploy.properties -Dorg.bedework.deploy.checkonly=true -B -V
+  mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dorg.bedework.deployment.properties=.travis.deploy.properties -Dorg.bedework.deploy.checkonly=true -DbaseDirPath=/tmp -B -V
