@@ -25,7 +25,7 @@
     <orderEntry type="module" module-name="bw-carddav-public-war" />
     <orderEntry type="module" module-name="bw-carddav-user-war" />
     <orderEntry type="module" module-name="bw-carddav-userweb-war" />
-    <orderEntry type="module" module-name="bw-access" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-access:4.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-args:4.0.25" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-caching:4.0.25" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-config:4.0.25" level="project" />
