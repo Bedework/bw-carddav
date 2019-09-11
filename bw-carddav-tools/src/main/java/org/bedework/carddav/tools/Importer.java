@@ -16,18 +16,24 @@
     specific language governing permissions and limitations
     under the License.
 */
-package org.bedework.carddav.common.util;
+package org.bedework.carddav.tools;
 
 import org.bedework.util.args.Args;
-import org.bedework.util.http.BasicHttpClient;
+import org.bedework.util.http.PooledHttpClient;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
+
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.LineNumberReader;
+import java.net.URI;
 
 /** Import a file into CardDAV.
  *
@@ -35,13 +41,7 @@ import java.io.LineNumberReader;
  *  @version 1.0
  */
 public class Importer implements Logged {
-  private static String host = "localhost";
-
-  private static int port = 8080;
-
-  private static String scheme = "http";
-
-  private String urlPrefix;
+  private static String url = "http://localhost:8080/ucarddav/";
 
   private String infileName;
 
@@ -85,9 +85,7 @@ public class Importer implements Logged {
         }
 
         if (ln.startsWith("END:VCARD")) {
-          byte[] content = sb.toString().getBytes();
-
-          putCard(name, content);
+          putCard(name, sb.toString());
           sb = null;
         }
 
@@ -117,20 +115,12 @@ public class Importer implements Logged {
 
       if (args.ifMatch("-f")) {
         infileName = args.next();
-      } else if (args.ifMatch("-host")) {
-        host = args.next();
-      } else if (args.ifMatch("-port")) {
-        port = Integer.parseInt(args.next());
+      } else if (args.ifMatch("-url")) {
+        url = args.next();
       } else if (args.ifMatch("-user")) {
         user = args.next();
       } else if (args.ifMatch("-pw")) {
         pw = args.next();
-      } else if (args.ifMatch("-urlPrefix")) {
-        urlPrefix = args.next();
-
-        if (!urlPrefix.endsWith("/")) {
-          urlPrefix += "/";
-        }
       } else {
         error("Illegal argument: " + args.current());
         usage();
@@ -170,39 +160,34 @@ public class Importer implements Logged {
     }
   }
 
-  private boolean putCard(final String name, final byte[] content) {
-    BasicHttpClient client = null;
+  private boolean putCard(final String name,
+                          final String content) {
+    PooledHttpClient client = null;
 
     try {
       int respCode;
+      final CredentialsProvider credsProvider;
 
-      client = new BasicHttpClient(host, port, scheme, 0);
+      if ((user == null) || (pw == null)) {
+        credsProvider = null;
+      } else {
 
-      client.setCredentials(user, pw);
-
-      respCode = client.sendRequest("PUT",
-                                    Util.buildPath(false, urlPrefix,
-                                                   "/", name, ".vcf"),
-                                    null,
-                                    "text/vcard", content.length,
-                                    content);
-
-      InputStream in = null;
-
-      try {
-        in = client.getResponseBodyAsStream();
-
-        info("Response code: " + respCode + " at line " + lnr.getLineNumber());
-
-        if (in != null) {
-          readContent(in, client.getResponseContentLength(),
-                      client.getResponseCharSet());
-        }
-      } finally {
-        if (in != null) {
-          in.close();
-        }
+        credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(
+                AuthScope.ANY,
+                new UsernamePasswordCredentials(user,
+                                                pw));
       }
+
+      client = new PooledHttpClient(new URI(url),
+                                    null,
+                                    credsProvider);
+
+      respCode = client.put(Util.buildPath(false, "/", name, ".vcf"),
+                                    content,
+                                    "text/vcard");
+
+      info("Response code: " + respCode + " at line " + lnr.getLineNumber());
 
       return true;
     } catch (Throwable t) {
@@ -210,10 +195,7 @@ public class Importer implements Logged {
       return false;
     } finally {
       if (client != null) {
-        try {
-          client.release();
-        } catch (Throwable t) {}
-        client.close();
+        client.release();
       }
     }
   }
