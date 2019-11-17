@@ -61,7 +61,7 @@
     <orderEntry type="library" name="Maven: org.bedework:bw-util-json:4.0.26" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-logging:4.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-misc:4.0.26" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-timezones:4.0.26" level="project" />
+    <orderEntry type="module" module-name="bw-util-tz" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-caching:4.0.26" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util2-vcard:4.0.5" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-webdav:4.0.8" level="project" />

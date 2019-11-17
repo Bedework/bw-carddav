@@ -35,7 +35,7 @@
     <orderEntry type="library" name="Maven: org.bedework:bw-util-json:4.0.26" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-misc:4.0.26" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-servlet:4.0.26" level="project" />
-    <orderEntry type="library" name="Maven: org.bedework:bw-util-timezones:4.0.26" level="project" />
+    <orderEntry type="module" module-name="bw-util-tz" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-xml:4.0.26" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util2-calendar:4.0.5" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-xml-icalendar:4.0.9" level="project" />
