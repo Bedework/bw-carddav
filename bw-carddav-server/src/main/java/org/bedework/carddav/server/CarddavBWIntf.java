@@ -277,28 +277,28 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
 
     @Override
-    public void setErrorTag(final QName tag) throws AccessException {
+    public void setErrorTag(final QName tag) {
       errorTag = tag;
     }
 
     @Override
-    public QName getErrorTag() throws AccessException {
+    public QName getErrorTag() {
       return errorTag;
     }
 
     @Override
-    public void setErrorMsg(final String val) throws AccessException {
+    public void setErrorMsg(final String val) {
       errorMsg = val;
     }
 
     @Override
-    public String getErrorMsg() throws AccessException {
+    public String getErrorMsg() {
       return errorMsg;
     }
   }
 
   @Override
-  public AccessUtil getAccessUtil() throws WebdavException {
+  public AccessUtil getAccessUtil() {
     return accessUtil;
   }
 
