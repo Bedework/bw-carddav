@@ -25,7 +25,7 @@
     <bw-util-network.version>4.1.0-SNAPSHOT</bw-util-network.version>
     <bw-util-tz.version>4.1.0-SNAPSHOT</bw-util-tz.version>
     <bw-util2.version>4.0.5</bw-util2.version>
-    <bw-webdav.version>4.0.8</bw-webdav.version>
+    <bw-webdav.version>4.0.9-SNAPSHOT</bw-webdav.version>
     <bw-xml.version>4.0.9</bw-xml.version>
 
 		<!-- Third Party Library Versions -->

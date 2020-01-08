@@ -54,6 +54,7 @@ import org.bedework.webdav.servlet.shared.PrincipalPropertySearch;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WdEntity;
 import org.bedework.webdav.servlet.shared.WdSynchReport;
+import org.bedework.webdav.servlet.shared.WdSysIntf;
 import org.bedework.webdav.servlet.shared.WebdavBadRequest;
 import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
@@ -158,7 +159,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING,
                                         true);
 
-      sysi = getSysIntf();
+      sysi = newSysIntf();
       sysi.init(req, account, confBean.getConfig(),
                 config);
 
@@ -181,7 +182,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     try {
       this.account = account;
 
-      sysi = getSysIntf();
+      sysi = newSysIntf();
       sysi.init(req, account, confBean.getConfig(),
                 config);
 
@@ -192,7 +193,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
   }
 
-  private SysIntf getSysIntf() throws WebdavException {
+  private SysIntf newSysIntf() throws WebdavException {
     String className = confBean.getSysintfImpl();
 
     Object o = null;
@@ -338,6 +339,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public void close() throws WebdavException {
     sysi.close();
+  }
+
+  @Override
+  public WdSysIntf getSysIntf() {
+    return sysi;
   }
 
   /**
