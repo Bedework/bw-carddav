@@ -26,6 +26,7 @@ import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.common.GetResult;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
+import org.bedework.util.misc.ToString;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.AppleServerTags;
@@ -55,7 +56,7 @@ public class CarddavColNode extends CarddavNode {
   private CurrentAccess currentAccess;
 
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
-    new HashMap<QName, PropertyTagEntry>();
+    new HashMap<>();
 
   static {
     addPropEntry(propertyNames, CarddavTags.addressbookDescription);
@@ -94,19 +95,13 @@ public class CarddavColNode extends CarddavNode {
     exists = cdURI.getExists();
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.CarddavNode#getWdCollection()
-   */
   @Override
   public CarddavCollection getWdCollection() {
     return col;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getOwner()
-   */
   @Override
-  public AccessPrincipal getOwner() throws WebdavException {
+  public AccessPrincipal getOwner() {
     if (owner == null) {
       if (col == null) {
         return null;
@@ -123,15 +118,15 @@ public class CarddavColNode extends CarddavNode {
   }
 
   @Override
-  public void init(final boolean content) throws WebdavException {
-    if (!content) {
-      return;
-    }
+  public void init(final boolean content) {
+    //if (!content) {
+    //  return;
+    //}
   }
 
   @Override
-  public String getEtagValue(final boolean strong) throws WebdavException {
-    WdCollection c = getWdCollection(); // Unalias
+  public String getEtagValue(final boolean strong) {
+    WdCollection<?> c = getWdCollection(); // Unalias
 
     if (c == null) {
       return null;
@@ -146,16 +141,10 @@ public class CarddavColNode extends CarddavNode {
     return "W/\"" + val + "\"";
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#setDefaults(javax.xml.namespace.QName)
-   */
   @Override
-  public void setDefaults(final QName methodTag) throws WebdavException {
+  public void setDefaults(final QName methodTag) {
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.CarddavNode#getChildren(org.bedework.carddav.server.SysIntf.GetLimits)
-   */
   @Override
   public QueryResult getChildren(final GetLimits limits) throws WebdavException {
     /* For the moment we're going to do this the inefficient way.
@@ -200,17 +189,11 @@ public class CarddavColNode extends CarddavNode {
     }
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentString()
-   */
   @Override
-  public String getContentString(final String contentType) throws WebdavException {
+  public String getContentString(final String contentType) {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#update()
-   */
   @Override
   public void update() throws WebdavException {
     // ALIAS probably not unaliasing here
@@ -226,7 +209,7 @@ public class CarddavColNode extends CarddavNode {
   @Override
   public String writeContent(final XmlEmit xml,
                              final Writer wtr,
-                             final String contentType) throws WebdavException {
+                             final String contentType) {
     return null;
   }
 
@@ -234,27 +217,27 @@ public class CarddavColNode extends CarddavNode {
    * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
    */
   @Override
-  public String getContentLang() throws WebdavException {
+  public String getContentLang() {
     return "en";
   }
 
   @Override
-  public long getContentLen() throws WebdavException {
+  public long getContentLen() {
     return 0;
   }
 
   @Override
-  public String getContentType() throws WebdavException {
+  public String getContentType() {
     return null;
   }
 
   @Override
-  public String getCreDate() throws WebdavException {
+  public String getCreDate() {
     return col.getCreated();
   }
 
   @Override
-  public String getDisplayname() throws WebdavException {
+  public String getDisplayname() {
     if (col == null) {
       return null;
     }
@@ -308,20 +291,14 @@ public class CarddavColNode extends CarddavNode {
    *                   Property methods
    * ==================================================================== */
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#removeProperty(org.w3c.dom.Element)
-   */
   @Override
   public boolean removeProperty(final Element val,
-                                final SetPropertyResult spr) throws WebdavException {
+                                final SetPropertyResult spr) {
     warn("Unimplemented - removeProperty");
 
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#setProperty(org.w3c.dom.Element)
-   */
   @Override
   public boolean setProperty(final Element val,
                              final SetPropertyResult spr) throws WebdavException {
@@ -458,7 +435,7 @@ public class CarddavColNode extends CarddavNode {
    */
   @Override
   public Collection<PropertyTagEntry> getPropertyNames()throws WebdavException {
-    Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
+    Collection<PropertyTagEntry> res = new ArrayList<>();
 
     res.addAll(super.getPropertyNames());
     res.addAll(propertyNames.values());
@@ -473,11 +450,7 @@ public class CarddavColNode extends CarddavNode {
    */
   @Override
   public Collection<QName> getSupportedReports() throws WebdavException {
-    Collection<QName> res = new ArrayList<QName>();
-
-    res.addAll(super.getSupportedReports());
-
-    return res;
+    return new ArrayList<>(super.getSupportedReports());
   }
 
   /* ====================================================================
@@ -486,14 +459,12 @@ public class CarddavColNode extends CarddavNode {
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    final ToString ts = new ToString(this);
 
-    sb.append("CarddavColNode{cduri=");
-    sb.append("path=");
-    sb.append(getPath());
-    sb.append("}");
+    ts.append("cduri", getUri());
+    ts.append("path", getPath());
 
-    return sb.toString();
+    return ts.toString();
   }
 
   /* ====================================================================

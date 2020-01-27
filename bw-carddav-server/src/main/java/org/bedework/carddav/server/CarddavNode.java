@@ -86,12 +86,12 @@ public abstract class CarddavNode extends WebdavNsNode {
    * ==================================================================== */
 
   @Override
-  public WdCollection getCollection(final boolean deref) throws WebdavException {
+  public WdCollection<?> getCollection(final boolean deref) {
     return col;
   }
 
   @Override
-  public WdCollection getImmediateTargetCollection() throws WebdavException {
+  public WdCollection<?> getImmediateTargetCollection() {
     return col.resolveAlias(false); // False => don't resolve all subaliases
   }
 
@@ -107,7 +107,6 @@ public abstract class CarddavNode extends WebdavNsNode {
    *
    * @param limits to limit fetch
    * @return Collection
-   * @throws WebdavException on fatal error
    */
   public QueryResult getChildren(final GetLimits limits) throws WebdavException {
     return null;
@@ -135,17 +134,17 @@ public abstract class CarddavNode extends WebdavNsNode {
   }
 
   @Override
-  public boolean allowsSyncReport() throws WebdavException {
+  public boolean allowsSyncReport() {
     return false;
   }
 
   @Override
-  public boolean getDeleted() throws WebdavException {
+  public boolean getDeleted() {
     return false;
   }
 
   @Override
-  public String getSyncToken() throws WebdavException {
+  public String getSyncToken() {
     return null;
   }
 
@@ -159,8 +158,8 @@ public abstract class CarddavNode extends WebdavNsNode {
   }
 
   @Override
-  public Collection<? extends WdEntity> getChildren(
-          final Supplier<Object> filterGetter) throws WebdavException {
+  public Collection<? extends WdEntity<?>> getChildren(
+          final Supplier<Object> filterGetter) {
     return null;
   }
 

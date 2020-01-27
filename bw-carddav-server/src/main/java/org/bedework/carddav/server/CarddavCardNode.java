@@ -93,11 +93,10 @@ public class CarddavCardNode extends CarddavNode {
   }
 
   @Override
-  public void init(final boolean content) throws WebdavException {
-    if (!content) {
-      return;
-    }
-
+  public void init(final boolean content) {
+    //if (!content) {
+    //  return;
+    //}
   }
 
   /* (non-Javadoc)

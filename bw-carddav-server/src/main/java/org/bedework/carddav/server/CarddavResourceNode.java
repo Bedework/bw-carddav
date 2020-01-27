@@ -87,26 +87,18 @@ public class CarddavResourceNode extends CarddavNode {
   }
 
   @Override
-  public void init(final boolean content) throws WebdavException {
+  public void init(final boolean content) {
     if (!content) {
       return;
     }
 
-    try {
-      if ((resource == null) && exists) {
-        if (entityName == null) {
-          exists = false;
-          return;
-        }
+    if ((resource == null) && exists) {
+      if (entityName == null) {
+        exists = false;
       }
-    } catch (Throwable t) {
-      throw new WebdavException(t);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.CarddavNode#getWdCollection()
-   */
   @Override
   public CarddavCollection getWdCollection() throws WebdavException {
     return col;

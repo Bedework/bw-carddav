@@ -56,7 +56,7 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
   }
 
   /**
-   * @param val
+   * @param val CarddavCollection
    */
   public void setParent(final CarddavCollection val) {
     parent = val;
@@ -70,31 +70,31 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
   }
 
   @Override
-  public boolean getCanShare() throws WebdavException {
+  public boolean getCanShare() {
     return false;
   }
 
   @Override
-  public boolean getCanPublish() throws WebdavException {
+  public boolean getCanPublish() {
     return false;
   }
 
   @Override
-  public CarddavCollection resolveAlias(final boolean resolveSubAlias) throws WebdavException {
+  public CarddavCollection resolveAlias(final boolean resolveSubAlias) {
     return this;
   }
 
   @Override
-  public void setProperty(final QName name, final String val) throws WebdavException {
+  public void setProperty(final QName name, final String val) {
   }
 
   @Override
-  public String getProperty(final QName name) throws WebdavException {
+  public String getProperty(final QName name) {
     return null;
   }
 
   /**
-   * @param val
+   * @param val true for addressbook
    */
   public void setAddressBook(final boolean val) {
     addressBook = val;
@@ -110,7 +110,7 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
   /** True if this represents a directory. This is part of the gateway
    * spec. A directory should be treated as potentially very large.
    *
-   * @param val
+   * @param val True if this represents a directory.
    */
   public void setDirectory(final boolean val) {
     directory = val;
@@ -124,86 +124,72 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
     return directory;
   }
 
-  /**
-   * @param val
-   * @throws WebdavException
-   */
   @Override
-  public void setLastmod(final String val) throws WebdavException {
+  public void setLastmod(final String val) {
     lastmod = val;
   }
 
-  /**
-   * @return String lastmod
-   * @throws WebdavException
-   */
   @Override
-  public String getLastmod() throws WebdavException {
+  public String getLastmod() {
     return lastmod;
   }
 
   /** Set the sequence
    *
    * @param val    sequence number
-   * @throws WebdavException
    */
-  public void setSequence(final int val) throws WebdavException {
+  public void setSequence(final int val) {
     sequence = val;
   }
 
   /** Get the sequence
    *
    * @return int    the sequence
-   * @throws WebdavException
    */
-  public int getSequence() throws WebdavException {
+  public int getSequence() {
     return sequence;
   }
 
   /** Prev lastmod is the saved lastmod before any changes.
    *
-   * @param val
-   * @throws WebdavException
+   * @param val UTC lastmod
    */
-  public void setPrevLastmod(final String val) throws WebdavException {
+  public void setPrevLastmod(final String val) {
     prevLastmod = val;
   }
 
   /**
    * @return String lastmod
-   * @throws WebdavException
    */
-  public String getPrevLastmod() throws WebdavException {
+  public String getPrevLastmod() {
     return prevLastmod;
   }
 
   /** Set the sequence
    *
    * @param val    sequence number
-   * @throws WebdavException
    */
-  public void setPrevSequence(final int val) throws WebdavException {
+  public void setPrevSequence(final int val) {
     prevSequence = val;
   }
 
   /** Get the sequence
    *
    * @return int    the sequence
-   * @throws WebdavException
    */
-  public int getPrevSequence() throws WebdavException {
+  public int getPrevSequence() {
     return prevSequence;
   }
 
   @Override
-  public String getEtag() throws WebdavException {
+  public String getEtag() {
     return "\"" + getLastmod() + "-" +
            getSequence() +
            "\"";
   }
 
   @Override
-  public String getPreviousEtag() throws WebdavException {
+  public String getPreviousEtag() {
     return "\"" + getPrevLastmod() +
            getPrevSequence() +
            "\"";
