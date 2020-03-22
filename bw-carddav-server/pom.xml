@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.bedework</groupId>
 		<artifactId>bw-carddav</artifactId>
-		<version>4.0.10-SNAPSHOT</version>
+		<version>4.0.10</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>bw-carddav-server</artifactId>
@@ -13,7 +13,7 @@
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-carddav-common</artifactId>
-      <version>4.0.10-SNAPSHOT</version>
+      <version>4.0.10</version>
     </dependency>
 
 		<!-- Bedework Dependencies -->
