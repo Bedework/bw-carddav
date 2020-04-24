@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bedework</groupId>
 	<artifactId>bw-carddav</artifactId>
-	<version>4.0.11-SNAPSHOT</version>
+	<version>4.0.10.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>bw-carddav</name>
   <description>A CardDAV servlet</description>
