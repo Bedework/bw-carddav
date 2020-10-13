@@ -36,7 +36,7 @@
     <hibernate-annotations.version>5.0.1.Final</hibernate-annotations.version>
     <hibernate-ehcache.version>5.2.5.Final</hibernate-ehcache.version>
 		<servlet-api.version>4.0.0</servlet-api.version>
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.13.1</junit.version>
 
     <ical4j.groupId>org.bedework.ical4j</ical4j.groupId>
     <ical4j.artifactId>ical4j</ical4j.artifactId>
