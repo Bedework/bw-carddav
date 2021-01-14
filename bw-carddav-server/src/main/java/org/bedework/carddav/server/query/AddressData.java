@@ -19,11 +19,11 @@
 package org.bedework.carddav.server.query;
 
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.carddav.common.vcard.VcardDefs;
 import org.bedework.carddav.server.CarddavCardNode;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
+import org.bedework.util.vcard.VcardDefs;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.CarddavTags;
@@ -229,14 +229,14 @@ public class AddressData extends WebdavProperty implements Logged {
   private String transformVcard(final Card card,
                                 final Collection<Prop> props)  throws WebdavException {
     try {
-      Card ncard = new Card();
+      final Card ncard = new Card();
 
       /* Always set FN and KIND */
       boolean fnSet = false;
       boolean kindSet = false;
 
-      for (Prop pr: props) {
-        List<Property> ps = card.findProperties(pr.getName());
+      for (final Prop pr: props) {
+        final List<Property> ps = card.findProperties(pr.getName());
         if (Util.isEmpty(ps)) {
           continue;
         }
@@ -253,7 +253,7 @@ public class AddressData extends WebdavProperty implements Logged {
       }
 
       if (!kindSet) {
-        Property p = card.findProperty(Property.Id.KIND);
+        final Property p = card.findProperty(Property.Id.KIND);
 
         if (p != null) {
           ncard.addProperty(p);
@@ -263,7 +263,7 @@ public class AddressData extends WebdavProperty implements Logged {
       }
 
       if (!fnSet) {
-        Property p = card.findProperty(Property.Id.FN);
+        final Property p = card.findProperty(Property.Id.FN);
 
         if (p != null) {
           ncard.addProperty(p);
@@ -273,8 +273,8 @@ public class AddressData extends WebdavProperty implements Logged {
         }
       }
 
-      return ncard.output(getVersion());
-    } catch (Throwable t) {
+      return ncard.outputVcard(getVersion());
+    } catch (final Throwable t) {
       if (debug()) {
         getLogger().error("transformVcard exception: ", t);
       }

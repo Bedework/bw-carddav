@@ -285,30 +285,31 @@ public class BwSysIntfImpl implements Logged, SysIntf {
         return null;
       }
 
-      String principalUri = getHandler(conf.getPrincipalRoot()).makePrincipalUri(pcpl);
+      final String principalUri = getHandler(conf.getPrincipalRoot()).makePrincipalUri(pcpl);
 
-      DirHandler addrBookHandler = getHandler(ctxConf.getAddressBookHandlerPrefix());
+      final DirHandler addrBookHandler = getHandler(ctxConf.getAddressBookHandlerPrefix());
 
-      String userHomePath = addrBookHandler.getprincipalHome(pcpl);
+      final String userHomePath = addrBookHandler.getprincipalHome(pcpl);
 
-      String defaultAddressbookPath = userHomePath + conf.getDefaultAddressbook();
+      final String defaultAddressbookPath = userHomePath + conf.getDefaultAddressbook();
 
       Card dirInfo = null;
 
-      String cardPath = getCardPath(pcpl);
+      final String cardPath = getCardPath(pcpl);
 
       if (getDirInfo && (cardPath != null)) {
-        DirHandler cardHandler = getHandler(cardPath);
+        final DirHandler cardHandler = getHandler(cardPath);
 
-        int p = cardPath.lastIndexOf('/');
+        final int p = cardPath.lastIndexOf('/');
 
         dirInfo = cardHandler.getCard(cardPath.substring(0, p),
                                       cardPath.substring(p));
       }
 
       // XXX Cheat at this - we should just use principals throughout.
-      String prefix = principalUri.substring(0, principalUri.length() -
-                                             pcpl.getAccount().length());
+      final String prefix =
+              principalUri.substring(0, principalUri.length() -
+                      pcpl.getAccount().length());
 
       return new PrincipalInfo(pcpl.getAccount(),
                                prefix,
@@ -316,9 +317,9 @@ public class BwSysIntfImpl implements Logged, SysIntf {
                                defaultAddressbookPath,
                                cardPath,
                                dirInfo);
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

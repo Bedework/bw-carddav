@@ -23,6 +23,7 @@ import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.util.misc.ToString;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -220,8 +221,8 @@ public boolean generatePropertyValue(final QName tag,
   */
 
   @Override
-  public String getContentString(final String contentType) throws WebdavException {
-    return card.output(vcardVersion);
+  public String getContentString(final String contentType) {
+    return card.outputVcard(vcardVersion);
   }
 
   /* ====================================================================
@@ -243,15 +244,13 @@ public boolean generatePropertyValue(final QName tag,
       }
 
       if (xml == null) {
-        wtr.write(card.output(vcardVersion));
+        wtr.write(card.outputVcard(vcardVersion));
         return "text/vcard";
       }
 
-      xml.cdataValue(card.output(vcardVersion));
+      xml.cdataValue(card.outputVcard(vcardVersion));
       return "application/vcard+xml";
-    } catch (final WebdavException we) {
-      throw we;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -302,16 +301,12 @@ public boolean generatePropertyValue(final QName tag,
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
+    final ToString ts = new ToString(this);
 
-    sb.append("CaldavComponentNode{");
-    sb.append("path=");
-    sb.append(getPath());
-    sb.append(", entityName=");
-    sb.append(String.valueOf(entityName));
-    sb.append("}");
+    ts.append("path", getPath());
+    ts.append("entityName", String.valueOf(entityName));
 
-    return sb.toString();
+    return ts.toString();
   }
 
   /* ====================================================================
@@ -326,7 +321,7 @@ public boolean generatePropertyValue(final QName tag,
   @Override
   public long getContentLen() throws WebdavException {
     if (card != null) {
-      return card.output(vcardVersion).length();
+      return card.outputVcard(vcardVersion).length();
     }
 
     return 0;
@@ -365,7 +360,7 @@ public boolean generatePropertyValue(final QName tag,
     try {
       // return DateTimeUtil.fromISODateTimeUTCtoRfc822(card.getLastmod());
       return card.getLastmod();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

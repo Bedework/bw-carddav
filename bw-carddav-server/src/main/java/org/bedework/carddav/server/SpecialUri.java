@@ -109,7 +109,7 @@ public class SpecialUri {
     GetResult res = null;
 
     buildResponse: {
-      CarddavCollection col = sysi.getCollection(addrbook);
+      final CarddavCollection col = sysi.getCollection(addrbook);
 
       if (col == null) {
         setStatus(resp, HttpServletResponse.SC_NOT_FOUND, format);
@@ -118,14 +118,14 @@ public class SpecialUri {
 
       GetLimits limits = null;
 
-      String limitStr = Util.checkNull(req.getParameter("limit"));
+      final String limitStr = Util.checkNull(req.getParameter("limit"));
 
       if (limitStr != null) {
         limits = new GetLimits();
 
         try {
           limits.limit = Integer.parseInt(limitStr);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
           setStatus(resp, HttpServletResponse.SC_BAD_REQUEST, limitStr);
           break buildResponse;
         }
@@ -150,7 +150,7 @@ public class SpecialUri {
     } // buildResponse
 
     if ((res != null) && ((res.overLimit) || (res.serverTruncated))) {
-      String msg;
+      final String msg;
       if (res.overLimit) {
         msg = "User limit exceeded";
       } else {
@@ -173,7 +173,7 @@ public class SpecialUri {
     // vcard
     try {
       resp.getWriter().write("{\n");
-    } catch (IOException ie) {
+    } catch (final IOException ie) {
       throw new WebdavException(ie);
     }
   }
@@ -189,9 +189,9 @@ public class SpecialUri {
       text = req.getParameter("term");
     }
 
-    boolean orThem = true;
+    final boolean orThem = true;
 
-    Filter fltr = new Filter();
+    final Filter fltr = new Filter();
 
     if (orThem) {
       fltr.setTestAllAny(Filter.testAnyOf);
@@ -201,7 +201,7 @@ public class SpecialUri {
 
     boolean hadTerm = false;
 
-    for (String wsp: config.getWebaddrServiceProperties()) {
+    for (final String wsp: config.getWebaddrServiceProperties()) {
       String val = req.getParameter(wsp);
 
       if (val != null) {
@@ -244,11 +244,11 @@ public class SpecialUri {
                                final String format,
                                final String vcardVersion) throws WebdavException {
     try {
-      Writer wtr = resp.getWriter();
+      final Writer wtr = resp.getWriter();
 
       if (format.equals(formatVcard)) {
-        for (Card card: cards) {
-          wtr.write(card.output(vcardVersion));
+        for (final Card card: cards) {
+          wtr.write(card.outputVcard(vcardVersion));
         }
         resp.setStatus(HttpServletResponse.SC_OK);
 
@@ -287,12 +287,12 @@ public class SpecialUri {
       }
 
       // vcard
-      Writer wtr = resp.getWriter();
+      final Writer wtr = resp.getWriter();
 
       wtr.write("    \"errors\" : [ \"");
       wtr.write(String.valueOf(status));
       wtr.write("\" ]\n");
-    } catch (IOException ie) {
+    } catch (final IOException ie) {
       throw new WebdavException(ie);
     }
   }

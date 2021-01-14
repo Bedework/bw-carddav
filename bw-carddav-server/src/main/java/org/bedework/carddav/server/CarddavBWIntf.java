@@ -33,12 +33,12 @@ import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.util.Group;
 import org.bedework.carddav.common.util.User;
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.carddav.common.vcard.VcardDefs;
 import org.bedework.carddav.server.SysIntf.PrincipalInfo;
 import org.bedework.carddav.server.config.CardDAVContextConfig;
 import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.carddav.server.query.AddressData;
 import org.bedework.util.misc.Util;
+import org.bedework.util.vcard.VcardDefs;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlEmit.NameSpace;
 import org.bedework.util.xml.XmlUtil;
@@ -188,19 +188,19 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       accessUtil = new AccessUtil(namespacePrefix, xml,
                                   new CardDavAccessXmlCb(sysi));
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
   private SysIntf newSysIntf() throws WebdavException {
-    String className = confBean.getSysintfImpl();
+    final String className = confBean.getSysintfImpl();
 
     Object o = null;
 
     try {
       o = Class.forName(className).newInstance();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error(t);
       o = null;
     }
@@ -209,7 +209,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       throw new WebdavException("Class " + className + " not found");
     }
 
-    if (!SysIntf.class.isInstance(o)) {
+    if (!(o instanceof SysIntf)) {
       throw new WebdavException("Class " + className +
                                    " is not a subclass of " +
                                    SysIntf.class.getName());
@@ -235,7 +235,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   /**
    */
   private static class CardDavAccessXmlCb implements AccessXmlCb, Serializable {
-    private SysIntf sysi;
+    private final SysIntf sysi;
 
     private QName errorTag;
     private String errorMsg;
@@ -247,14 +247,14 @@ public class CarddavBWIntf extends WebdavNsIntf {
     @Override
     public String makeHref(final String id, final int whoType) throws AccessException {
       try {
-        AccessPrincipal p;
+        final AccessPrincipal p;
         if (whoType == Ace.whoTypeUser) {
           p = new User(id);
         } else {
           p = new Group(id);
         }
         return sysi.makeHref(p);
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         throw new AccessException(t);
       }
     }
@@ -263,7 +263,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     public AccessPrincipal getPrincipal() throws AccessException {
       try {
         return sysi.getPrincipal();
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         throw new AccessException(t);
       }
     }
@@ -272,7 +272,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     public AccessPrincipal getPrincipal(final String href) throws AccessException {
       try {
         return sysi.getPrincipal(href);
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         throw new AccessException(t);
       }
     }
@@ -377,7 +377,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
     try {
       xml.addNs(new NameSpace(CarddavTags.namespace, "C"), false);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -398,12 +398,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public void delete(final WebdavNsNode node) throws WebdavException {
     try {
-      CarddavNode cnode = getBwnode(node);
+      final CarddavNode cnode = getBwnode(node);
 
       if (cnode instanceof CarddavResourceNode) {
-        CarddavResourceNode rnode = (CarddavResourceNode)cnode;
+        final CarddavResourceNode rnode = (CarddavResourceNode)cnode;
 
-        CarddavResource r = rnode.getResource();
+        final CarddavResource r = rnode.getResource();
 
         sysi.deleteFile(r);
       } else if (cnode instanceof CarddavCardNode) {
@@ -418,9 +418,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         sysi.deleteCollection(((CarddavColNode)cnode).getWdCollection());
       }
-    } catch (WebdavException we) {
+    } catch (final WebdavException we) {
       throw we;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -442,7 +442,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
       Collection<? extends WdEntity> children = null;
 
       if (node instanceof CarddavNode) {
-        CarddavNode cdnode = getBwnode(node);
+        final CarddavNode cdnode = getBwnode(node);
 
         // XXX We'd like to be applying limits here as well I guess
         children = cdnode.getChildren(filterGetter);
@@ -456,9 +456,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
       // TODO - fix this
       return new ArrayList<WebdavNsNode>();
-    } catch (WebdavException we) {
+    } catch (final WebdavException we) {
       throw we;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -475,7 +475,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                             final String contentType,
                             final WebdavNsNode node) throws WebdavException {
     try {
-      String accept = req.getHeader("ACCEPT");
+      final String accept = req.getHeader("ACCEPT");
       String[] acceptPars = {};
       String requestedVersion = "3.0";
 
@@ -484,7 +484,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
         String reqv = null;
         if (acceptPars.length > 0) {
-          for (String s: acceptPars) {
+          for (final String s: acceptPars) {
             if (!s.toLowerCase().startsWith("version=")) {
               continue;
             }
@@ -497,14 +497,14 @@ public class CarddavBWIntf extends WebdavNsIntf {
       }
 
       if (node.isCollection()) {
-        if ((accept == null) || (accept.indexOf("text/html") >= 0)) {
+        if ((accept == null) || accept.contains("text/html")) {
           if (getDirectoryBrowsingDisallowed()) {
             throw new WebdavException(HttpServletResponse.SC_FORBIDDEN);
           }
 
-          Content c = new Content();
+          final Content c = new Content();
 
-          String content = generateHtml(req, node);
+          final String content = generateHtml(req, node);
           c.rdr = new CharArrayReader(content.toCharArray());
           c.contentType = "text/html";
           c.contentLength = content.getBytes().length;
@@ -521,7 +521,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         SpecialUri.process(req, resp, getResourceUri(req), getSysi(), config,
                            true, acceptPars[0], requestedVersion);
 
-        Content c = new Content();
+        final Content c = new Content();
 
         c.written = true; // set content to say it's done
 
@@ -536,7 +536,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
         return null;
       }
 
-      Content c = new Content();
+      final Content c = new Content();
       c.written = true;
 
       /* Should be a card node */
@@ -548,9 +548,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
       node.writeContent(null, resp.getWriter(), accept);
 
       return c;
-    } catch (WebdavException we) {
+    } catch (final WebdavException we) {
       throw we;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

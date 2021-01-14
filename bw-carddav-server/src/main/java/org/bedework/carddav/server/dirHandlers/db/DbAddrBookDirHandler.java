@@ -110,7 +110,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       while (cards.hasNext()) {
         final Card c = cards.next();
 
-        final String vc = c.output(cdConfig.getDefaultVcardVersion());
+        final String vc = c.outputVcard(cdConfig.getDefaultVcardVersion());
 
         FileWriter fw = null;
         File cardFile = null;

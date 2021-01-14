@@ -31,7 +31,7 @@ import org.bedework.carddav.common.filter.PropFilter;
 import org.bedework.carddav.common.filter.TextMatch;
 import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.carddav.common.vcard.PropertyBuilder;
+import org.bedework.util.vcard.PropertyBuilder;
 import org.bedework.carddav.server.config.LdapDirHandlerConfig;
 import org.bedework.carddav.server.dirHandlers.ldap.LdapMapping.AttrPropertyMapping;
 import org.bedework.util.misc.Util;

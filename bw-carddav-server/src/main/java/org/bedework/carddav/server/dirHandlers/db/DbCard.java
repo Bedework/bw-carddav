@@ -306,7 +306,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   public String output() throws WebdavException {
     try {
       replaceProperty(new Revision(new ArrayList<Parameter>(), getLastmod()));
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
 
@@ -314,8 +314,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
       return strForm;
     }
 
-    Card cd = new Card(vcard);
-    strForm = cd.output(null);
+    final Card cd = new Card(vcard);
+    strForm = cd.outputVcard(null);
 
     /*
     StringWriter sw = new StringWriter();
@@ -361,7 +361,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
    * @throws WebdavException
    */
   public void setDtstamps() throws WebdavException {
-    DateTime dt = new DateTime(true);
+    final DateTime dt = new DateTime(true);
     setLastmod(new LastModified(dt).getValue());
 
     if (getCreated() == null) {
