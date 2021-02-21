@@ -124,7 +124,7 @@
 			<dependency>
 				<groupId>org.bedework</groupId>
 				<artifactId>bw-util-args</artifactId>
-				<version>${bw-util-conf.version}</version>
+				<version>${bw-util.version}</version>
 			</dependency>
 
       <dependency>
