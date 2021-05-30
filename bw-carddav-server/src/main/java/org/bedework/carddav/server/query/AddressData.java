@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -210,17 +209,13 @@ public class AddressData extends WebdavProperty implements Logged {
       return;
     }
 
-    /** Ensure node exists */
+    /* Ensure node exists */
     node.init(true);
     if (!node.getExists()) {
       throw new WebdavException(HttpServletResponse.SC_NOT_FOUND);
     }
 
-    try {
-      xml.cdataValue(transformVcard(node.getCard(), props));
-    } catch (IOException ioe) {
-      throw new WebdavException(ioe);
-    }
+    xml.cdataValue(transformVcard(node.getCard(), props));
   }
 
   /* Transform one or more VCARD objects based on a list of required

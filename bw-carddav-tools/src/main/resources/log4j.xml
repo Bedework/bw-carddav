@@ -1,125 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <!-- ===================================================================== -->
 <!--                                                                       -->
-<!--  Log4j Configuration                                                  -->
+<!--  Log4j Configuration for testing                                                 -->
 <!--                                                                       -->
 <!-- ===================================================================== -->
 
-<!-- $Id: log4j.xml,v 1.5 2005/01/18 02:55:05 rpical Exp $ -->
-
-<!--
-   | For more configuration infromation and examples see the Jakarta Log4j
-   | website: http://jakarta.apache.org/log4j
- -->
-
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
-                     debug="false">
+<Configuration>
 
    <!-- ================================= -->
    <!-- Preserve messages in a local file -->
    <!-- ================================= -->
 
-   <appender name="FILE" class="org.apache.log4j.FileAppender">
-      <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/>
-      <param name="File" value="cmdutil.log"/>
-      <param name="Append" value="true"/>
+   <!-- A time/date based rolling appender -->
+   <Appenders>
+      <RollingFile name="FILE" fileName="${user.home}/logs/carddav.log"
+                   filePattern="logs/carddav-%d{yyyy-MM-dd}.log">
+         <layout class="org.apache.log4j.PatternLayout">
+            <!-- The default pattern: Date Priority [Category] Message\n -->
+            <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>
+         </layout>
+         <PatternLayout>
+            <Pattern>%d %-5p [%c] %m%n</Pattern>
+         </PatternLayout>
+         <Policies>
+            <TimeBasedTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="250 MB"/>
+         </Policies>
+      </RollingFile>
 
-      <layout class="org.apache.log4j.PatternLayout">
-         <param name="ConversionPattern" value="%d %-5r %-5p [%c] (%t:%x) %m%n"/>
-      </layout>
-   </appender>
+      <Console name="CONSOLE" target="SYSTEM_OUT">
+         <param name="Threshold" value="DEBUG"/>
 
-   <!-- ============================== -->
-   <!-- Append messages to the console -->
-   <!-- Set Threshold to INFO/DEBUG -->
-   <!-- ============================== -->
+         <PatternLayout pattern="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
+      </Console>
+   </Appenders>
 
-   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-      <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/>
-      <param name="Target" value="System.out"/>
-      <param name="Threshold" value="DEBUG"/>
+   <Loggers>
+      <!-- ================ -->
+      <!-- Limit categories -->
+      <!-- ================ -->
 
-      <layout class="org.apache.log4j.PatternLayout">
-         <!-- The default pattern: Date Priority [Category] Message\n -->
-         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
-      </layout>
-   </appender>
+      <!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
+      <Logger name="org.apache" level="info"/>
 
-   <!-- ================ -->
-   <!-- Limit categories -->
-   <!-- ================ -->
+      <Logger name="httpclient.wire.content" level="info"/>
 
-   <!-- Limit the org.apache stuff -->
-   <!--
-   <category name="org.apache.commons">
-      <priority value="INFO"/>
-   </category>
+      <!-- ical4j is noisy -->
+      <Logger name="net.fortuna.ical4j" level="info"/>
 
-   <category name="org.apache.catalina.startup.TldConfig">
-      <priority value="INFO"/>
-   </category>
+      <!-- caching is noisy too -->
+      <Logger name="net.sf.ehcache" level="info"/>
 
-   <category name="org.apache.jasper">
-      <priority value="INFO"/>
-   </category>
+      <!-- Set bedework categories -->
+      <Logger name="org.bedework" level="debug"/>
 
-   <category name="org.apache.struts">
-      <priority value="INFO"/>
-   </category>
-   -->
-
-   <category name="org.apache">
-      <priority value="INFO"/>
-   </category>
-
-   <category name="httpclient.wire.content">
-      <priority value="INFO"/>
-   </category>
-
-   <category name="httpclient">
-      <priority value="INFO"/>
-   </category>
-
-   <!-- ical4j is noisy -->
-   <category name="net.fortuna.ical4j">
-      <priority value="INFO"/>
-   </category>
-
-   <!-- caching is noisy too -->
-   <category name="net.sf.ehcache">
-      <priority value="INFO"/>
-   </category>
-
-   <!-- hibernate is noisy too -->
-   <category name="org.hibernate" additivity="false">
-      <priority value="INFO"/>
-      <appender-ref ref="FILE"/>
-   </category>
-
-   <category name="org.bedework.calcore" additivity="false">
-      <priority value="DEBUG"/>
-      <appender-ref ref="FILE"/>
-   </category>
-
-   <!-- Set bedework categories -->
-   <category name="edu.rpi" additivity="false">
-      <priority value="DEBUG"/>
-      <appender-ref ref="FILE"/>
-   </category>
-
-   <category name="org.bedework.sysevents.listeners.BwSysevLogger">
-      <priority value="WARN"/>
-   </category>
-
-   <!-- ======================= -->
-   <!-- Setup the Root category -->
-   <!-- ======================= -->
-
-   <root>
-      <priority value ="DEBUG" />
-      <appender-ref ref="FILE"/>
-      <appender-ref ref="CONSOLE"/>
-   </root>
-</log4j:configuration>
+      <Root level ="debug" >
+         <AppenderRef ref="FILE"/>
+         <AppenderRef ref="CONSOLE"/>
+      </Root>
+   </Loggers>
+</Configuration>
