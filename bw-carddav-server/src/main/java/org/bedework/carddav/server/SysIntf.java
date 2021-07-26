@@ -312,7 +312,7 @@ public interface SysIntf extends WdSysIntf {
    * @param cal
    * @throws WebdavException
    */
-  public void deleteCollection(WdCollection cal) throws WebdavException;
+  public void deleteCollection(WdCollection<?> cal) throws WebdavException;
 
   /** Copy or move the collection to another location.
    * Status is set on return
@@ -323,8 +323,8 @@ public interface SysIntf extends WdSysIntf {
    * @param overwrite destination exists
    * @throws WebdavException
    */
-  public void copyMove(WdCollection from,
-                       WdCollection to,
+  public void copyMove(WdCollection<?> from,
+                       WdCollection<?> to,
                        boolean copy,
                        boolean overwrite) throws WebdavException;
 
@@ -340,7 +340,7 @@ public interface SysIntf extends WdSysIntf {
    * @throws WebdavException
    */
   public boolean copyMove(Card from,
-                          WdCollection to,
+                          WdCollection<?> to,
                           String name,
                           boolean copy,
                           boolean overwrite) throws WebdavException;
@@ -358,7 +358,7 @@ public interface SysIntf extends WdSysIntf {
    * @param val           updated WdCollection object
    * @throws WebdavException
    */
-  public void updateCollection(WdCollection val) throws WebdavException;
+  public void updateCollection(WdCollection<?> val) throws WebdavException;
 
   /** Returns children of the given collection to which the current user has
    * some access.
@@ -382,7 +382,7 @@ public interface SysIntf extends WdSysIntf {
    * @param val          BwResource
    * @throws WebdavException
    */
-  public void putFile(WdCollection coll,
+  public void putFile(WdCollection<?> coll,
                       CarddavResource val) throws WebdavException;
 
   /** GET a file.
@@ -392,7 +392,7 @@ public interface SysIntf extends WdSysIntf {
    * @return BwResource
    * @throws WebdavException
    */
-  public CarddavResource getFile(WdCollection coll,
+  public CarddavResource getFile(WdCollection<?> coll,
                             String name) throws WebdavException;
 
   /** Get resource content given the resource. It will be set in the resource
@@ -409,7 +409,7 @@ public interface SysIntf extends WdSysIntf {
    * @return Collection of BwResource
    * @throws WebdavException
    */
-  public Collection<CarddavResource> getFiles(WdCollection coll) throws WebdavException;
+  public Collection<CarddavResource> getFiles(WdCollection<?> coll) throws WebdavException;
 
   /** Update a file.
    *
@@ -439,7 +439,7 @@ public interface SysIntf extends WdSysIntf {
    * @throws WebdavException
    */
   public boolean copyMoveFile(CarddavResource from,
-                              WdCollection to,
+                              WdCollection<?> to,
                               String name,
                               boolean copy,
                               boolean overwrite) throws WebdavException;
