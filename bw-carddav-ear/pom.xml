@@ -14,18 +14,6 @@
 	<dependencies>
 		<!-- Project Dependencies -->
 
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>bw-carddav-dumpres</artifactId>
-			<version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-		</dependency>
-
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-addrbook-client</artifactId>
@@ -79,6 +67,18 @@
 		</dependency>
 
     <!--
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>bw-carddav-dumpres</artifactId>
+			<version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>bw-carddav-server</artifactId>
