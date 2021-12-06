@@ -21,9 +21,9 @@ package org.bedework.carddav.server.jmx;
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.util.hibernate.HibConfig;
 import org.bedework.util.hibernate.SchemaThread;
+import org.bedework.util.jmx.ConfBase;
 
 import java.util.List;
-import java.util.Properties;
 
 /**
  * @author douglm
@@ -38,13 +38,21 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   private class SchemaBuilder extends SchemaThread {
 
     SchemaBuilder(final String outFile,
-                  final boolean export,
-                  final Properties hibConfig) {
-      super(outFile, export, hibConfig);
+                  final boolean export) {
+      super(outFile, export,
+            new HibConfig(getConfig(),
+                          DbDirHandlerConf.class.getClassLoader()));
+      setContextClassLoader(DbDirHandlerConf.class.getClassLoader());
+
     }
 
     @Override
     public void completed(final String status) {
+      if (status.equals(SchemaThread.statusDone)) {
+        DbDirHandlerConf.this.setStatus(ConfBase.statusDone);
+      } else {
+        DbDirHandlerConf.this.setStatus(ConfBase.statusFailed);
+      }
       setExport(false);
       info("Schema build completed with status " + status);
     }
@@ -117,11 +125,11 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   @Override
   public String schema() {
     try {
-      final HibConfig hc = new HibConfig(getConfig());
+      buildSchema = new SchemaBuilder(
+              getSchemaOutFile(),
+              getExport());
 
-      buildSchema = new SchemaBuilder(getSchemaOutFile(),
-                                      getExport(),
-                                      hc.getHibConfiguration().getProperties());
+      setStatus(statusStopped);
 
       buildSchema.start();
 
