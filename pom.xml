@@ -48,7 +48,7 @@
 		<asm-attrs.version>2.2.3</asm-attrs.version>
 		<cglib.version>2.1_3</cglib.version>
 
-    <log4j.version>2.14.1</log4j.version>
+    <log4j.version>2.15.0</log4j.version>
 	</properties>
 
 	<organization>
