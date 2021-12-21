@@ -14,6 +14,13 @@
   <description>A CardDAV servlet</description>
   <url>https://github.com/Bedework/bw-carddav</url>
 
+	<scm>
+		<connection>scm:git:git@github.com:Bedework/bw-carddav.git</connection>
+		<developerConnection>scm:git:git@github.com:Bedework/bw-carddav.git</developerConnection>
+		<url>https://github.com/Bedework/bw-carddav</url>
+		<tag>HEAD</tag>
+	</scm>
+
 	<modules>
 		<module>bw-carddav-server</module>
 		<module>bw-carddav-tools</module>
