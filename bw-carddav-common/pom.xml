@@ -29,6 +29,11 @@
 
     <dependency>
       <groupId>org.bedework</groupId>
+      <artifactId>bw-access</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
       <artifactId>bw-webdav</artifactId>
     </dependency>
 

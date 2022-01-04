@@ -52,9 +52,15 @@
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-logging</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-misc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-util-servlet</artifactId>
     </dependency>
 
     <dependency>
@@ -66,19 +72,24 @@
       <groupId>org.bedework</groupId>
       <artifactId>bw-util2-vcard</artifactId>
     </dependency>
+
 		<dependency>
 			<groupId>org.bedework</groupId>
 			<artifactId>bw-webdav</artifactId>
 		</dependency>
+
 		<!-- Third Party Libraries -->
+
 		<dependency>
       <groupId>${ical4j.groupId}</groupId>
       <artifactId>${ical4j.artifactId}</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
