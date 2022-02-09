@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+
+<package-spec xmlns="urn:jboss:galleon:package:2.0" name="config.carddav-h2">
+  <dependencies>
+    <package name="config.carddav"/>
+  </dependencies>
+</package-spec>

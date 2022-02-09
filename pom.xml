@@ -31,5 +31,6 @@
 		<module>bw-carddav-ear</module>
     <module>bw-carddav-common</module>
     <module>bw-carddav-client</module>
+    <module>bw-wf-carddav-feature-pack</module>
   </modules>
 </project>

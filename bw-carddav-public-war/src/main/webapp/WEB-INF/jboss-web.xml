@@ -3,11 +3,11 @@
 <jboss-web>
   <!-- Virtual host -->
 
-  <security-domain>java:/jaas/${app.security.domain}</security-domain>
+  <security-domain>java:/jaas/bedework</security-domain>
 
   <resource-ref>
     <res-ref-name>jdbc/cardDB</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
-    <jndi-name>java:${org.bedework.global.jboss.carddb.datasource.jndiname}</jndi-name>
+    <jndi-name>java:/CardDS</jndi-name>
   </resource-ref>
 </jboss-web>

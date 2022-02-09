@@ -3,7 +3,7 @@
 <jboss-web>
   <!-- Virtual host -->
 
-  <security-domain>java:/jaas/${app.security.domain}</security-domain>
+  <security-domain>java:/jaas/bedework</security-domain>
 
   <resource-ref>
     <res-ref-name>jdbc/cardDB</res-ref-name>

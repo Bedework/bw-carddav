@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+
+<tasks xmlns="urn:wildfly:wildfly-feature-pack-tasks:3.0">
+    <copy-path src="resources/config/" relative-to="resources"
+               target="standalone/configuration/bedework"/>
+    <copy-path src="resources/docs" relative-to="resources"
+               target="docs"/>
+</tasks>

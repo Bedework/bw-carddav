@@ -400,57 +400,16 @@
 					</archive>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.bedework</groupId>
+				<artifactId>bw-util-maven-deploy</artifactId>
+				<configuration>
+					<earName>bw-carddav</earName>
+					<baseDirPath>${project.basedir}/../..</baseDirPath>
+					<propsPath>${org.bedework.deployment.properties}</propsPath>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>Not feature pack build</id>
-
-			<activation>
-				<property>
-					<name>!bw-wildfly-feature-pack-build</name>
-				</property>
-			</activation>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.bedework</groupId>
-						<artifactId>bw-util-maven-deploy</artifactId>
-						<configuration>
-							<earName>bw-carddav</earName>
-							<baseDirPath>${project.basedir}/../..</baseDirPath>
-							<propsPath>${org.bedework.deployment.properties}</propsPath>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>Feature pack build</id>
-
-			<activation>
-				<property>
-					<name>bw-wildfly-feature-pack-build</name>
-				</property>
-			</activation>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.bedework</groupId>
-						<artifactId>bw-util-maven-deploy</artifactId>
-
-						<configuration>
-							<earName>bw-carddav</earName>
-							<baseDirPath>${org.bedework.feature-build.deployment.basedir}</baseDirPath>
-							<propsPath>${org.bedework.feature-build.deployment.properties}</propsPath>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
