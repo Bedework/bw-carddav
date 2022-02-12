@@ -4,11 +4,11 @@
   <parent>
     <groupId>org.bedework</groupId>
     <artifactId>bedework-parent</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>7</version>
   </parent>
 
 	<artifactId>bw-carddav</artifactId>
-	<version>5.0.0-SNAPSHOT</version>
+	<version>5.0.0</version>
 	<packaging>pom</packaging>
 	<name>Bedework: CardDAV gateway server </name>
   <description>A CardDAV servlet</description>
@@ -31,6 +31,5 @@
 		<module>bw-carddav-ear</module>
     <module>bw-carddav-common</module>
     <module>bw-carddav-client</module>
-    <module>bw-wf-carddav-feature-pack</module>
   </modules>
 </project>
