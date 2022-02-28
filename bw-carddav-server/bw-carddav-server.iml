@@ -42,7 +42,7 @@
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-config:5.0.2-SNAPSHOT" level="project" />
-    <orderEntry type="module" module-name="bw-util-hibernate" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-hibernate:5.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derbynet:10.15.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derby:10.15.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derbyshared:10.15.2.0" level="project" />
