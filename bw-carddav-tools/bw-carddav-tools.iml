@@ -11,7 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="bw-util-args" />
-    <orderEntry type="module" module-name="bw-util-http" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-http:5.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-config:5.0.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bedework:bw-util-jmx:5.0.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
@@ -29,7 +29,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="module" module-name="bw-util-xml" />
     <orderEntry type="module" module-name="bw-webdav" />
-    <orderEntry type="module" module-name="bw-util-servlet" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-servlet:5.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.ws:jaxws-api:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
