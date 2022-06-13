@@ -21,6 +21,8 @@ package org.bedework.carddav.server.dirHandlers.db;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.filter.PropFilter;
 import org.bedework.carddav.common.filter.TextMatch;
+import org.bedework.util.hibernate.HibException;
+import org.bedework.util.hibernate.HibSession;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
@@ -78,7 +80,11 @@ public class DbFilter {
 
   void parReplace(final HibSession sess) throws WebdavException {
     for (int i = 0; i < params.size(); i++) {
-      sess.setString(parPrefix + i, params.get(i));
+      try {
+        sess.setString(parPrefix + i, params.get(i));
+      } catch (final HibException e) {
+        throw new WebdavException(e);
+      }
     }
   }
 

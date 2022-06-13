@@ -272,7 +272,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param col webdav collection object
    * @throws WebdavException
    */
-  void deleteCollection(WdCollection col) throws WebdavException;
+  void deleteCollection(WdCollection<?> col) throws WebdavException;
 
   /**
    * @param col   Initialised collection object

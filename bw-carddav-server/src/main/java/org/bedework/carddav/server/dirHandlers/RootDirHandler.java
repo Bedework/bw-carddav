@@ -60,7 +60,7 @@ public class RootDirHandler extends AbstractDirHandler {
   }
 
   @Override
-  public void deleteCollection(final WdCollection col) throws WebdavException {
+  public void deleteCollection(final WdCollection<?> col) throws WebdavException {
     throw new WebdavForbidden();
   }
 

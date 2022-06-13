@@ -33,6 +33,9 @@ import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
+import org.bedework.util.hibernate.HibException;
+import org.bedework.util.hibernate.HibSession;
+import org.bedework.util.hibernate.HibSessionImpl;
 import org.bedework.webdav.servlet.access.AccessHelper;
 import org.bedework.webdav.servlet.access.AccessHelperI;
 import org.bedework.webdav.servlet.access.SharedEntity;
@@ -181,7 +184,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     open = true;
 
     access.setAuthPrincipal(getPrincipal(makePrincipalHref(account,
-                                                            WhoDefs.whoTypeUser)));
+                                                           WhoDefs.whoTypeUser)));
   }
 
   /* (non-Javadoc)
@@ -247,23 +250,27 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
     fltr.makeFilter(filter);
 
-    sess.createQuery(sb.toString());
-    sess.setString("path", ensureSlashAtEnd(path));
+    try {
+      sess.createQuery(sb.toString());
+      sess.setString("path", ensureSlashAtEnd(path));
 
-    fltr.parReplace(sess);
+      fltr.parReplace(sess);
 
-    /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
-     * distinct with a set
-     */
-    final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
+      /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
+       * distinct with a set
+       */
+      final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
 
-    final GetResult res = new GetResult();
+      final GetResult res = new GetResult();
 
-    for (final DbCard dbc: cardSet) {
-      res.cards.add(makeVcard(dbc));
+      for (final DbCard dbc: cardSet) {
+        res.cards.add(makeVcard(dbc));
+      }
+
+      return res;
+    } catch (final HibException e) {
+      throw new WebdavException(e);
     }
-
-    return res;
   }
 
   private final static String queryGetCardNames =
@@ -304,17 +311,21 @@ public abstract class DbDirHandler extends AbstractDirHandler
   public Iterator<Card> getAll(final String path) throws WebdavException {
     verifyPath(path);
 
-    sess.createQuery(queryGetCardNames);
-    sess.setString("path", ensureSlashAtEnd(path));
+    try {
+      sess.createQuery(queryGetCardNames);
+      sess.setString("path", ensureSlashAtEnd(path));
 
-    final CardIterator ci = new CardIterator();
-    ci.parentPath = path;
-    //noinspection unchecked
-    ci.names = sess.getList();
-    ci.it = ci.names.iterator();
-    ci.sess = sess;
+      final CardIterator ci = new CardIterator();
+      ci.parentPath = path;
+      //noinspection unchecked
+      ci.names = sess.getList();
+      ci.it = ci.names.iterator();
+      ci.sess = sess;
 
-    return ci;
+      return ci;
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
 
@@ -339,31 +350,35 @@ public abstract class DbDirHandler extends AbstractDirHandler
   @SuppressWarnings("unchecked")
   public GetResult getCollections(final String path,
                                   final GetLimits limits)
-         throws WebdavException {
+          throws WebdavException {
     verifyPath(path);
 
-    sess.createQuery(queryGetCollections);
-    sess.setString("path", ensureSlashAtEnd(path));
+    try {
+      sess.createQuery(queryGetCollections);
+      sess.setString("path", ensureSlashAtEnd(path));
 
-    final List<DbCollection> l = sess.getList();
+      final List<DbCollection> l = sess.getList();
 
-    final GetResult res = new GetResult();
+      final GetResult res = new GetResult();
 
-    res.collections = new ArrayList<>();
+      res.collections = new ArrayList<>();
 
-    if (l == null) {
-      return res;
-    }
-
-    for (final DbCollection col: l) {
-      if (checkAccess(col, privRead, true) == null) {
-        continue;
+      if (l == null) {
+        return res;
       }
 
-      res.collections.add(makeCdCollection(col));
-    }
+      for (final DbCollection col: l) {
+        if (checkAccess(col, privRead, true) == null) {
+          continue;
+        }
 
-    return res;
+        res.collections.add(makeCdCollection(col));
+      }
+
+      return res;
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   protected class CollectionsBatchImpl implements CollectionBatcher {
@@ -394,7 +409,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   protected void updateCollection(final DbCollection col) throws WebdavException {
-    sess.update(col);
+    try {
+      sess.update(col);
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   /* ====================================================================
@@ -417,11 +436,15 @@ public abstract class DbDirHandler extends AbstractDirHandler
       return null;
     }
 
-    sess.createQuery(queryGetCardByName);
-    sess.setString("path", ensureEndSlash(parentPath));
-    sess.setString("name", name);
+    try {
+      sess.createQuery(queryGetCardByName);
+      sess.setString("path", ensureEndSlash(parentPath));
+      sess.setString("name", name);
 
-    return (DbCard)sess.getUnique();
+      return (DbCard)sess.getUnique();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   private static final String queryGetCardByUid =
@@ -433,11 +456,15 @@ public abstract class DbDirHandler extends AbstractDirHandler
                                   final String uid) throws WebdavException {
     verifyPath(parentPath);
 
-    sess.createQuery(queryGetCardByUid);
-    sess.setString("path", ensureEndSlash(parentPath));
-    sess.setString("uid", uid);
+    try {
+      sess.createQuery(queryGetCardByUid);
+      sess.setString("path", ensureEndSlash(parentPath));
+      sess.setString("uid", uid);
 
-    return (DbCard)sess.getUnique();
+      return (DbCard)sess.getUnique();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   private static final String queryGetCard =
@@ -447,10 +474,14 @@ public abstract class DbDirHandler extends AbstractDirHandler
   protected DbCard getDbCard(final String path) throws WebdavException {
     verifyPath(path);
 
-    sess.createQuery(queryGetCard);
-    sess.setString("path", path);
+    try {
+      sess.createQuery(queryGetCard);
+      sess.setString("path", path);
 
-    return (DbCard)sess.getUnique();
+      return (DbCard)sess.getUnique();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   protected DbCollection getDbCollection(final String path,
@@ -509,10 +540,14 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
     verifyPath(path);
 
-    sess.createQuery(queryGetCollection);
-    sess.setString("path", ensureEndSlash(path));
+    try {
+      sess.createQuery(queryGetCollection);
+      sess.setString("path", ensureEndSlash(path));
 
-    return (DbCollection)sess.getUnique();
+      return (DbCollection)sess.getUnique();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   private static final String queryDeleteCollection =
@@ -534,22 +569,26 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
     verifyPath(path);
 
-    sess.createQuery(queryGetColCards);
-    sess.setString("path", ensureEndSlash(path));
+    try {
+      sess.createQuery(queryGetColCards);
+      sess.setString("path", ensureEndSlash(path));
 
-    /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
-     * distinct with a set
-     */
-    final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
+      /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
+       * distinct with a set
+       */
+      final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
 
-    for (final DbCard cd: cardSet) {
-      deleteDbCard(cd);
+      for (final DbCard cd: cardSet) {
+        deleteDbCard(cd);
+      }
+
+      sess.createQuery(queryDeleteCollection);
+      sess.setString("path", ensureEndSlash(path));
+
+      return cardSet.size() + sess.executeUpdate();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
     }
-
-    sess.createQuery(queryDeleteCollection);
-    sess.setString("path", ensureEndSlash(path));
-
-    return cardSet.size() + sess.executeUpdate();
   }
 
   /**
@@ -571,7 +610,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
    * @throws WebdavException
    */
   protected void deleteDbCard(final DbCard dbcard) throws WebdavException {
-    sess.delete(dbcard);
+    try {
+      sess.delete(dbcard);
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   /* ====================================================================
@@ -604,7 +647,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
         debug("New hibernate session for " + objTimestamp);
       }
       sess = new HibSessionImpl();
-      sess.init(getSessionFactory());
+      try {
+        sess.init(getSessionFactory());
+      } catch (final HibException e) {
+        throw new WebdavException(e);
+      }
       debug("Open session for " + objTimestamp);
     }
 
@@ -653,7 +700,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
     if (debug()) {
       debug("Begin transaction for " + objTimestamp);
     }
-    sess.beginTransaction();
+    try {
+      sess.beginTransaction();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   protected void endTransaction() throws WebdavException {
@@ -663,8 +714,12 @@ public abstract class DbDirHandler extends AbstractDirHandler
       debug("End transaction for " + objTimestamp);
     }
 
-    if (!sess.rolledback()) {
-      sess.commit();
+    try {
+      if (!sess.rolledback()) {
+        sess.commit();
+      }
+    } catch (final HibException e) {
+      throw new WebdavException(e);
     }
   }
 
@@ -672,6 +727,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
     try {
       checkOpen();
       sess.rollback();
+    } catch (final HibException e) {
+      throw new WebdavException(e);
     } finally {
     }
   }

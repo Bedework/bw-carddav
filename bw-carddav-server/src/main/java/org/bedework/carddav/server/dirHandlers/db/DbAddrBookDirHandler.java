@@ -25,6 +25,7 @@ import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.util.CardDAVBadData;
 import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.util.hibernate.HibException;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
@@ -90,7 +91,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     }
 
     final File newDir = new File(parent.getAbsolutePath(),
-                                  name);
+                                 name);
     if (!newDir.mkdir()) {
       throw new WebdavException("Unable to create directory " +
                                         newDir.getAbsolutePath());
@@ -251,7 +252,11 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     dc.setStrForm(null);
     dc.output();
 
-    sess.update(dc);
+    try {
+      sess.update(dc);
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
   }
 
   @Override
@@ -285,93 +290,97 @@ public class DbAddrBookDirHandler extends DbDirHandler {
                             final String parentPath) throws WebdavException {
     final boolean home = parentPath.equals(userHomeRoot);
 
-    /* If home ensure the user root exists */
-    if (home) {
-      sess.createQuery(queryGetUserRootName);
+    try {
+      /* If home ensure the user root exists */
+      if (home) {
+        sess.createQuery(queryGetUserRootName);
 
-      final String rootName =
-              userHomeRoot.substring(1, userHomeRoot.length() - 1);
-      sess.setString("name", rootName);
+        final String rootName =
+                userHomeRoot.substring(1, userHomeRoot.length() - 1);
+        sess.setString("name", rootName);
+
+        final Collection res = sess.getList();
+
+        if (res.size() == 0) {
+          /* Create user root */
+          final DbCollection root = new DbCollection();
+
+          root.setName(rootName);
+//        root.setParentPath("/");
+          root.setPath(userHomeRoot);
+          root.setAddressBook(false);
+          root.setAccess(dbConfig.getRootAccess() + " "); // Loses trailing " "
+          root.setOwnerHref(dbConfig.getRootOwner());
+          root.setCreatorHref(dbConfig.getRootOwner());
+
+          final DateTime dt = new DateTime(true);
+
+          root.setLastmod(new LastModified(dt).getValue());
+          root.setCreated(new Created(dt).getValue());
+
+          sess.save(root);
+          sess.flush();
+        }
+      }
+
+      /* Ensure doesn't exist */
+      sess.createQuery(queryGetCollectionName);
+
+      sess.setString("name", col.getName());
+      sess.setString("pp", ensureSlashAtEnd(parentPath));
 
       final Collection res = sess.getList();
+      if (res.size() > 0) {
+        return DirHandler.statusDuplicate;
+      }
 
-      if (res.size() == 0) {
-        /* Create user root */
-        final DbCollection root = new DbCollection();
+      if (!home) {
+        // Check access on parent
+        if (getDbCollection(parentPath, privBind) == null) {
+          throw new WebdavForbidden();
+        }
+      }
 
-        root.setName(rootName);
-//        root.setParentPath("/");
-        root.setPath(userHomeRoot);
-        root.setAddressBook(false);
-        root.setAccess(dbConfig.getRootAccess() + " "); // Loses trailing " "
-        root.setOwnerHref(dbConfig.getRootOwner());
-        root.setCreatorHref(dbConfig.getRootOwner());
+      final DbCollection dbc = new DbCollection();
 
-        final DateTime dt = new DateTime(true);
+      dbc.setName(col.getName());
+      dbc.setDescription(col.getDescription());
+      dbc.setAddressBook(col.getAddressBook());
 
-        root.setLastmod(new LastModified(dt).getValue());
-        root.setCreated(new Created(dt).getValue());
+      dbc.setOwnerHref(col.getOwner().getPrincipalRef());
+      dbc.setCreatorHref(dbc.getOwnerHref());
 
-        sess.save(root);
+      dbc.setParentPath(ensureSlashAtEnd(parentPath));
+      dbc.setPath(dbc.getParentPath() + dbc.getName() + "/");
+
+      final DateTime dt = new DateTime(true);
+
+      if (col.getLastmod() == null) {
+        dbc.setLastmod(new LastModified(dt).getValue());
+      } else {
+        dbc.setLastmod(col.getLastmod());
+      }
+
+      if (col.getCreated() == null) {
+        dbc.setCreated(new Created(dt).getValue());
+      } else {
+        dbc.setCreated(col.getCreated());
+      }
+
+      sess.save(dbc);
+
+      if (home) {
         sess.flush();
       }
+
+      return DirHandler.statusCreated;
+    } catch (final HibException e) {
+      throw new WebdavException(e);
     }
-
-    /* Ensure doesn't exist */
-    sess.createQuery(queryGetCollectionName);
-
-    sess.setString("name", col.getName());
-    sess.setString("pp", ensureSlashAtEnd(parentPath));
-
-    final Collection res = sess.getList();
-    if (res.size() > 0) {
-      return DirHandler.statusDuplicate;
-    }
-
-    if (!home) {
-      // Check access on parent
-      if (getDbCollection(parentPath, privBind) == null) {
-        throw new WebdavForbidden();
-      }
-    }
-
-    final DbCollection dbc = new DbCollection();
-
-    dbc.setName(col.getName());
-    dbc.setDescription(col.getDescription());
-    dbc.setAddressBook(col.getAddressBook());
-
-    dbc.setOwnerHref(col.getOwner().getPrincipalRef());
-    dbc.setCreatorHref(dbc.getOwnerHref());
-
-    dbc.setParentPath(ensureSlashAtEnd(parentPath));
-    dbc.setPath(dbc.getParentPath() + dbc.getName() + "/");
-
-    final DateTime dt = new DateTime(true);
-
-    if (col.getLastmod() == null) {
-      dbc.setLastmod(new LastModified(dt).getValue());
-    } else {
-      dbc.setLastmod(col.getLastmod());
-    }
-
-    if (col.getCreated() == null) {
-      dbc.setCreated(new Created(dt).getValue());
-    } else {
-      dbc.setCreated(col.getCreated());
-    }
-
-    sess.save(dbc);
-
-    if (home) {
-      sess.flush();
-    }
-
-    return DirHandler.statusCreated;
   }
 
   @Override
-  public void deleteCollection(final WdCollection col) throws WebdavException {
+  public void deleteCollection(final WdCollection<?> col) throws WebdavException {
     deleteDbCollection(col.getPath());
   }
 
@@ -399,7 +408,11 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     card.setDtstamps();
     card.output(); // Ensure string form exists
 
-    sess.save(card);
+    try {
+      sess.save(card);
+    } catch (final HibException e) {
+      throw new WebdavException(e);
+    }
 
     return true;
   }

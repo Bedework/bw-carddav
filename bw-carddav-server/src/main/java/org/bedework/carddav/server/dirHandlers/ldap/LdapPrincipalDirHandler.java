@@ -110,7 +110,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   }
 
   @Override
-  public void deleteCollection(final WdCollection col) throws WebdavException {
+  public void deleteCollection(final WdCollection<?> col) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 

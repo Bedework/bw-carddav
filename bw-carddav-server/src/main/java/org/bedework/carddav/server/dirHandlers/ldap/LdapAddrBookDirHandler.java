@@ -248,7 +248,7 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#deleteCollection(org.bedework.webdav.WdCollection)
    */
-  public void deleteCollection(final WdCollection col) throws WebdavException {
+  public void deleteCollection(final WdCollection<?> col) throws WebdavException {
     throw new WebdavException("unimplemented");
   }
 
