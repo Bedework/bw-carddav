@@ -298,8 +298,8 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
   @Override
   public String loadConfig() {
     try {
-      String res = loadConfig(CardDAVConfig.class);
-      if (res != null) {
+      final String res = loadConfig(CardDAVConfig.class);
+      if (!"OK".equals(res)) {
         return res;
       }
 
