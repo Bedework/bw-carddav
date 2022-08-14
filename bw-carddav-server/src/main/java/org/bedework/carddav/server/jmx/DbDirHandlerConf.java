@@ -19,6 +19,7 @@
 package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
+import org.bedework.util.config.ConfigurationStore;
 import org.bedework.util.hibernate.HibConfig;
 import org.bedework.util.hibernate.SchemaThread;
 import org.bedework.util.jmx.ConfBase;
@@ -59,6 +60,12 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   }
 
   private SchemaBuilder buildSchema;
+
+  public DbDirHandlerConf(final String serviceName,
+                          final ConfigurationStore store,
+                          final String configName) {
+    super(serviceName, store, configName);
+  }
 
   /* ========================================================================
    * Schema attributes

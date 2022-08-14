@@ -27,21 +27,16 @@ import org.bedework.util.jmx.ConfBase;
  *
  */
 public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHandlerConfMBean {
+  public DirHandlerConf(final String serviceName,
+                        final ConfigurationStore store,
+                        final String configName) {
+    super(serviceName, store, configName);
+  }
+
   /**
-   * @param configStore
    * @param cfg
-   * @param serviceName
-   * @param configName
    */
-  public void init(final ConfigurationStore configStore,
-                   final DirHandlerConfig cfg,
-                   final String serviceName,
-                   final String configName) {
-    setServiceName(serviceName);
-    setStore(configStore);
-
-    setConfigName(configName);
-
+  public void setConfig(final DirHandlerConfig cfg) {
     this.cfg = cfg;
   }
 

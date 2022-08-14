@@ -38,10 +38,9 @@ public class CardDavContext extends ConfBase<CardDAVContextConfig> implements Ca
   public CardDavContext(final ConfigurationStore configStore,
                         final String serviceName,
                         final String configName) {
-    super(serviceName);
-    setStore(configStore);
-
-    setConfigName(configName);
+    super(serviceName,
+          configStore,
+          configName);
   }
 
   @Override

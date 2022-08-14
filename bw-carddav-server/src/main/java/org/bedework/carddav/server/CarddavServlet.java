@@ -72,7 +72,9 @@ public class CarddavServlet extends WebdavServlet
     CardDav cd;
 
     Configurator() {
-      super(CardDav.serviceName);
+      super(CardDav.serviceName,
+            (String)null,
+            null);
     }
 
     @Override

@@ -48,8 +48,8 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
   /** */
   public static final String serviceName = "org.bedework.carddav:service=CardDav";
 
-  /* Name of the property holding the location of the config data */
-  private static final String confuriPname = "org.bedework.carddav.confuri";
+  /* Name of the directory holding the config data */
+  private static final String confDirName = "carddav";
 
   private static final String[] dhListItemNames = {"path",
                                                    "name",
@@ -90,9 +90,7 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
   /**
    */
   public CardDav() {
-    super(serviceName);
-
-    setConfigPname(confuriPname);
+    super(serviceName, confDirName, "config");
   }
 
   /**
@@ -300,7 +298,7 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
   @Override
   public String loadConfig() {
     try {
-      String res = loadOnlyConfig(CardDAVConfig.class);
+      String res = loadConfig(CardDAVConfig.class);
       if (res != null) {
         return res;
       }
@@ -346,12 +344,16 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
         final ObjectName objectName = createObjectName("dirhandler", dhn);
 
         final DirHandlerConf dhc =
-                (DirHandlerConf)makeObject(cfg.getConfBeanClass());
+                (DirHandlerConf)makeObject(
+                        cfg.getConfBeanClass(),
+                        objectName.toString(),
+                        dhcs,
+                        dhn);
         if (dhc == null) {
           continue;
         }
 
-        dhc.init(dhcs, cfg, objectName.toString(), dhn);
+        dhc.setConfig(cfg);
 
         register("dirhandler", dhn, dhc);
         getConfig().addDirhandler(dhc.getConfig());

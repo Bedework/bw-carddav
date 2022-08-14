@@ -19,12 +19,19 @@
 package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.server.config.LdapDirHandlerConfig;
+import org.bedework.util.config.ConfigurationStore;
 
 /**
  * @author douglm
  *
  */
 public class LdapDirHandlerConf extends DirHandlerConf implements LdapDirHandlerConfMBean {
+  public LdapDirHandlerConf(final String serviceName,
+                            final ConfigurationStore store,
+                            final String configName) {
+    super(serviceName, store, configName);
+  }
+
   /* ========================================================================
    * Attributes
    * ======================================================================== */
