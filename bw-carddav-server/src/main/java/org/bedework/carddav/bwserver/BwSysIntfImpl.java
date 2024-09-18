@@ -134,7 +134,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   public void init(final HttpServletRequest req,
                    final String account,
                    final CardDAVConfig conf,
-                   final CardDAVContextConfig ctxConf) throws WebdavException {
+                   final CardDAVContextConfig ctxConf) {
     try {
       this.account = account;
       this.conf = conf;
@@ -170,7 +170,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public AccessPrincipal getPrincipal() throws WebdavException {
+  public AccessPrincipal getPrincipal() {
     return getPrincipal(Util.buildPath(true, conf.getUserPrincipalRoot(),
                                        "/", account));
   }
@@ -201,7 +201,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public boolean isPrincipal(final String val) throws WebdavException {
+  public boolean isPrincipal(final String val) {
     try {
       if ((val == null) || val.endsWith(".vcf")) {
         return false;
@@ -219,7 +219,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public AccessPrincipal getPrincipal(final String href) throws WebdavException {
+  public AccessPrincipal getPrincipal(final String href) {
     final String path = pathFromHref(href);
     final AccessPrincipal ap =
             getPrincipalHandler(path, true).getPrincipal(path);
@@ -232,7 +232,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public String makeHref(final AccessPrincipal p) throws WebdavException {
+  public String makeHref(final AccessPrincipal p) {
     try {
       String principalPrefix = p.getPrincipalRef();
 
@@ -260,7 +260,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public Collection<String>getGroups(final String rootUrl,
-                                     final String principalUrl) throws WebdavException {
+                                     final String principalUrl) {
     try {
       return getHandler(rootUrl).getGroups(rootUrl, principalUrl);
     } catch (final WebdavException wde) {
@@ -277,7 +277,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public PrincipalInfo getPrincipalInfo(final AccessPrincipal pcpl,
-                                        final boolean getDirInfo) throws WebdavException {
+                                        final boolean getDirInfo) {
     try {
       if ((pcpl == null) || pcpl.getUnauthenticated()) {
         return null;
@@ -322,7 +322,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     }
   }
 
-  private String getCardPath(final AccessPrincipal pcpl) throws WebdavException {
+  private String getCardPath(final AccessPrincipal pcpl) {
     final DirHandlerConfig<?> dhc = 
             conf.findPrincipalDirhandler(pcpl.getPrincipalRef());
 
@@ -390,8 +390,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public Collection<String> getPrincipalCollectionSet(final String resourceUri)
-          throws WebdavException {
+  public Collection<String> getPrincipalCollectionSet(final String resourceUri) {
     try {
       final ArrayList<String> al = new ArrayList<>();
 
@@ -405,8 +404,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public Collection<PrincipalInfo> getPrincipals(String resourceUri,
-                                               final PrincipalPropertySearch pps)
-          throws WebdavException {
+                                               final PrincipalPropertySearch pps) {
     final ArrayList<PrincipalInfo> principals = new ArrayList<>();
 
     if (pps.applyToPrincipalCollectionSet) {
@@ -475,7 +473,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public void addCard(final String path,
-                      final Card card) throws WebdavException {
+                      final Card card) {
     try {
       if (card.getOwner() == null) {
         card.setOwner(makeOwner());
@@ -491,7 +489,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public void updateCard(final String path,
-                         final Card card) throws WebdavException {
+                         final Card card) {
     try {
       //card.setLastmod();
       getHandler(path).updateCard(path, card);
@@ -505,7 +503,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   @Override
   public GetResult getCards(final CarddavCollection col,
                             final Filter filter,
-                            final GetLimits limits) throws WebdavException {
+                            final GetLimits limits) {
     try {
       return getHandler(col.getPath()).getCards(col.getPath(),
                                                 filter, limits);
@@ -518,7 +516,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public Card getCard(final String path,
-                       final String name) throws WebdavException {
+                       final String name) {
     try {
       return getHandler(path).getCard(path, name);
     } catch (final WebdavException wde) {
@@ -529,7 +527,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public void deleteCard(final CarddavCardNode card) throws WebdavException {
+  public void deleteCard(final CarddavCardNode card) {
     try {
       getHandler(card.getPath()).deleteCard(card.getPath());
     } catch (final WebdavException wde) {
@@ -571,8 +569,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   public CurrentAccess checkAccess(final CarddavCollection ent,
                                    final int desiredAccess,
-                                   final boolean returnResult)
-          throws WebdavException {
+                                   final boolean returnResult) {
     try {
       return EvaluatedAccessCache.evaluateAccess(accessCb,
                                                  getPrincipal(),
@@ -593,7 +590,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
    * @see org.bedework.carddav.server.SysIntf#makeCollection(org.bedework.carddav.server.CarddavCollection, java.lang.String)
    */
   public int makeCollection(final CarddavCollection col,
-                            final String parentPath) throws WebdavException {
+                            final String parentPath) {
     try {
       if (col.getOwner() == null) {
         col.setOwner(makeOwner());
@@ -608,7 +605,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     }
   }
 
-  public void deleteCollection(final WdCollection<?> col) throws WebdavException {
+  public void deleteCollection(final WdCollection<?> col) {
     try {
       getHandler(col.getPath()).deleteCollection(col);
     } catch (final WebdavException wde) {
@@ -622,7 +619,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   public void copyMove(final WdCollection<?> from,
                        final WdCollection<?> to,
                        final boolean copy,
-                       final boolean overwrite) throws WebdavException {
+                       final boolean overwrite) {
     try {
       if (!copy) {
         /* Move the from collection to the new location "to".
@@ -652,7 +649,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
                           final WdCollection<?> to,
                           final String name,
                           final boolean copy,
-                          final boolean overwrite) throws WebdavException {
+                          final boolean overwrite) {
     try {
       return handleStatus(
            getHandler(to.getPath()).copyMove(from,
@@ -667,7 +664,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public CarddavCollection getCollection(final String path) throws WebdavException {
+  public CarddavCollection getCollection(final String path) {
     try {
       return getHandler(path).getCollection(path);
     } catch (final WebdavException wde) {
@@ -678,7 +675,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public void updateCollection(final WdCollection<?> val) throws WebdavException {
+  public void updateCollection(final WdCollection<?> val) {
     try {
       getHandler(val.getPath()).updateCollection(val);
     } catch (final WebdavException wde) {
@@ -692,7 +689,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
    * @see org.bedework.carddav.server.SysIntf#getCollections(org.bedework.carddav.server.CarddavCollection, org.bedework.carddav.server.SysIntf.GetLimits)
    */
   public GetResult getCollections(final CarddavCollection val,
-                                  final GetLimits limits) throws WebdavException {
+                                  final GetLimits limits) {
     try {
       return getHandler(val.getPath()).getCollections(val.getPath(), limits);
     } catch (final WebdavException wde) {
@@ -708,7 +705,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public void putFile(final WdCollection<?> coll,
-                      final CarddavResource val) throws WebdavException {
+                      final CarddavResource val) {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -720,7 +717,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public CarddavResource getFile(final WdCollection<?> coll,
-                            final String name) throws WebdavException {
+                            final String name) {
     try {
       return null;
       //throw new WebdavException("unimplemented");
@@ -732,7 +729,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public void getFileContent(final CarddavResource val) throws WebdavException {
+  public void getFileContent(final CarddavResource val) {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -743,7 +740,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public Collection<CarddavResource> getFiles(final WdCollection<?> coll) throws WebdavException {
+  public Collection<CarddavResource> getFiles(final WdCollection<?> coll) {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -755,7 +752,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
 
   @Override
   public void updateFile(final CarddavResource val,
-                         final boolean updateContent) throws WebdavException {
+                         final boolean updateContent) {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -766,7 +763,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   }
 
   @Override
-  public void deleteFile(final CarddavResource val) throws WebdavException {
+  public void deleteFile(final CarddavResource val) {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -781,7 +778,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
                               final WdCollection<?> to,
                               final String name,
                               final boolean copy,
-                              final boolean overwrite) throws WebdavException {
+                              final boolean overwrite) {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -794,7 +791,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   /* (non-Javadoc)
    * @see org.bedework.carddav.server.SysIntf#getMaxUserEntitySize()
    */
-  public int getMaxUserEntitySize() throws WebdavException {
+  public int getMaxUserEntitySize() {
     try {
       throw new WebdavException("unimplemented");
     } catch (final WebdavException wde) {
@@ -804,7 +801,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     }
   }
 
-  public void close() throws WebdavException {
+  public void close() {
     dhf.close();
   }
 
@@ -812,16 +809,16 @@ public class BwSysIntfImpl implements Logged, SysIntf {
    *                         Private methods
    * ==================================================================== */
 
-  private DirHandler getHandler(final String path) throws WebdavException {
+  private DirHandler getHandler(final String path) {
     return dhf.getHandler(path, account, urlHandler);
   }
 
   private DirHandler getPrincipalHandler(final String href,
-                                         final boolean required) throws WebdavException {
+                                         final boolean required) {
     return dhf.getPrincipalHandler(href, account, urlHandler, required);
   }
 
-  private int handleStatus(final int st) throws WebdavException {
+  private int handleStatus(final int st) {
     if (st == DirHandler.statusOK) {
       return st;
     }
@@ -869,7 +866,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     return val;
   }
 
-  private void ensureProvisioned() throws WebdavException {
+  private void ensureProvisioned() {
     /* Ensure the current account is fully provisioned - i.e. has home and
      * address book.
      */
@@ -938,7 +935,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
   private CarddavCollection makeCdCollection(final String parentPath,
                                              final String name,
                                              final boolean addrBook,
-                                             final AccessPrincipal owner) throws WebdavException {
+                                             final AccessPrincipal owner) {
     final CarddavCollection cdc = new CarddavCollection();
 
     cdc.setAddressBook(addrBook);

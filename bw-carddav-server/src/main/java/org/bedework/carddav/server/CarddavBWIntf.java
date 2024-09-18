@@ -135,13 +135,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param req http request
    * @param methods    HashMap   table of method info
    * @param dumpContent if we want content trace
-   * @throws WebdavException on fatal error
    */
   @Override
   public void init(final WebdavServlet servlet,
                    final HttpServletRequest req,
                    final HashMap<String, MethodInfo> methods,
-                   final boolean dumpContent) throws WebdavException {
+                   final boolean dumpContent) {
     super.init(servlet, req, methods, dumpContent);
 
     final HttpSession session = req.getSession();
@@ -171,10 +170,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
    *
    * @param req http request
    * @param account id
-   * @throws WebdavException on fatal error
    */
   public void reAuth(final HttpServletRequest req,
-                     final String account) throws WebdavException {
+                     final String account) {
     this.account = account;
 
     sysi = newSysIntf();
@@ -185,7 +183,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                 new CardDavAccessXmlCb(sysi));
   }
 
-  private SysIntf newSysIntf() throws WebdavException {
+  private SysIntf newSysIntf() {
     final String className = confBean.getSysintfImpl();
 
     Object o;
@@ -216,7 +214,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public String getDavHeader(final WebdavNsNode node) throws WebdavException {
+  public String getDavHeader(final WebdavNsNode node) {
     return super.getDavHeader(node) + ", addressbook";
   }
 
@@ -296,7 +294,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public boolean canPut(final WebdavNsNode node) throws WebdavException {
+  public boolean canPut(final WebdavNsNode node) {
     final int access;
 
     if (node instanceof CarddavCardNode) {
@@ -319,7 +317,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public boolean getDirectoryBrowsingDisallowed() throws WebdavException {
+  public boolean getDirectoryBrowsingDisallowed() {
     return sysi.getDirectoryBrowsingDisallowed();
   }
 
@@ -329,7 +327,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public void close() throws WebdavException {
+  public void close() {
     sysi.close();
   }
 
@@ -374,7 +372,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   public WebdavNsNode getNode(final String uri,
                               final int existance,
                               final int nodeType,
-                              final boolean addMember) throws WebdavException {
+                              final boolean addMember) {
     return getNodeInt(uri, existance, nodeType, null, null, null);
   }
 
@@ -383,7 +381,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public void delete(final WebdavNsNode node) throws WebdavException {
+  public void delete(final WebdavNsNode node) {
     try {
       final CarddavNode cnode = getBwnode(node);
 
@@ -445,8 +443,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public WebdavNsNode getParent(final WebdavNsNode node)
-      throws WebdavException {
+  public WebdavNsNode getParent(final WebdavNsNode node) {
     return null;
   }
 
@@ -454,7 +451,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   public Content getContent(final HttpServletRequest req,
                             final HttpServletResponse resp,
                             final String contentType,
-                            final WebdavNsNode node) throws WebdavException {
+                            final WebdavNsNode node) {
     try {
       final String accept = req.getHeader("ACCEPT");
       String[] acceptPars = {};
@@ -537,7 +534,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public Content getBinaryContent(final WebdavNsNode node) throws WebdavException {
+  public Content getBinaryContent(final WebdavNsNode node) {
     try {
       if (!node.getAllowsGet()) {
         return null;
@@ -599,7 +596,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                      final WebdavNsNode node,
                                      final String[] contentTypePars,
                                      final Reader contentRdr,
-                                     final IfHeaders ifHeaders) throws WebdavException {
+                                     final IfHeaders ifHeaders) {
     try {
       final PutContentResult pcr = new PutContentResult();
       pcr.node = node;
@@ -649,7 +646,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                            final WebdavNsNode node,
                                            final String[] contentTypePars,
                                            final InputStream contentStream,
-                                           final IfHeaders ifHeaders) throws WebdavException {
+                                           final IfHeaders ifHeaders) {
     try {
       final PutContentResult pcr = new PutContentResult();
       pcr.node = node;
@@ -740,7 +737,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   private boolean putCard(final CarddavCardNode bwnode,
                           final Card card,
-                          final IfHeaders ifHeaders) throws WebdavException {
+                          final IfHeaders ifHeaders) {
     final String entityName = bwnode.getEntityName();
     final CarddavCollection col = bwnode.getWdCollection();
     boolean created = false;
@@ -788,7 +785,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public void create(final WebdavNsNode node) throws WebdavException {
+  public void create(final WebdavNsNode node) {
   }
 
   @Override
@@ -796,7 +793,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public void acceptMkcolContent(final HttpServletRequest req) throws WebdavException {
+  public void acceptMkcolContent(final HttpServletRequest req) {
     throw new WebdavUnsupportedMediaType();
   }
 
@@ -818,12 +815,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
    *
    * @param req       HttpServletRequest
    * @param node             node to create
-   * @throws WebdavException on fatal error
    */
   @Override
   public void makeCollection(final HttpServletRequest req,
                              final HttpServletResponse resp,
-                             final WebdavNsNode node) throws WebdavException {
+                             final WebdavNsNode node) {
     try {
       final CarddavColNode bwnode = (CarddavColNode)getBwnode(node);
 
@@ -859,7 +855,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                        final WebdavNsNode to,
                        final boolean copy,
                        final boolean overwrite,
-                       final int depth) throws WebdavException {
+                       final int depth) {
     if (from instanceof CarddavColNode) {
       copyMoveCollection(resp, (CarddavColNode)from,
                          to, copy, overwrite, depth);
@@ -892,7 +888,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                   final WebdavNsNode to,
                                   final boolean copy,
                                   final boolean overwrite,
-                                  final int depth) throws WebdavException {
+                                  final int depth) {
     if (!(to instanceof CarddavColNode)) {
       throw new WebdavBadRequest();
     }
@@ -927,7 +923,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                  final CarddavCardNode from,
                                  final WebdavNsNode to,
                                  final boolean copy,
-                                 final boolean overwrite) throws WebdavException {
+                                 final boolean overwrite) {
     if (!(to instanceof CarddavCardNode)) {
       throw new WebdavBadRequest();
     }
@@ -956,7 +952,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                final CarddavResourceNode from,
                                final WebdavNsNode to,
                                final boolean copy,
-                               final boolean overwrite) throws WebdavException {
+                               final boolean overwrite) {
     if (!(to instanceof CarddavResourceNode)) {
       throw new WebdavBadRequest();
     }
@@ -984,7 +980,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public boolean specialUri(final HttpServletRequest req,
                             final HttpServletResponse resp,
-                            final String resourceUri) throws WebdavException {
+                            final String resourceUri) {
     return SpecialUri.process(req, resp, resourceUri, getSysi(), config,
                               false, null, null);
   }
@@ -1008,8 +1004,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   @Override
   public Collection<WebdavNsNode> getGroups(final String resourceUri,
-                                            final String principalUrl)
-          throws WebdavException {
+                                            final String principalUrl) {
     final Collection<WebdavNsNode> res = new ArrayList<>();
 
     final Collection<String> hrefs =
@@ -1032,8 +1027,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public Collection<String> getPrincipalCollectionSet(final String resourceUri)
-         throws WebdavException {
+  public Collection<String> getPrincipalCollectionSet(final String resourceUri) {
     final ArrayList<String> al = new ArrayList<>();
 
     for (final String s: getSysi().getPrincipalCollectionSet(resourceUri)) {
@@ -1045,8 +1039,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   @Override
   public Collection<WebdavNsNode> getPrincipals(final String resourceUri,
-                                                final PrincipalPropertySearch pps)
-          throws WebdavException {
+                                                final PrincipalPropertySearch pps) {
     final ArrayList<WebdavNsNode> pnodes = new ArrayList<>();
 
     for (final PrincipalInfo cui: sysi.getPrincipals(resourceUri, pps)) {
@@ -1064,12 +1057,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public String makeUserHref(final String id) throws WebdavException {
+  public String makeUserHref(final String id) {
     return getSysi().makeHref(new User(id));
   }
 
   @Override
-  public void updateAccess(final AclInfo info) throws WebdavException {
+  public void updateAccess(final AclInfo info) {
     final CarddavNode node = (CarddavNode)getNode(info.what,
                                                   WebdavNsIntf.existanceMust,
                                                   WebdavNsIntf.nodeTypeUnknown,
@@ -1086,7 +1079,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public void emitAcl(final WebdavNsNode node) throws WebdavException {
+  public void emitAcl(final WebdavNsNode node) {
     try {
       final Acl acl = node.getCurrentAccess().getAcl();
 
@@ -1099,7 +1092,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   @Override
-  public Collection<String> getAclPrincipalInfo(final WebdavNsNode node) throws WebdavException {
+  public Collection<String> getAclPrincipalInfo(final WebdavNsNode node) {
     try {
       final TreeSet<String> hrefs = new TreeSet<>();
 
@@ -1127,7 +1120,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * ==================================================================== */
 
   @Override
-  public WebdavProperty makeProp(final Element propnode) throws WebdavException {
+  public WebdavProperty makeProp(final Element propnode) {
     if (!XmlUtil.nodeMatches(propnode, CarddavTags.addressData)) {
       return super.makeProp(propnode);
     }
@@ -1167,7 +1160,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
   @Override
   public boolean generatePropValue(final WebdavNsNode node,
                                    WebdavProperty pr,
-                                   final boolean allProp) throws WebdavException {
+                                   final boolean allProp) {
     final QName tag = pr.getTag();
     final String ns = tag.getNamespaceURI();
 
@@ -1274,12 +1267,11 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param limits    to limit result size
    * @param vcardVersion
    * @return Collection of result nodes (empty for no result)
-   * @throws WebdavException on fatal error
    */
   public QueryResult query(final WebdavNsNode wdnode,
                                         final Filter fltr,
                                         final GetLimits limits,
-                                        final String vcardVersion) throws WebdavException {
+                                        final String vcardVersion) {
     try {
       final QueryResult qr = new QueryResult();
       final CarddavNode node = getBwnode(wdnode);
@@ -1379,7 +1371,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @return a valid version
    * @throws WebdavException if version invalid
    */
-  public String getVcardVersion(final String requested) throws WebdavException {
+  public String getVcardVersion(final String requested) {
     if (requested != null) {
       return checkVersion(requested);
     }
@@ -1395,7 +1387,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    *                         Private methods
    * ==================================================================== */
 
-  private String checkVersion(final String version) throws WebdavException {
+  private String checkVersion(final String version) {
     if (!VcardDefs.validVersions.contains(version)) {
       throw new WebdavBadRequest("Bad version " + version);
     }
@@ -1408,7 +1400,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                   final int nodeType,
                                   final CarddavCollection col,
                                   final Card card,
-                                  final CarddavResource r) throws WebdavException {
+                                  final CarddavResource r) {
     if (debug()) {
       debug("About to get node for " + uri);
     }
@@ -1459,7 +1451,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     }
   }
 
-  private void loadConfig(String appName) throws WebdavException {
+  private void loadConfig(String appName) {
     try {
       if ((appName == null) || (appName.length() == 0)) {
         appName = "unknown-app-name";
@@ -1490,7 +1482,6 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param card
    * @param rsrc
    * @return CaldavURI object representing the uri
-   * @throws WebdavException on error
    */
   private CarddavURI findURI(final String theUri,
                             final int existance,
@@ -1498,7 +1489,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                             final boolean addMember,
                             CarddavCollection col,
                             Card card,
-                            CarddavResource rsrc) throws WebdavException {
+                            CarddavResource rsrc) {
     try {
       if ((nodeType == WebdavNsIntf.nodeTypeUnknown) &&
           (existance != WebdavNsIntf.existanceMust)) {
@@ -1674,7 +1665,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    *
    * NormalizeUri was called previously so we have no trailing "/"
    */
-  private SplitResult splitUri(final String uri) throws WebdavException {
+  private SplitResult splitUri(final String uri) {
     final int pos = uri.lastIndexOf("/");
     if (pos < 0) {
       // bad uri

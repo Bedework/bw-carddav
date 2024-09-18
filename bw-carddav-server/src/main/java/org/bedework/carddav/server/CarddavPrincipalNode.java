@@ -57,10 +57,9 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
    * @param cdURI
    * @param sysi
    * @param ap
-   * @throws WebdavException
    */
   public CarddavPrincipalNode(final CarddavURI cdURI, final SysIntf sysi,
-                             final AccessPrincipal ap) throws WebdavException {
+                             final AccessPrincipal ap) {
     super(sysi,
           sysi.getUrlHandler(), cdURI.getPath(),
           ap,
@@ -86,7 +85,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   @Override
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,
-                                       final boolean allProp) throws WebdavException {
+                                       final boolean allProp) {
     String ns = tag.getNamespaceURI();
     XmlEmit xml = intf.getXmlEmit();
 
@@ -128,7 +127,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   }
 
   @Override
-  public Collection<PropertyTagEntry> getPropertyNames() throws WebdavException {
+  public Collection<PropertyTagEntry> getPropertyNames() {
     Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
 
     res.addAll(super.getPropertyNames());
@@ -137,7 +136,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
     return res;
   }
 
-  private PrincipalInfo getPinfo() throws WebdavException {
+  private PrincipalInfo getPinfo() {
     if (pinfo != null) {
       return pinfo;
     }

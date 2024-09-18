@@ -97,10 +97,9 @@ public class DirHandlerFactory {
    * @param account of caller
    * @param urlHandler to handle urls.
    * @return set of handlers.
-   * @throws WebdavException
    */
   public List<DirHandler> getHandlers(final String account,
-                                     final UrlHandler urlHandler) throws WebdavException {
+                                     final UrlHandler urlHandler) {
     final Set<DirHandlerConfig> configs = conf.getDirHandlerConfigs();
 
     if (configs == null) {
@@ -118,11 +117,10 @@ public class DirHandlerFactory {
 
   /**
    * @return DirHandler
-   * @throws WebdavException
    */
   public DirHandler getHandler(final String path,
                                final String account,
-                               final UrlHandler urlHandler) throws WebdavException {
+                               final UrlHandler urlHandler) {
     /* First determine which configuration handles this path */
     final DirHandlerConfig dhc = conf.findDirhandler(path);
 
@@ -135,12 +133,11 @@ public class DirHandlerFactory {
 
   /**
    * @return DirHandler
-   * @throws WebdavException
    */
   public DirHandler getPrincipalHandler(final String principalHref,
                                         final String account,
                                         final UrlHandler urlHandler,
-                                        final boolean required) throws WebdavException {
+                                        final boolean required) {
     /* First determine which configuration handles this path */
     final DirHandlerConfig dhc = conf.findPrincipalDirhandler(principalHref);
 
@@ -155,7 +152,7 @@ public class DirHandlerFactory {
     return getHandler(dhc, account, urlHandler);
   }
 
-  public void close() throws WebdavException {
+  public void close() {
     for (final DirHandler handler: openHandlers) {
       if (handler.isOpen()) {
         handler.close();
@@ -167,7 +164,7 @@ public class DirHandlerFactory {
 
   private DirHandler getHandler(final DirHandlerConfig dhc,
                                 final String account,
-                                final UrlHandler urlHandler) throws WebdavException {
+                                final UrlHandler urlHandler) {
     try {
       DirHandler dh = null;
 
@@ -203,7 +200,6 @@ public class DirHandlerFactory {
   /**
    * @param name class name of handler
    * @return DirHandler
-   * @throws WebdavException
    */
   private DirHandler getHandlerObject(final String name) throws WebdavException  {
     try {

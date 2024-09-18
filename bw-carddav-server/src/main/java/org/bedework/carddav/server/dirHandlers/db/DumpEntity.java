@@ -55,10 +55,9 @@ public class DumpEntity<T> implements Logged {
    * up.
    *
    * @return boolean true to continue with dump.
-   * @throws WebdavException
    */
   @NoWrap
-  public boolean hasDumpValue() throws WebdavException {
+  public boolean hasDumpValue() {
     return true;
   }
 
@@ -66,10 +65,9 @@ public class DumpEntity<T> implements Logged {
    *
    * @param xml
    * @param dtype
-   * @throws WebdavException
    */
   @NoWrap
-  public void dump(final XmlEmit xml, final DumpType dtype) throws WebdavException {
+  public void dump(final XmlEmit xml, final DumpType dtype) {
     dump(xml, dtype, false);
   }
 
@@ -78,11 +76,10 @@ public class DumpEntity<T> implements Logged {
    * @param xml
    * @param dtype
    * @param fromCollection  true if the value is a member of a collection
-   * @throws WebdavException
    */
   @NoWrap
   public void dump(final XmlEmit xml, final DumpType dtype,
-                   final boolean fromCollection) throws WebdavException {
+                   final boolean fromCollection) {
     if (!hasDumpValue()) {
       return;
     }
@@ -244,7 +241,7 @@ public class DumpEntity<T> implements Logged {
     return true;
   }
 
-  private QName startElement(final XmlEmit xml, final Class c, final Dump d) throws WebdavException {
+  private QName startElement(final XmlEmit xml, final Class c, final Dump d) {
     try {
       QName qn;
 
@@ -262,7 +259,7 @@ public class DumpEntity<T> implements Logged {
   }
 
   private QName startElement(final XmlEmit xml, final Method m, final Dump d,
-                             final boolean fromCollection) throws WebdavException {
+                             final boolean fromCollection) {
     try {
       QName qn = getTag(m, d, fromCollection);
 
@@ -303,7 +300,7 @@ public class DumpEntity<T> implements Logged {
 
   private void property(final XmlEmit xml, final Method m,
                         final Dump d, final Object p,
-                        final boolean fromCollection) throws WebdavException {
+                        final boolean fromCollection) {
     if (p == null) {
       return;
     }
@@ -334,7 +331,7 @@ public class DumpEntity<T> implements Logged {
     }
   }
 
-  private void closeElement(final XmlEmit xml, final QName qn) throws WebdavException {
+  private void closeElement(final XmlEmit xml, final QName qn) {
     try {
       xml.closeTag(qn);
     } catch (Throwable t) {
@@ -355,7 +352,7 @@ public class DumpEntity<T> implements Logged {
   }
 
   private Collection<ComparableMethod> findGetters(final Dump d,
-                                                   final DumpType dt) throws WebdavException {
+                                                   final DumpType dt) {
     Method[] meths = getClass().getMethods();
     Collection<ComparableMethod> getters = new TreeSet<ComparableMethod>();
     Collection<String> keyMethods = null;

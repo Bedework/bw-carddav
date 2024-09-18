@@ -49,9 +49,8 @@ public class CarddavCollection extends WdCollectionBase<CarddavCollection> {
   private int prevSequence;
 
   /**
-   * @throws WebdavException
    */
-  public CarddavCollection() throws WebdavException {
+  public CarddavCollection() {
     super();
   }
 

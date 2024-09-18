@@ -78,7 +78,7 @@ public class DbFilter {
     params.add(val);
   }
 
-  void parReplace(final HibSession sess) throws WebdavException {
+  void parReplace(final HibSession sess) {
     for (int i = 0; i < params.size(); i++) {
       try {
         sess.setString(parPrefix + i, params.get(i));

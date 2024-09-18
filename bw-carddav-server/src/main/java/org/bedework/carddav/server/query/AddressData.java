@@ -118,9 +118,8 @@ public class AddressData extends WebdavProperty implements Logged {
   /** The given node must be the Filter element
    *
    * @param nd filter element
-   * @throws WebdavException
    */
-  public void parse(final Node nd) throws WebdavException {
+  public void parse(final Node nd) {
     /* Either empty - show everything or
               comp + optional (expand-recurrence-set or
                                limit-recurrence-set)
@@ -193,11 +192,10 @@ public class AddressData extends WebdavProperty implements Logged {
    * @param wdnode the node
    * @param xml output
    * @param contentType - first element from content type or null
-   * @throws WebdavException
    */
   public void process(final WebdavNsNode wdnode,
                       final XmlEmit xml,
-                      final String contentType) throws WebdavException {
+                      final String contentType) {
     if (!(wdnode instanceof CarddavCardNode)) {
       return;
     }
@@ -222,7 +220,7 @@ public class AddressData extends WebdavProperty implements Logged {
    * properties.
    */
   private String transformVcard(final Card card,
-                                final Collection<Prop> props)  throws WebdavException {
+                                final Collection<Prop> props) {
     try {
       final Card ncard = new Card();
 
@@ -282,7 +280,7 @@ public class AddressData extends WebdavProperty implements Logged {
    *                   Private parsing methods
    * ==================================================================== */
 
-  private Prop parseProp(final Node nd) throws WebdavException {
+  private Prop parseProp(final Node nd) {
     NamedNodeMap nnm = nd.getAttributes();
 
     if ((nnm == null) || (nnm.getLength() == 0)) {
@@ -315,7 +313,7 @@ public class AddressData extends WebdavProperty implements Logged {
     return pr;
   }
 
-  private Element[] getChildren(final Node nd) throws WebdavException {
+  private Element[] getChildren(final Node nd) {
     try {
       return XmlUtil.getElementsArray(nd);
     } catch (Throwable t) {

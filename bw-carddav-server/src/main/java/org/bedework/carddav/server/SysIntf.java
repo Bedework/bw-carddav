@@ -56,27 +56,25 @@ public interface SysIntf extends WdSysIntf {
    * @param account
    * @param conf  global service configuration
    * @param ctxConf  per application type configuration
-   * @throws WebdavException
    */
   public void init(HttpServletRequest req,
                    String account,
                    CardDAVConfig conf,
-                   CardDAVContextConfig ctxConf) throws WebdavException;
+                   CardDAVContextConfig ctxConf);
 
   /** Return the current principal
   *
   * @return String
   * @throws WebdavException
   */
- public AccessPrincipal getPrincipal() throws WebdavException;
+ public AccessPrincipal getPrincipal();
 
   /** Get a property handler
    *
    * @param ptype
    * @return PropertyHandler
-   * @throws WebdavException
    */
-  public PropertyHandler getPropertyHandler(PropertyType ptype) throws WebdavException;
+  public PropertyHandler getPropertyHandler(PropertyType ptype);
 
   /* *
    * @return String url prefix derived from request.
@@ -92,25 +90,22 @@ public interface SysIntf extends WdSysIntf {
    *
    * @param val
    * @return true if it's a (possible) principal
-   * @throws WebdavException
    */
-  public boolean isPrincipal(String val) throws WebdavException;
+  public boolean isPrincipal(String val);
 
   /** Return principal information for the given href. Also tests for a valid
    * principal.
    *
    * @param href
    * @return AccessPrincipal
-   * @throws WebdavException
    */
-  public AccessPrincipal getPrincipal(String href) throws WebdavException;
+  public AccessPrincipal getPrincipal(String href);
 
   /**
    * @param p
    * @return String href
-   * @throws WebdavException
    */
-  public String makeHref(AccessPrincipal p) throws WebdavException;
+  public String makeHref(AccessPrincipal p);
 
   /** The urls should be principal urls. principalUrl can null for the current user.
    * The result is a collection of principal urls of which the given url is a
@@ -122,17 +117,16 @@ public interface SysIntf extends WdSysIntf {
    * @param rootUrl - url to base search on.
    * @param principalUrl - url of principal or null for current user
    * @return Collection of urls - always non-null
-   * @throws WebdavException
    */
   public Collection<String>getGroups(String rootUrl,
-                                     String principalUrl) throws WebdavException;
+                                     String principalUrl);
 
   /** Do we allow browsing of directories?
    *
    * @return boolean true if browsing disallowed
    * @throws WebdavException  for errors
    */
-  public boolean getDirectoryBrowsingDisallowed() throws WebdavException;
+  public boolean getDirectoryBrowsingDisallowed();
 
   /**
    * @author Mike Douglass
@@ -195,14 +189,13 @@ public interface SysIntf extends WdSysIntf {
    * @throws WebdavException  for errors
    */
   public PrincipalInfo getPrincipalInfo(AccessPrincipal pcpl,
-                                        boolean getDirInfo) throws WebdavException;
+                                        boolean getDirInfo);
 
   /** Given a uri returns a Collection of uris that allow search operations on
    * principals for that resource.
    *
    * @param resourceUri
    * @return Collection of String
-   * @throws WebdavException
    */
   public Collection<String> getPrincipalCollectionSet(String resourceUri)
          throws WebdavException;
@@ -212,7 +205,6 @@ public interface SysIntf extends WdSysIntf {
    * @param resourceUri
    * @param pps Collection of PrincipalPropertySearch
    * @return Collection of CalUserInfo
-   * @throws WebdavException
    */
   public Collection<PrincipalInfo> getPrincipals(String resourceUri,
                                   PrincipalPropertySearch pps)
@@ -226,19 +218,17 @@ public interface SysIntf extends WdSysIntf {
    *
    * @param path       to collection
    * @param card         Object to be added
-   * @throws WebdavException
    */
  public void addCard(String path,
-                     Card card) throws WebdavException;
+                     Card card);
 
   /** Update a card.
    *
    * @param path       to collection
    * @param card         Object to be updated
-   * @throws WebdavException
    */
   public void updateCard(String path,
-                         Card card) throws WebdavException;
+                         Card card);
 
   /** Return the cards for the current user in the given collection using the
    * supplied filter.
@@ -247,35 +237,31 @@ public interface SysIntf extends WdSysIntf {
    * @param filter - if non-null defines a search filter
    * @param limits - applied to this query
    * @return Collection  populated card objects
-   * @throws WebdavException
    */
   public GetResult getCards(CarddavCollection col,
                             Filter filter,
-                            GetLimits limits) throws WebdavException;
+                            GetLimits limits);
 
   /** Get card given the collection and String name.
    *
    * @param path       to collection
    * @param name       String possible name
    * @return Vcard or null
-   * @throws WebdavException
    */
   public Card getCard(String path, String name)
           throws WebdavException;
 
   /**
    * @param card
-   * @throws WebdavException
    */
-  public void deleteCard(CarddavCardNode card) throws WebdavException;
+  public void deleteCard(CarddavCardNode card);
 
   /**
    * @param card
    * @param acl
-   * @throws WebdavException
    */
   public void updateAccess(CarddavCardNode card,
-                           Acl acl) throws WebdavException;
+                           Acl acl);
 
   /** Check the access for the given entity. Returns the current access
    * or null or optionally throws a no access exception.
@@ -294,25 +280,22 @@ public interface SysIntf extends WdSysIntf {
   /**
    * @param col
    * @param acl
-   * @throws WebdavException
    */
   public void updateAccess(CarddavColNode col,
-                           Acl acl) throws WebdavException;
+                           Acl acl);
 
   /**
    * @param col   Initialised collection object
    * @param parentPath
    * @return int status
-   * @throws WebdavException
    */
   public int makeCollection(CarddavCollection col,
-                            String parentPath) throws WebdavException;
+                            String parentPath);
 
   /**
    * @param cal
-   * @throws WebdavException
    */
-  public void deleteCollection(WdCollection<?> cal) throws WebdavException;
+  public void deleteCollection(WdCollection<?> cal);
 
   /** Copy or move the collection to another location.
    * Status is set on return
@@ -321,12 +304,11 @@ public interface SysIntf extends WdSysIntf {
    * @param to        Destination collection
    * @param copy      true for copying
    * @param overwrite destination exists
-   * @throws WebdavException
    */
   public void copyMove(WdCollection<?> from,
                        WdCollection<?> to,
                        boolean copy,
-                       boolean overwrite) throws WebdavException;
+                       boolean overwrite);
 
   /** Copy or move the given entity to the destination collection with the given name.
    * Status is set on return
@@ -337,28 +319,25 @@ public interface SysIntf extends WdSysIntf {
    * @param copy      true for copying
    * @param overwrite destination exists
    * @return true if destination created (i.e. not updated)
-   * @throws WebdavException
    */
   public boolean copyMove(Card from,
                           WdCollection<?> to,
                           String name,
                           boolean copy,
-                          boolean overwrite) throws WebdavException;
+                          boolean overwrite);
 
   /** Get a collection given the path
    *
    * @param  path     String path of collection
    * @return WdCollection null for unknown collection
-   * @throws WebdavException
    */
-  public CarddavCollection getCollection(String path) throws WebdavException;
+  public CarddavCollection getCollection(String path);
 
   /** Update a collection.
    *
    * @param val           updated WdCollection object
-   * @throws WebdavException
    */
-  public void updateCollection(WdCollection<?> val) throws WebdavException;
+  public void updateCollection(WdCollection<?> val);
 
   /** Returns children of the given collection to which the current user has
    * some access.
@@ -366,7 +345,6 @@ public interface SysIntf extends WdSysIntf {
    * @param  col          parent collection
    * @param limits
    * @return GetResult    with collection of WdCollection
-   * @throws WebdavException
    */
   public GetResult getCollections(CarddavCollection col,
                                   GetLimits limits)
@@ -380,52 +358,46 @@ public interface SysIntf extends WdSysIntf {
    *
    * @param coll         WdCollection defining recipient collection
    * @param val          BwResource
-   * @throws WebdavException
    */
   public void putFile(WdCollection<?> coll,
-                      CarddavResource val) throws WebdavException;
+                      CarddavResource val);
 
   /** GET a file.
    *
    * @param coll         WdCollection containing file
    * @param name
    * @return BwResource
-   * @throws WebdavException
    */
   public CarddavResource getFile(WdCollection<?> coll,
-                            String name) throws WebdavException;
+                            String name);
 
   /** Get resource content given the resource. It will be set in the resource
    * object
    *
    * @param  val BwResource
-   * @throws WebdavException
    */
-  public void getFileContent(CarddavResource val) throws WebdavException;
+  public void getFileContent(CarddavResource val);
 
   /** Get the files in a collection.
    *
    * @param coll         WdCollection containing file
    * @return Collection of BwResource
-   * @throws WebdavException
    */
-  public Collection<CarddavResource> getFiles(WdCollection<?> coll) throws WebdavException;
+  public Collection<CarddavResource> getFiles(WdCollection<?> coll);
 
   /** Update a file.
    *
    * @param val          BwResource
    * @param updateContent if true we also update the content
-   * @throws WebdavException
    */
   public void updateFile(CarddavResource val,
-                         boolean updateContent) throws WebdavException;
+                         boolean updateContent);
 
   /** Delete a file.
    *
    * @param val          BwResource
-   * @throws WebdavException
    */
-  public void deleteFile(CarddavResource val) throws WebdavException;
+  public void deleteFile(CarddavResource val);
 
   /** Copy or move the given file to the destination collection with the given name.
    * Status is set on return
@@ -436,24 +408,21 @@ public interface SysIntf extends WdSysIntf {
    * @param copy      true for copying
    * @param overwrite destination exists
    * @return true if destination created (i.e. not updated)
-   * @throws WebdavException
    */
   public boolean copyMoveFile(CarddavResource from,
                               WdCollection<?> to,
                               String name,
                               boolean copy,
-                              boolean overwrite) throws WebdavException;
+                              boolean overwrite);
 
   /** Max size for an entity
    *
    * @return int
-   * @throws WebdavException
    */
-  public int getMaxUserEntitySize() throws WebdavException;
+  public int getMaxUserEntitySize();
 
   /** End any transactions.
    *
-   * @throws WebdavException
    */
-  public void close() throws WebdavException;
+  public void close();
 }

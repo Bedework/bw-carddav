@@ -56,7 +56,6 @@ public class SpecialUri {
    * @param fromGetAccept - true if this is GET with ACCEPT targeted at address book
    * @param accept - desired format
    * @return true for a special uri
-   * @throws WebdavException
    */
   public static boolean process(final HttpServletRequest req,
                                 final HttpServletResponse resp,
@@ -65,7 +64,7 @@ public class SpecialUri {
                                 final CardDAVContextConfig config,
                                 final boolean fromGetAccept,
                                 final String accept,
-                                final String vcardVersion) throws WebdavException {
+                                final String vcardVersion) {
     String addrbook = null;
     String format;
 
@@ -165,7 +164,7 @@ public class SpecialUri {
   }
 
   private static void startResponse(final HttpServletResponse resp,
-                                    final String format) throws WebdavException {
+                                    final String format) {
     if (format.equals(formatVcard)) {
       return;
     }
@@ -182,7 +181,7 @@ public class SpecialUri {
                                     final CarddavCollection col,
                                     final GetLimits limits,
                                     final CardDAVContextConfig config,
-                                    final SysIntf sysi) throws WebdavException {
+                                    final SysIntf sysi) {
     String text = req.getParameter("q");
 
     if (text == null) {
@@ -235,14 +234,14 @@ public class SpecialUri {
                                   final CarddavCollection col,
                                   final GetLimits limits,
                                   final CardDAVContextConfig config,
-                                  final SysIntf sysi) throws WebdavException {
+                                  final SysIntf sysi) {
     return sysi.getCards(col, null, limits);
   }
 
   private static void doOutput(final HttpServletResponse resp,
                                final Collection<Card> cards,
                                final String format,
-                               final String vcardVersion) throws WebdavException {
+                               final String vcardVersion) {
     try {
       final Writer wtr = resp.getWriter();
 
@@ -279,7 +278,7 @@ public class SpecialUri {
 
   private static void setStatus(final HttpServletResponse resp,
                                 final int status,
-                                final String format) throws WebdavException {
+                                final String format) {
     try {
       if (format.equals(formatVcard)) {
         resp.setStatus(status);
@@ -298,7 +297,7 @@ public class SpecialUri {
   }
 
   private static void endResponse(final HttpServletResponse resp,
-                                    final String format) throws WebdavException {
+                                    final String format) {
     if (format.equals(formatVcard)) {
       return;
     }

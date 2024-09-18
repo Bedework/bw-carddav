@@ -79,13 +79,12 @@ public class CarddavReportMethod extends ReportMethod {
   /* We process the parsed document and produce a response
    *
    * @param doc
-   * @throws WebdavException
    */
   @Override
   protected void process(final Document doc,
                          final int depth,
                          final HttpServletRequest req,
-                         final HttpServletResponse resp) throws WebdavException {
+                         final HttpServletResponse resp) {
     reportType = getCarddavReportType(doc);
 
     if (reportType < 0) {
@@ -102,9 +101,8 @@ public class CarddavReportMethod extends ReportMethod {
    *
    * @param doc
    * @return index or <0 for unknown.
-   * @throws WebdavException
    */
-  protected int getCarddavReportType(final Document doc) throws WebdavException {
+  protected int getCarddavReportType(final Document doc) {
     try {
       Element root = doc.getDocumentElement();
 
@@ -135,9 +133,8 @@ public class CarddavReportMethod extends ReportMethod {
    * objects to process.
    *
    * @param doc
-   * @throws WebdavException
    */
-  private void processDoc(final Document doc) throws WebdavException {
+  private void processDoc(final Document doc) {
     try {
       Element root = doc.getDocumentElement();
 
@@ -307,11 +304,10 @@ public class CarddavReportMethod extends ReportMethod {
    * @param req
    * @param resp
    * @param depth
-   * @throws WebdavException
    */
   public void processResp(final HttpServletRequest req,
                           final HttpServletResponse resp,
-                          final int depth) throws WebdavException {
+                          final int depth) {
     resp.setStatus(WebdavStatusCode.SC_MULTI_STATUS);
     resp.setContentType("text/xml; charset=UTF-8");
 
@@ -387,7 +383,7 @@ public class CarddavReportMethod extends ReportMethod {
     flush();
   }
 
-  private String getVcardVersion() throws WebdavException {
+  private String getVcardVersion() {
     String reqv = null;
     if (adrdata != null) {
       reqv = adrdata.getVersion();
@@ -398,7 +394,7 @@ public class CarddavReportMethod extends ReportMethod {
 
   private QueryResult doNodeAndChildren(final WebdavNsNode node,
                                         int curDepth,
-                                        final int maxDepth) throws WebdavException {
+                                        final int maxDepth) {
     if (node instanceof CarddavCardNode) {
       // Targeted directly at component
       QueryResult qr = new QueryResult();

@@ -52,12 +52,12 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   @Override
   public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
-                   final UrlHandler urlHandler) throws WebdavException {
+                   final UrlHandler urlHandler) {
     super.init(cdConfig, dhConfig, urlHandler);
   }
 
   @Override
-  public boolean exportData(final String dataOutPath) throws WebdavException {
+  public boolean exportData(final String dataOutPath) {
     final File f = new File(dataOutPath);
 
     final File dumpDir = makeDir(f, dhConfig.getPathPrefix());
@@ -84,7 +84,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   private File makeDir(final File parent,
-                       final String name) throws WebdavException {
+                       final String name) {
     if (!parent.isDirectory()) {
       throw new WebdavException(parent.getAbsolutePath() +
                                         " is not a directory");
@@ -101,7 +101,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   private void dumpUserDir(final CarddavCollection col,
-                           final File dumpDir) throws WebdavException {
+                           final File dumpDir) {
     final File userDumpDir = makeDir(dumpDir, col.getName());
 
     if (col.getAddressBook()) {
@@ -159,13 +159,13 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    * ==================================================================== */
 
   @Override
-  public Card getPrincipalCard(final String href) throws WebdavException {
+  public Card getPrincipalCard(final String href) {
     throw new WebdavException("unimplemented");
   }
 
   @Override
   public Collection<String>getGroups(final String rootUrl,
-                                     final String principalUrl) throws WebdavException {
+                                     final String principalUrl) {
     throw new WebdavException("unimplemented");
   }
 
@@ -175,7 +175,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
   @Override
   public void addCard(final String path,
-                      final Card card) throws WebdavException {
+                      final Card card) {
     if (card.getUid() == null) {
       throw new WebdavBadRequest();
     }
@@ -221,7 +221,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
   @Override
   public void updateCard(final String path,
-                         final Card card) throws WebdavException {
+                         final Card card) {
     if (card.getName() == null) {
       throw new WebdavBadRequest();
     }
@@ -260,7 +260,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   @Override
-  public void deleteCard(final String path) throws WebdavException {
+  public void deleteCard(final String path) {
     final DbCard dcd = getDbCard(path);
 
     if (dcd == null) {
@@ -287,7 +287,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
   @Override
   public int makeCollection(final CarddavCollection col,
-                            final String parentPath) throws WebdavException {
+                            final String parentPath) {
     final boolean home = parentPath.equals(userHomeRoot);
 
     try {
@@ -380,13 +380,13 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   @Override
-  public void deleteCollection(final WdCollection<?> col) throws WebdavException {
+  public void deleteCollection(final WdCollection<?> col) {
     deleteDbCollection(col.getPath());
   }
 
   @Override
   public int rename(final WdCollection col,
-                    final String newName) throws WebdavException {
+                    final String newName) {
     throw new WebdavException("unimplemented");
   }
 
@@ -395,16 +395,16 @@ public class DbAddrBookDirHandler extends DbDirHandler {
                       final String toPath,
                       final String name,
                       final boolean copy,
-                      final boolean overwrite) throws WebdavException {
+                      final boolean overwrite) {
     throw new WebdavException("unimplemented");
   }
 
   @Override
-  public void updateCollection(final WdCollection val) throws WebdavException {
+  public void updateCollection(final WdCollection val) {
     throw new WebdavException("unimplemented");
   }
 
-  private boolean create(final DbCard card) throws WebdavException {
+  private boolean create(final DbCard card) {
     card.setDtstamps();
     card.output(); // Ensure string form exists
 

@@ -63,24 +63,21 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param cdConfig config
    * @param dhConfig handler config
    * @param urlHandler - to allow creation of urls in returned objects.
-   * @throws WebdavException
    */
   void init(CardDAVConfigI cdConfig,
             DirHandlerConfig dhConfig,
-            UrlHandler urlHandler) throws WebdavException;
+            UrlHandler urlHandler);
 
   /** Open the handler.
    *
    * @param account - null for anonymous
-   * @throws WebdavException
    */
-  void open(String account) throws WebdavException;
+  void open(String account);
 
   /** Close the handler
    *
-   * @throws WebdavException
    */
-  void close() throws WebdavException;
+  void close();
 
   /**
    * @return boolean
@@ -114,9 +111,8 @@ public interface DirHandler /*extends DynamicMBean */ {
   /**
    * @param dataOutPath where to put data - create sub-directories under this
    * @return false if not exportable.
-   * @throws WebdavException
    */
-  boolean exportData(String dataOutPath) throws WebdavException;
+  boolean exportData(String dataOutPath);
 
   /* ====================================================================
    *                   Principals
@@ -126,35 +122,31 @@ public interface DirHandler /*extends DynamicMBean */ {
    *
    * @param val possible href
    * @return true if it's a (possible) principal
-   * @throws WebdavException
    */
-  boolean isPrincipal(String val) throws WebdavException;
+  boolean isPrincipal(String val);
 
   /** Return principal information for the given path. Also tests for a valid
    * principal. Return null or set PrincipalInfo.valid = false for no principal.
    *
    * @param path principal href
    * @return AccessPrincipal
-   * @throws WebdavException
    */
-  AccessPrincipal getPrincipal(String path) throws WebdavException;
+  AccessPrincipal getPrincipal(String path);
 
   /** Return a card for the principal with the given path. Also tests for a valid
    * principal. Return null for no principal.
    *
    * @param path principal href
    * @return Vcard
-   * @throws WebdavException
    */
   @SuppressWarnings("UnusedDeclaration")
-  Card getPrincipalCard(String path) throws WebdavException;
+  Card getPrincipalCard(String path);
 
   /**
    * @param p principal
    * @return String principal uri
-   * @throws WebdavException
    */
-  String makePrincipalUri(AccessPrincipal p) throws WebdavException;
+  String makePrincipalUri(AccessPrincipal p);
 
   /** The urls should be principal urls. principalUrl can null for the current user.
    * The result is a collection of principal urls of which the given url is a
@@ -166,26 +158,23 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param rootUrl - url to base search on.
    * @param principalUrl - url of principal or null for current user
    * @return Collection of urls - always non-null
-   * @throws WebdavException
    */
   Collection<String>getGroups(String rootUrl,
-                              String principalUrl) throws WebdavException;
+                              String principalUrl);
 
   /** Return the user home for the current principal
    *
    * @return String home
-   * @throws WebdavException
    */
   @SuppressWarnings("UnusedDeclaration")
-  String getprincipalHome() throws WebdavException;
+  String getprincipalHome();
 
   /** Return the user home for the given principal
    *
    * @param p principal
    * @return String home
-   * @throws WebdavException
    */
-  String getprincipalHome(AccessPrincipal p) throws WebdavException;
+  String getprincipalHome(AccessPrincipal p);
 
   /* ====================================================================
    *                   Cards
@@ -195,26 +184,23 @@ public interface DirHandler /*extends DynamicMBean */ {
    *
    * @param path       to collection
    * @param card         Object to be added
-   * @throws WebdavException
    */
   void addCard(String path,
-               Card card) throws WebdavException;
+               Card card);
 
   /** Update a card.
    *
    * @param path       to collection
    * @param card         Object to be updated
-   * @throws WebdavException
    */
   void updateCard(String path,
-                  Card card) throws WebdavException;
+                  Card card);
 
   /** Get card given the collection and String name.
    *
    * @param path       to collection
    * @param name        String possible name
    * @return Vcard or null
-   * @throws WebdavException
    */
   Card getCard(String path, String name)
           throws WebdavException;
@@ -224,7 +210,6 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param path       to collection
    * @param uid        UID value
    * @return Vcard or null
-   * @throws WebdavException
    */
   Card getCardByUid(String path, String uid)
           throws WebdavException;
@@ -236,24 +221,21 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param filter - if non-null defines a search filter
    * @param limits - applied to this query - possibly null
    * @return GetResult with populated card objects
-   * @throws WebdavException
    */
   GetResult getCards(String path,
                      Filter filter,
-                     GetLimits limits) throws WebdavException;
+                     GetLimits limits);
 
   /**
    * @param path to card
-   * @throws WebdavException
    */
-  void deleteCard(String path) throws WebdavException;
+  void deleteCard(String path);
 
   /**
    * @param path to collection
    * @return iterator over cards in that collection or null if not allowed
-   * @throws WebdavException
    */
-  Iterator<Card> getAll(String path) throws WebdavException;
+  Iterator<Card> getAll(String path);
 
   /* ====================================================================
    *                   Collections
@@ -263,25 +245,22 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param col   Initialised collection object
    * @param parentPath of its parent
    * @return int status
-   * @throws WebdavException
    */
   int makeCollection(CarddavCollection col,
-                     String parentPath) throws WebdavException;
+                     String parentPath);
 
   /**
    * @param col webdav collection object
-   * @throws WebdavException
    */
-  void deleteCollection(WdCollection<?> col) throws WebdavException;
+  void deleteCollection(WdCollection<?> col);
 
   /**
    * @param col   Initialised collection object
    * @param newName the name to set
    * @return int status
-   * @throws WebdavException
    */
   int rename(WdCollection col,
-             String newName) throws WebdavException;
+             String newName);
 
   /** Copy or move the given entity to the destination collection with the given name.
    * Status is set on return
@@ -292,28 +271,25 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param copy      true for copying
    * @param overwrite destination exists
    * @return true if destination created (i.e. not updated)
-   * @throws WebdavException
    */
   int copyMove(Card from,
                String toPath,
                String name,
                boolean copy,
-               boolean overwrite) throws WebdavException;
+               boolean overwrite);
 
   /** Get a collection given the path
    *
    * @param  path     String path of collection
    * @return CarddavCollection null for unknown collection
-   * @throws WebdavException
    */
-  CarddavCollection getCollection(String path) throws WebdavException;
+  CarddavCollection getCollection(String path);
 
   /** Update a collection.
    *
    * @param val           updated WdCollection object
-   * @throws WebdavException
    */
-  void updateCollection(WdCollection val) throws WebdavException;
+  void updateCollection(WdCollection val);
 
   /** Returns children of the given collection to which the current user has
    * some access.
@@ -321,18 +297,16 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param  path          parent collection path
    * @param limits - applied to this query - possibly null
    * @return Collection   of CarddavCollection
-   * @throws WebdavException
    */
   GetResult getCollections(String path,
-                           GetLimits limits) throws WebdavException;
+                           GetLimits limits);
 
   interface CollectionBatcher {
     /** Call repeatedly until empty collection returned
      *
      * @return next batch of collections or empty for no more
-     * @throws WebdavException
-     */
-    Collection<CarddavCollection> next() throws WebdavException;
+       */
+    Collection<CarddavCollection> next();
   }
 
   /** Return all the children of the current collection to which the
@@ -341,7 +315,6 @@ public interface DirHandler /*extends DynamicMBean */ {
    *
    * @param path - to parent.
    * @return batcher - null for unsupported
-   * @throws WebdavException
    */
   CollectionBatcher getCollections(final String path)  throws WebdavException;
 }

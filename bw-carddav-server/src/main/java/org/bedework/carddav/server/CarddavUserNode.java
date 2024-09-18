@@ -31,10 +31,9 @@ public class CarddavUserNode extends CarddavPrincipalNode {
    * @param cdURI
    * @param sysi
    * @param ap
-   * @throws WebdavException
    */
   public CarddavUserNode(final CarddavURI cdURI, final SysIntf sysi,
-                         final AccessPrincipal ap) throws WebdavException {
+                         final AccessPrincipal ap) {
     super(cdURI, sysi, ap);
   }
 }

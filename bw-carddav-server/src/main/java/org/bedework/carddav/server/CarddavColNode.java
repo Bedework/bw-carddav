@@ -82,10 +82,9 @@ public class CarddavColNode extends CarddavNode {
   /**
    * @param cdURI
    * @param sysi
-   * @throws WebdavException
    */
   public CarddavColNode(final CarddavURI cdURI,
-                        final SysIntf sysi) throws WebdavException {
+                        final SysIntf sysi) {
     super(cdURI, sysi);
 
     col = cdURI.getCol();
@@ -146,7 +145,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   @Override
-  public QueryResult getChildren(final GetLimits limits) throws WebdavException {
+  public QueryResult getChildren(final GetLimits limits) {
     /* For the moment we're going to do this the inefficient way.
        We really need to have calendar defs that can be expressed as a search
        allowing us to retrieve all the ids of objects within a calendar.
@@ -195,7 +194,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   @Override
-  public void update() throws WebdavException {
+  public void update() {
     // ALIAS probably not unaliasing here
     if (col != null) {
       getSysi().updateCollection(col);
@@ -246,7 +245,7 @@ public class CarddavColNode extends CarddavNode {
   }
 
   @Override
-  public String getLastmodDate() throws WebdavException {
+  public String getLastmodDate() {
     init(false);
     if (col == null) {
       return null;
@@ -265,7 +264,7 @@ public class CarddavColNode extends CarddavNode {
    * ==================================================================== */
 
   @Override
-  public CurrentAccess getCurrentAccess() throws WebdavException {
+  public CurrentAccess getCurrentAccess() {
     if (currentAccess != null) {
       return currentAccess;
     }
@@ -301,7 +300,7 @@ public class CarddavColNode extends CarddavNode {
 
   @Override
   public boolean setProperty(final Element val,
-                             final SetPropertyResult spr) throws WebdavException {
+                             final SetPropertyResult spr) {
     if (super.setProperty(val, spr)) {
       return true;
     }
@@ -370,7 +369,7 @@ public class CarddavColNode extends CarddavNode {
   @Override
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,
-                                       final boolean allProp) throws WebdavException {
+                                       final boolean allProp) {
     XmlEmit xml = intf.getXmlEmit();
 
     try {
@@ -431,7 +430,6 @@ public class CarddavColNode extends CarddavNode {
   /** Return a set of PropertyTagEntry defining properties this node supports.
    *
    * @return Collection of PropertyTagEntry
-   * @throws WebdavException
    */
   @Override
   public Collection<PropertyTagEntry> getPropertyNames()throws WebdavException {
@@ -446,10 +444,9 @@ public class CarddavColNode extends CarddavNode {
   /** Return a set of Qname defining reports this node supports.
    *
    * @return Collection of QName
-   * @throws WebdavException
    */
   @Override
-  public Collection<QName> getSupportedReports() throws WebdavException {
+  public Collection<QName> getSupportedReports() {
     return new ArrayList<>(super.getSupportedReports());
   }
 

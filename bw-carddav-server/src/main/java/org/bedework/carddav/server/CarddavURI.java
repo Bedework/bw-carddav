@@ -133,9 +133,8 @@ public class CarddavURI {
 
   /**
    * @return String
-   * @throws WebdavException
    */
-  public String getColName() throws WebdavException {
+  public String getColName() {
     return col.getName();
   }
 
@@ -165,9 +164,8 @@ public class CarddavURI {
 
   /**
    * @return String
-   * @throws WebdavException
    */
-  public String getPath() throws WebdavException {
+  public String getPath() {
     if (principal != null) {
       return principal.getPrincipalRef();
     }
@@ -181,9 +179,8 @@ public class CarddavURI {
 
   /**
    * @return String
-   * @throws WebdavException
    */
-  public String getUri() throws WebdavException {
+  public String getUri() {
     return getPath();
   }
 

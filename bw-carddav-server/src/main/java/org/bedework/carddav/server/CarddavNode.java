@@ -59,7 +59,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   private SysIntf sysi;
 
   CarddavNode(final CarddavURI cdURI,
-              final SysIntf sysi) throws WebdavException {
+              final SysIntf sysi) {
     super(sysi, sysi.getUrlHandler(), cdURI.getPath(),
           cdURI.isCollection(),
           cdURI.getUri());
@@ -97,7 +97,6 @@ public abstract class CarddavNode extends WebdavNsNode {
 
   /**
    * @return WdCollection containing or represented by this entity
-   * @throws WebdavException on fatal error
    */
   public abstract CarddavCollection getWdCollection() throws WebdavException ;
 
@@ -108,7 +107,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    * @param limits to limit fetch
    * @return Collection
    */
-  public QueryResult getChildren(final GetLimits limits) throws WebdavException {
+  public QueryResult getChildren(final GetLimits limits) {
     return null;
   }
 
@@ -122,10 +121,9 @@ public abstract class CarddavNode extends WebdavNsNode {
   /** Return a set of Qname defining reports this node supports.
    *
    * @return Collection of QName
-   * @throws WebdavException on fatal error
    */
   @Override
-  public Collection<QName> getSupportedReports() throws WebdavException {
+  public Collection<QName> getSupportedReports() {
     Collection<QName> res = new ArrayList<>();
     res.addAll(super.getSupportedReports());
     res.addAll(supportedReports);
@@ -153,7 +151,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    * ==================================================================== */
 
   @Override
-  public boolean getContentBinary() throws WebdavException {
+  public boolean getContentBinary() {
     return false;
   }
 
@@ -180,7 +178,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   @Override
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,
-                                       final boolean allProp) throws WebdavException {
+                                       final boolean allProp) {
     try {
       // Not known - try higher
       return super.generatePropertyValue(tag, intf, allProp);

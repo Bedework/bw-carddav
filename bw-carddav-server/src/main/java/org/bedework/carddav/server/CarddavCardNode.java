@@ -77,10 +77,9 @@ public class CarddavCardNode extends CarddavNode {
    *
    * @param cdURI
    * @param sysi
-   * @throws WebdavException
    */
   public CarddavCardNode(final CarddavURI cdURI,
-                         final SysIntf sysi) throws WebdavException {
+                         final SysIntf sysi) {
     super(cdURI, sysi);
 
     col = cdURI.getCol();
@@ -104,12 +103,12 @@ public class CarddavCardNode extends CarddavNode {
    * @see org.bedework.carddav.server.CarddavNode#getWdCollection()
    */
   @Override
-  public CarddavCollection getWdCollection() throws WebdavException {
+  public CarddavCollection getWdCollection() {
     return col;
   }
 
   @Override
-  public AccessPrincipal getOwner() throws WebdavException {
+  public AccessPrincipal getOwner() {
     if (col == null) {
       return null;
     }
@@ -130,7 +129,7 @@ public class CarddavCardNode extends CarddavNode {
 
   @Override
   public boolean removeProperty(final Element val,
-                                final SetPropertyResult spr) throws WebdavException {
+                                final SetPropertyResult spr) {
     warn("Unimplemented - removeProperty");
 
     return false;
@@ -138,7 +137,7 @@ public class CarddavCardNode extends CarddavNode {
 
   @Override
   public boolean setProperty(final Element val,
-                             final SetPropertyResult spr) throws WebdavException {
+                             final SetPropertyResult spr) {
     if (super.setProperty(val, spr)) {
       return true;
     }
@@ -147,7 +146,7 @@ public class CarddavCardNode extends CarddavNode {
   }
 
   @Override
-  public void update() throws WebdavException {
+  public void update() {
     getSysi().updateCard(col.getPath(), card);
   }
 
@@ -180,7 +179,7 @@ public class CarddavCardNode extends CarddavNode {
 @Override
 public boolean generatePropertyValue(final QName tag,
                                       final WebdavNsIntf intf,
-                                      final boolean allProp) throws WebdavException {
+                                      final boolean allProp) {
     //PropVal pv = new PropVal();
     //XmlEmit xml = intf.getXmlEmit();
 
@@ -198,7 +197,7 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   @Override
-  public Collection<PropertyTagEntry> getPropertyNames() throws WebdavException {
+  public Collection<PropertyTagEntry> getPropertyNames() {
     Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
 
     res.addAll(super.getPropertyNames());
@@ -209,7 +208,7 @@ public boolean generatePropertyValue(final QName tag,
 
   /* UNUSED
   @Override
-  public Collection<WebdavProperty> getProperties(final String ns) throws WebdavException {
+  public Collection<WebdavProperty> getProperties(final String ns) {
     init(true);
     ArrayList<WebdavProperty> al = new ArrayList<WebdavProperty>();
 
@@ -232,7 +231,7 @@ public boolean generatePropertyValue(final QName tag,
   @Override
   public String writeContent(final XmlEmit xml,
                              final Writer wtr,
-                             final String contentType) throws WebdavException {
+                             final String contentType) {
     try {
       if ("application/vcard+json".equals(contentType)) {
         if (xml == null) {
@@ -256,7 +255,7 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   @Override
-  public CurrentAccess getCurrentAccess() throws WebdavException {
+  public CurrentAccess getCurrentAccess() {
     if (col == null) {
       return null;
     }
@@ -265,7 +264,7 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   @Override
-  public String getEtagValue(final boolean strong) throws WebdavException {
+  public String getEtagValue(final boolean strong) {
     init(true);
 
     if (card == null) {
@@ -278,9 +277,8 @@ public boolean generatePropertyValue(final QName tag,
   /**
    * @param strong
    * @return etag before changes
-   * @throws WebdavException
    */
-  public String getPrevEtagValue(final boolean strong) throws WebdavException {
+  public String getPrevEtagValue(final boolean strong) {
     init(true);
 
     if (card == null) {
@@ -314,12 +312,12 @@ public boolean generatePropertyValue(final QName tag,
    * ==================================================================== */
 
   @Override
-  public String getContentLang() throws WebdavException {
+  public String getContentLang() {
     return "en";
   }
 
   @Override
-  public long getContentLen() throws WebdavException {
+  public long getContentLen() {
     if (card != null) {
       return card.outputVcard(vcardVersion).length();
     }
@@ -328,12 +326,12 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   @Override
-  public String getContentType() throws WebdavException {
+  public String getContentType() {
     return "text/vcard; version=\"4.0\"; charset=UTF-8";
   }
 
   @Override
-  public String getCreDate() throws WebdavException {
+  public String getCreDate() {
     init(false);
 
     if (card == null) {
@@ -345,12 +343,12 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   @Override
-  public String getDisplayname() throws WebdavException {
+  public String getDisplayname() {
     return getEntityName();
   }
 
   @Override
-  public String getLastmodDate() throws WebdavException {
+  public String getLastmodDate() {
     init(false);
 
     if (card == null) {
@@ -367,17 +365,15 @@ public boolean generatePropertyValue(final QName tag,
 
   /**
    * @param val
-   * @throws WebdavException
    */
-  public void setCard(final Card val) throws WebdavException {
+  public void setCard(final Card val) {
     card = val;
   }
 
   /**
    * @return VCard
-   * @throws WebdavException
    */
-  public Card getCard() throws WebdavException {
+  public Card getCard() {
     return card;
   }
 

@@ -104,12 +104,12 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
 
     @Override
-    public AccessPrincipal getPrincipal(final String href) throws WebdavException {
+    public AccessPrincipal getPrincipal(final String href) {
       return hdlr.getPrincipal(href);
     }
 
     @Override
-    public String getUserHomeRoot() throws WebdavException {
+    public String getUserHomeRoot() {
       return hdlr.userHomeRoot;
     }
 
@@ -123,7 +123,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
 
     @Override
-    public SharedEntity getCollection(final String path) throws WebdavException {
+    public SharedEntity getCollection(final String path) {
       DbCollection col = hdlr.getDbCollection(path);
 
       if (col == null) {
@@ -148,7 +148,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
   @Override
   public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
-                   final UrlHandler urlHandler) throws WebdavException {
+                   final UrlHandler urlHandler) {
     super.init(cdConfig, dhConfig, urlHandler);
 
     dbConfig = (DbDirHandlerConfig)dhConfig;
@@ -174,7 +174,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
    * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
    */
   @Override
-  public void open(final String account) throws WebdavException {
+  public void open(final String account) {
     super.open(account);
 
     if (isOpen()) {
@@ -191,7 +191,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
    * @see org.bedework.carddav.bwserver.DirHandler#close()
    */
   @Override
-  public void close() throws WebdavException {
+  public void close() {
     super.close();
 
     try {
@@ -210,7 +210,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   @Override
   public Card getCard(final String path,
-                      final String name) throws WebdavException {
+                      final String name) {
     final DbCard card = getDbCard(path, name, privRead);
 
     if (card == null) {
@@ -222,7 +222,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   @Override
   public Card getCardByUid(final String path,
-                           final String uid) throws WebdavException {
+                           final String uid) {
     final DbCard card = getDbCardByUid(path, uid);
 
     if (card == null) {
@@ -241,7 +241,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
   @SuppressWarnings("unchecked")
   public GetResult getCards(final String path,
                             final Filter filter,
-                            final GetLimits limits) throws WebdavException {
+                            final GetLimits limits) {
     verifyPath(path);
 
     final StringBuilder sb = new StringBuilder(queryGetCards);
@@ -308,7 +308,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
   }
   @Override
-  public Iterator<Card> getAll(final String path) throws WebdavException {
+  public Iterator<Card> getAll(final String path) {
     verifyPath(path);
 
     try {
@@ -330,7 +330,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
 
   @Override
-  public CarddavCollection getCollection(final String path) throws WebdavException {
+  public CarddavCollection getCollection(final String path) {
     verifyPath(path);
 
     final DbCollection col = getDbCollection(ensureEndSlash(path), privRead);
@@ -349,8 +349,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
   @Override
   @SuppressWarnings("unchecked")
   public GetResult getCollections(final String path,
-                                  final GetLimits limits)
-          throws WebdavException {
+                                  final GetLimits limits) {
     verifyPath(path);
 
     try {
@@ -386,7 +385,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     private boolean called;
 
     @Override
-    public Collection<CarddavCollection> next() throws WebdavException {
+    public Collection<CarddavCollection> next() {
       if (called) {
         //noinspection unchecked
         return Collections.EMPTY_LIST;
@@ -398,7 +397,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   @Override
-  public CollectionBatcher getCollections(final String path) throws WebdavException {
+  public CollectionBatcher getCollections(final String path) {
     final CollectionsBatchImpl cbi = new CollectionsBatchImpl();
 
     final GetResult gr = getCollections(path, null);
@@ -408,7 +407,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     return cbi;
   }
 
-  protected void updateCollection(final DbCollection col) throws WebdavException {
+  protected void updateCollection(final DbCollection col) {
     try {
       sess.update(col);
     } catch (final HibException e) {
@@ -427,7 +426,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   protected DbCard getDbCard(final String parentPath,
                              final String name,
-                             final int access) throws WebdavException {
+                             final int access) {
     verifyPath(parentPath);
 
     final DbCollection col = getDbCollection(ensureEndSlash(parentPath), access);
@@ -453,7 +452,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
                   " and card.uid=:uid";
 
   protected DbCard getDbCardByUid(final String parentPath,
-                                  final String uid) throws WebdavException {
+                                  final String uid) {
     verifyPath(parentPath);
 
     try {
@@ -471,7 +470,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
           "from " + DbCard.class.getName() +
                   " card where card.path=:path";
 
-  protected DbCard getDbCard(final String path) throws WebdavException {
+  protected DbCard getDbCard(final String path) {
     verifyPath(path);
 
     try {
@@ -485,12 +484,12 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   protected DbCollection getDbCollection(final String path,
-                                         final int access) throws WebdavException {
+                                         final int access) {
     return (DbCollection)checkAccess(getDbCollection(path),
                                      access, true);
   }
 
-  protected CarddavCollection makeCdCollection(final DbCollection col) throws WebdavException {
+  protected CarddavCollection makeCdCollection(final DbCollection col) {
     final CarddavCollection cdc = new CarddavCollection();
 
     cdc.setAddressBook(col.getAddressBook());
@@ -525,7 +524,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
           "from " + DbCollection.class.getName() +
                   " col where col.path=:path";
 
-  private DbCollection getDbCollection(final String path) throws WebdavException {
+  private DbCollection getDbCollection(final String path) {
     if (path.equals("/")) {
       // Make a root collection
       final DbCollection col = new DbCollection();
@@ -558,7 +557,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
           "from " + DbCard.class.getName() +
                   " card where card.parentPath=:path";
 
-  protected int deleteDbCollection(final String path) throws WebdavException {
+  protected int deleteDbCollection(final String path) {
     if (path.equals("/")) {
       return 0;
     }
@@ -594,9 +593,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   /**
    * @param dbcard dbcopy
    * @return a Card object
-   * @throws WebdavException
    */
-  protected Card makeVcard(final DbCard dbcard) throws WebdavException {
+  protected Card makeVcard(final DbCard dbcard) {
     final Card card = new Card(dbcard.getVcard());
 
     card.setCreated(dbcard.getCreated());
@@ -607,9 +605,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   /**
-   * @throws WebdavException
    */
-  protected void deleteDbCard(final DbCard dbcard) throws WebdavException {
+  protected void deleteDbCard(final DbCard dbcard) {
     try {
       sess.delete(dbcard);
     } catch (final HibException e) {
@@ -621,13 +618,13 @@ public abstract class DbDirHandler extends AbstractDirHandler
    *                   Session methods
    * ==================================================================== */
 
-  protected void checkOpen() throws WebdavException {
+  protected void checkOpen() {
     if (!isOpen()) {
       throw new WebdavException("Session call when closed");
     }
   }
 
-  protected synchronized void openSession() throws WebdavException {
+  protected synchronized void openSession() {
     if (isOpen()) {
       throw new WebdavException("Already open");
     }
@@ -658,7 +655,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     beginTransaction();
   }
 
-  protected synchronized void closeSession() throws WebdavException {
+  protected synchronized void closeSession() {
     if (!isOpen()) {
       if (debug()) {
         debug("Close for " + objTimestamp + " closed session");
@@ -694,7 +691,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
   }
 
-  protected void beginTransaction() throws WebdavException {
+  protected void beginTransaction() {
     checkOpen();
 
     if (debug()) {
@@ -707,7 +704,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
   }
 
-  protected void endTransaction() throws WebdavException {
+  protected void endTransaction() {
     checkOpen();
 
     if (debug()) {
@@ -723,7 +720,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
   }
 
-  protected void rollbackTransaction() throws WebdavException {
+  protected void rollbackTransaction() {
     try {
       checkOpen();
       sess.rollback();
@@ -734,7 +731,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   /*
-  private void flush() throws WebdavException {
+  private void flush() {
     if (debug()) {
       debug("flush for " + objTimestamp);
     }
@@ -753,7 +750,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   protected SharedEntity checkAccess(final SharedEntity ent,
                                      final int desiredAccess,
-                                     final boolean alwaysReturnResult) throws WebdavException {
+                                     final boolean alwaysReturnResult) {
     if (ent == null) {
       return null;
     }
@@ -778,7 +775,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
    *                   private methods
    * ==================================================================== */
 
-  private SessionFactory getSessionFactory() throws WebdavException {
+  private SessionFactory getSessionFactory() {
     if (sessionFactory != null) {
       return sessionFactory;
     }

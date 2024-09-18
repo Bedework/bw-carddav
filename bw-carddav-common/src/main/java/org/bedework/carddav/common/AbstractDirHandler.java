@@ -88,7 +88,7 @@ public abstract class AbstractDirHandler
   /* (non-Javadoc)
    * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
    */
-  public void open(final String account) throws WebdavException {
+  public void open(final String account) {
     this.account = account;
     superUser = "root".equals(account) || // allow SuperUser
             "admin".equals(account);
@@ -122,13 +122,13 @@ public abstract class AbstractDirHandler
   } */
 
   @Override
-  public void close() throws WebdavException {
+  public void close() {
   }
 
   @Override
   public void init(final CardDAVConfigI cdConfig,
                    final DirHandlerConfig dhConfig,
-                   final UrlHandler urlHandler) throws WebdavException {
+                   final UrlHandler urlHandler) {
     this.cdConfig = cdConfig;
     this.dhConfig = dhConfig;
     this.urlHandler = urlHandler;
@@ -163,15 +163,14 @@ public abstract class AbstractDirHandler
   }
 
   @Override
-  public boolean exportData(final String dataOutPath) throws WebdavException {
+  public boolean exportData(final String dataOutPath) {
     return false;
   }
 
   /**
    * @return info
-   * @throws WebdavException
    */
-  public DirectoryInfo getDirectoryInfo() throws WebdavException {
+  public DirectoryInfo getDirectoryInfo() {
     final DirectoryInfo info = new DirectoryInfo();
 
     info.setPrincipalRoot(cdConfig.getPrincipalRoot());
@@ -186,7 +185,7 @@ public abstract class AbstractDirHandler
   }
 
   @Override
-  public boolean isPrincipal(final String val) throws WebdavException {
+  public boolean isPrincipal(final String val) {
     if (val == null) {
       return false;
     }
@@ -195,7 +194,7 @@ public abstract class AbstractDirHandler
   }
 
   @Override
-  public AccessPrincipal getPrincipal(final String path) throws WebdavException {
+  public AccessPrincipal getPrincipal(final String path) {
     try {
       if (!isPrincipal(path)) {
         return null;
@@ -258,7 +257,7 @@ public abstract class AbstractDirHandler
   }
 
   @Override
-  public String makePrincipalUri(final AccessPrincipal p) throws WebdavException {
+  public String makePrincipalUri(final AccessPrincipal p) {
     if (isPrincipal(p.getAccount())) {
       return p.getAccount();
     }
@@ -274,7 +273,7 @@ public abstract class AbstractDirHandler
 
   @Override
   public Collection<String>getGroups(String rootUrl,
-                                     final String principalUrl) throws WebdavException {
+                                     final String principalUrl) {
     Collection<String> urls = new TreeSet<String>();
 
     if (principalUrl == null) {
@@ -301,17 +300,17 @@ public abstract class AbstractDirHandler
   }
 
   @Override
-  public String getprincipalHome() throws WebdavException {
+  public String getprincipalHome() {
     return Util.buildPath(true, dhConfig.getPathPrefix(), "/", account);
   }
 
   @Override
-  public String getprincipalHome(final AccessPrincipal p) throws WebdavException {
+  public String getprincipalHome(final AccessPrincipal p) {
     return Util.buildPath(true, dhConfig.getPathPrefix(), "/", p.getAccount());
   }
 
   @Override
-  public CollectionBatcher getCollections(final String path) throws WebdavException {
+  public CollectionBatcher getCollections(final String path) {
     return null;
   }
 
@@ -322,9 +321,8 @@ public abstract class AbstractDirHandler
   /** Ensure path matches our prefix - without any trailing "/".
    *
    * @param path
-   * @throws WebdavException
    */
-  protected void verifyPath(final String path) throws WebdavException {
+  protected void verifyPath(final String path) {
     if (!path.startsWith(dhConfig.getPathPrefix())) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
     }
@@ -361,7 +359,7 @@ public abstract class AbstractDirHandler
    * @param whoType type of principal
    */
   protected String makePrincipalHref(final String account,
-                                     final int whoType) throws WebdavException {
+                                     final int whoType) {
     String root = fromWho.get(whoType);
 
     if (root == null) {
@@ -387,7 +385,7 @@ public abstract class AbstractDirHandler
    *
    * NormalizeUri was called previously so we have no trailing "/"
    */
-  protected SplitResult splitUri(final String uri) throws WebdavException {
+  protected SplitResult splitUri(final String uri) {
     String noEndSlash;
 
     if (uri.endsWith("/")) {

@@ -49,8 +49,7 @@ public class CarddavServlet extends WebdavServlet
   }
 
   @Override
-  public WebdavNsIntf getNsIntf(final HttpServletRequest req)
-      throws WebdavException {
+  public WebdavNsIntf getNsIntf(final HttpServletRequest req) {
     final CarddavBWIntf wi = new CarddavBWIntf();
 
     wi.init(this, req, methods, dumpContent);

@@ -38,9 +38,8 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
 
   /** Create DbCollection
    *
-   * @throws WebdavException
    */
-  public DbCollection() throws WebdavException {
+  public DbCollection() {
   }
 
   /**

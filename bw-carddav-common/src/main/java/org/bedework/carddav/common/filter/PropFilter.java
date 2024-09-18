@@ -153,9 +153,8 @@ public class PropFilter implements Logged {
    *
    * @param c
    * @return boolean true if the given component matches the property filter
-   * @throws WebdavException
    */
-  public boolean filter(final Card c) throws WebdavException {
+  public boolean filter(final Card c) {
     try {
       Property prop = c.findProperty(getName());
 

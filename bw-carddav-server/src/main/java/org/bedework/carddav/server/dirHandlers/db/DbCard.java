@@ -67,17 +67,15 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /** Create DbCard with a new embedded VCard
    *
-   * @throws WebdavException
    */
-  public DbCard() throws WebdavException {
+  public DbCard() {
   }
 
   /** Create DbCard with new card
    *
    * @param fn
-   * @throws WebdavException
    */
-  public DbCard(final String fn) throws WebdavException {
+  public DbCard(final String fn) {
     vcard = new VCard();
     vcard.getProperties().add(Version.VERSION_4_0);
 
@@ -88,9 +86,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
   /** Create DbCard with supplied vcard
    *
    * @param vcard
-   * @throws WebdavException
    */
-  public DbCard(final VCard vcard) throws WebdavException {
+  public DbCard(final VCard vcard) {
     this.vcard = vcard;
 
     initFromVcard();
@@ -99,50 +96,44 @@ public class DbCard extends DbNamedEntity<DbCard> {
   /** Set the fn
    *
    * @param val    String fn
-   * @throws WebdavException
    */
-  public void setFn(final String val) throws WebdavException {
+  public void setFn(final String val) {
     fn = val;
   }
 
   /** Get the name
    *
    * @return String   name
-   * @throws WebdavException
    */
-  public String getFn() throws WebdavException {
+  public String getFn() {
     return fn;
   }
 
   /**
    * @param val
-   * @throws WebdavException
    */
-  public void setUid(final String val) throws WebdavException {
+  public void setUid(final String val) {
     uid = val;
   }
 
   /**
    * @return String
-   * @throws WebdavException
    */
-  public String getUid() throws WebdavException {
+  public String getUid() {
     return uid;
   }
 
   /**
    * @param val
-   * @throws WebdavException
    */
-  public void setKind(final String val) throws WebdavException {
+  public void setKind(final String val) {
     kind = val;
   }
 
   /**
    * @return String
-   * @throws WebdavException
    */
-  public String getKind() throws WebdavException {
+  public String getKind() {
     return kind;
   }
 
@@ -178,9 +169,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /**
    * @param val
-   * @throws WebdavException
    */
-  public void setLastmod(final String val) throws WebdavException {
+  public void setLastmod(final String val) {
     lastmod = val;
   }
 
@@ -258,9 +248,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /**
    * @param val
-   * @throws WebdavException
    */
-  public void setVcard(final VCard val) throws WebdavException {
+  public void setVcard(final VCard val) {
     vcard = val;
     if (val == null) {
       vcard = new VCard();
@@ -270,9 +259,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /**
    * @return vcard or null
-   * @throws WebdavException
    */
-  public VCard getVcard() throws WebdavException {
+  public VCard getVcard() {
     if (vcard != null) {
       return vcard;
     }
@@ -289,9 +277,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
   /**
    * @param rdr
    * @return Vcard
-   * @throws WebdavException
    */
-  public void parse(final Reader rdr) throws WebdavException {
+  public void parse(final Reader rdr) {
     try {
       vcard = new VCardBuilder(rdr).build();
     } catch (Throwable t) {
@@ -301,9 +288,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /**
    * @return String
-   * @throws WebdavException
    */
-  public String output() throws WebdavException {
+  public String output() {
     try {
       replaceProperty(new Revision(new ArrayList<Parameter>(), getLastmod()));
     } catch (final Throwable t) {
@@ -358,9 +344,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
    * ==================================================================== */
 
   /** Set the lastmod and created if created is not set already.
-   * @throws WebdavException
    */
-  public void setDtstamps() throws WebdavException {
+  public void setDtstamps() {
     final DateTime dt = new DateTime(true);
     setLastmod(new LastModified(dt).getValue());
 
@@ -413,7 +398,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
    *                   Private methods
    * ==================================================================== */
 
-  private void initFromVcard() throws WebdavException {
+  private void initFromVcard() {
     // XXX Do this the inefficient way for the moment
     if (getProperties() != null) {
       getProperties().clear();
