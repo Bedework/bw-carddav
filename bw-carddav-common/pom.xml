@@ -5,7 +5,7 @@
   <parent>
     <artifactId>bw-carddav</artifactId>
     <groupId>org.bedework</groupId>
-    <version>5.0.3-SNAPSHOT</version>
+    <version>5.0.3</version>
   </parent>
 
   <artifactId>bw-carddav-common</artifactId>
