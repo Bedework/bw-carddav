@@ -54,21 +54,24 @@ public class TextMatch implements Logged {
 
   /** Constructor
    *
-   * @param val
+   * @param val to match
    */
-  public TextMatch(String val) {
+  public TextMatch(final String val) {
     setMatchType(matchTypeContains);
     setVal(val);
   }
 
   /** Constructor
    *
-   * @param caseless
+   * @param caseless true for any case
    * @param matchType
-   * @param negated
-   * @param val
+   * @param negated true for NOT
+   * @param val to match
    */
-  public TextMatch(Boolean caseless, int matchType, boolean negated, String val) {
+  public TextMatch(final Boolean caseless,
+                   final int matchType,
+                   final boolean negated,
+                   final String val) {
     setCaseless(caseless);
     setMatchType(matchType);
     setNegated(negated);
@@ -76,9 +79,9 @@ public class TextMatch implements Logged {
   }
 
   /** Set the value
-   * @param val
+   * @param val text value
    */
-  public void setVal(String val) {
+  public void setVal(final String val) {
     if (upperMatch) {
       this.val = val.toUpperCase();
     } else {
@@ -97,10 +100,10 @@ public class TextMatch implements Logged {
    *
    * @param val Boolean
    */
-  public void setCaseless(Boolean val) {
+  public void setCaseless(final Boolean val) {
     caseless = val;
 
-    upperMatch = (val != null) && (!val.booleanValue());
+    upperMatch = (val != null) && (!val);
 
     if ((getVal() != null) && upperMatch) {
       setVal(getVal().toUpperCase());
@@ -127,7 +130,7 @@ public class TextMatch implements Logged {
    *
    * @param val int
    */
-  public void setMatchType(int val) {
+  public void setMatchType(final int val) {
     matchType = val;
   }
 
@@ -143,7 +146,7 @@ public class TextMatch implements Logged {
    *
    * @param val boolean
    */
-  public void setNegated(boolean val) {
+  public void setNegated(final boolean val) {
     negated = val;
   }
 
@@ -156,10 +159,10 @@ public class TextMatch implements Logged {
   }
 
   /**
-   * @param candidate
+   * @param candidate string
    * @return boolean true if matches
    */
-  public boolean matches(String candidate) {
+  public boolean matches(final String candidate) {
     if (candidate == null) {
       return false;
     }
@@ -172,9 +175,9 @@ public class TextMatch implements Logged {
   }
 
   /** Debug
-   * @param indent
+   * @param indent amount
    */
-  public void dump(String indent) {
+  public void dump(final String indent) {
     final StringBuilder sb = new StringBuilder(indent);
 
     sb.append("<text-match");
@@ -194,11 +197,11 @@ public class TextMatch implements Logged {
     debug(indent + "</text-match>\n");
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

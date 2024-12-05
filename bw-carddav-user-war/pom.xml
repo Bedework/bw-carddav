@@ -10,4 +10,22 @@
 	<artifactId>bw-carddav-user-war</artifactId>
 	<packaging>war</packaging>
   <name>Bedework: CardDAV gateway server - war</name>
+
+	<properties>
+		<org.bedework.war.dependency>org.bedework.carddav.server</org.bedework.war.dependency>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.bedework</groupId>
+				<artifactId>bw-util-maven-deploy</artifactId>
+
+				<configuration>
+					<warName>${project.artifactId}</warName>
+					<baseDirPath>${project.basedir}/../..</baseDirPath>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

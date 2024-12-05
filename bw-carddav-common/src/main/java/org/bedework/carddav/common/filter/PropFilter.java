@@ -46,7 +46,7 @@ public class PropFilter implements Logged {
 
   /** Constructor
    *
-   * @param name
+   * @param name of filter
    */
   public PropFilter(final String name) {
     this.name = name;
@@ -54,7 +54,7 @@ public class PropFilter implements Logged {
 
   /** Constructor
    *
-   * @param name
+   * @param name of filter
    * @param isNotDefined
    */
   public PropFilter(final String name, final boolean isNotDefined) {
@@ -64,8 +64,8 @@ public class PropFilter implements Logged {
 
   /** Constructor
    *
-   * @param name
-   * @param match
+   * @param name of filter
+   * @param match text match
    */
   public PropFilter(final String name, final TextMatch match) {
     this.name = name;
@@ -73,7 +73,7 @@ public class PropFilter implements Logged {
   }
 
   /**
-   * @param val
+   * @param val name of filter
    */
   public void setName(final String val) {
     name = val;
@@ -115,7 +115,7 @@ public class PropFilter implements Logged {
   }
 
   /**
-   * @param val
+   * @param val text match
    */
   public void setMatch(final TextMatch val) {
     match = val;
@@ -133,7 +133,7 @@ public class PropFilter implements Logged {
    */
   public Collection<ParamFilter> getParamFilters() {
     if (paramFilters == null) {
-      paramFilters = new ArrayList<ParamFilter>();
+      paramFilters = new ArrayList<>();
     }
 
     return paramFilters;
@@ -141,44 +141,44 @@ public class PropFilter implements Logged {
 
   /** Add a param filter
    *
-   * @param pf
+   * @param pf a param filter
    */
   public void addParamFilter(final ParamFilter pf) {
     getParamFilters().add(pf);
   }
 
   /** Return true if the given component matches the property filter
-   *
+   * <br/>
    * NOTE *********** Not handling params yet
    *
-   * @param c
+   * @param c Card
    * @return boolean true if the given component matches the property filter
    */
   public boolean filter(final Card c) {
     try {
-      Property prop = c.findProperty(getName());
+      final Property prop = c.findProperty(getName());
 
       if (prop == null) {
         return getIsNotDefined();
       }
 
-      TextMatch match = getMatch();
+      final TextMatch match = getMatch();
       if (match != null) {
         return match.matches(prop.getValue());
       }
 
       return false;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
   /** Debug
    *
-   * @param indent
+   * @param indent amount
    */
   public void dump(final String indent) {
-    final StringBuffer sb = new StringBuffer(indent);
+    final StringBuilder sb = new StringBuilder(indent);
 
     sb.append("<prop-filter name=\"");
     sb.append(name);
@@ -192,7 +192,7 @@ public class PropFilter implements Logged {
     }
 
     if (paramFilters != null) {
-      for (ParamFilter pf: paramFilters) {
+      for (final ParamFilter pf: paramFilters) {
         pf.dump(indent + "  ");
       }
     }
@@ -200,11 +200,11 @@ public class PropFilter implements Logged {
     debug(indent + "</prop-filter>");
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

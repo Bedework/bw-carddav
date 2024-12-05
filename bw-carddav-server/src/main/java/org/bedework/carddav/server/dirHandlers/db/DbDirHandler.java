@@ -147,7 +147,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   @Override
   public void init(final CardDAVConfigI cdConfig,
-                   final DirHandlerConfig dhConfig,
+                   final DirHandlerConfig<?> dhConfig,
                    final UrlHandler urlHandler) {
     super.init(cdConfig, dhConfig, urlHandler);
 

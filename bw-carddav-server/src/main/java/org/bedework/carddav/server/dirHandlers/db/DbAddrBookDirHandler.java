@@ -51,7 +51,7 @@ import java.util.Iterator;
 public class DbAddrBookDirHandler extends DbDirHandler {
   @Override
   public void init(final CardDAVConfigI cdConfig,
-                   final DirHandlerConfig dhConfig,
+                   final DirHandlerConfig<?> dhConfig,
                    final UrlHandler urlHandler) {
     super.init(cdConfig, dhConfig, urlHandler);
   }
@@ -114,7 +114,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
         final String vc = c.outputVcard(cdConfig.getDefaultVcardVersion());
 
         FileWriter fw = null;
-        File cardFile = null;
+        final File cardFile;
         try {
           cardFile = new File(userDumpDir.getAbsolutePath(),
                               c.getName());
@@ -184,7 +184,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       throw new CardDAVDuplicateUid();
     }
 
-    /** Build a directory record and add the attributes
+    /* Build a directory record and add the attributes
      */
 
     final VCard vc = card.getVcard();
@@ -299,9 +299,9 @@ public class DbAddrBookDirHandler extends DbDirHandler {
                 userHomeRoot.substring(1, userHomeRoot.length() - 1);
         sess.setString("name", rootName);
 
-        final Collection res = sess.getList();
+        final Collection<?> res = sess.getList();
 
-        if (res.size() == 0) {
+        if (res.isEmpty()) {
           /* Create user root */
           final DbCollection root = new DbCollection();
 
@@ -329,8 +329,8 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       sess.setString("name", col.getName());
       sess.setString("pp", ensureSlashAtEnd(parentPath));
 
-      final Collection res = sess.getList();
-      if (res.size() > 0) {
+      final Collection<?> res = sess.getList();
+      if (!res.isEmpty()) {
         return DirHandler.statusDuplicate;
       }
 
@@ -385,7 +385,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   @Override
-  public int rename(final WdCollection col,
+  public int rename(final WdCollection<?> col,
                     final String newName) {
     throw new WebdavException("unimplemented");
   }
@@ -400,7 +400,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
   }
 
   @Override
-  public void updateCollection(final WdCollection val) {
+  public void updateCollection(final WdCollection<?> val) {
     throw new WebdavException("unimplemented");
   }
 

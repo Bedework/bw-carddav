@@ -31,7 +31,7 @@ public interface CardDAVConfigI {
    *
    * @param val path
    */
-  void setDataOut(final String val);
+  void setDataOut(String val);
 
   /**
    * @return data output full path
@@ -42,7 +42,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setDefaultVcardVersion(final String val);
+  void setDefaultVcardVersion(String val);
 
   /** get the default vcard version
    *
@@ -55,7 +55,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setSysintfImpl(final String val);
+  void setSysintfImpl(String val);
 
   /** get the System interface implementation
    *
@@ -68,7 +68,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setDefaultAddressbook(final String val);
+  void setDefaultAddressbook(String val);
 
   /** get the default addressbook name
    *
@@ -81,7 +81,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setUserHomeRoot(final String val);
+  void setUserHomeRoot(String val);
 
   /** Set the user home root e.g. "/user"
    *
@@ -94,7 +94,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setPrincipalRoot(final String val);
+  void setPrincipalRoot(String val);
 
   /** get the principal root e.g. "/principals"
    *
@@ -107,7 +107,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setUserPrincipalRoot(final String val);
+  void setUserPrincipalRoot(String val);
 
   /** get the principal root e.g. "/principals/users"
    *
@@ -120,7 +120,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setGroupPrincipalRoot(final String val);
+  void setGroupPrincipalRoot(String val);
 
   /** get the group principal root e.g. "/principals/groups"
    *
@@ -133,7 +133,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setResourcePrincipalRoot(final String val);
+  void setResourcePrincipalRoot(String val);
 
   /** get the resource principal root e.g. "/principals/resources"
    *
@@ -146,7 +146,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setVenuePrincipalRoot(final String val);
+  void setVenuePrincipalRoot(String val);
 
   /** get the venue principal root e.g. "/principals/locations"
    *
@@ -159,7 +159,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setTicketPrincipalRoot(final String val);
+  void setTicketPrincipalRoot(String val);
 
   /** get the ticket principal root e.g. "/principals/tickets"
    *
@@ -172,7 +172,7 @@ public interface CardDAVConfigI {
    *
    * @param val    String
    */
-  void setHostPrincipalRoot(final String val);
+  void setHostPrincipalRoot(String val);
 
   /** get the host principal root e.g. "/principals/hosts"
    *

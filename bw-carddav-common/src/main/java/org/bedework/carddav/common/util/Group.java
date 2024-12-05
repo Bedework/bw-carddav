@@ -34,9 +34,9 @@ public class Group extends Principal {
    */
   private Collection<Principal> groupMembers;
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Constructors
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Create a group
    */
@@ -48,7 +48,7 @@ public class Group extends Principal {
    *
    * @param  account            String group account name
    */
-  public Group(String account) {
+  public Group(final String account) {
     super(account);
   }
 
@@ -60,7 +60,7 @@ public class Group extends Principal {
    *
    * @param   val     Collection of group members.
    */
-  public void setGroupMembers(Collection<Principal> val) {
+  public void setGroupMembers(final Collection<Principal> val) {
     groupMembers = val;
   }
 
@@ -75,18 +75,19 @@ public class Group extends Principal {
     return groupMembers;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Convenience methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Return true if the account name is in the group members.
    *
-   * @param account
+   * @param account to check
    * @param group     boolean true if we're testing for a group.
    * @return true if the account name is in the group members.
    */
-  public boolean isMember(String account, boolean group) {
-    for (Principal mbr: getGroupMembers()) {
+  public boolean isMember(final String account,
+                          final boolean group) {
+    for (final Principal mbr: getGroupMembers()) {
       if (mbr.getAccount().equals(account)) {
         if (group == (mbr instanceof Group)) {
           return true;
@@ -107,7 +108,7 @@ public class Group extends Principal {
     return getGroupMembers().add(mbr);
   }
 
-  /** Remove a group member. Return true if is was removed, false if it was
+  /** Remove a group member. Return true if it was removed, false if it was
    * not in the list
    *
    * @param mbr        Principal to remove
@@ -121,8 +122,4 @@ public class Group extends Principal {
     super.toStringSegment(ts);
     ts.append("groupMembers", getGroupMembers());
   }
-
-  /* ====================================================================
-   *                   Object methods
-   * ==================================================================== */
 }

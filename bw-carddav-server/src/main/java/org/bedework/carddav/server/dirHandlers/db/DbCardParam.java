@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 
 /** A representation of a vcard property parameter for database persistance in cardDAV.
@@ -39,11 +40,11 @@ public class DbCardParam extends UnversionedDbentity<DbCardParam> {
   public DbCardParam() {
   }
 
-  /** Create DbCardProperty
+  /** Create DbCardParam
    *
-   * @param name
-   * @param value
-   * @param property
+   * @param name of param
+   * @param value of param
+   * @param property property
    */
   public DbCardParam(final String name,
                      final String value,
@@ -86,7 +87,7 @@ public class DbCardParam extends UnversionedDbentity<DbCardParam> {
   }
 
   /**
-   * @param val
+   * @param val a property
    */
   public void setProperty(final DbCardProperty val) {
     property = val;
@@ -99,9 +100,9 @@ public class DbCardParam extends UnversionedDbentity<DbCardParam> {
     return property;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public int compareTo(final DbCardParam that) {
@@ -119,23 +120,17 @@ public class DbCardParam extends UnversionedDbentity<DbCardParam> {
       }
 
       return Util.compareStrings(getName(), that.getName());
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("DbCardParam{");
-
-    sb.append("name=");
-    sb.append(getName());
-    sb.append(", value=");
-    sb.append(getValue());
-
-    sb.append("}");
-
-    return sb.toString();
+    return new ToString(this)
+            .append("name", getName())
+            .append("value", getValue())
+            .toString();
   }
 
   @Override
@@ -155,11 +150,9 @@ public class DbCardParam extends UnversionedDbentity<DbCardParam> {
       return true;
     }
 
-    if (!(o instanceof DbCardParam)) {
+    if (!(o instanceof final DbCardParam that)) {
       return false;
     }
-
-    DbCardParam that = (DbCardParam)o;
 
     if (!getName().equals(that.getName())) {
       return false;

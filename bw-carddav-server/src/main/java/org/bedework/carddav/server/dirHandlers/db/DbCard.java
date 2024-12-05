@@ -73,7 +73,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /** Create DbCard with new card
    *
-   * @param fn
+   * @param fn full name
    */
   public DbCard(final String fn) {
     vcard = new VCard();
@@ -85,7 +85,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   /** Create DbCard with supplied vcard
    *
-   * @param vcard
+   * @param vcard the card
    */
   public DbCard(final VCard vcard) {
     this.vcard = vcard;
@@ -110,7 +110,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param val
+   * @param val uid
    */
   public void setUid(final String val) {
     uid = val;
@@ -124,7 +124,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param val
+   * @param val kind
    */
   public void setKind(final String val) {
     kind = val;
@@ -138,7 +138,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param val
+   * @param val list of properties
    */
   public void setProperties(final List<DbCardProperty> val) {
     properties = val;
@@ -168,7 +168,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param val
+   * @param val lastmod
    */
   public void setLastmod(final String val) {
     lastmod = val;
@@ -190,14 +190,14 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param val
+   * @param val a property
    */
   public void addProperty(final Property val) {
     vcard.getProperties().add(val);
   }
 
   /**
-   * @param id
+   * @param id of property
    * @return property or null
    */
   public Property findProperty(final Id id) {
@@ -205,13 +205,13 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param name
+   * @param name of property
    * @return property or null
    */
   public Property findProperty(final String name) {
     Property.Id id = null;
 
-    for (Property.Id i: Property.Id.values()) {
+    for (final Property.Id i: Property.Id.values()) {
       if (i.toString().equals(name)) {
         id = i;
         break;
@@ -226,13 +226,13 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param name
+   * @param name of property
    * @return property or null
    */
   public List<Property> findProperties(final String name) {
     Property.Id id = null;
 
-    for (Property.Id i: Property.Id.values()) {
+    for (final Property.Id i: Property.Id.values()) {
       if (i.toString().equals(name)) {
         id = i;
         break;
@@ -247,7 +247,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param val
+   * @param val the card
    */
   public void setVcard(final VCard val) {
     vcard = val;
@@ -275,13 +275,12 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param rdr
-   * @return Vcard
+   * @param rdr card reader
    */
   public void parse(final Reader rdr) {
     try {
       vcard = new VCardBuilder(rdr).build();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -291,7 +290,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
    */
   public String output() {
     try {
-      replaceProperty(new Revision(new ArrayList<Parameter>(), getLastmod()));
+      replaceProperty(new Revision(new ArrayList<>(), getLastmod()));
     } catch (final Throwable t) {
       throw new WebdavException(t);
     }
@@ -375,8 +374,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
       }
 
       return Util.compareStrings(getName(), that.getName());
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (final Throwable t) {
+      throw new WebdavException(t);
     }
   }
 
@@ -387,7 +386,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("DbCard{");
+    final StringBuilder sb = new StringBuilder("DbCard{");
 
     toStringSegment(sb);
 
@@ -406,7 +405,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
     setFn(findProperty(Property.Id.FN).getValue());
 
-    Property k = findProperty(Property.Id.KIND);
+    final Property k = findProperty(Property.Id.KIND);
 
     if (k != null) {
       setKind(k.getValue());
@@ -414,7 +413,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
       setKind(Kind.INDIVIDUAL.getValue());
     }
 
-    Uid uid = (Uid)findProperty(Property.Id.UID);
+    final Uid uid = (Uid)findProperty(Property.Id.UID);
 
     if (uid == null) {
       setUid(org.bedework.util.misc.Uid.getUid());
@@ -422,7 +421,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
       setUid(uid.getValue());
     }
 
-    for (Property p: vcard.getProperties()) {
+    for (final Property p: vcard.getProperties()) {
       if (p.getId() == Property.Id.FN) {
         setFn(p.getValue());
       }
@@ -440,7 +439,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   /**
-   * @param name
+   * @param name of db property
    * @return property or null
    */
   private DbCardProperty findDbProperty(final String name) {
@@ -448,7 +447,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
       return null;
     }
 
-    for (DbCardProperty p: getProperties()) {
+    for (final DbCardProperty p: getProperties()) {
       if (name.toUpperCase().equals(p.getName())) {
         return p;
       }
@@ -463,9 +462,9 @@ public class DbCard extends DbNamedEntity<DbCard> {
       return;
     }
 
-    List<Property> ps = vcard.getProperties();
+    final List<Property> ps = vcard.getProperties();
 
-    Property p = vcard.getProperty(val.getId());
+    final Property p = vcard.getProperty(val.getId());
 
     if (p != null) {
       ps.remove(p);
@@ -473,8 +472,8 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
     ps.add(val);
 
-    String name = val.getId().toString();
-    DbCardProperty prop = findDbProperty(name);
+    final String name = val.getId().toString();
+    final DbCardProperty prop = findDbProperty(name);
 
     if ((prop != null) && (getProperties() != null)) {
       getProperties().remove(prop);
@@ -493,12 +492,12 @@ public class DbCard extends DbNamedEntity<DbCard> {
   }
 
   private DbCardProperty makeDbProperty(final Property val) {
-    String name = val.getId().toString().toUpperCase();
-    String value = val.getValue();
+    final String name = val.getId().toString().toUpperCase();
+    final String value = val.getValue();
 
-    DbCardProperty dbp = new DbCardProperty(name, value/*, this*/);
+    final DbCardProperty dbp = new DbCardProperty(name, value/*, this*/);
 
-    for (Parameter par: val.getParameters()) {
+    for (final Parameter par: val.getParameters()) {
       dbp.addParam(new DbCardParam(par.getId().toString(), par.getValue(), dbp));
     }
 

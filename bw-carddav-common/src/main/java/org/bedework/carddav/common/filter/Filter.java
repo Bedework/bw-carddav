@@ -175,14 +175,14 @@ public class Filter extends CarddavFilter {
 
   /** Parse for the carddav server.
    *
-   * @param nd
+   * @param nd a node
    */
-  public void carddavParse(Node nd) {
+  public void carddavParse(final Node nd) {
     try {
       super.parse(nd);
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error(t);
       throw new WebdavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }

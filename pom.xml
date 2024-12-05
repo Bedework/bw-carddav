@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.bedework</groupId>
     <artifactId>bedework-parent</artifactId>
-		<version>79</version>
+		<version>86</version>
   </parent>
 
 	<artifactId>bw-carddav</artifactId>
@@ -28,7 +28,6 @@
 		<module>bw-carddav-public-war</module>
 		<module>bw-carddav-user-war</module>
 		<module>bw-carddav-userweb-war</module>
-		<module>bw-carddav-ear</module>
     <module>bw-carddav-common</module>
     <module>bw-carddav-client</module>
   </modules>

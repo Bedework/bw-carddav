@@ -35,28 +35,28 @@ public class ParamFilter implements Logged {
 
   /** Constructor
    *
-   * @param name
+   * @param name of filter
    * @param isNotDefined
    */
-  public ParamFilter(String name, boolean isNotDefined) {
+  public ParamFilter(final String name, final boolean isNotDefined) {
     this.name = name;
     this.isNotDefined = isNotDefined;
   }
 
   /** Constructor
    *
-   * @param name
-   * @param match
+   * @param name of filter
+   * @param match a text match
    */
-  public ParamFilter(String name, TextMatch match) {
+  public ParamFilter(final String name, final TextMatch match) {
     this.name = name;
     this.match = match;
   }
 
   /**
-   * @param val
+   * @param val name of filter
    */
-  public void setName(String val) {
+  public void setName(final String val) {
     name = val;
   }
 
@@ -70,7 +70,7 @@ public class ParamFilter implements Logged {
   /**
    * @param val
    */
-  public void setIsNotDefined(boolean val) {
+  public void setIsNotDefined(final boolean val) {
     isNotDefined = val;
   }
 
@@ -82,9 +82,9 @@ public class ParamFilter implements Logged {
   }
 
   /**
-   * @param val
+   * @param val a text match
    */
-  public void setMatch(TextMatch val) {
+  public void setMatch(final TextMatch val) {
     match = val;
   }
 
@@ -97,10 +97,10 @@ public class ParamFilter implements Logged {
 
   /** Debug
    *
-   * @param indent
+   * @param indent amount
    */
-  public void dump(String indent) {
-    StringBuffer sb = new StringBuffer(indent);
+  public void dump(final String indent) {
+    final StringBuilder sb = new StringBuilder(indent);
 
     sb.append("<param-filter name=\"");
     sb.append(name);
@@ -116,11 +116,11 @@ public class ParamFilter implements Logged {
     debug(indent + "</param-filter>");
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

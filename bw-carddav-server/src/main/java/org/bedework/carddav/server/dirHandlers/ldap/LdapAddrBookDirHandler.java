@@ -54,15 +54,15 @@ public class LdapAddrBookDirHandler extends LdapDirHandler {
 
   @Override
   public void init(final CardDAVConfigI cdConfig,
-                   final DirHandlerConfig dhConfig,
+                   final DirHandlerConfig<?> dhConfig,
                    final UrlHandler urlHandler) {
     super.init(cdConfig, dhConfig, urlHandler);
     addToPrincipal(dhConfig.getPathPrefix(), cdConfig.getUserPrincipalRoot());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Principals
-   * ==================================================================== */
+   * ============================================================== */
 
   public Card getPrincipalCard(final String href) {
     throw new WebdavException("unimplemented");

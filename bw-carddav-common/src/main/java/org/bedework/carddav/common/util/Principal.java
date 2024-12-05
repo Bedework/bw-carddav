@@ -50,9 +50,9 @@ public abstract class Principal implements Comparator<Principal>,
 
   private String description;
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Constructors
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Create a guest principal
    */
@@ -68,9 +68,9 @@ public abstract class Principal implements Comparator<Principal>,
     this.account = account;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Bean methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
    * @return int kind
@@ -79,7 +79,7 @@ public abstract class Principal implements Comparator<Principal>,
 
   /** Set the unauthenticated state.
    *
-   * @param val
+   * @param val true for unauthenticated
    */
   public void setUnauthenticated(final boolean val) {
     if (val) {
@@ -95,7 +95,7 @@ public abstract class Principal implements Comparator<Principal>,
   }
 
   /**
-   * @param val
+   * @param val the account
    */
   public void setAccount(final String val) {
     account = val;
@@ -137,7 +137,7 @@ public abstract class Principal implements Comparator<Principal>,
    */
   public Collection<Principal> getGroups() {
     if (groups == null) {
-      groups = new TreeSet<Principal>();
+      groups = new TreeSet<>();
     }
 
     return groups;

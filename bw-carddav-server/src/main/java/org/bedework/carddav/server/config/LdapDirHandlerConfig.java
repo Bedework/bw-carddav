@@ -95,9 +95,9 @@ public class LdapDirHandlerConfig extends
     return securityAuthentication;
   }
 
-  /** e.g. "ssl"
+  /**
   *
-  * @param val
+  * @param val e.g. "ssl"
   */
   public void setSecurityProtocol(final String val)  {
     securityProtocol = val;
@@ -111,9 +111,9 @@ public class LdapDirHandlerConfig extends
     return securityProtocol;
   }
 
-  /** URL of ldap server
+  /**
    *
-   * @param val
+   * @param val URL of ldap server
    */
   public void setProviderUrl(final String val)  {
     providerUrl = val;
@@ -129,7 +129,7 @@ public class LdapDirHandlerConfig extends
 
   /**
    *
-   * @param val
+   * @param val LDAP base dn
    */
   public void setBaseDn(final String val)  {
     baseDn = val;
@@ -145,7 +145,7 @@ public class LdapDirHandlerConfig extends
 
   /** Set the query limit - 0 for no limit
    *
-   * @param val
+   * @param val the query limit - 0 for no limit
    */
   public void setQueryLimit(final int val)  {
     queryLimit = val;
@@ -161,7 +161,7 @@ public class LdapDirHandlerConfig extends
 
   /**
    *
-   * @param val
+   * @param val comma sparated list of attribute ids
    */
   public void setAttrIds(final String val)  {
     attrIds = val;
@@ -225,9 +225,9 @@ public class LdapDirHandlerConfig extends
     return addressbookEntryObjectClass;
   }
 
-  /** Attribute we search for to get a principal
+  /**
    *
-   * @param val
+   * @param val Attribute we search for to get a principal
    */
   public void setPrincipalIdAttr(final String val)  {
     principalIdAttr = val;
@@ -289,9 +289,9 @@ public class LdapDirHandlerConfig extends
     return addressbookEntryIdAttr;
   }
 
-  /** Attribute we want back identifying a member
+  /**
    *
-   * @param val
+   * @param val Attribute we want back identifying a member
    */
   public void setGroupMemberAttr(final String val)  {
     groupMemberAttr = val;
@@ -307,7 +307,7 @@ public class LdapDirHandlerConfig extends
 
   /** If we need an id to authenticate this is it.
    *
-   * @param val
+   * @param val an id
    */
   public void setAuthDn(final String val)  {
     authDn = val;
@@ -323,7 +323,7 @@ public class LdapDirHandlerConfig extends
 
   /** If we need an id to authenticate this is the pw.
    *
-   * @param val
+   * @param val the pw.
    */
   public void setAuthPw(final String val)  {
     authPw = val;

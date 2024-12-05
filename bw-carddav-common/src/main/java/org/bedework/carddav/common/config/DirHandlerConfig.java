@@ -28,7 +28,7 @@ import org.bedework.util.misc.ToString;
  * @param <T>
  */
 @ConfInfo(elementName = "bwcarddav-dirhandler")
-public abstract class DirHandlerConfig<T extends DirHandlerConfig>
+public abstract class DirHandlerConfig<T extends DirHandlerConfig<?>>
         extends HibernateConfigBase<T> {
   private String confClass;
 
@@ -54,7 +54,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
 
   /** set the class for the conf wrapper object class
    *
-   * @param val
+   * @param val the class for the conf wrapper object class
    */
   public void setConfClass(final String val) {
     confClass = val;
@@ -62,7 +62,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
 
   /** Get the class for the conf wrapper object class
    *
-   * @return String   path
+   * @return String   className
    */
   public String getConfClass() {
     return confClass;
@@ -70,7 +70,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
 
   /** set the class for the jmx conf bean
    *
-   * @param val
+   * @param val the class for the jmx conf bean
    */
   public void setConfBeanClass(final String val) {
     confBeanClass = val;
@@ -188,7 +188,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
   /** True if this prefix represents an addressbook. Only required if we have no
    * way of adding objectClasses or attributes to the directory itself.
    *
-   * @param val
+   * @param val True if this prefix represents an addressbook.
    */
   public void setAddressBook(final boolean val)  {
     addressBook = val;
@@ -205,7 +205,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
   /** True if this prefix represents a directory. This is part of the gateway
    * spec. A directory should be treated as potentially very large.
    *
-   * @param val
+   * @param val True if this prefix represents a directory.
    */
   public void setDirectory(final boolean val)  {
     directory = val;
@@ -253,7 +253,7 @@ public abstract class DirHandlerConfig<T extends DirHandlerConfig>
 
   /** If set defines the default kind in this directory
    *
-   * @param val
+   * @param val the default kind in this directory
    */
   public void setCardKind(final String val)  {
     cardKind = val;

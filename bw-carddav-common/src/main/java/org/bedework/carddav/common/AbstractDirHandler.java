@@ -53,7 +53,7 @@ public abstract class AbstractDirHandler
   /** */
   protected CardDAVConfigI cdConfig;
   /** */
-  protected DirHandlerConfig dhConfig;
+  protected DirHandlerConfig<?> dhConfig;
 
   /** */
   protected UrlHandler urlHandler;
@@ -127,7 +127,7 @@ public abstract class AbstractDirHandler
 
   @Override
   public void init(final CardDAVConfigI cdConfig,
-                   final DirHandlerConfig dhConfig,
+                   final DirHandlerConfig<?> dhConfig,
                    final UrlHandler urlHandler) {
     this.cdConfig = cdConfig;
     this.dhConfig = dhConfig;
@@ -200,23 +200,21 @@ public abstract class AbstractDirHandler
         return null;
       }
 
-      int start = -1;
-
       int end = path.length();
       if (path.endsWith("/")) {
         end--;
       }
 
-      int whoType;
+      final int whoType;
       String who = null;
 
-      for (String prefix: toWho.keySet()) {
+      for (final String prefix: toWho.keySet()) {
         if (!path.startsWith(prefix)) {
           continue;
         }
 
         whoType = toWho.get(prefix);
-        start = prefix.length();
+        final int start = prefix.length();
 
         if (start == end) {
           // Trying to browse user principals?
@@ -251,7 +249,7 @@ public abstract class AbstractDirHandler
       }
 
       throw new WebdavException(principalNotFound);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -262,7 +260,7 @@ public abstract class AbstractDirHandler
       return p.getAccount();
     }
 
-    String root = fromWho.get(p.getKind());
+    final String root = fromWho.get(p.getKind());
 
     if (root == null) {
       throw new WebdavException(unknownPrincipalType);
@@ -274,7 +272,7 @@ public abstract class AbstractDirHandler
   @Override
   public Collection<String>getGroups(String rootUrl,
                                      final String principalUrl) {
-    Collection<String> urls = new TreeSet<String>();
+    final Collection<String> urls = new TreeSet<>();
 
     if (principalUrl == null) {
       /* for the moment if the root url is the user principal hierarchy root
@@ -314,20 +312,20 @@ public abstract class AbstractDirHandler
     return null;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *  Protected methods.
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Ensure path matches our prefix - without any trailing "/".
    *
-   * @param path
+   * @param path to match
    */
   protected void verifyPath(final String path) {
     if (!path.startsWith(dhConfig.getPathPrefix())) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
     }
 
-    int prefixLen = dhConfig.getPathPrefix().length();
+    final int prefixLen = dhConfig.getPathPrefix().length();
     if ((path.length() > (prefixLen + 1)) && (path.charAt(prefixLen) != '/')) {
       throw new WebdavBadRequest("Invalid path for handler" + path);
     }
@@ -335,7 +333,7 @@ public abstract class AbstractDirHandler
 
   /** See if we already checked this user
    *
-   * @param account
+   * @param account to check
    * @return boolean
    */
   protected synchronized boolean lookupUser(final String account) {
@@ -348,7 +346,7 @@ public abstract class AbstractDirHandler
   }
 
   /** Add a checked user to the table
-   * @param account
+   * @param account to add
    */
   protected void addValidUser(final String account) {
     validUsers.put(account, account);
@@ -360,7 +358,7 @@ public abstract class AbstractDirHandler
    */
   protected String makePrincipalHref(final String account,
                                      final int whoType) {
-    String root = fromWho.get(whoType);
+    final String root = fromWho.get(whoType);
 
     if (root == null) {
       throw new WebdavException(unknownPrincipalType);
@@ -386,7 +384,7 @@ public abstract class AbstractDirHandler
    * NormalizeUri was called previously so we have no trailing "/"
    */
   protected SplitResult splitUri(final String uri) {
-    String noEndSlash;
+    final String noEndSlash;
 
     if (uri.endsWith("/")) {
       noEndSlash = uri.substring(0, uri.length() - 1);
@@ -394,7 +392,7 @@ public abstract class AbstractDirHandler
       noEndSlash = uri;
     }
 
-    int pos = noEndSlash.lastIndexOf("/");
+    final int pos = noEndSlash.lastIndexOf("/");
     if (pos < 0) {
       // bad uri
       throw new WebdavBadRequest("Invalid uri: " + uri);
@@ -415,9 +413,9 @@ public abstract class AbstractDirHandler
     return  val + "/";
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *  Dynamic mbean methods. - unfinishd
-   * ==================================================================== * /
+   * ============================================================== * /
 
   public Object getAttribute(final String attribute)
       throws AttributeNotFoundException, MBeanException, ReflectionException {
@@ -438,8 +436,8 @@ public abstract class AbstractDirHandler
   /** Convert the prefix that selects the dir handler e.g. "/public/people/"
    * to a valid principal prefix, e.g. "/principals/users/"
    *
-   * @param ourPrefix
-   * @param principalPrefix
+   * @param ourPrefix selects the dir handler
+   * @param principalPrefix e.g. "/principals/users/"
    */
   public void addToPrincipal(final String ourPrefix,
                              final String principalPrefix) {
@@ -450,9 +448,9 @@ public abstract class AbstractDirHandler
     return toPrincipalPrefix.get(ourPrefix);
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *  Private methods.
-   * ==================================================================== */
+   * ============================================================== */
 
   private void initWhoMaps(final String prefix, final int whoType) {
     toWho.put(prefix, whoType);
@@ -464,11 +462,11 @@ public abstract class AbstractDirHandler
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

@@ -135,24 +135,20 @@ public class CardDAVContextConfig extends ConfigBase<CardDAVContextConfig> {
     ts.append("webaddrPublicAddrbook", getWebaddrPublicAddrbook());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Non-attribute methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
    * @return List derived from webaddrServicePropertiesList
    */
   @ConfInfo(dontSave = true)
   public List<String> getWebaddrServiceProperties() {
-    final List<String> webaddrServiceProperties = new ArrayList<String>();
+    final List<String> webaddrServiceProperties = new ArrayList<>();
 
     for (final String s: getWebaddrServicePropertiesList().split(",")) {
       webaddrServiceProperties.add(s.trim());
     }
     return webaddrServiceProperties;
   }
-
-  /* ====================================================================
-   *                   Object methods
-   * ==================================================================== */
 }

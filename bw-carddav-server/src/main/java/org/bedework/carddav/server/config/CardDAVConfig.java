@@ -62,7 +62,7 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig>
 
   private Set<CardDAVContextConfig> contextConfigs;
 
-  private Set<DirHandlerConfig> handlerConfigs;
+  private Set<DirHandlerConfig<?>> handlerConfigs;
 
   @Override
   public void setDataOut(final String val) {
@@ -212,14 +212,14 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig>
   /**
    * @return config set
    */
-  public Set<DirHandlerConfig> getDirHandlerConfigs() {
+  public Set<DirHandlerConfig<?>> getDirHandlerConfigs() {
     return handlerConfigs;
   }
 
   /**
    * @param dhc new config
    */
-  public void addDirhandler(final DirHandlerConfig dhc) {
+  public void addDirhandler(final DirHandlerConfig<?> dhc) {
     if (handlerConfigs == null) {
       handlerConfigs = new TreeSet<>();
     }
@@ -234,15 +234,15 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig>
    * @param path prefix
    * @return DirHandlerConfig or null
    */
-  public DirHandlerConfig findDirhandler(final String path) {
-    DirHandlerConfig conf = null;
+  public DirHandlerConfig<?> findDirhandler(final String path) {
+    DirHandlerConfig<?> conf = null;
     int matchLen = 0;
 
     if (handlerConfigs == null) {
       return null;
     }
 
-    for (final DirHandlerConfig c: handlerConfigs) {
+    for (final DirHandlerConfig<?> c: handlerConfigs) {
       final String prefix = c.getPathPrefix();
       final int plen = prefix.length();
 
@@ -267,12 +267,12 @@ public class CardDAVConfig extends ConfigBase<CardDAVConfig>
    * @param principalHref the href
    * @return DirHandlerConfig or null
    */
-  public DirHandlerConfig findPrincipalDirhandler(final String principalHref) {
+  public DirHandlerConfig<?> findPrincipalDirhandler(final String principalHref) {
     if (handlerConfigs == null) {
       return null;
     }
 
-    for (final DirHandlerConfig c: handlerConfigs) {
+    for (final DirHandlerConfig<?> c: handlerConfigs) {
       final String prefix = c.getPrincipalPrefix();
 
       if (prefix == null) {

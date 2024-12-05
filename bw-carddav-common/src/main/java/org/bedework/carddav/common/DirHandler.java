@@ -25,7 +25,6 @@ import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
-import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -65,7 +64,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param urlHandler - to allow creation of urls in returned objects.
    */
   void init(CardDAVConfigI cdConfig,
-            DirHandlerConfig dhConfig,
+            DirHandlerConfig<?> dhConfig,
             UrlHandler urlHandler);
 
   /** Open the handler.
@@ -114,9 +113,9 @@ public interface DirHandler /*extends DynamicMBean */ {
    */
   boolean exportData(String dataOutPath);
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Principals
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Does the value appear to represent a valid principal?
    *
@@ -176,9 +175,9 @@ public interface DirHandler /*extends DynamicMBean */ {
    */
   String getprincipalHome(AccessPrincipal p);
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Cards
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Add a card.
    *
@@ -202,8 +201,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param name        String possible name
    * @return Vcard or null
    */
-  Card getCard(String path, String name)
-          throws WebdavException;
+  Card getCard(String path, String name);
 
   /** Get card given the collection and the uid.
    *
@@ -211,8 +209,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param uid        UID value
    * @return Vcard or null
    */
-  Card getCardByUid(String path, String uid)
-          throws WebdavException;
+  Card getCardByUid(String path, String uid);
 
   /** Return the cards for the current user in the given collection using the
    * supplied filter.
@@ -237,9 +234,9 @@ public interface DirHandler /*extends DynamicMBean */ {
    */
   Iterator<Card> getAll(String path);
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Collections
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
    * @param col   Initialised collection object
@@ -259,7 +256,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param newName the name to set
    * @return int status
    */
-  int rename(WdCollection col,
+  int rename(WdCollection<?> col,
              String newName);
 
   /** Copy or move the given entity to the destination collection with the given name.
@@ -289,7 +286,7 @@ public interface DirHandler /*extends DynamicMBean */ {
    *
    * @param val           updated WdCollection object
    */
-  void updateCollection(WdCollection val);
+  void updateCollection(WdCollection<?> val);
 
   /** Returns children of the given collection to which the current user has
    * some access.
@@ -316,5 +313,5 @@ public interface DirHandler /*extends DynamicMBean */ {
    * @param path - to parent.
    * @return batcher - null for unsupported
    */
-  CollectionBatcher getCollections(final String path)  throws WebdavException;
+  CollectionBatcher getCollections(String path);
 }

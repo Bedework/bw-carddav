@@ -19,7 +19,6 @@
 package org.bedework.carddav.common;
 
 import org.bedework.webdav.servlet.shared.WdCollectionBase;
-import org.bedework.webdav.servlet.shared.WebdavException;
 
 import javax.xml.namespace.QName;
 

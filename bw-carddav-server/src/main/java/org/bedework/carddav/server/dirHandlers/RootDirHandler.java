@@ -25,7 +25,6 @@ import org.bedework.carddav.common.GetResult;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.webdav.servlet.shared.WdCollection;
-import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
 
 import java.util.Iterator;
@@ -111,7 +110,7 @@ public class RootDirHandler extends AbstractDirHandler {
   }
 
   @Override
-  public int rename(final WdCollection col,
+  public int rename(final WdCollection<?> col,
                     final String newName) {
     throw new WebdavForbidden();
   }
@@ -123,7 +122,7 @@ public class RootDirHandler extends AbstractDirHandler {
   }
 
   @Override
-  public void updateCollection(final WdCollection val) {
+  public void updateCollection(final WdCollection<?> val) {
     throw new WebdavForbidden();
   }
 }

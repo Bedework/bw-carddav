@@ -59,15 +59,13 @@ public class DirHandlerFactory {
 
     @Override
     public boolean equals(final Object o) {
-      if (!(o instanceof HandlerKey)) {
+      if (!(o instanceof final HandlerKey that)) {
         return false;
       }
 
       if (this == o) {
         return true;
       }
-
-      final HandlerKey that = (HandlerKey)o;
 
       if (!prefix.equals(that.prefix)) {
         return false;
@@ -96,11 +94,11 @@ public class DirHandlerFactory {
   /**
    * @param account of caller
    * @param urlHandler to handle urls.
-   * @return set of handlers.
+   * @return list of handlers.
    */
   public List<DirHandler> getHandlers(final String account,
                                      final UrlHandler urlHandler) {
-    final Set<DirHandlerConfig> configs = conf.getDirHandlerConfigs();
+    final Set<DirHandlerConfig<?>> configs = conf.getDirHandlerConfigs();
 
     if (configs == null) {
       return null;
@@ -108,7 +106,7 @@ public class DirHandlerFactory {
 
     final List<DirHandler> dhs = new ArrayList<>();
 
-    for (final DirHandlerConfig dhc: configs) {
+    for (final DirHandlerConfig<?> dhc: configs) {
       dhs.add(getHandler(dhc, account, urlHandler));
     }
 
@@ -122,7 +120,7 @@ public class DirHandlerFactory {
                                final String account,
                                final UrlHandler urlHandler) {
     /* First determine which configuration handles this path */
-    final DirHandlerConfig dhc = conf.findDirhandler(path);
+    final DirHandlerConfig<?> dhc = conf.findDirhandler(path);
 
     if (dhc == null) {
       throw new WebdavBadRequest("Bad path " + path);
@@ -139,7 +137,7 @@ public class DirHandlerFactory {
                                         final UrlHandler urlHandler,
                                         final boolean required) {
     /* First determine which configuration handles this path */
-    final DirHandlerConfig dhc = conf.findPrincipalDirhandler(principalHref);
+    final DirHandlerConfig<?> dhc = conf.findPrincipalDirhandler(principalHref);
 
     if (dhc == null) {
       if (required) {
@@ -162,7 +160,7 @@ public class DirHandlerFactory {
     openHandlers.clear();
   }
 
-  private DirHandler getHandler(final DirHandlerConfig dhc,
+  private DirHandler getHandler(final DirHandlerConfig<?> dhc,
                                 final String account,
                                 final UrlHandler urlHandler) {
     try {
@@ -201,13 +199,9 @@ public class DirHandlerFactory {
    * @param name class name of handler
    * @return DirHandler
    */
-  private DirHandler getHandlerObject(final String name) throws WebdavException  {
+  private DirHandler getHandlerObject(final String name) {
     try {
       final Object o = Class.forName(name).newInstance();
-
-      if (o == null) {
-        throw new WebdavException("Class " + name + " not found");
-      }
 
       if (!(o instanceof DirHandler)) {
         throw new WebdavException("Class " + name +
