@@ -59,9 +59,9 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
                                                           "Dir handler name",
                                                           "Dir handler class"};
 
-  private static final OpenType[] dhListItemTypes = {SimpleType.STRING,
-                                                     SimpleType.STRING,
-                                                     SimpleType.STRING};
+  private static final OpenType<?>[] dhListItemTypes = {SimpleType.STRING,
+                                                        SimpleType.STRING,
+                                                        SimpleType.STRING};
 
   /* path must be unique */
   private static final String[] dhListIndexNames = {"path"};
@@ -239,7 +239,7 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
   public TabularData ListDirHandlersTable() {
     dhData.clear();
 
-    for (final DirHandlerConfig dhc: getConfig().getDirHandlerConfigs()) {
+    for (final DirHandlerConfig<?> dhc: getConfig().getDirHandlerConfigs()) {
       final Object[] itemValues = {dhc.getPathPrefix(),
                                    dhc.getName(),
                                    dhc.getClassName()
@@ -248,7 +248,7 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
         dhData.put(new CompositeDataSupport(dhType, dhListItemNames,
                                             itemValues));
       } catch (final OpenDataException e) {
-        e.printStackTrace();
+        error(e);
       }
     }
 
@@ -259,13 +259,13 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
   public String ListDirHandlers() {
     final StringBuilder res = new StringBuilder();
 
-    for (final DirHandlerConfig dhc: getConfig().getDirHandlerConfigs()) {
-      res.append(dhc.getPathPrefix());
-      res.append("\t");
-      res.append(dhc.getName());
-      res.append("\t");
-      res.append(dhc.getClassName());
-      res.append("\n");
+    for (final DirHandlerConfig<?> dhc: getConfig().getDirHandlerConfigs()) {
+      res.append(dhc.getPathPrefix())
+         .append("\t")
+         .append(dhc.getName())
+         .append("\t")
+         .append(dhc.getClassName())
+         .append("\n");
     }
 
     return res.toString();
@@ -332,7 +332,7 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
 
       for (final String dhn: dirHandlerNames) {
         /* We have to load the config here to get the class of the bean. */
-        final DirHandlerConfig cfg = getDirHandlerConf(dhcs, dhn);
+        final DirHandlerConfig<?> cfg = getDirHandlerConf(dhcs, dhn);
 
         if (cfg == null) {
           continue;
@@ -367,24 +367,20 @@ public class CardDav extends ConfBase<CardDAVConfig> implements CardDavMBean {
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
    * @return current state of config
    */
-  private DirHandlerConfig getDirHandlerConf(final ConfigurationStore cfs,
+  private DirHandlerConfig<?> getDirHandlerConf(final ConfigurationStore cfs,
                                              final String configName) {
     try {
-      return (DirHandlerConfig)cfs.getConfig(configName);
-    } catch (Throwable t) {
+      return (DirHandlerConfig<?>)cfs.getConfig(configName);
+    } catch (final Throwable t) {
       error(t);
       return null;
     }
   }
-
-  /* ====================================================================
-   *                   Protected methods
-   * ==================================================================== */
 }

@@ -19,7 +19,6 @@
 package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
-import org.bedework.webdav.servlet.shared.WebdavException;
 
 /** Class to represent a user in caldav.
  *
@@ -28,9 +27,9 @@ import org.bedework.webdav.servlet.shared.WebdavException;
  */
 public class CarddavUserNode extends CarddavPrincipalNode {
   /**
-   * @param cdURI
-   * @param sysi
-   * @param ap
+   * @param cdURI referencing resource
+   * @param sysi system interface
+   * @param ap principal
    */
   public CarddavUserNode(final CarddavURI cdURI, final SysIntf sysi,
                          final AccessPrincipal ap) {

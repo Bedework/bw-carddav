@@ -25,9 +25,9 @@ import org.bedework.util.jmx.MBeanInfo;
  * @author douglm
  */
 public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
-  /* ========================================================================
+  /* ==============================================================
    * Attributes
-   * ======================================================================== */
+   * ============================================================== */
   /**
    * @param val
    */
@@ -50,9 +50,9 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
   @MBeanInfo("security Authentication")
   String getSecurityAuthentication();
 
-  /** e.g. "ssl"
+  /**
   *
-  * @param val
+  * @param val e.g. "ssl"
   */
   void setSecurityProtocol(final String val) ;
 
@@ -63,9 +63,9 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
   @MBeanInfo("e.g. \"ssl\"")
   String getSecurityProtocol();
 
-  /** URL of ldap server
+  /**
    *
-   * @param val
+   * @param val URL of ldap server
    */
   void setProviderUrl(final String val);
 
@@ -78,7 +78,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val ldap base dn
    */
   void setBaseDn(final String val);
 
@@ -91,7 +91,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /** Set the query limit - 0 for no limit
    *
-   * @param val
+   * @param val the query limit - 0 for no limit
    */
   void setQueryLimit(final int val);
 
@@ -104,7 +104,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val comma separated list of attribute ids
    */
   void setAttrIds(final String val);
 
@@ -118,7 +118,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val objectclass used to represent a folder
    */
   void setFolderObjectClass(final String val);
 
@@ -132,7 +132,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val Addressbook ObjectClass
    */
   void setAddressbookObjectClass(final String val);
 
@@ -145,7 +145,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val Addressbook entry ObjectClass
    */
   void setAddressbookEntryObjectClass(final String val);
 
@@ -156,9 +156,9 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
   @MBeanInfo("Addressbook entry ObjectClass")
   String getAddressbookEntryObjectClass();
 
-  /** Attribute we search for to get a principal
+  /**
    *
-   * @param val
+   * @param val Attribute we search for to get a principal
    */
   void setPrincipalIdAttr(final String val);
 
@@ -166,12 +166,12 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
    *
    * @return String val
    */
-  @MBeanInfo("Attribute we search for to get a group")
+  @MBeanInfo("Attribute we search for to get a principal")
   String getPrincipalIdAttr();
 
   /**
    *
-   * @param val
+   * @param val attribute used to designate the equivalent of a folder
    */
   @MBeanInfo("")
   void setFolderIdAttr(final String val) ;
@@ -186,7 +186,7 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
 
   /**
    *
-   * @param val
+   * @param val addressbook Id Attr
    */
   void setAddressbookIdAttr(final String val);
 
@@ -249,9 +249,9 @@ public interface LdapDirHandlerConfMBean extends DirHandlerConfMBean {
   @MBeanInfo("If we need an id to authenticate this is the password.")
   String getAuthPw();
 
-  /* ========================================================================
+  /* ==============================================================
    * Operations
-   * ======================================================================== */
+   * ============================================================== */
 
   /* * Get info for a user
    *

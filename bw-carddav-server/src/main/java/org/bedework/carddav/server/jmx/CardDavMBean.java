@@ -31,9 +31,9 @@ import javax.management.openmbean.TabularData;
  * @author douglm
  */
 public interface CardDavMBean extends ConfBaseMBean, CardDAVConfigI {
-  /* ========================================================================
+  /* ==============================================================
    * Attributes
-   * ======================================================================== */
+   * ============================================================== */
 
   /** data output directory name - full path. Used for data export
    *
@@ -47,9 +47,9 @@ public interface CardDavMBean extends ConfBaseMBean, CardDAVConfigI {
   @MBeanInfo("data export full path to directory")
   String getDataOut();
 
-  /* ========================================================================
+  /* ==============================================================
    * Operations
-   * ======================================================================== */
+   * ============================================================== */
 
   /**
    * @return List of dir handler mappings

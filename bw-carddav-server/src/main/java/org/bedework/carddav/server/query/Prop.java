@@ -32,16 +32,16 @@ public class Prop implements Logged {
   private boolean novalue;
 
   /** Constructor
-   * @param name
+   * @param name Name of property
    */
-  public Prop(String name) {
+  public Prop(final String name) {
     this.name = name;
   }
 
   /**
-   * @param val
+   * @param val property value
    */
-  public void setName(String val) {
+  public void setName(final String val) {
     name = val;
   }
 
@@ -53,9 +53,9 @@ public class Prop implements Logged {
   }
 
   /**
-   * @param val
+   * @param val true for property with no value
    */
-  public void setNovalue(boolean val) {
+  public void setNovalue(final boolean val) {
     novalue = val;
   }
 
@@ -67,25 +67,23 @@ public class Prop implements Logged {
   }
 
   /**
-   * @param indent
+   * @param indent amount
    */
-  public void dump(String indent) {
-    StringBuffer sb = new StringBuffer(indent);
-
-    sb.append("<calddav:prop name=");
-    sb.append(name);
-    sb.append(" novalue=");
-    sb.append(novalue);
-    sb.append("/>");
-
-    debug(sb.toString());
+  public void dump(final String indent) {
+    debug(new StringBuilder(indent)
+                  .append("<calddav:prop name=")
+                  .append(name)
+                  .append(" novalue=")
+                  .append(novalue)
+                  .append("/>")
+                  .toString());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

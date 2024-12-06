@@ -19,6 +19,7 @@
 package org.bedework.carddav.server.dirHandlers.db;
 
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.access.AccessState;
 import org.bedework.webdav.servlet.shared.WebdavException;
@@ -386,16 +387,16 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("DbCard{");
+    final ToString ts = new ToString(this);
 
-    toStringSegment(sb);
+    toStringSegment(ts);
 
-    return sb.toString();
+    return ts.toString();
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private methods
-   * ==================================================================== */
+   * ============================================================== */
 
   private void initFromVcard() {
     // XXX Do this the inefficient way for the moment
@@ -484,7 +485,7 @@ public class DbCard extends DbNamedEntity<DbCard> {
 
   private void addDbProperty(final DbCardProperty val) {
     if (getProperties() == null) {
-      setProperties(new ArrayList<DbCardProperty>());
+      setProperties(new ArrayList<>());
     }
 
     val.setCard(this);

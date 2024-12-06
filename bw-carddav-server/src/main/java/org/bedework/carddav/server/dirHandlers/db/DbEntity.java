@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.misc.ToString;
 import org.bedework.webdav.servlet.access.SharedEntity;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
    * call calculateByteSize to get a new value and use the difference to adjust
    * the quota.
    *
-   * @param val
+   * @param val byte size
    */
   public void setByteSize(final int val) {
     byteSize = val;
@@ -97,7 +98,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
   }
 
   /**
-   * @param val
+   * @param val owner href
    */
   public void setOwnerHref(final String val) {
     ownerHref = val;
@@ -111,7 +112,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
   }
 
   /**
-   * @param val
+   * @param val  creatorHref
    */
   public void setCreatorHref(final String val) {
     creatorHref = val;
@@ -125,7 +126,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
   }
 
   /**
-   * @param val
+   * @param val access
    */
   public void setAccess(final String val) {
     access = val;
@@ -139,7 +140,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
   }
 
   /**
-   * @param val
+   * @param val parent path
    */
   public void setParentPath(final String val) {
     parentPath = val;
@@ -153,7 +154,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
   }
 
   /**
-   * @param val
+   * @param val create date/time
    */
   public void setCreated(final String val) {
     created = val;
@@ -166,14 +167,14 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
     return created;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Action methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Add a deleted entity - these may appear as a result of updates.
    * A null parameter is a noop.
    *
-   * @param val
+   * @param val a deleted entity
    */
   public void addDeletedEntity(final DbEntity<?> val) {
     if ((val == null) || val.unsaved()) {
@@ -181,7 +182,7 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
     }
 
     if (deletedEntities == null) {
-      deletedEntities = new ArrayList<DbEntity<?>>();
+      deletedEntities = new ArrayList<>();
     }
 
     deletedEntities.add(val);
@@ -228,20 +229,15 @@ public abstract class DbEntity<T> extends UnversionedDbentity<T> implements Shar
     return 8;  // overhead
   }
 
-  /**
-   * @param sb
-   */
   @Override
-  public void toStringSegment(final StringBuilder sb) {
-    super.toStringSegment(sb);
+  public void toStringSegment(final ToString ts) {
+    super.toStringSegment(ts);
 
-    sb.append(", \n   ownerHref=");
-    sb.append(getOwnerHref());
-    sb.append(", parentPath=");
-    sb.append(getParentPath());
-    sb.append(", created=");
-    sb.append(getCreated());
-    sb.append(",\n   acl=");
-    sb.append(getAccess());
+    ts.newLine()
+      .append("ownerHref", getOwnerHref())
+      .append("parentPath", getParentPath())
+      .append("created", getCreated())
+      .newLine()
+      .append("acl=", getAccess());
   }
 }

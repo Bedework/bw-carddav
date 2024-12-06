@@ -56,7 +56,7 @@ public abstract class CarddavNode extends WebdavNsNode {
   }
 
   /* for accessing calendars */
-  private SysIntf sysi;
+  private final SysIntf sysi;
 
   CarddavNode(final CarddavURI cdURI,
               final SysIntf sysi) {
@@ -81,9 +81,9 @@ public abstract class CarddavNode extends WebdavNsNode {
     this.sysi = sysi;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                         Public methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public WdCollection<?> getCollection(final boolean deref) {
@@ -124,7 +124,7 @@ public abstract class CarddavNode extends WebdavNsNode {
    */
   @Override
   public Collection<QName> getSupportedReports() {
-    Collection<QName> res = new ArrayList<>();
+    final Collection<QName> res = new ArrayList<>();
     res.addAll(super.getSupportedReports());
     res.addAll(supportedReports);
 
@@ -182,9 +182,9 @@ public abstract class CarddavNode extends WebdavNsNode {
     try {
       // Not known - try higher
       return super.generatePropertyValue(tag, intf, allProp);
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }

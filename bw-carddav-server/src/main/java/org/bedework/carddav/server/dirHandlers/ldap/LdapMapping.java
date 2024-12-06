@@ -25,6 +25,7 @@ import net.fortuna.ical4j.vcard.property.Kind;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +44,12 @@ import java.util.Map;
 public class LdapMapping {
   /* The following needs to be part of the config - which needs changes */
 
-  private String attrId;
+  private final String attrId;
 
 
   /** Simple not-required attr<->property
    *
-   * @param attrId
+   * @param attrId th eattribute id
    */
   public LdapMapping(final String attrId) {
     this.attrId = attrId;
@@ -61,12 +62,12 @@ public class LdapMapping {
     return attrId;
   }
 
-  /** This represent a value we need to insert into an ldap entry as we create it.
+  /** This represents a value we need to insert into an ldap entry as we create it.
    * These have no corresponding vcard property.
    *
    */
   public static class AttrValue extends LdapMapping {
-    private String value;
+    private final String value;
 
 
     /** Simple not-required attr<->property
@@ -100,11 +101,9 @@ public class LdapMapping {
 
     @Override
     public boolean equals(final Object o) {
-      if (!(o instanceof AttrValue)) {
+      if (!(o instanceof final AttrValue that)) {
         return false;
       }
-
-      final AttrValue that = (AttrValue)o;
 
       return (Util.compareStrings(getAttrId(), that.getAttrId()) == 0) &&
              (Util.compareStrings(value, that.value) == 0);
@@ -114,20 +113,20 @@ public class LdapMapping {
   /** These represent vcard properties.
    */
   public static class AttrPropertyMapping extends LdapMapping {
-    private String group;
-    private String propertyName;
-    private String parameterName;
-    private String parameterValue;
-    private boolean required;
+    private final String group;
+    private final String propertyName;
+    private final String parameterName;
+    private final String parameterValue;
+    private final boolean required;
 
     /* What kind of vcard - empty for any */
-    private List<Kind> kinds = new ArrayList<>();
+    private final List<Kind> kinds = new ArrayList<>();
 
     /** Simple not-required attr<->property
      *
-     * @param attrId
-     * @param propertyName
-     * @param kinds
+     * @param attrId name of attribute
+     * @param propertyName name of vcard property
+     * @param kinds ical4j kinds
      */
     public AttrPropertyMapping(final String attrId,
                                final String propertyName,
@@ -137,11 +136,11 @@ public class LdapMapping {
 
     /** Not-required attr<->property+parameter
      *
-     * @param attrId
-     * @param propertyName
-     * @param parameterName
-     * @param parameterValue
-     * @param kinds
+     * @param attrId name of attribute
+     * @param propertyName name of vcard property
+     * @param parameterName name of vcard param
+     * @param parameterValue value
+     * @param kinds ical4j kinds
      */
     public AttrPropertyMapping(final String attrId,
                                final String propertyName,
@@ -154,10 +153,10 @@ public class LdapMapping {
 
     /** Possibly required attr<->property
      *
-     * @param attrId
-     * @param propertyName
-     * @param required
-     * @param kinds
+     * @param attrId name of attribute
+     * @param propertyName name of vcard property
+     * @param required boolean
+     * @param kinds ical4j kinds
      */
     public AttrPropertyMapping(final String attrId,
                                final String propertyName,
@@ -168,13 +167,13 @@ public class LdapMapping {
 
     /** Possibly required attr<->property+parameter
      *
-     * @param attrId
-     * @param group
-     * @param propertyName
-     * @param parameterName
-     * @param parameterValue
-     * @param required
-     * @param kinds
+     * @param attrId name of attribute
+     * @param group name of group
+     * @param propertyName name of vcard property
+     * @param parameterName name of vcard param
+     * @param parameterValue value
+     * @param required boolean
+     * @param kinds ical4j kinds
      */
     public AttrPropertyMapping(final String attrId,
                                final String group,
@@ -190,9 +189,7 @@ public class LdapMapping {
       this.parameterValue = parameterValue;
       this.required = required;
 
-      for (Kind k: kinds) {
-        this.kinds.add(k);
-      }
+      Collections.addAll(this.kinds, kinds);
     }
 
     /**
@@ -266,7 +263,7 @@ public class LdapMapping {
         return false;
       }
 
-      AttrPropertyMapping that = (AttrPropertyMapping)o;
+      final AttrPropertyMapping that = (AttrPropertyMapping)o;
 
       return (Util.compareStrings(getAttrId(), that.getAttrId()) == 0) &&
              (Util.compareStrings(propertyName, that.propertyName) == 0) &&
@@ -300,7 +297,7 @@ public class LdapMapping {
   private static AttrPropertyMapping kindProperty = null;
 
   /** Object classes and KIND */
-  private static Map<String, Kind> ocKindMapping = new HashMap<>();
+  private static final Map<String, Kind> ocKindMapping = new HashMap<>();
 
   static {
     addOcKindMapping("person", Kind.INDIVIDUAL);

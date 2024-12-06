@@ -26,6 +26,7 @@ import org.bedework.webdav.servlet.shared.WebdavException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
@@ -63,8 +64,8 @@ public class DumpEntity<T> implements Logged {
 
   /** Dump this entity as xml.
    *
-   * @param xml
-   * @param dtype
+   * @param xml emitter
+   * @param dtype DumpType
    */
   @NoWrap
   public void dump(final XmlEmit xml, final DumpType dtype) {
@@ -73,8 +74,8 @@ public class DumpEntity<T> implements Logged {
 
   /** Dump this entity as xml.
    *
-   * @param xml
-   * @param dtype
+   * @param xml emitter
+   * @param dtype DumpType
    * @param fromCollection  true if the value is a member of a collection
    */
   @NoWrap
@@ -84,10 +85,10 @@ public class DumpEntity<T> implements Logged {
       return;
     }
 
-    NoDump ndCl = getClass().getAnnotation(NoDump.class);
-    Dump dCl = getClass().getAnnotation(Dump.class);
+    final NoDump ndCl = getClass().getAnnotation(NoDump.class);
+    final Dump dCl = getClass().getAnnotation(Dump.class);
 
-    boolean dumpKeyFields = dtype == DumpType.reference;
+    final boolean dumpKeyFields = dtype == DumpType.reference;
 
     ArrayList<String> noDumpMethods = null;
     ArrayList<String> firstMethods = null;
@@ -98,15 +99,13 @@ public class DumpEntity<T> implements Logged {
           return;
         }
 
-        noDumpMethods = new ArrayList<String>();
-        for (String m: ndCl.value()) {
-          noDumpMethods.add(m);
-        }
+        noDumpMethods = new ArrayList<>();
+        Collections.addAll(noDumpMethods, ndCl.value());
       }
 
       if (!dumpKeyFields && (dCl != null) && (dCl.firstFields().length != 0)) {
-        firstMethods = new ArrayList<String>();
-        for (String f: dCl.firstFields()) {
+        firstMethods = new ArrayList<>();
+        for (final String f: dCl.firstFields()) {
           firstMethods.add(methodName(f));
         }
       }
@@ -117,16 +116,16 @@ public class DumpEntity<T> implements Logged {
         qn = startElement(xml, getClass(), dCl);
       }
 
-      Collection<ComparableMethod> ms = findGetters(dCl, dtype);
+      final Collection<ComparableMethod> ms = findGetters(dCl, dtype);
 
       if (firstMethods != null) {
         doFirstMethods:
-        for (String methodName: firstMethods) {
-          for (ComparableMethod cm: ms) {
-            Method m = cm.m;
+        for (final String methodName: firstMethods) {
+          for (final ComparableMethod cm: ms) {
+            final Method m = cm.m;
 
             if (methodName.equals(m.getName())) {
-              Dump d = m.getAnnotation(Dump.class);
+              final Dump d = m.getAnnotation(Dump.class);
 
               dumpValue(xml, m, d, m.invoke(this, (Object[])null), fromCollection);
 
@@ -138,8 +137,8 @@ public class DumpEntity<T> implements Logged {
         }
       }
 
-      for (ComparableMethod cm: ms) {
-        Method m = cm.m;
+      for (final ComparableMethod cm: ms) {
+        final Method m = cm.m;
 
         if ((noDumpMethods != null) &&
             noDumpMethods.contains(fieldName(m.getName()))) {
@@ -151,7 +150,7 @@ public class DumpEntity<T> implements Logged {
           continue;
         }
 
-        Dump d = m.getAnnotation(Dump.class);
+        final Dump d = m.getAnnotation(Dump.class);
 
         dumpValue(xml, m, d, m.invoke(this, (Object[])null), fromCollection);
       }
@@ -159,20 +158,22 @@ public class DumpEntity<T> implements Logged {
       if (qn != null) {
         closeElement(xml, qn);
       }
-    } catch (WebdavException cfe) {
+    } catch (final WebdavException cfe) {
       throw cfe;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private boolean dumpValue(final XmlEmit xml, final Method m, final Dump d,
+  private boolean dumpValue(final XmlEmit xml,
+                            final Method m,
+                            final Dump d,
                             final Object methVal,
-                            final boolean fromCollection) throws Throwable {
+                            final boolean fromCollection) {
     /* We always open the methodName or elementName tag if this is the method
      * value.
      *
@@ -180,18 +181,17 @@ public class DumpEntity<T> implements Logged {
      *
      * We do open a tag if the annottaion specifies a collectionElementName
      */
-    if (methVal instanceof DumpEntity) {
-      DumpEntity de = (DumpEntity)methVal;
+    if (methVal instanceof final DumpEntity<?> de) {
 
       if (!de.hasDumpValue()) {
         return false;
       }
 
-      boolean compound = (d!= null) && d.compound();
+      final boolean compound = (d!= null) && d.compound();
 
-      QName mqn = startElement(xml, m, d, fromCollection);
+      final QName mqn = startElement(xml, m, d, fromCollection);
 
-      DumpType dt;
+      final DumpType dt;
       if (compound) {
         dt = DumpType.compound;
       } else {
@@ -207,18 +207,16 @@ public class DumpEntity<T> implements Logged {
       return true;
     }
 
-    if (methVal instanceof Collection) {
-      Collection c = (Collection)methVal;
-
+    if (methVal instanceof final Collection<?> c) {
       if (c.isEmpty()) {
         return false;
       }
 
       QName mqn = null;
 
-      for (Object o: c) {
+      for (final Object o: c) {
         if ((o instanceof DumpEntity) &&
-            (!((DumpEntity)o).hasDumpValue())) {
+            (!((DumpEntity<?>)o).hasDumpValue())) {
           continue;
         }
 
@@ -241,9 +239,11 @@ public class DumpEntity<T> implements Logged {
     return true;
   }
 
-  private QName startElement(final XmlEmit xml, final Class c, final Dump d) {
+  private QName startElement(final XmlEmit xml,
+                             final Class<?> c,
+                             final Dump d) {
     try {
-      QName qn;
+      final QName qn;
 
       if (d == null) {
         qn = new QName(c.getName());
@@ -253,7 +253,7 @@ public class DumpEntity<T> implements Logged {
 
       xml.openTag(qn);
       return qn;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -261,14 +261,14 @@ public class DumpEntity<T> implements Logged {
   private QName startElement(final XmlEmit xml, final Method m, final Dump d,
                              final boolean fromCollection) {
     try {
-      QName qn = getTag(m, d, fromCollection);
+      final QName qn = getTag(m, d, fromCollection);
 
       if (qn != null) {
         xml.openTag(qn);
       }
 
       return qn;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -279,10 +279,10 @@ public class DumpEntity<T> implements Logged {
 
     if (d != null) {
       if (!fromCollection) {
-        if (d.elementName().length() > 0) {
+        if (!d.elementName().isEmpty()) {
           tagName = d.elementName();
         }
-      } else if (d.collectionElementName().length() > 0) {
+      } else if (!d.collectionElementName().isEmpty()) {
         tagName = d.collectionElementName();
       }
     }
@@ -313,7 +313,7 @@ public class DumpEntity<T> implements Logged {
         qn = new QName(p.getClass().getName());
       }
 
-      String sval;
+      final String sval;
 
       if (p instanceof char[]) {
         sval = new String((char[])p);
@@ -326,7 +326,7 @@ public class DumpEntity<T> implements Logged {
       } else {
         xml.cdataProperty(qn, sval);
       }
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -334,12 +334,13 @@ public class DumpEntity<T> implements Logged {
   private void closeElement(final XmlEmit xml, final QName qn) {
     try {
       xml.closeTag(qn);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  private static class ComparableMethod implements Comparable<ComparableMethod> {
+  private static class ComparableMethod
+          implements Comparable<ComparableMethod> {
     Method m;
 
     ComparableMethod(final Method m) {
@@ -353,8 +354,8 @@ public class DumpEntity<T> implements Logged {
 
   private Collection<ComparableMethod> findGetters(final Dump d,
                                                    final DumpType dt) {
-    Method[] meths = getClass().getMethods();
-    Collection<ComparableMethod> getters = new TreeSet<ComparableMethod>();
+    final Method[] meths = getClass().getMethods();
+    final Collection<ComparableMethod> getters = new TreeSet<>();
     Collection<String> keyMethods = null;
 
     if (dt == DumpType.reference) {
@@ -362,14 +363,14 @@ public class DumpEntity<T> implements Logged {
         error("No key fields defined for class " + getClass().getCanonicalName());
         throw new WebdavException("noKeyFields");
       }
-      keyMethods = new ArrayList<String>();
-      for (String f: d.keyFields()) {
+      keyMethods = new ArrayList<>();
+      for (final String f: d.keyFields()) {
         keyMethods.add(methodName(f));
       }
     }
 
-    for (Method m : meths) {
-      String mname = m.getName();
+    for (final Method m : meths) {
+      final String mname = m.getName();
 
       if (mname.length() < 4) {
         continue;
@@ -386,7 +387,7 @@ public class DumpEntity<T> implements Logged {
       }
 
       /* No parameters */
-      Class[] parClasses = m.getParameterTypes();
+      final Class<?>[] parClasses = m.getParameterTypes();
       if (parClasses.length != 0) {
         continue;
       }
@@ -424,11 +425,11 @@ public class DumpEntity<T> implements Logged {
     return val.substring(3, 4).toLowerCase() + val.substring(4);
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

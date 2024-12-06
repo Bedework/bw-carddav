@@ -18,6 +18,8 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.misc.ToString;
+
 /** Base type for a database entity with a name.
  *
  * @author Mike Douglass
@@ -47,7 +49,7 @@ public abstract class DbNamedEntity<T> extends DbEntity<T> {
   }
 
   /**
-   * @param val
+   * @param val path
    */
   public void setPath(final String val) {
     path = val;
@@ -60,18 +62,14 @@ public abstract class DbNamedEntity<T> extends DbEntity<T> {
     return path;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   SharedEntity methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  /**
-   * @param sb
-   */
   @Override
-  public void toStringSegment(final StringBuilder sb) {
-    super.toStringSegment(sb);
+  public void toStringSegment(final ToString ts) {
+    super.toStringSegment(ts);
 
-    sb.append(", \n   name=");
-    sb.append(getName());
+    ts.newLine().append("name", getName());
   }
 }

@@ -38,6 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -99,12 +100,12 @@ public class CarddavReportMethod extends ReportMethod {
 
   /** See if we recognize this report type and return an index.
    *
-   * @param doc
+   * @param doc the parsed request
    * @return index or <0 for unknown.
    */
   protected int getCarddavReportType(final Document doc) {
     try {
-      Element root = doc.getDocumentElement();
+      final Element root = doc.getDocumentElement();
 
       if (XmlUtil.nodeMatches(root, CarddavTags.addressbookQuery)) {
         return reportTypeQuery;
@@ -115,10 +116,10 @@ public class CarddavReportMethod extends ReportMethod {
       }
 
       return -1;
-    } catch (Throwable t) {
-      System.err.println(t.getMessage());
+    } catch (final Throwable t) {
+      error(t.getMessage());
       if (debug()) {
-        t.printStackTrace();
+        error(t);
       }
 
       throw new WebdavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -136,9 +137,9 @@ public class CarddavReportMethod extends ReportMethod {
    */
   private void processDoc(final Document doc) {
     try {
-      Element root = doc.getDocumentElement();
+      final Element root = doc.getDocumentElement();
 
-      Collection<Element> children = getChildren(root);
+      final Collection<Element> children = getChildren(root);
 
       /* Two possibilities:
                <!ELEMENT addressbook-multiget ((DAV:allprop |
@@ -154,7 +155,7 @@ public class CarddavReportMethod extends ReportMethod {
         throw new WebdavBadRequest();
       }
 
-      Iterator<Element> chiter = children.iterator();
+      final Iterator<Element> chiter = children.iterator();
 
       /* First try for a property request */
       preq = pm.tryPropRequest(chiter.next());
@@ -166,7 +167,7 @@ public class CarddavReportMethod extends ReportMethod {
 
         if (preq.reqType == PropRequest.ReqType.prop) {
           // Look for an address-data property
-          for (WebdavProperty prop: preq.props) {
+          for (final WebdavProperty prop: preq.props) {
             if (prop instanceof AddressData) {
               adrdata = (AddressData)prop;
             }
@@ -215,9 +216,9 @@ public class CarddavReportMethod extends ReportMethod {
           throw new WebdavBadRequest("Unexpected elements");
         }
 
-        Collection<Element> limitChildren = getChildren(curnode);
+        final Collection<Element> limitChildren = getChildren(curnode);
 
-        for (Element limNode: limitChildren) {
+        for (final Element limNode: limitChildren) {
           if (!XmlUtil.nodeMatches(limNode, CarddavTags.nresults)) {
             throw new WebdavBadRequest("Bad limit element");
           }
@@ -226,7 +227,7 @@ public class CarddavReportMethod extends ReportMethod {
 
           try {
             limit.limit = Integer.parseInt(XmlUtil.getElementContent(limNode));
-          } catch (Throwable t) {
+          } catch (final Throwable t) {
             throw new WebdavBadRequest("Bad limit nresults value");
           }
         }
@@ -245,22 +246,23 @@ public class CarddavReportMethod extends ReportMethod {
           String href = XmlUtil.getElementContent(curnode);
 
           if (href != null) {
-            String decoded;
+            final String decoded;
             try {
-              decoded = URLDecoder.decode(href, "UTF8");
-            } catch (Throwable t) {
+              decoded = URLDecoder.decode(href,
+                                          StandardCharsets.UTF_8);
+            } catch (final Throwable t) {
               throw new WebdavBadRequest("bad href: " + href);
             }
 
             href = decoded;
           }
 
-          if ((href == null) || (href.length() == 0)) {
+          if ((href == null) || (href.isEmpty())) {
             throw new WebdavBadRequest("Bad href");
           }
 
           if (hrefs == null) {
-            hrefs = new ArrayList<String>();
+            hrefs = new ArrayList<>();
           }
 
           hrefs.add(href);
@@ -270,15 +272,10 @@ public class CarddavReportMethod extends ReportMethod {
           curnode = chiter.next();
         }
 
-        if (hrefs == null) {
-          // need at least 1
-          throw new WebdavBadRequest("Expected href");
-        }
-
         if (debug()) {
           debug("REPORT: multi-get");
 
-          for (String href: hrefs) {
+          for (final String href: hrefs) {
             debug("    <DAV:href>" + href + "</DAV:href>");
           }
         }
@@ -292,18 +289,18 @@ public class CarddavReportMethod extends ReportMethod {
       }
       throw new WebdavBadRequest("REPORT: unexpected element " + curnode.getNodeName() +
                                  " with type " + curnode.getNodeType());
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       error(t);
       throw new WebdavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
   /**
-   * @param req
-   * @param resp
-   * @param depth
+   * @param req http in
+   * @param resp http out
+   * @param depth depth into query
    */
   public void processResp(final HttpServletRequest req,
                           final HttpServletResponse resp,
@@ -313,22 +310,23 @@ public class CarddavReportMethod extends ReportMethod {
 
     startEmit(resp);
 
-    String resourceUri = getResourceUri(req);
+    final String resourceUri = getResourceUri(req);
 
-    CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
-    WebdavNsNode node = intf.getNode(resourceUri,
-                                     WebdavNsIntf.existanceMust,
-                                     WebdavNsIntf.nodeTypeUnknown,
-                                     false);
+    final CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
+    final WebdavNsNode node = intf.getNode(resourceUri,
+                                           WebdavNsIntf.existanceMust,
+                                           WebdavNsIntf.nodeTypeUnknown,
+                                           false);
 
     openTag(WebdavTags.multistatus);
 
-    int status = HttpServletResponse.SC_OK;
+    final int status = HttpServletResponse.SC_OK;
 
     Collection<WebdavNsNode> nodes = null;
 
     if (reportType == reportTypeQuery) {
-      QueryResult qr = doNodeAndChildren(node, 0, defaultDepth(depth, 0));
+      final QueryResult qr = doNodeAndChildren(node, 0,
+                                               defaultDepth(depth, 0));
 
       if (qr.overLimit || qr.serverTruncated) {
         node.setStatus(507);
@@ -336,21 +334,22 @@ public class CarddavReportMethod extends ReportMethod {
       }
       nodes = qr.nodes;
     } else if (reportType == reportTypeMultiGet) {
-      nodes = new ArrayList<WebdavNsNode>();
+      nodes = new ArrayList<>();
 
       if (hrefs != null) {
-        for (String hr: hrefs) {
+        for (final String hr: hrefs) {
           try {
-            WebdavNsNode nd = intf.getNode(intf.getUri(hr),
-                                           WebdavNsIntf.existanceMust,
-                                           WebdavNsIntf.nodeTypeUnknown,
-                                           false);
+            final WebdavNsNode nd =
+                    intf.getNode(intf.getUri(hr),
+                                 WebdavNsIntf.existanceMust,
+                                 WebdavNsIntf.nodeTypeUnknown,
+                                 false);
 
             if (nd instanceof CarddavCardNode) {
               ((CarddavCardNode)nd).setVcardVersion(getVcardVersion());
             }
             nodes.add(nd);
-          } catch (WebdavException we) {
+          } catch (final WebdavException we) {
             if (hr.endsWith("/")) {
               nodes.add(new CarddavColNode(intf.getSysi(),
                                            we.getStatusCode(),
@@ -373,7 +372,7 @@ public class CarddavReportMethod extends ReportMethod {
       node.setStatus(status);
       doNodeProperties(node);
     } else if (nodes != null) {
-      for (WebdavNsNode curnode: nodes) {
+      for (final WebdavNsNode curnode: nodes) {
         doNodeProperties(curnode);
       }
     }
@@ -395,17 +394,17 @@ public class CarddavReportMethod extends ReportMethod {
   private QueryResult doNodeAndChildren(final WebdavNsNode node,
                                         int curDepth,
                                         final int maxDepth) {
-    if (node instanceof CarddavCardNode) {
+    if (node instanceof final CarddavCardNode card) {
       // Targeted directly at component
-      QueryResult qr = new QueryResult();
+      final QueryResult qr = new QueryResult();
 
-      ((CarddavCardNode)node).setVcardVersion(getVcardVersion());
+      card.setVcardVersion(getVcardVersion());
 
       qr.nodes.add(node);
       return qr;
     }
 
-    if (!(node instanceof CarddavColNode)) {
+    if (!(node instanceof final CarddavColNode colnode)) {
       throw new WebdavBadRequest();
     }
 
@@ -414,31 +413,29 @@ public class CarddavReportMethod extends ReportMethod {
             " maxDepth=" + maxDepth + " uri=" + node.getUri());
     }
 
-    CarddavColNode colnode = (CarddavColNode)node;
-
     if (colnode.getWdCollection().getAddressBook()) {
-      CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
+      final CarddavBWIntf intf = (CarddavBWIntf)getNsIntf();
 
       return intf.query(node, filter, limit, getVcardVersion());
     }
 
     curDepth++;
 
-    QueryResult qr = new QueryResult();
+    final QueryResult qr = new QueryResult();
 
     if (curDepth > maxDepth) {
       return qr;
     }
 
-    for (WebdavNsNode child: getNsIntf().getChildren(node,
-                                                     null)) {
-      int sz = qr.nodes.size();
+    for (final WebdavNsNode child: getNsIntf().getChildren(node,
+                                                           null)) {
+      final int sz = qr.nodes.size();
       if ((limit != null) && (sz > limit.limit)) {
         qr.overLimit = true;
         break;
       }
 
-      QueryResult subqr = doNodeAndChildren(child, curDepth, maxDepth);
+      final QueryResult subqr = doNodeAndChildren(child, curDepth, maxDepth);
       qr.nodes.addAll(subqr.nodes);
 
       if (subqr.overLimit) {

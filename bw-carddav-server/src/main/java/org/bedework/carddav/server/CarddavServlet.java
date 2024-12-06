@@ -22,7 +22,6 @@ import org.bedework.carddav.server.jmx.CardDav;
 import org.bedework.util.jmx.ConfBase;
 import org.bedework.webdav.servlet.common.MethodBase.MethodInfo;
 import org.bedework.webdav.servlet.common.WebdavServlet;
-import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavNsIntf;
 
 import javax.servlet.ServletContextEvent;
@@ -36,9 +35,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CarddavServlet extends WebdavServlet
     implements ServletContextListener {
-  /* ====================================================================
+  /* ==============================================================
    *                     Abstract servlet methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   protected void addMethods() {
@@ -63,7 +62,7 @@ public class CarddavServlet extends WebdavServlet
     return conf.cd;
   }
 
-  /* -----------------------------------------------------------------------
+  /* ---------------------------------------------------------------
    *                         JMX support
    */
 
@@ -112,7 +111,7 @@ public class CarddavServlet extends WebdavServlet
   public void contextInitialized(final ServletContextEvent sce) {
     final String s = sce.getServletContext().getInitParameter("register-jmx");
 
-    if (!Boolean.valueOf(s)) {
+    if (!Boolean.parseBoolean(s)) {
       return;
     }
 

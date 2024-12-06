@@ -19,6 +19,7 @@
 package org.bedework.carddav.server.dirHandlers.db;
 
 import org.bedework.util.misc.Util;
+import org.bedework.webdav.servlet.shared.WebdavException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +47,9 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
 
   /** Create DbCardProperty
    *
-   * @param name
-   * @param value
-   * @param card
-   * @param params
+   * @param name of property
+   * @param value of property
+   * @param params for property
    */
   public DbCardProperty(final String name,
                         final String value,
@@ -59,9 +59,9 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
     this.value = value;
     //this.card = card;
 
-    for (DbCardParam param: params) {
+    for (final DbCardParam param: params) {
       if (this.params == null) {
-        this.params = new ArrayList<DbCardParam>();
+        this.params = new ArrayList<>();
       }
 
       this.params.add(param);
@@ -101,7 +101,7 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   }
 
   /**
-   * @param val
+   * @param val list of params
    */
   public void setParams(final List<DbCardParam> val) {
     params = val;
@@ -116,7 +116,7 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   }
 
   /**
-   * @param val
+   * @param val the card
    */
   public void setCard(final DbCard val) {
     card = val;
@@ -130,11 +130,11 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   }
 
   /**
-   * @param val
+   * @param val a param
    */
   public void addParam(final DbCardParam val) {
     if (params == null) {
-      params = new ArrayList<DbCardParam>();
+      params = new ArrayList<>();
     }
 
     if (!params.contains(val)) {
@@ -143,7 +143,7 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   }
 
   /**
-   * @param name
+   * @param name of param
    * @return param or null
    */
   public DbCardParam findParam(final String name) {
@@ -151,7 +151,7 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
       return null;
     }
 
-    for (DbCardParam param: params) {
+    for (final DbCardParam param: params) {
       if (name.equals(param.getName())) {
         return param;
       }
@@ -161,7 +161,7 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
   }
 
   /**
-   * @param name
+   * @param name of param
    * @return params or null
    */
   public List<DbCardParam> findParams(final String name) {
@@ -171,10 +171,10 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
 
     List<DbCardParam> ps = null;
 
-    for (DbCardParam param: params) {
+    for (final DbCardParam param: params) {
       if (name.equals(param.getName())) {
         if (ps == null) {
-          ps = new ArrayList<DbCardParam>();
+          ps = new ArrayList<>();
         }
 
         ps.add(param);
@@ -184,9 +184,9 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
     return ps;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public int compareTo(final DbCardProperty that) {
@@ -206,20 +206,20 @@ public class DbCardProperty extends UnversionedDbentity<DbCardProperty> {
 //      return Util.compareStrings(getName(), that.getName());
       // TODO - compare params
       return res;
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (final Throwable t) {
+      throw new WebdavException(t);
     }
   }
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("DbCardProperty{");
+    final StringBuilder sb = new StringBuilder("DbCardProperty{");
 
     sb.append("name=");
     sb.append(getName());
 
     if (getParams() != null) {
-      for (DbCardParam param: params) {
+      for (final DbCardParam param: params) {
         sb.append(", ");
         sb.append(param.toString());
       }

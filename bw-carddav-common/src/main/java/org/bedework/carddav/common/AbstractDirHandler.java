@@ -85,9 +85,6 @@ public abstract class AbstractDirHandler
   private long lastFlush;
   private final static long flushTime = 60 * 1000;  // 1 minute
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
-   */
   public void open(final String account) {
     this.account = account;
     superUser = "root".equals(account) || // allow SuperUser

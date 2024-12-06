@@ -34,7 +34,7 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setPathPrefix(final String val);
+  void setPathPrefix(String val);
 
   /** Get the pathPrefix
    *
@@ -65,7 +65,7 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setCardPathPrefix(final String val);
+  void setCardPathPrefix(String val);
 
   /** Get the cardPathPrefix
    *
@@ -79,7 +79,7 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setCardPathPrefixes(final String val);
+  void setCardPathPrefixes(String val);
 
   /** Get the cardPathPrefixes
    *
@@ -89,10 +89,10 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
   		"cards based on an account prefix.")
   String getCardPathPrefixes();
 
-  /** True if this prefix represents an addressbook.
-   * @param val
+  /**
+   * @param val True if this prefix represents an addressbook.
    */
-  void setAddressBook(final boolean val);
+  void setAddressBook(boolean val);
 
   /** True if this prefix represents an addressbook.
    * @return boolean
@@ -100,10 +100,10 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
   @MBeanInfo("True if this prefix represents an addressbook.")
   boolean getAddressBook();
 
-  /** True if this prefix represents a directory.
-   * @param val
+  /**
+   * @param val True if this prefix represents a directory.
    */
-  void setDirectory(final boolean val);
+  void setDirectory(boolean val);
 
   /** True if this prefix represents a directory.
    * @return boolean
@@ -116,7 +116,7 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setClassName(final String val);
+  void setClassName(String val);
 
   /** get the interface implementation
    *
@@ -129,7 +129,7 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setOwnerHref(final String val);
+  void setOwnerHref(String val);
 
   /** The href for the owner
    *
@@ -142,7 +142,7 @@ public interface DirHandlerConfMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setCardKind(final String val);
+  void setCardKind(String val);
 
   /** If set defines the default kind in this directory
    *

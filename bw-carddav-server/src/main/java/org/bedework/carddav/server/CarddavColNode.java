@@ -67,9 +67,9 @@ public class CarddavColNode extends CarddavNode {
 
   /** Place holder for status
    *
-   * @param sysi
-   * @param status
-   * @param uri
+   * @param sysi system interface
+   * @param status from exception
+   * @param uri of resource
    */
   public CarddavColNode(final SysIntf sysi,
                         final int status,
@@ -80,8 +80,8 @@ public class CarddavColNode extends CarddavNode {
   }
 
   /**
-   * @param cdURI
-   * @param sysi
+   * @param cdURI referencing resource
+   * @param sysi system interface
    */
   public CarddavColNode(final CarddavURI cdURI,
                         final SysIntf sysi) {
@@ -125,23 +125,19 @@ public class CarddavColNode extends CarddavNode {
 
   @Override
   public String getEtagValue(final boolean strong) {
-    WdCollection<?> c = getWdCollection(); // Unalias
+    final WdCollection<?> c = getWdCollection(); // Unalias
 
     if (c == null) {
       return null;
     }
 
-    String val = c.getLastmod();
+    final String val = c.getLastmod();
 
     if (strong) {
       return "\"" + val + "\"";
     }
 
     return "W/\"" + val + "\"";
-  }
-
-  @Override
-  public void setDefaults(final QName methodTag) {
   }
 
   @Override
@@ -152,14 +148,14 @@ public class CarddavColNode extends CarddavNode {
        */
 
     try {
-      QueryResult res = new QueryResult();
+      final QueryResult res = new QueryResult();
 
-      CarddavCollection c = getWdCollection(); // Unalias
+      final CarddavCollection c = getWdCollection(); // Unalias
 
       GetResult gr = getSysi().getCollections(c, limits);
 
       if (gr.collections != null) {
-        for (CarddavCollection wdc: gr.collections) {
+        for (final CarddavCollection wdc: gr.collections) {
           res.nodes.add(new CarddavColNode(new CarddavURI(wdc, true),
                                            getSysi()));
         }
@@ -172,7 +168,7 @@ public class CarddavColNode extends CarddavNode {
       gr = getSysi().getCards(c, null, limits);
 
       if (gr.cards != null) {
-        for (Card card: gr.cards) {
+        for (final Card card: gr.cards) {
           res.nodes.add(new CarddavCardNode(new CarddavURI(c, card,
                                                            card.getName(),
                                                            true),
@@ -181,16 +177,11 @@ public class CarddavColNode extends CarddavNode {
       }
 
       return res;
-    } catch (WebdavException we) {
+    } catch (final WebdavException we) {
       throw we;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
-  }
-
-  @Override
-  public String getContentString(final String contentType) {
-    return null;
   }
 
   @Override
@@ -201,9 +192,9 @@ public class CarddavColNode extends CarddavNode {
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Required webdav properties
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public String writeContent(final XmlEmit xml,
@@ -212,9 +203,6 @@ public class CarddavColNode extends CarddavNode {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#getContentLang()
-   */
   @Override
   public String getContentLang() {
     return "en";
@@ -254,14 +242,14 @@ public class CarddavColNode extends CarddavNode {
     try {
       //return DateTimeUtil.fromISODateTimeUTCtoRfc822(col.getLastmod());
       return col.getLastmod();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Abstract methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public CurrentAccess getCurrentAccess() {
@@ -271,24 +259,21 @@ public class CarddavColNode extends CarddavNode {
 
     try {
       currentAccess = getSysi().checkAccess(col, PrivilegeDefs.privAny, true);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
 
     return currentAccess;
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#trailSlash()
-   */
   @Override
   public boolean trailSlash() {
     return true;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Property methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public boolean removeProperty(final Element val,
@@ -328,9 +313,9 @@ public class CarddavColNode extends CarddavNode {
       }
 
       if (XmlUtil.nodeMatches(val, WebdavTags.resourcetype)) {
-        Collection<Element> propVals = XmlUtil.getElements(val);
+        final Collection<Element> propVals = XmlUtil.getElements(val);
 
-        for (Element pval: propVals) {
+        for (final Element pval: propVals) {
           if (XmlUtil.nodeMatches(pval, WebdavTags.collection)) {
             // Fine
             continue;
@@ -345,14 +330,11 @@ public class CarddavColNode extends CarddavNode {
       }
 
       return false;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#knownProperty(edu.rpi.sss.util.xml.QName)
-   */
   @Override
   public boolean knownProperty(final QName tag) {
     if (propertyNames.get(tag) != null) {
@@ -363,14 +345,11 @@ public class CarddavColNode extends CarddavNode {
     return super.knownProperty(tag);
   }
 
-  /* (non-Javadoc)
-   * @see edu.rpi.cct.webdav.servlet.shared.WebdavNsNode#generatePropertyValue(edu.rpi.sss.util.xml.QName, edu.rpi.cct.webdav.servlet.shared.WebdavNsIntf, boolean)
-   */
   @Override
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,
                                        final boolean allProp) {
-    XmlEmit xml = intf.getXmlEmit();
+    final XmlEmit xml = intf.getXmlEmit();
 
     try {
       if (tag.equals(WebdavTags.resourcetype)) {
@@ -420,20 +399,16 @@ public class CarddavColNode extends CarddavNode {
 
       // Not known - try higher
       return super.generatePropertyValue(tag, intf, allProp);
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  /** Return a set of PropertyTagEntry defining properties this node supports.
-   *
-   * @return Collection of PropertyTagEntry
-   */
   @Override
-  public Collection<PropertyTagEntry> getPropertyNames()throws WebdavException {
-    Collection<PropertyTagEntry> res = new ArrayList<>();
+  public Collection<PropertyTagEntry> getPropertyNames() {
+    final Collection<PropertyTagEntry> res = new ArrayList<>();
 
     res.addAll(super.getPropertyNames());
     res.addAll(propertyNames.values());
@@ -441,18 +416,14 @@ public class CarddavColNode extends CarddavNode {
     return res;
   }
 
-  /** Return a set of Qname defining reports this node supports.
-   *
-   * @return Collection of QName
-   */
   @Override
   public Collection<QName> getSupportedReports() {
     return new ArrayList<>(super.getSupportedReports());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public String toString() {
@@ -464,9 +435,9 @@ public class CarddavColNode extends CarddavNode {
     return ts.toString();
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private methods
-   * ==================================================================== */
+   * ============================================================== */
 
   private boolean checkCalForSetProp(final SetPropertyResult spr) {
     if (col != null) {

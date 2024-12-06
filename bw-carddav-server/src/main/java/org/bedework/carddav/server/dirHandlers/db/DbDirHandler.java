@@ -117,7 +117,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     public String makeHref(final String id, final int whoType) throws AccessException {
       try {
         return hdlr.makePrincipalHref(id, whoType);
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         throw new AccessException(t);
       }
     }
@@ -158,21 +158,18 @@ public abstract class DbDirHandler extends AbstractDirHandler
       userHomeRoot += "/";
     }
 
-    AccessUtilCb acb = new AccessUtilCb(this);
+    final AccessUtilCb acb = new AccessUtilCb(this);
 
     access = new AccessHelper();
     access.init(acb);
 
     try {
       objTimestamp = new Timestamp(System.currentTimeMillis());
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#open(java.lang.String)
-   */
   @Override
   public void open(final String account) {
     super.open(account);
@@ -187,24 +184,21 @@ public abstract class DbDirHandler extends AbstractDirHandler
                                                            WhoDefs.whoTypeUser)));
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.bwserver.DirHandler#close()
-   */
   @Override
   public void close() {
     super.close();
 
     try {
       endTransaction();
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       try {
         rollbackTransaction();
-      } catch (WebdavException wde1) {}
+      } catch (final WebdavException ignored) {}
       throw wde;
     } finally {
       try {
         closeSession();
-      } catch (WebdavException wde1) {}
+      } catch (final WebdavException ignored) {}
     }
   }
 
@@ -380,7 +374,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
   }
 
-  protected class CollectionsBatchImpl implements CollectionBatcher {
+  protected static class CollectionsBatchImpl
+          implements CollectionBatcher {
     private Collection<CarddavCollection> cols;
     private boolean called;
 
@@ -504,7 +499,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
     cdc.setName(col.getName());
     cdc.setDisplayName(col.getName());
 
-    /** Ensure uniqueness - lastmod only down to second.
+    /* Ensure uniqueness - lastmod only down to second.
      */
     //private int sequence;
 
@@ -614,9 +609,9 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Session methods
-   * ==================================================================== */
+   * ============================================================== */
 
   protected void checkOpen() {
     if (!isOpen()) {
@@ -681,10 +676,10 @@ public abstract class DbDirHandler extends AbstractDirHandler
         sess.close();
         sess = null;
       }
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       try {
         sess.close();
-      } catch (Throwable t1) {}
+      } catch (final Throwable ignored) {}
       sess = null; // Discard on error
     } finally {
       open = false;
@@ -761,8 +756,9 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
     final boolean noAccessNeeded = desiredAccess == privNone;
 
-    CurrentAccess ca = access.checkAccess(ent, desiredAccess,
-                                          alwaysReturnResult || noAccessNeeded);
+    final CurrentAccess ca =
+            access.checkAccess(ent, desiredAccess,
+                               alwaysReturnResult || noAccessNeeded);
 
     if (!noAccessNeeded && !ca.getAccessAllowed()) {
       return null;
@@ -771,9 +767,9 @@ public abstract class DbDirHandler extends AbstractDirHandler
     return ent;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   private methods
-   * ==================================================================== */
+   * ============================================================== */
 
   private SessionFactory getSessionFactory() {
     if (sessionFactory != null) {
@@ -785,11 +781,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
         return sessionFactory;
       }
 
-      /** Get a new hibernate session factory. This is configured from an
+      /* Get a new hibernate session factory. This is configured from an
        * application resource hibernate.cfg.xml together with some run time values
        */
       try {
-        Configuration conf = new Configuration();
+        final Configuration conf = new Configuration();
 
         /*
         if (props != null) {
@@ -803,16 +799,16 @@ public abstract class DbDirHandler extends AbstractDirHandler
         }
         */
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
-        List<String> ps = dbConfig.getHibernateProperties();
+        final List<String> ps = dbConfig.getHibernateProperties();
 
-        for (String p: ps) {
+        for (final String p: ps) {
           sb.append(p);
           sb.append("\n");
         }
 
-        Properties hprops = new Properties();
+        final Properties hprops = new Properties();
         hprops.load(new StringReader(sb.toString()));
 
         conf.addProperties(hprops).configure();
@@ -820,7 +816,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
         sessionFactory = conf.buildSessionFactory();
 
         return sessionFactory;
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         // Always bad.
         error(t);
         throw new WebdavException(t);

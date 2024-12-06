@@ -35,7 +35,7 @@ public class DbStaleStateException extends WebdavException {
   }
 
   /** Constructor
-   * @param msg
+   * @param msg a message
    */
   public DbStaleStateException(final String msg) {
     super(HttpServletResponse.SC_CONFLICT, msg);
@@ -43,7 +43,7 @@ public class DbStaleStateException extends WebdavException {
 
   /** Constructor
    *
-   * @param errorTag
+   * @param errorTag qname
    */
   public DbStaleStateException(final QName errorTag) {
     super(HttpServletResponse.SC_CONFLICT, errorTag);
@@ -51,8 +51,8 @@ public class DbStaleStateException extends WebdavException {
 
   /** Constructor
    *
-   * @param errorTag
-   * @param msg
+   * @param errorTag qname
+   * @param msg message
    */
   public DbStaleStateException(final QName errorTag, final String msg) {
     super(HttpServletResponse.SC_CONFLICT, errorTag, msg);

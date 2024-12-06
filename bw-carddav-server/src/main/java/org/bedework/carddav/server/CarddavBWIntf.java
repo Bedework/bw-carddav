@@ -124,9 +124,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
   private HashMap<String, CaldavURI> uriMap = new HashMap<String, CaldavURI>();
   */
 
-  /* ====================================================================
+  /* ==============================================================
    *                     Interface methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Called before any other method is called to allow initialisation to
    * take place at the first or subsequent requests
@@ -385,9 +385,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
     try {
       final CarddavNode cnode = getBwnode(node);
 
-      if (cnode instanceof CarddavResourceNode) {
-        final CarddavResourceNode rnode = (CarddavResourceNode)cnode;
-
+      if (cnode instanceof final CarddavResourceNode rnode) {
         final CarddavResource r = rnode.getResource();
 
         sysi.deleteFile(r);
@@ -401,7 +399,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
           throw new WebdavUnauthorized();
         }
 
-        sysi.deleteCollection(((CarddavColNode)cnode).getWdCollection());
+        sysi.deleteCollection(cnode.getWdCollection());
       }
     } catch (final WebdavException we) {
       throw we;
@@ -461,14 +459,12 @@ public class CarddavBWIntf extends WebdavNsIntf {
         acceptPars = accept.split(";");
 
         String reqv = null;
-        if (acceptPars.length > 0) {
-          for (final String s: acceptPars) {
-            if (!s.toLowerCase().startsWith("version=")) {
-              continue;
-            }
-
-            reqv = s.split("=")[1];
+        for (final String s: acceptPars) {
+          if (!s.toLowerCase().startsWith("version=")) {
+            continue;
           }
+
+          reqv = s.split("=")[1];
         }
 
         requestedVersion = getVcardVersion(reqv);
@@ -889,7 +885,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                   final boolean copy,
                                   final boolean overwrite,
                                   final int depth) {
-    if (!(to instanceof CarddavColNode)) {
+    if (!(to instanceof final CarddavColNode toCalNode)) {
       throw new WebdavBadRequest();
     }
 
@@ -898,16 +894,13 @@ public class CarddavBWIntf extends WebdavNsIntf {
       throw new WebdavBadRequest();
     }
 
-    CarddavColNode fromCalNode = from;
-    final CarddavColNode toCalNode = (CarddavColNode)to;
-
     if (toCalNode.getExists() && !overwrite) {
       resp.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
 
       return;
     }
 
-    final WdCollection<?> fromCal = fromCalNode.getWdCollection();
+    final WdCollection<?> fromCal = from.getWdCollection();
     final WdCollection<?> toCal = toCalNode.getWdCollection();
 
     getSysi().copyMove(fromCal, toCal, copy, overwrite);
@@ -924,11 +917,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                  final WebdavNsNode to,
                                  final boolean copy,
                                  final boolean overwrite) {
-    if (!(to instanceof CarddavCardNode)) {
+    if (!(to instanceof final CarddavCardNode toNode)) {
       throw new WebdavBadRequest();
     }
-
-    final CarddavCardNode toNode = (CarddavCardNode)to;
 
     if (toNode.getExists() && !overwrite) {
       resp.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -953,11 +944,9 @@ public class CarddavBWIntf extends WebdavNsIntf {
                                final WebdavNsNode to,
                                final boolean copy,
                                final boolean overwrite) {
-    if (!(to instanceof CarddavResourceNode)) {
+    if (!(to instanceof final CarddavResourceNode toNode)) {
       throw new WebdavBadRequest();
     }
-
-    final CarddavResourceNode toNode = (CarddavResourceNode)to;
 
     if (toNode.getExists() && !overwrite) {
       resp.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -1265,7 +1254,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
    * @param wdnode    WebdavNsNode defining root of search
    * @param fltr      Filter object defining search
    * @param limits    to limit result size
-   * @param vcardVersion
+   * @param vcardVersion rfc version number as String
    * @return Collection of result nodes (empty for no result)
    */
   public QueryResult query(final WebdavNsNode wdnode,
@@ -1352,14 +1341,14 @@ public class CarddavBWIntf extends WebdavNsIntf {
   }
 
   /**
-   * @param node
-   * @param errstatus
+   * @param node for type check
+   * @param errstatus for exception if required
    * @return CaldavCalNode
    */
   public CarddavColNode getCalnode(final WebdavNsNode node,
                                    final int errstatus) {
     if (!(node instanceof CarddavColNode)) {
-      throw new RuntimeException("Not a valid node object " +
+      throw new WebdavException("Not a valid node object " +
                                          errstatus);
     }
 
@@ -1453,7 +1442,7 @@ public class CarddavBWIntf extends WebdavNsIntf {
 
   private void loadConfig(String appName) {
     try {
-      if ((appName == null) || (appName.length() == 0)) {
+      if ((appName == null) || (appName.isEmpty())) {
         appName = "unknown-app-name";
       }
 

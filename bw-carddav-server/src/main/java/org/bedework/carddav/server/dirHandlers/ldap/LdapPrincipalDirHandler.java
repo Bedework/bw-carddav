@@ -37,16 +37,16 @@ import java.util.Iterator;
  */
 public class LdapPrincipalDirHandler extends LdapDirHandler {
   public void init(final CardDAVConfigI cdConfig,
-                   final DirHandlerConfig dhConfig,
+                   final DirHandlerConfig<?> dhConfig,
                    final UrlHandler urlHandler) {
     super.init(cdConfig, dhConfig, urlHandler);
 
     ldapConfig = (LdapDirHandlerConfig)dhConfig;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Principals
-   * ==================================================================== */
+   * ============================================================== */
 
   public Card getPrincipalCard(final String path) {
     verifyPath(path);
@@ -72,9 +72,9 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     throw new WebdavException("unimplemented");
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Cards
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public void addCard(final String path,
@@ -98,9 +98,9 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
     return null;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Collections
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public int makeCollection(final CarddavCollection col,
@@ -114,7 +114,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   }
 
   @Override
-  public int rename(final WdCollection col,
+  public int rename(final WdCollection<?> col,
                     final String newName) {
     throw new WebdavException("unimplemented");
   }
@@ -129,7 +129,7 @@ public class LdapPrincipalDirHandler extends LdapDirHandler {
   }
 
   @Override
-  public void updateCollection(final WdCollection val) {
+  public void updateCollection(final WdCollection<?> val) {
     throw new WebdavException("unimplemented");
   }
 }

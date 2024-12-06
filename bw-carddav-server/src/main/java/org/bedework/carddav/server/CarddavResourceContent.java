@@ -18,9 +18,11 @@
 */
 package org.bedework.carddav.server;
 
+import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /** Represent the content for a resource stored within the system, e.g an attachment or an
  * image. The actual content is stored in a BwResourceContent object to allow us
@@ -28,7 +30,8 @@ import java.io.Serializable;
  *
  *  @author Mike Douglass   douglm - rpi.edu
  */
-public class CarddavResourceContent implements Comparable<CarddavResourceContent>, Serializable {
+public class CarddavResourceContent
+        implements Comparable<CarddavResourceContent>, Serializable {
   /* The collection this belongs to
    */
   private CarddavColNode collection;
@@ -43,16 +46,16 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
   public CarddavResourceContent() {
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                      Bean methods
-   * ==================================================================== */
+   * ============================================================== */
 
   // CALWRAPPER
   /** Set the object's collection
    *
    * @param val    CarddavColNode object's collection
    */
-  public void setParent(CarddavColNode val) {
+  public void setParent(final CarddavColNode val) {
     collection = val;
   }
 
@@ -69,7 +72,7 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
    *
    * @param val    String name
    */
-  public void setName(String val) {
+  public void setName(final String val) {
     name = val;
   }
 
@@ -85,7 +88,7 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
    *
    *  @param  val   byte[]
    */
-  public void setValue(byte[] val) {
+  public void setValue(final byte[] val) {
     value = val;
   }
 
@@ -97,26 +100,26 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
     return value;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Other non-db methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Copy this objects values into the parameter
    *
-   * @param val
+   * @param val target
    */
-  public void copyTo(CarddavResourceContent val) {
+  public void copyTo(final CarddavResourceContent val) {
     val.setParent(getParent());
     val.setName(getName());
     val.setValue(getValue());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   public int hashCode() {
-    return getValue().hashCode();
+    return Arrays.hashCode(getValue());
   }
 
   public int compareTo(CarddavResourceContent that)  {
@@ -124,14 +127,14 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
       return 0;
     }
 
-    int res = Util.cmpObjval(getParent().getWdCollection(),
-                             that.getParent().getWdCollection());
+    final int res = Util.cmpObjval(getParent().getWdCollection(),
+                                   that.getParent().getWdCollection());
     if (res != 0) {
       return res;
     }
 
-    byte[] thisone = getValue();
-    byte[] thatone = that.getValue();
+    final byte[] thisone = getValue();
+    final byte[] thatone = that.getValue();
 
     if (thisone == null) {
       if (thatone == null) {
@@ -154,8 +157,8 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
     }
 
     for (int i = 0; i < thisone.length; i++) {
-      byte thisbyte = thisone[i];
-      byte thatbyte = thatone[i];
+      final byte thisbyte = thisone[i];
+      final byte thatbyte = thatone[i];
 
       if (thisbyte < thatbyte) {
         return -1;
@@ -170,23 +173,15 @@ public class CarddavResourceContent implements Comparable<CarddavResourceContent
   }
 
   public String toString() {
-    StringBuilder sb = new StringBuilder("BwAttachment{");
-
-    sb.append("path=");
-    sb.append(getParent().getPath());
-    sb.append(", name=");
-    sb.append(getName());
-
-    sb.append(", value.length=");
-    sb.append(getValue().length);
-
-    sb.append("}");
-
-    return sb.toString();
+    return new ToString(this)
+            .append("path", getParent().getPath())
+            .append("name", getName())
+            .append("value.length", getValue().length)
+            .toString();
   }
 
   public Object clone() {
-    CarddavResourceContent nobj = new CarddavResourceContent();
+    final CarddavResourceContent nobj = new CarddavResourceContent();
     copyTo(nobj);
 
     return nobj;

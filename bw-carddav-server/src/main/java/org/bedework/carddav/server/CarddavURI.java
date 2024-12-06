@@ -22,8 +22,8 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Ace;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.vcard.Card;
+import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.webdav.servlet.shared.WebdavException;
 
 /** We map uris onto an object which may be a calendar or an
  * entity contained within that calendar.
@@ -56,7 +56,7 @@ public class CarddavURI {
 
   /** Reference to a collection
    *
-   * @param col
+   * @param col the collection
    * @param exists        true if the referenced object exists
    */
   CarddavURI(final CarddavCollection col, final boolean exists) {
@@ -65,9 +65,9 @@ public class CarddavURI {
 
   /** Reference to a contained entity
    *
-   * @param col
-   * @param entity
-   * @param entityName
+   * @param col the collection
+   * @param entity contained object
+   * @param entityName it's name
    * @param exists        true if the referenced object exists
    */
   CarddavURI(final CarddavCollection col, final Card entity,
@@ -78,7 +78,7 @@ public class CarddavURI {
 
   /** Reference to a contained resource
    *
-   * @param res
+   * @param res the resource
    * @param exists        true if the referenced object exists
    */
   CarddavURI(final CarddavResource res, final boolean exists) {
@@ -238,36 +238,33 @@ public class CarddavURI {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("CaldavURI{path=");
+    final var ts = new ToString(this);
 
     try {
-      sb.append(getPath());
-    } catch (Throwable t) {
-      sb.append("exception: ");
-      sb.append(t.getMessage());
+      ts.append("path", getPath());
+    } catch (final Throwable t) {
+      ts.append(t);
     }
-    sb.append(", entityName=");
-    sb.append(String.valueOf(entityName));
-    sb.append("}");
+    ts.append("entityName", String.valueOf(entityName));
 
-    return sb.toString();
+    return ts.toString();
   }
 
   @Override
   public int hashCode() {
     try {
-      int hc = entityName.hashCode();
+      final int hc = entityName.hashCode();
 
       if (isUser()) {
-        return hc * 1;
+        return hc * 7;
       }
 
       if (isGroup()) {
-        return hc * 2;
+        return hc * 11;
       }
 
-      return (hc * 3) + col.getPath().hashCode();
-    } catch (Throwable t) {
+      return (hc * 13) + col.getPath().hashCode();
+    } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
   }
@@ -278,11 +275,9 @@ public class CarddavURI {
       return true;
     }
 
-    if (!(o instanceof CarddavURI)) {
+    if (!(o instanceof final CarddavURI that)) {
       return false;
     }
-
-    CarddavURI that = (CarddavURI)o;
 
     if (that.isUser() != isUser()) {
       return false;

@@ -52,7 +52,7 @@ public class CarddavCardNode extends CarddavNode {
   private CarddavCollection col;
 
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
-    new HashMap<QName, PropertyTagEntry>();
+          new HashMap<>();
 
   static {
     addPropEntry(propertyNames, CarddavTags.addressData);
@@ -61,9 +61,9 @@ public class CarddavCardNode extends CarddavNode {
 
   /** Place holder for status
    *
-   * @param sysi
-   * @param status
-   * @param uri
+   * @param sysi system interface
+   * @param status from exception
+   * @param uri of resource
    */
   public CarddavCardNode(final SysIntf sysi,
                          final int status,
@@ -75,8 +75,8 @@ public class CarddavCardNode extends CarddavNode {
 
   /** Constructor
    *
-   * @param cdURI
-   * @param sysi
+   * @param cdURI referencing resource
+   * @param sysi system interface
    */
   public CarddavCardNode(final CarddavURI cdURI,
                          final SysIntf sysi) {
@@ -99,9 +99,6 @@ public class CarddavCardNode extends CarddavNode {
     //}
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.CarddavNode#getWdCollection()
-   */
   @Override
   public CarddavCollection getWdCollection() {
     return col;
@@ -121,7 +118,7 @@ public class CarddavCardNode extends CarddavNode {
   }
 
   /**
-   * @param val
+   * @param val string version
    */
   public void setVcardVersion(final String val) {
     vcardVersion = val;
@@ -191,14 +188,14 @@ public boolean generatePropertyValue(final QName tag,
     try {
 
       return false;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
   @Override
   public Collection<PropertyTagEntry> getPropertyNames() {
-    Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
+    final Collection<PropertyTagEntry> res = new ArrayList<>();
 
     res.addAll(super.getPropertyNames());
     res.addAll(propertyNames.values());
@@ -275,7 +272,7 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   /**
-   * @param strong
+   * @param strong true for strong etag
    * @return etag before changes
    */
   public String getPrevEtagValue(final boolean strong) {
@@ -289,27 +286,24 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   private String makeEtag(final String lastmod) {
-    StringBuilder val = new StringBuilder();
-    val.append("\"");
-    val.append(lastmod);
-    val.append("\"");
-
-    return val.toString();
+    return new StringBuilder()
+            .append("\"")
+            .append(lastmod)
+            .append("\"")
+            .toString();
   }
 
   @Override
   public String toString() {
-    final ToString ts = new ToString(this);
-
-    ts.append("path", getPath());
-    ts.append("entityName", String.valueOf(entityName));
-
-    return ts.toString();
+    return new ToString(this)
+            .append("path", getPath())
+            .append("entityName", String.valueOf(entityName))
+            .toString();
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Required webdav properties
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public String getContentLang() {
@@ -364,7 +358,7 @@ public boolean generatePropertyValue(final QName tag,
   }
 
   /**
-   * @param val
+   * @param val Card
    */
   public void setCard(final Card val) {
     card = val;
@@ -377,9 +371,9 @@ public boolean generatePropertyValue(final QName tag,
     return card;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private methods
-   * ==================================================================== */
+   * ============================================================== */
 
   //private void addProp(Collection<WebdavProperty> c, QName tag, Object val) {
   //  if (val != null) {

@@ -89,9 +89,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       openContext();
 
-      String fullPath = Util.buildPath(false, path, "/", name);
+      final String fullPath = Util.buildPath(false, path, "/", name);
 
-      LdapObject ldo = getObject(fullPath, false);
+      final LdapObject ldo = getObject(fullPath, false);
 
       if (ldo == null) {
         return null;
@@ -202,7 +202,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         return res;
       }
 
-      res.collections = new ArrayList<CarddavCollection>();
+      res.collections = new ArrayList<>();
       for (;;) {
         final CollectionObject co = nextCdCollection(path, false);
 
@@ -224,15 +224,15 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *  Protected methods.
-   * ==================================================================== */
+   * ============================================================== */
 
   protected GetResult search(final String base,
                              final String filter,
                              final GetLimits limits,
                              final int scope) {
-    GetResult res = new GetResult();
+    final GetResult res = new GetResult();
 
     try {
       if (debug()) {
@@ -240,11 +240,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
               " scope=" + scope);
       }
 
-      SearchControls constraints = new SearchControls();
+      final SearchControls constraints = new SearchControls();
 
       constraints.setSearchScope(scope);
 
-      int limit = 0;
+      int limit;
       if ((limits != null) && (limits.limit != 0)) {
 
         if (limits.curCount == limits.limit) {
@@ -273,7 +273,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         if (debug()) {
           debug("About to return from search with " + res.entriesFound);
         }
-      } catch (NameNotFoundException e) {
+      } catch (final NameNotFoundException e) {
         // Allow that one.
         if (debug()) {
           debug("NameNotFoundException: return with null");
@@ -282,25 +282,26 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       return res;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
-  private static class CardObject {
+  protected static class CardObject {
     boolean limitExceeded;
 
     Card card;
   }
 
-  protected CardObject nextCard(final String path, final boolean fullPath) {
-    LdapObject ldo = nextObject();
+  protected CardObject nextCard(final String path,
+                             final boolean fullPath) {
+    final LdapObject ldo = nextObject();
 
     if (ldo == null) {
       return null;
     }
 
-    CardObject co = new CardObject();
+    final CardObject co = new CardObject();
     if (ldo.limitExceeded) {
       co.limitExceeded = true;
       return co;
@@ -311,7 +312,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return co;
   }
 
-  private static class CollectionObject {
+  protected static class CollectionObject {
     boolean limitExceeded;
 
     CarddavCollection col;
@@ -319,13 +320,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
   protected CollectionObject nextCdCollection(final String path,
                                               final boolean fullPath) {
-    LdapObject ldo = nextObject();
+    final LdapObject ldo = nextObject();
 
     if (ldo == null) {
       return null;
     }
 
-    CollectionObject co = new CollectionObject();
+    final CollectionObject co = new CollectionObject();
     if (ldo.limitExceeded) {
       co.limitExceeded = true;
       return co;
@@ -339,7 +340,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   protected CarddavCollection makeCdCollection(final String path,
                                                final boolean fullPath,
                                                final Attributes attrs) {
-    CarddavCollection cdc = new CarddavCollection();
+    final CarddavCollection cdc = new CarddavCollection();
 
     if (ldapConfig.getDirectory()) {
       /* This prefix is flagged as a potentially large directory.
@@ -353,21 +354,21 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       cdc.setAddressBook(true);
     } else {
       /* Look for our special object class */
-      Attribute oc = attrs.get("objectClass");
+      final Attribute oc = attrs.get("objectClass");
       if (oc == null) {
         throw new WebdavException("Need object class attribute");
       }
 
       try {
-        NamingEnumeration<? extends Object> ocs = oc.getAll();
+        final NamingEnumeration<?> ocs = oc.getAll();
         while (ocs.hasMore()) {
-          String soc = (String)ocs.next();
+          final String soc = (String)ocs.next();
           if (soc.equals(ldapConfig.getAddressbookObjectClass())) {
             cdc.setAddressBook(true);
             break;
           }
         }
-      } catch (NamingException ne) {
+      } catch (final NamingException ne) {
         throw new WebdavException(ne);
       }
     }
@@ -401,13 +402,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     //private AccessPrincipal owner;
 
-    /** UTC datetime */
+    /* UTC datetime */
     //private String created;
 
-    /** UTC datetime */
+    /* UTC datetime */
     //private String lastmod;
 
-    /** Ensure uniqueness - lastmod only down to second.
+    /* Ensure uniqueness - lastmod only down to second.
      */
     //private int sequence;
 
@@ -427,12 +428,12 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
        * or paths which don't have an owner - e.g. public
        */
 
-      String[] elements = path.split("/");
+      final String[] elements = path.split("/");
 
       //String[] splitRoot = userRoot.split("/");
       int accountIndex = 2; // splitRoot.length;
 
-      String pref = makePrincipalHref(elements[2], Ace.whoTypeUser);
+      final String pref = makePrincipalHref(elements[2], Ace.whoTypeUser);
 
       cdc.setOwner(getPrincipal(pref));
     }
@@ -456,7 +457,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       this.attrs = attrs;
       this.name = name;
       this.fullname = fullname;
-      if ((name != null) && (name.length() == 0)) {
+      if ((name != null) && (name.isEmpty())) {
         this.name = null;
       }
     }
@@ -501,7 +502,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         if (s == null) {
           try {
             sresult.close();
-          } catch (Exception e) {};
+          } catch (final Exception ignored) {}
 
           sresult = null;
         }
@@ -512,12 +513,12 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       }
 
       return new LdapObject(s.getAttributes(), s.getName(), s.getNameInNamespace());
-    } catch (SizeLimitExceededException slee) {
-      LdapObject le = new LdapObject();
+    } catch (final SizeLimitExceededException slee) {
+      final LdapObject le = new LdapObject();
 
       le.limitExceeded = true;
       return le;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -677,11 +678,9 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       final AttrPropertyMapping kindMapping = LdapMapping.getKindMapping();
 
       for (final LdapMapping lm: LdapMapping.attrToVcardProperty.values()) {
-        if (!(lm instanceof AttrPropertyMapping)) {
+        if (!(lm instanceof final AttrPropertyMapping apm)) {
           continue;
         }
-
-        final AttrPropertyMapping apm = (AttrPropertyMapping)lm;
 
         if ((kindMapping != null) &&
             kindMapping.equals(apm)) {
@@ -705,7 +704,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
             continue;
           }
 
-          final NamingEnumeration memberDns = memberAttr.getAll();
+          final NamingEnumeration<?> memberDns = memberAttr.getAll();
 
           while (memberDns.hasMore()) {
             final String memberDn = (String)memberDns.next();
@@ -777,7 +776,8 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         final String displayName = stringAttr(attrs, "displayName");
 
         if (displayName == null) {
-          simpleProp(card, "NICKNAME", notNull(givenName) + " " + notNull(sn));
+          simpleProp(card, "NICKNAME", notNull(givenName) + " "
+                  + notNull(sn));
         } else {
           simpleProp(card, "NICKNAME", displayName);
         }
@@ -813,18 +813,18 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
        */
 
       if (ldapConfig.getGroupMemberAttr() != null) {
-        Attribute mbrAttr = attrs.get(ldapConfig.getGroupMemberAttr());
+        final Attribute mbrAttr = attrs.get(ldapConfig.getGroupMemberAttr());
 
         if (mbrAttr != null) {
-          NamingEnumeration<? extends Object> mbrs = mbrAttr.getAll();
+          final NamingEnumeration<?> mbrs = mbrAttr.getAll();
           while (mbrs.hasMore()) {
-            String mbr = (String)mbrs.next();
+            final String mbr = (String)mbrs.next();
           }
         }
       }
 
       return card;
-    } catch (NamingException ne) {
+    } catch (final NamingException ne) {
       throw new WebdavException(ne);
     }
   }
@@ -845,11 +845,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
         return null;
       }
 
-      final NamingEnumeration ocs = attr.getAll();
+      final NamingEnumeration<?> ocs = attr.getAll();
       while (ocs.hasMore()) {
         final String s = (String)ocs.next();
 
-        Kind k = LdapMapping.getOcKindMapping(s);
+        final Kind k = LdapMapping.getOcKindMapping(s);
         if (k != null) {
           return k.getValue();
         }
@@ -883,20 +883,20 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       return null;
     }
 
-    Collection<PropFilter> pfilters = filter.getPropFilters();
+    final Collection<PropFilter> pfilters = filter.getPropFilters();
 
     if ((pfilters == null) || pfilters.isEmpty()) {
       return null;
     }
 
-    int testAllAnyProps = filter.getTestAllAny();
+    final int testAllAnyProps = filter.getTestAllAny();
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
 
     boolean first = true;
 
-    for (PropFilter pfltr: pfilters) {
-      String ptest = makePropFilterExpr(pfltr);
+    for (final PropFilter pfltr: pfilters) {
+      final String ptest = makePropFilterExpr(pfltr);
 
       if (ptest == null) {
         continue;
@@ -922,7 +922,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
   }
 
   private String makePropFilterExpr(final PropFilter filter) {
-    TextMatch tm = filter.getMatch();
+    final TextMatch tm = filter.getMatch();
 
     if (tm == null) {
       return null;
@@ -930,11 +930,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     String name = filter.getName();
 
-    int cpos = name.indexOf(',');
+    final int cpos = name.indexOf(',');
 
     if ((cpos < 0) && (Util.isEmpty(filter.getParamFilters()))) {
       // No group - no params - single attribute
-      String attrId = LdapMapping.simplePropertyToLdapAttr(name);
+      final String attrId = LdapMapping.simplePropertyToLdapAttr(name);
 
       if (attrId == null) {
         return null;
@@ -952,25 +952,19 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       name = name.substring(cpos + 1);
     }
 
-    Collection<String> anames = LdapMapping.toLdapAttrNoGroup.get(name);
+    final Collection<String> anames = LdapMapping.toLdapAttrNoGroup.get(name);
     if (Util.isEmpty(anames)) {
       return null;
     }
 
-    int testAllAnyProps = filter.getTestAllAny();
+    final int testAllAnyProps = filter.getTestAllAny();
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
 
     boolean first = true;
 
-    for (String attrId: anames) {
-      String ptest = makePropFilterExpr(attrId, tm);
-
-      if (ptest == null) {
-        continue;
-      }
-
-      sb.append(ptest);
+    for (final String attrId: anames) {
+      sb.append(makePropFilterExpr(attrId, tm));
 
       if (first) {
         first = false;
@@ -989,14 +983,13 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     return sb.toString();
   }
 
-  private String makePropFilterExpr(final String attrId, final TextMatch tm) {
-    StringBuilder sb = new StringBuilder();
+  private String makePropFilterExpr(final String attrId,
+                                    final TextMatch tm) {
+    final StringBuilder sb = new StringBuilder().append("(")
+                                                .append(attrId)
+                                                .append("=");
 
-    sb.append("(");
-    sb.append(attrId);
-    sb.append("=");
-
-    int mt = tm.getMatchType();
+    final int mt = tm.getMatchType();
     if ((mt == TextMatch.matchTypeContains) ||
         (mt == TextMatch.matchTypeEndsWith)) {
       sb.append("*");
@@ -1009,9 +1002,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       sb.append("*");
     }
 
-    sb.append(")");
-
-    return sb.toString();
+    return sb.append(")").toString();
   }
 
   private void simpleProp(final Card card,
@@ -1046,15 +1037,15 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                          final String paramValue,
                          final Attributes attrs,
                          final String attrId) {
-    String s = stringAttr(attrs, attrId);
+    final String s = stringAttr(attrs, attrId);
 
     if (s == null) {
       return;
     }
 
-    Property p = PropertyBuilder.getProperty(group,
-                                             paramName, paramValue,
-                                             propname, s);
+    final Property p = PropertyBuilder.getProperty(group,
+                                                   paramName, paramValue,
+                                                   propname, s);
 
     card.addProperty(p);
   }
@@ -1082,7 +1073,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       AccessPrincipal ap = null;
       try {
         ap = getPrincipal(path);
-      } catch (final Throwable t) {
+      } catch (final Throwable ignored) {
       }
 
       final String dn;
@@ -1100,11 +1091,11 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
       return new LdapObject(ctx.getAttributes(dn, getAttrIdList()),
               null, dn);
-    } catch (NameNotFoundException nnfe) {
+    } catch (final NameNotFoundException nnfe) {
       return null;
-    } catch (WebdavException wde) {
+    } catch (final WebdavException wde) {
       throw wde;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
@@ -1116,22 +1107,22 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
                                      final GetLimits limits,
                                      final boolean cards) {
     try {
-      StringBuilder sb = new StringBuilder();
+      final StringBuilder sb = new StringBuilder();
 
       if (cards) {
-        sb.append("(objectClass=");
-        sb.append(ldapConfig.getAddressbookEntryObjectClass());
-        sb.append(")");
+        sb.append("(objectClass=")
+          .append(ldapConfig.getAddressbookEntryObjectClass())
+          .append(")");
       } else if (ldapConfig.getFolderObjectClass() == null) {
-        sb.append("(objectClass=");
-        sb.append(ldapConfig.getAddressbookObjectClass());
-        sb.append(")");
+        sb.append("(objectClass=")
+          .append(ldapConfig.getAddressbookObjectClass())
+          .append(")");
       } else {
-        sb.append("(|(objectClass=");
-        sb.append(ldapConfig.getFolderObjectClass());
-        sb.append(")(objectClass=");
-        sb.append(ldapConfig.getAddressbookObjectClass());
-        sb.append("))");
+        sb.append("(|(objectClass=")
+          .append(ldapConfig.getFolderObjectClass())
+          .append(")(objectClass=")
+          .append(ldapConfig.getAddressbookObjectClass())
+          .append("))");
       }
 
       String ldapFilter = sb.toString();
@@ -1143,7 +1134,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
       AccessPrincipal ap = null;
       try {
         ap = getPrincipal(path);
-      } catch (Throwable t) {
+      } catch (final Throwable ignored) {
       }
 
       if (ap != null) {
@@ -1165,7 +1156,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     sb.append("=");
 
     if (account.endsWith(".vcf")) {
-      sb.append(account.substring(0, account.length() - 4));
+      sb.append(account, 0, account.length() - 4);
     } else {
       sb.append(account);
     }
@@ -1231,14 +1222,14 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
 
     int pos = 0;
     while (pos < val.length()) {
-      int nextPos = val.indexOf(",", pos);
+      final int nextPos = val.indexOf(",", pos);
 
       if (nextPos < 0) {
         sb.append(val.substring(pos));
         break;
       }
 
-      sb.append(val.substring(pos, nextPos));
+      sb.append(val, pos, nextPos);
       sb.append("\\,");
       pos = nextPos + 1;
     }

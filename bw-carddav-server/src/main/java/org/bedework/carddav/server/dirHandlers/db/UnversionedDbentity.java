@@ -18,6 +18,9 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.misc.ToString;
+import org.bedework.webdav.servlet.shared.WebdavException;
+
 import java.io.Serializable;
 
 /** Base type for a database entity. We require an id and the subclasses must
@@ -33,7 +36,7 @@ public class UnversionedDbentity<T> extends DumpEntity<T>
   private Long id;
 
   /**
-   * @param val
+   * @param val id
    */
   public void setId(final Long val) {
     id = val;
@@ -57,32 +60,25 @@ public class UnversionedDbentity<T> extends DumpEntity<T>
    *                   Convenience methods
    * ==================================================================== */
 
-  /** Add our stuff to the StringBuilder
+  /** Add our stuff to the ToString builder
    *
-   * @param sb    StringBuilder for result
+   * @param ts    ToString builder for result
    */
-  protected void toStringSegment(final StringBuilder sb) {
-    sb.append("id=");
-    sb.append(getId());
+  protected void toStringSegment(final ToString ts) {
+    ts.append("id", getId());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
    * The following are required for a db object.
-   * ==================================================================== */
+   * ============================================================== */
 
-  /** Make visible
-   * @return Object of class T
-   */
   @Override
   @NoWrap
   public Object clone() {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
   @NoWrap
   public int compareTo(final T o) {
     throw new RuntimeException("compareTo must be implemented for a db object");
@@ -91,7 +87,7 @@ public class UnversionedDbentity<T> extends DumpEntity<T>
   @Override
   @NoWrap
   public int hashCode() {
-    throw new RuntimeException("hashcode must be implemented for a db object");
+    throw new WebdavException("hashcode must be implemented for a db object");
   }
 
   /* We always use the compareTo method

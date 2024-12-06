@@ -109,7 +109,7 @@ public class AddressData extends WebdavProperty implements Logged {
    */
   public Collection<Prop> getProps() {
     if (props == null) {
-      props = new ArrayList<Prop>();
+      props = new ArrayList<>();
     }
 
     return props;
@@ -130,20 +130,25 @@ public class AddressData extends WebdavProperty implements Logged {
       for (int nnmi = 0; nnmi < nnm.getLength(); nnmi++) {
         final Node attr = nnm.item(nnmi);
 
-        if (attr.getNodeName().equals("content-type")) {
-          returnContentType = attr.getNodeValue();
-          if (returnContentType == null) {
-            throw new WebdavBadRequest();
+        switch (attr.getNodeName()) {
+          case "content-type" -> {
+            returnContentType = attr.getNodeValue();
+            if (returnContentType == null) {
+              throw new WebdavBadRequest();
+            }
           }
-        } else if (attr.getNodeName().equals("xmlns")) {
-        } else if (attr.getNodeName().equals("version")) {
-          version = attr.getNodeValue();
-          if ((version == null) || !VcardDefs.validVersions.contains(version)) {
-            throw new WebdavBadRequest("Bad version");
+          case "xmlns" -> {
           }
-        } else {
-          // Bad attribute(s)
-          throw new WebdavBadRequest();
+          case "version" -> {
+            version = attr.getNodeValue();
+            if ((version == null) || !VcardDefs.validVersions.contains(
+                    version)) {
+              throw new WebdavBadRequest("Bad version");
+            }
+          }
+          default ->
+            // Bad attribute(s)
+                  throw new WebdavBadRequest();
         }
       }
     }
@@ -171,7 +176,7 @@ public class AddressData extends WebdavProperty implements Logged {
           }
 
           if (props == null) {
-            props = new ArrayList<Prop>();
+            props = new ArrayList<>();
           }
 
           props.add(parseProp(curnode));
@@ -180,9 +185,9 @@ public class AddressData extends WebdavProperty implements Logged {
           throw new WebdavBadRequest();
         }
       }
-    } catch (WebdavBadRequest wbr) {
+    } catch (final WebdavBadRequest wbr) {
       throw wbr;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavBadRequest();
     }
   }
@@ -196,11 +201,9 @@ public class AddressData extends WebdavProperty implements Logged {
   public void process(final WebdavNsNode wdnode,
                       final XmlEmit xml,
                       final String contentType) {
-    if (!(wdnode instanceof CarddavCardNode)) {
+    if (!(wdnode instanceof final CarddavCardNode node)) {
       return;
     }
-
-    final CarddavCardNode node = (CarddavCardNode)wdnode;
 
     if (allprop || (props == null)) {
       node.writeContent(xml, null, contentType);
@@ -234,7 +237,7 @@ public class AddressData extends WebdavProperty implements Logged {
           continue;
         }
 
-        for (Property p: ps) {
+        for (final Property p: ps) {
           ncard.addProperty(p);
 
           if (p.getId() == Property.Id.KIND) {
@@ -276,12 +279,12 @@ public class AddressData extends WebdavProperty implements Logged {
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private parsing methods
-   * ==================================================================== */
+   * ============================================================== */
 
   private Prop parseProp(final Node nd) {
-    NamedNodeMap nnm = nd.getAttributes();
+    final NamedNodeMap nnm = nd.getAttributes();
 
     if ((nnm == null) || (nnm.getLength() == 0)) {
       throw new WebdavBadRequest();
@@ -289,25 +292,25 @@ public class AddressData extends WebdavProperty implements Logged {
 
     int attrCt = nnm.getLength();
 
-    String name = XmlUtil.getAttrVal(nnm, "name");
+    final String name = XmlUtil.getAttrVal(nnm, "name");
     if (name == null) {
       throw new WebdavBadRequest();
     }
 
     attrCt--;
 
-    Boolean val = null;
+    Boolean val;
 
     try {
       val = XmlUtil.getYesNoAttrVal(nnm, "novalue");
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavBadRequest();
     }
 
-    Prop pr = new Prop(name);
+    final Prop pr = new Prop(name);
 
     if (val != null) {
-      pr.setNovalue(val.booleanValue());
+      pr.setNovalue(val);
     }
 
     return pr;
@@ -316,7 +319,7 @@ public class AddressData extends WebdavProperty implements Logged {
   private Element[] getChildren(final Node nd) {
     try {
       return XmlUtil.getElementsArray(nd);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       if (debug()) {
         error("<filter>: parse exception: ", t);
       }
@@ -325,26 +328,26 @@ public class AddressData extends WebdavProperty implements Logged {
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Dump methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
    *
    */
   public void dump() {
-    StringBuilder sb = new StringBuilder("  <address-data");
+    final StringBuilder sb = new StringBuilder("  <address-data");
 
     if (returnContentType != null) {
-      sb.append("  return-content-type=\"");
-      sb.append(returnContentType);
-      sb.append("\"");
+      sb.append("  return-content-type=\"")
+        .append(returnContentType)
+        .append("\"");
     }
 
     if (version != null) {
-      sb.append("  version=\"");
-      sb.append(version);
-      sb.append("\"");
+      sb.append("  version=\"")
+        .append(version)
+        .append("\"");
     }
     sb.append(">");
     debug(sb.toString());
@@ -352,11 +355,11 @@ public class AddressData extends WebdavProperty implements Logged {
     debug("  </address-data>");
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

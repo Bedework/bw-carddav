@@ -26,7 +26,8 @@ import org.bedework.util.jmx.ConfBase;
  * @author douglm
  *
  */
-public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHandlerConfMBean {
+public class DirHandlerConf extends ConfBase<DirHandlerConfig>
+        implements DirHandlerConfMBean {
   public DirHandlerConf(final String serviceName,
                         final ConfigurationStore store,
                         final String configName) {
@@ -36,7 +37,7 @@ public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHan
   /**
    * @param cfg
    */
-  public void setConfig(final DirHandlerConfig cfg) {
+  public void setConfig(final DirHandlerConfig<?> cfg) {
     this.cfg = cfg;
   }
 
@@ -45,9 +46,9 @@ public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHan
     return loadConfig(DirHandlerConfig.class);
   }
 
-  /* ========================================================================
+  /* ==============================================================
    * Attributes
-   * ======================================================================== */
+   * ============================================================== */
 
   @Override
   public void setPathPrefix(final String val) {
@@ -157,7 +158,7 @@ public class DirHandlerConf extends ConfBase<DirHandlerConfig> implements DirHan
   /**
    * @return current state of config
    */
-  public DirHandlerConfig getConf() {
+  public DirHandlerConfig<?> getConf() {
     return cfg;
   }
 

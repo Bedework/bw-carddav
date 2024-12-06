@@ -40,13 +40,13 @@ import javax.xml.namespace.QName;
 public class CarddavPrincipalNode extends WebdavPrincipalNode {
 
   /* for accessing calendars */
-  private SysIntf sysi;
+  private final SysIntf sysi;
 
   /* Fetched for principal properties */
   private PrincipalInfo pinfo;
 
   private final static HashMap<QName, PropertyTagEntry> propertyNames =
-    new HashMap<QName, PropertyTagEntry>();
+          new HashMap<>();
 
   static {
     addPropEntry(propertyNames, CarddavTags.addressbookHomeSet);
@@ -54,9 +54,9 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   }
 
   /**
-   * @param cdURI
-   * @param sysi
-   * @param ap
+   * @param cdURI referencing resource
+   * @param sysi system interface
+   * @param ap principal
    */
   public CarddavPrincipalNode(final CarddavURI cdURI, final SysIntf sysi,
                              final AccessPrincipal ap) {
@@ -86,8 +86,8 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
   public boolean generatePropertyValue(final QName tag,
                                        final WebdavNsIntf intf,
                                        final boolean allProp) {
-    String ns = tag.getNamespaceURI();
-    XmlEmit xml = intf.getXmlEmit();
+    final String ns = tag.getNamespaceURI();
+    final XmlEmit xml = intf.getXmlEmit();
 
     /* Deal with webdav properties */
     if (!ns.equals(CarddavTags.namespace)) {
@@ -97,7 +97,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
 
     try {
       if (tag.equals(CarddavTags.addressbookHomeSet)) {
-        String addrPath = getPinfo().defaultAddressbookPath;
+        final String addrPath = getPinfo().defaultAddressbookPath;
 
         if (addrPath != null) {
           xml.openTag(tag);
@@ -109,7 +109,7 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
       }
 
       if (tag.equals(CarddavTags.principalAddress)) {
-        String cardPath = getPinfo().principalCardPath;
+        final String cardPath = getPinfo().principalCardPath;
         if (cardPath != null) {
           xml.openTag(tag);
           generateHref(xml, cardPath);
@@ -121,14 +121,14 @@ public class CarddavPrincipalNode extends WebdavPrincipalNode {
 
       // Not known - try higher
       return super.generatePropertyValue(tag, intf, allProp);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new WebdavException(t);
     }
   }
 
   @Override
   public Collection<PropertyTagEntry> getPropertyNames() {
-    Collection<PropertyTagEntry> res = new ArrayList<PropertyTagEntry>();
+    final Collection<PropertyTagEntry> res = new ArrayList<>();
 
     res.addAll(super.getPropertyNames());
     res.addAll(propertyNames.values());

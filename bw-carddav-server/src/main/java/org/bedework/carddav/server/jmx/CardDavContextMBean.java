@@ -36,7 +36,7 @@ public interface CardDavContextMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setWebaddrServiceURI(final String val);
+  void setWebaddrServiceURI(String val);
 
   /** get the web address service uri - null for no web address service
    *
@@ -49,7 +49,7 @@ public interface CardDavContextMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setWebaddrServicePropertiesList(final String val);
+  void setWebaddrServicePropertiesList(String val);
 
   /**
    * @return comma separated list of web addr book searchable properties
@@ -61,7 +61,7 @@ public interface CardDavContextMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setWebaddrPublicAddrbook(final String val);
+  void setWebaddrPublicAddrbook(String val);
 
   /**
    *
@@ -73,7 +73,7 @@ public interface CardDavContextMBean extends ConfBaseMBean {
   /**
    * @param val true to disbale browsing
    */
-  void setDirectoryBrowsingDisallowed(final boolean val);
+  void setDirectoryBrowsingDisallowed(boolean val);
 
   /**
    * @return boolean
@@ -85,7 +85,7 @@ public interface CardDavContextMBean extends ConfBaseMBean {
    *
    * @param val    String
    */
-  void setAddressBookHandlerPrefix(final String val);
+  void setAddressBookHandlerPrefix(String val);
 
   /** Handler prefix for address books
    *
@@ -94,9 +94,9 @@ public interface CardDavContextMBean extends ConfBaseMBean {
   @MBeanInfo("Handler prefix for address books")
   String getAddressBookHandlerPrefix();
 
-  /* ========================================================================
+  /* ==============================================================
    * Operations
-   * ======================================================================== */
+   * ============================================================== */
 
   /** Get info for a user
    *

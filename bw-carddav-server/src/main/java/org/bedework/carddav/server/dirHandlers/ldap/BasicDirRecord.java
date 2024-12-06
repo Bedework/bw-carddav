@@ -18,7 +18,6 @@
 */
 package org.bedework.carddav.server.dirHandlers.ldap;
 
-import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
@@ -34,13 +33,13 @@ public class BasicDirRecord extends DirRecord {
   }
 
   /** Create a record with the given attributes.
-   * @param attrs
+   * @param attrs Attributes
    */
-  public BasicDirRecord(Attributes attrs) {
+  public BasicDirRecord(final Attributes attrs) {
     this.attrs = attrs;
   }
 
-  public Attributes getAttributes() throws NamingException {
+  public Attributes getAttributes() {
     if (attrs == null) attrs = new BasicAttributes(true);
 
     return attrs;

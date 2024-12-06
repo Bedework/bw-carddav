@@ -20,6 +20,7 @@ package org.bedework.carddav.server;
 
 import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.common.CarddavCollection;
+import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 import org.bedework.util.timezones.DateTimeUtil;
 
@@ -32,7 +33,8 @@ import java.util.Date;
  *
  *  @author Mike Douglass   douglm - rpi.edu
  */
-public class CarddavResource implements Comparable<CarddavResource>, Serializable {
+public class CarddavResource
+        implements Comparable<CarddavResource>, Serializable {
   private AccessPrincipal owner;
 
   private CarddavCollection parent;
@@ -71,17 +73,17 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   public CarddavResource() {
     super();
 
-    Date dt = new Date();
+    final Date dt = new Date();
     setLastmod(DateTimeUtil.isoDateTimeUTC(dt));
     setCreated(DateTimeUtil.isoDateTimeUTC(dt));
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                      Bean methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
-   * @param val
+   * @param val owner principal
    */
   public void setOwner(final AccessPrincipal val) {
     owner = val;
@@ -95,7 +97,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   }
 
   /**
-   * @param val
+   * @param val CarddavCollection
    */
   public void setParent(final CarddavCollection val) {
     parent = val;
@@ -125,7 +127,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   }
 
   /**
-   * @param val
+   * @param val create date
    */
   public void setCreated(final String val) {
     created = val;
@@ -139,7 +141,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   }
 
   /**
-   * @param val
+   * @param val last modified
    */
   public void setLastmod(final String val) {
     lastmod = val;
@@ -283,7 +285,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
   public int hashCode() {
     try {
       return getParent().getPath().hashCode() * getName().hashCode();
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
   }
@@ -293,7 +295,7 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
       return 0;
     }
 
-    int res = Util.cmpObjval(getParent(), that.getParent());
+    final int res = Util.cmpObjval(getParent(), that.getParent());
     if (res != 0) {
       return res;
     }
@@ -303,20 +305,12 @@ public class CarddavResource implements Comparable<CarddavResource>, Serializabl
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("BwAttachment{");
-
-    sb.append("name=");
-    sb.append(getName());
-    sb.append(", getContentType=");
-    sb.append(getContentType());
-    sb.append(", encoding=");
-    sb.append(getEncoding());
-    sb.append(", length=");
-    sb.append(getContentLength());
-
-    sb.append("}");
-
-    return sb.toString();
+    return new ToString(this)
+            .append("name", getName())
+            .append("getContentType", getContentType())
+            .append("encoding", getEncoding())
+            .append("length", getContentLength())
+            .toString();
   }
 }
 

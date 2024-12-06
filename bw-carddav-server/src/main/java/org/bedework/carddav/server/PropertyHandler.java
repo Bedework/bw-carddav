@@ -18,7 +18,6 @@
 */
 package org.bedework.carddav.server;
 
-import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavNsNode.PropertyTagEntry;
 
 import java.io.Serializable;
@@ -36,7 +35,7 @@ public abstract class PropertyHandler implements Serializable {
    *
    * @author douglm
    */
-  public static enum PropertyType {
+  public enum PropertyType {
     /** Property that can apply to anything */
     generalProperty,
 
@@ -66,10 +65,10 @@ public abstract class PropertyHandler implements Serializable {
 
   /** Return true if a call to generatePropertyValue will return a value.
    *
-   * @param tag
+   * @param tag for property
    * @return boolean
    */
-  public boolean knownProperty(QName tag) {
+  public boolean knownProperty(final QName tag) {
     return getPropertyNames().get(tag) != null;
   }
 }

@@ -586,9 +586,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
                            final Acl acl) {
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#makeCollection(org.bedework.carddav.server.CarddavCollection, java.lang.String)
-   */
+  @Override
   public int makeCollection(final CarddavCollection col,
                             final String parentPath) {
     try {
@@ -685,9 +683,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getCollections(org.bedework.carddav.server.CarddavCollection, org.bedework.carddav.server.SysIntf.GetLimits)
-   */
+  @Override
   public GetResult getCollections(final CarddavCollection val,
                                   final GetLimits limits) {
     try {
@@ -788,9 +784,7 @@ public class BwSysIntfImpl implements Logged, SysIntf {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.carddav.server.SysIntf#getMaxUserEntitySize()
-   */
+  @Override
   public int getMaxUserEntitySize() {
     try {
       throw new WebdavException("unimplemented");

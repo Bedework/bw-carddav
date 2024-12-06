@@ -18,9 +18,9 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.access.AccessState;
-import org.bedework.webdav.servlet.shared.WebdavException;
 
 /** A representation of a vcard and properties for database persistence in cardDAV
  *
@@ -43,7 +43,7 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
   }
 
   /**
-   * @param val
+   * @param val last mod date/time
    */
   public void setLastmod(final String val) {
     lastmod = val;
@@ -57,7 +57,7 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
   }
 
   /**
-   * @param val
+   * @param val a description
    */
   public void setDescription(final String val) {
     description = val;
@@ -71,7 +71,7 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
   }
 
   /**
-   * @param val
+   * @param val true for address book
    */
   public void setAddressBook(final boolean val) {
     addressBook = val;
@@ -84,9 +84,9 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
     return addressBook;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   SharedEntity methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public boolean isCollection() {
@@ -103,45 +103,41 @@ public class DbCollection extends DbNamedEntity<DbCollection> {
     return accessState;
   }
 
-  /**
-   * @param sb
-   */
   @Override
-  public void toStringSegment(final StringBuilder sb) {
-    super.toStringSegment(sb);
+  public void toStringSegment(final ToString ts) {
+    super.toStringSegment(ts);
 
-    sb.append(", \n   lastmod=");
-    sb.append(getLastmod());
-    sb.append(", \n   description=");
-    sb.append(getDescription());
+    ts.newLine()
+      .append("lastmod", getLastmod())
+      .append("description", getDescription());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public int compareTo(final DbCollection that) {
     try {
-      int res = Util.compareStrings(getParentPath(),
-                                    that.getParentPath());
+      final int res = Util.compareStrings(getParentPath(),
+                                          that.getParentPath());
 
       if (res != 0) {
         return res;
       }
 
       return Util.compareStrings(getName(), that.getName());
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("DbCollection{");
+    final ToString ts = new ToString(this);
 
-    toStringSegment(sb);
+    toStringSegment(ts);
 
-    return sb.toString();
+    return ts.toString();
   }
 }

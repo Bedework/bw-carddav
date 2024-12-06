@@ -65,7 +65,7 @@ public class SpecialUri {
                                 final boolean fromGetAccept,
                                 final String accept,
                                 final String vcardVersion) {
-    String addrbook = null;
+    String addrbook;
     String format;
 
     if (fromGetAccept) {
@@ -305,7 +305,7 @@ public class SpecialUri {
     // vcard
     try {
       resp.getWriter().write("}\n");
-    } catch (IOException ie) {
+    } catch (final IOException ie) {
       throw new WebdavException(ie);
     }
   }

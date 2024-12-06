@@ -93,7 +93,7 @@ public class DbFilter {
       return;
     }
 
-    Collection<PropFilter> pfilters = filter.getPropFilters();
+    final Collection<PropFilter> pfilters = filter.getPropFilters();
 
     if ((pfilters == null) || pfilters.isEmpty()) {
       return;
@@ -101,7 +101,7 @@ public class DbFilter {
 
     sb.append(" and (");
 
-    for (PropFilter pfltr: pfilters) {
+    for (final PropFilter pfltr: pfilters) {
       makePropFilterExpr(pfltr);
     }
 
@@ -109,18 +109,18 @@ public class DbFilter {
   }
 
   private void makePropFilterExpr(final PropFilter filter) {
-    TextMatch tm = filter.getMatch();
+    final TextMatch tm = filter.getMatch();
 
     if (tm == null) {
       presenceCheck(filter);
       return;
     }
 
-    int testAllAnyProps = filter.getTestAllAny();
+    final int testAllAnyProps = filter.getTestAllAny();
 
-    String name = filter.getName();
+    final String name = filter.getName();
 
-    int cpos = name.indexOf(',');
+    final int cpos = name.indexOf(',');
 
     if ((cpos < 0) && (Util.isEmpty(filter.getParamFilters()))) {
       // No group - no params - single attribute
@@ -215,7 +215,7 @@ public class DbFilter {
   }
 
   private void makePropFilterExpr(final String name, final TextMatch tm) {
-    PField pf = pfields.get(name.toLowerCase());
+    final PField pf = pfields.get(name.toLowerCase());
 
     final boolean caseless = tm.testCaseless();
 
@@ -241,8 +241,8 @@ public class DbFilter {
       }
     }
 
-    int mt = tm.getMatchType();
-    String parVal;
+    final int mt = tm.getMatchType();
+    final String parVal;
 
     if (caseless) {
       parVal = tm.getVal().toUpperCase();
