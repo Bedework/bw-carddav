@@ -3,6 +3,8 @@
 <jboss-web>
   <!-- Virtual host -->
 
+  <context-root>/pubcarddav</context-root>
+
   <security-domain>java:/jaas/bedework</security-domain>
 
   <resource-ref>

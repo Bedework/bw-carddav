@@ -2,5 +2,5 @@
 <jboss-web>
   <!-- Virtual host -->
 
-  <!-- <context-root>${app.context}</context-root> -->
+  <context-root>/bwAddrbookClient</context-root>
 </jboss-web>
