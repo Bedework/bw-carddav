@@ -8,7 +8,7 @@
   </parent>
 
 	<artifactId>bw-carddav</artifactId>
-	<version>5.0.6-SNAPSHOT</version>
+	<version>5.0.6</version>
 	<packaging>pom</packaging>
 	<name>Bedework: CardDAV gateway server </name>
   <description>A CardDAV servlet</description>
