@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
+        xsi:schemaLocation="
+            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
+            http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
+
+    <service>
+        <jsr107:defaults enable-management="true" enable-statistics="true"/>
+    </service>
+
+    <cache alias="carddb.default-update-timestamps-region">
+        <expiry>
+            <none />
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap>
+        </resources>
+    </cache>
+
+    <cache-template name="carddefaults">
+        <expiry>
+            <tti unit="minutes">5</tti>
+        </expiry>
+        <heap>100</heap>
+    </cache-template>
+
+    <cache alias="card.org.bedework.carddav.server.dirHandlers.db.DbCard"
+           uses-template="carddefaults">
+    </cache>
+
+    <cache alias="card.org.bedework.carddav.server.dirHandlers.db.DbCollection"
+           uses-template="carddefaults">
+    </cache>
+
+    <cache alias="card.org.bedework.carddav.server.dirHandlers.db.DbCardParam"
+           uses-template="carddefaults">
+    </cache>
+
+    <cache alias="card.org.bedework.carddav.server.dirHandlers.db.DbCardProperty"
+           uses-template="carddefaults">
+    </cache>
+</config>
