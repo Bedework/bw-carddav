@@ -26,7 +26,7 @@ import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.common.GetResult;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.XmlUtil;
 import org.bedework.util.xml.tagdefs.AppleServerTags;

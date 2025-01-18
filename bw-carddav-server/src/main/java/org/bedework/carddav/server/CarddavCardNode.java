@@ -23,7 +23,7 @@ import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WebdavException;

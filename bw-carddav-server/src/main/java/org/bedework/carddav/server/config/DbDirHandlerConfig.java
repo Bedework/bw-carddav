@@ -20,7 +20,7 @@ package org.bedework.carddav.server.config;
 
 import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.util.config.ConfInfo;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** This class defines the various properties we need to make a connection
  * and retrieve a group and user information from a db.

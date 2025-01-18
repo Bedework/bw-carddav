@@ -22,7 +22,7 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.access.Ace;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 /** We map uris onto an object which may be a calendar or an

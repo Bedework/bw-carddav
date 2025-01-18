@@ -20,7 +20,7 @@ package org.bedework.carddav.common.config;
 
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.config.HibernateConfigBase;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Class defining the configuration for a directory handler.
  *

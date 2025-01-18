@@ -21,8 +21,14 @@
 		<!-- Bedework Dependencies -->
     <dependency>
       <groupId>org.bedework</groupId>
+      <artifactId>bw-base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
       <artifactId>bw-util2-calendar</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-config</artifactId>

@@ -19,7 +19,7 @@
 package org.bedework.carddav.common.util;
 
 import org.bedework.access.AccessPrincipal;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.Collection;
 import java.util.Comparator;

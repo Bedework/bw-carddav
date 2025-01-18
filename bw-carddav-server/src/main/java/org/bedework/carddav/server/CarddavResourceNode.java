@@ -22,7 +22,7 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.webdav.servlet.shared.WebdavException;

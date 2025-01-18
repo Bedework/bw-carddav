@@ -18,7 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Base type for a database entity with a name.
  *

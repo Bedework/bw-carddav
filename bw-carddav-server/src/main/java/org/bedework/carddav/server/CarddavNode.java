@@ -21,7 +21,7 @@ package org.bedework.carddav.server;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.GetLimits;
 import org.bedework.carddav.server.CarddavBWIntf.QueryResult;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WdCollection;
 import org.bedework.webdav.servlet.shared.WdEntity;

@@ -20,7 +20,7 @@ package org.bedework.carddav.server.config;
 
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.config.ConfigBase;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.ArrayList;
 import java.util.List;

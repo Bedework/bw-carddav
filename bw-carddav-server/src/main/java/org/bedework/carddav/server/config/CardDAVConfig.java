@@ -22,7 +22,7 @@ import org.bedework.carddav.common.config.CardDAVConfigI;
 import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.config.ConfigBase;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.Set;
 import java.util.TreeSet;

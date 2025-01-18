@@ -19,7 +19,7 @@
 package org.bedework.carddav.server.dirHandlers.db;
 
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.access.AccessState;
 import org.bedework.webdav.servlet.shared.WebdavException;
