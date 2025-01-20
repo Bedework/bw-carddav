@@ -22,7 +22,7 @@ import org.bedework.base.exc.BedeworkException;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.filter.PropFilter;
 import org.bedework.carddav.common.filter.TextMatch;
-import org.bedework.util.hibernate.HibSession;
+import org.bedework.database.hibernate.HibSession;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavException;
 

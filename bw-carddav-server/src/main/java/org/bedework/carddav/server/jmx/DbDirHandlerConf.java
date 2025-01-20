@@ -20,8 +20,8 @@ package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.util.config.ConfigurationStore;
-import org.bedework.util.hibernate.HibConfig;
-import org.bedework.util.hibernate.SchemaThread;
+import org.bedework.database.hibernate.HibConfig;
+import org.bedework.database.hibernate.SchemaThread;
 import org.bedework.util.jmx.ConfBase;
 
 import java.util.List;
