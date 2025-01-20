@@ -18,6 +18,7 @@
 */
 package org.bedework.carddav.server.dirHandlers.db;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.carddav.common.DirHandler;
 import org.bedework.carddav.common.config.CardDAVConfigI;
@@ -25,7 +26,6 @@ import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.util.CardDAVBadData;
 import org.bedework.carddav.common.util.CardDAVDuplicateUid;
 import org.bedework.carddav.common.vcard.Card;
-import org.bedework.util.hibernate.HibException;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WdCollection;
@@ -254,7 +254,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
     try {
       sess.update(dc);
-    } catch (final HibException e) {
+    } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
   }
@@ -374,7 +374,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
       }
 
       return DirHandler.statusCreated;
-    } catch (final HibException e) {
+    } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
   }
@@ -410,7 +410,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
 
     try {
       sess.save(card);
-    } catch (final HibException e) {
+    } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
 
