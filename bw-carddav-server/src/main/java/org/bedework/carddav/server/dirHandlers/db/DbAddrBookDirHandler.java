@@ -318,7 +318,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
           root.setLastmod(new LastModified(dt).getValue());
           root.setCreated(new Created(dt).getValue());
 
-          sess.save(root);
+          sess.add(root);
           sess.flush();
         }
       }
@@ -367,7 +367,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
         dbc.setCreated(col.getCreated());
       }
 
-      sess.save(dbc);
+      sess.add(dbc);
 
       if (home) {
         sess.flush();
@@ -409,7 +409,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     card.output(); // Ensure string form exists
 
     try {
-      sess.save(card);
+      sess.add(card);
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }

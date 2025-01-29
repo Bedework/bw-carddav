@@ -34,6 +34,7 @@ import org.bedework.carddav.common.config.DirHandlerConfig;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
+import org.bedework.database.db.DbSession;
 import org.bedework.database.hibernate.HibSession;
 import org.bedework.database.hibernate.HibSessionImpl;
 import org.bedework.webdav.servlet.access.AccessHelper;
@@ -73,7 +74,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   /** Current hibernate session - exists only across one user interaction
    */
-  protected HibSession sess;
+  protected DbSession sess;
 
   /** We make this static for this implementation so that there is only one
    * SessionFactory per server for the card server.
