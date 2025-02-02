@@ -277,12 +277,12 @@ public class DbAddrBookDirHandler extends DbDirHandler {
    * ==================================================================== */
 
   private final static String queryGetUserRootName =
-          "select col.name from " + DbCollection.class.getName() +
-                  " col where col.name=:name and col.parentPath is null";
+          "select col.name from DbCollection col " +
+                  "where col.name=:name and col.parentPath is null";
 
   private final static String queryGetCollectionName =
-          "select col.name from " + DbCollection.class.getName() +
-                  " col where col.name=:name and col.parentPath=:pp";
+          "select col.name from DbCollection col " +
+                  "where col.name=:name and col.parentPath=:pp";
 
 
   @Override

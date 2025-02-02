@@ -35,7 +35,6 @@ import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.database.db.DbSession;
-import org.bedework.database.hibernate.HibSession;
 import org.bedework.database.hibernate.HibSessionImpl;
 import org.bedework.webdav.servlet.access.AccessHelper;
 import org.bedework.webdav.servlet.access.AccessHelperI;
@@ -228,8 +227,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private final static String queryGetCards =
-          "select card from " + DbCard.class.getName() +
-                  " card join card.properties props " +
+          "select card from DbCard card " +
+                  "join card.properties props " +
                   "where card.parentPath=:path";
 
   @Override
@@ -254,7 +253,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
       /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
        * distinct with a set
        */
-      final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
+      final Set<DbCard> cardSet =
+              new TreeSet<>((List<DbCard>)sess.getList());
 
       final GetResult res = new GetResult();
 
@@ -269,8 +269,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private final static String queryGetCardNames =
-          "select card.name from " + DbCard.class.getName() +
-                  " card where card.parentPath=:path";
+          "select card.name from DbCard card " +
+                  "where card.parentPath=:path";
 
   private class CardIterator implements Iterator<Card> {
     private String parentPath;
@@ -278,7 +278,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
     private Iterator<String> it;
 
-    private HibSession sess;
+    private DbSession sess;
 
     @Override
     public boolean hasNext() {
@@ -313,7 +313,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
       final CardIterator ci = new CardIterator();
       ci.parentPath = path;
       //noinspection unchecked
-      ci.names = sess.getList();
+      ci.names = (List<String>)sess.getList();
       ci.it = ci.names.iterator();
       ci.sess = sess;
 
@@ -338,8 +338,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private static final String queryGetCollections =
-          "from " + DbCollection.class.getName() +
-                  " col where col.parentPath=:path";
+          "select col from DbCollection col " +
+                  "where col.parentPath=:path";
 
   @Override
   @SuppressWarnings("unchecked")
@@ -351,7 +351,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
       sess.createQuery(queryGetCollections);
       sess.setString("path", ensureSlashAtEnd(path));
 
-      final List<DbCollection> l = sess.getList();
+      final List<DbCollection> l = (List<DbCollection>)sess.getList();
 
       final GetResult res = new GetResult();
 
@@ -416,8 +416,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
    * ==================================================================== */
 
   private static final String queryGetCardByName =
-          "from " + DbCard.class.getName() +
-                  " card where card.parentPath=:path" +
+          "select card from DbCard card " +
+                  " where card.parentPath=:path" +
                   " and card.name=:name";
 
   protected DbCard getDbCard(final String parentPath,
@@ -443,8 +443,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private static final String queryGetCardByUid =
-          "from " + DbCard.class.getName() +
-                  " card where card.parentPath=:path" +
+          "select card from DbCard card " +
+                  " where card.parentPath=:path" +
                   " and card.uid=:uid";
 
   protected DbCard getDbCardByUid(final String parentPath,
@@ -463,8 +463,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private static final String queryGetCard =
-          "from " + DbCard.class.getName() +
-                  " card where card.path=:path";
+          "select card from DbCard card " +
+                  " where card.path=:path";
 
   protected DbCard getDbCard(final String path) {
     verifyPath(path);
@@ -517,8 +517,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private static final String queryGetCollection =
-          "from " + DbCollection.class.getName() +
-                  " col where col.path=:path";
+          "select col from DbCollection col " +
+                  "where col.path=:path";
 
   private DbCollection getDbCollection(final String path) {
     if (path.equals("/")) {
@@ -546,12 +546,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
   }
 
   private static final String queryDeleteCollection =
-          "delete " + DbCollection.class.getName() +
-                  " col where col.path=:path";
+          "delete DbCollection col where col.path=:path";
 
   private static final String queryGetColCards =
-          "from " + DbCard.class.getName() +
-                  " card where card.parentPath=:path";
+          "select card from DbCard card " +
+                  " where card.parentPath=:path";
 
   protected int deleteDbCollection(final String path) {
     if (path.equals("/")) {
@@ -571,7 +570,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
       /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
        * distinct with a set
        */
-      final Set<DbCard> cardSet = new TreeSet<DbCard>(sess.getList());
+      final var cardSet =
+              new TreeSet<>((List<DbCard>)sess.getList());
 
       for (final DbCard cd: cardSet) {
         deleteDbCard(cd);

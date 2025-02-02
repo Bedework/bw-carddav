@@ -22,7 +22,7 @@ import org.bedework.base.exc.BedeworkException;
 import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.filter.PropFilter;
 import org.bedework.carddav.common.filter.TextMatch;
-import org.bedework.database.hibernate.HibSession;
+import org.bedework.database.db.DbSession;
 import org.bedework.util.misc.Util;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
@@ -78,7 +78,7 @@ public class DbFilter {
     params.add(val);
   }
 
-  void parReplace(final HibSession sess) {
+  void parReplace(final DbSession sess) {
     for (int i = 0; i < params.size(); i++) {
       try {
         sess.setString(parPrefix + i, params.get(i));
