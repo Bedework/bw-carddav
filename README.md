@@ -100,4 +100,28 @@ Then:
 * Simplify the configuration utilities.
 * Fix up a bunch of introduced config errors
 * Remove dependency on bw-xml deployment
+
+### 5.0.2
+* Update library versions
+* Make webdavexception subclass of runtimeexception and tidy up a bit. Should be no noticable changes.
+
+### 5.0.3
+* Update library versions
+
+### 5.0.4
+* Update library versions
+
+### 5.0.5
+* Update library versions
+
+### 5.0.6
+* Update library versions
+
+### 5.0.7
+* Update library versions
+* Preparing for jakarta...
+  Update carddav and self-registration for jcache
+* Move response classes and ToString into bw-base module.
+* Switch to use DbSession from bw-database.
+* Convert the hql queries into valid jpql. No hibernate specific terms were required (I think).
   
