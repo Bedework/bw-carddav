@@ -24,9 +24,9 @@ import org.bedework.webdav.servlet.common.MethodBase.MethodInfo;
 import org.bedework.webdav.servlet.common.WebdavServlet;
 import org.bedework.webdav.servlet.shared.WebdavNsIntf;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.http.HttpServletRequest;
 
 /** This class extends the webdav servlet class, implementing the abstract
  * methods and overriding others to extend/modify the behaviour.

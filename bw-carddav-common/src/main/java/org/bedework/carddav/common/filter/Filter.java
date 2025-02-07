@@ -22,7 +22,7 @@ import org.bedework.webdav.servlet.shared.WebdavException;
 
 import org.w3c.dom.Node;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /** Class to represent a calendar-query filter
  *  <pre>

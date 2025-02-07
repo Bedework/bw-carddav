@@ -22,7 +22,7 @@ package org.bedework.carddav.common.util;
 import org.bedework.util.xml.tagdefs.CarddavTags;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /** Exception for bad address data
  *

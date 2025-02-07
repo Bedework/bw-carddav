@@ -37,7 +37,7 @@ import org.bedework.webdav.servlet.shared.WebdavException;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /** All interactions with the underlying calendar system are made via this
  * interface.
