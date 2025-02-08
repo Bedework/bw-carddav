@@ -19,7 +19,7 @@
 package org.bedework.carddav.common.config;
 
 import org.bedework.util.config.ConfInfo;
-import org.bedework.util.config.HibernateConfigBase;
+import org.bedework.util.config.OrmConfigBase;
 import org.bedework.base.ToString;
 
 /** Class defining the configuration for a directory handler.
@@ -29,7 +29,7 @@ import org.bedework.base.ToString;
  */
 @ConfInfo(elementName = "bwcarddav-dirhandler")
 public abstract class DirHandlerConfig<T extends DirHandlerConfig<?>>
-        extends HibernateConfigBase<T> {
+        extends OrmConfigBase<T> {
   private String confClass;
 
   private String confBeanClass;

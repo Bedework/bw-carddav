@@ -802,7 +802,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
         final StringBuilder sb = new StringBuilder();
 
-        final List<String> ps = dbConfig.getHibernateProperties();
+        final List<String> ps = dbConfig.getOrmProperties();
 
         for (final String p: ps) {
           sb.append(p);

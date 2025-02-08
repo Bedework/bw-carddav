@@ -167,7 +167,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   public String listHibernateProperties() {
     final StringBuilder res = new StringBuilder();
 
-    final List<String> ps = getConf().getHibernateProperties();
+    final List<String> ps = getConf().getOrmProperties();
 
     for (final String p: ps) {
       res.append(p);
@@ -179,7 +179,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   @Override
   public String displayHibernateProperty(final String name) {
-    final String val = getConf().getHibernateProperty(name);
+    final String val = getConf().getOrmProperty(name);
 
     if (val != null) {
       return val;
@@ -190,19 +190,19 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   @Override
   public void removeHibernateProperty(final String name) {
-    getConf().removeHibernateProperty(name);
+    getConf().removeOrmProperty(name);
   }
 
   @Override
   public void addHibernateProperty(final String name,
                                    final String value) {
-    getConf().addHibernateProperty(name, value);
+    getConf().addOrmProperty(name, value);
   }
 
   @Override
   public void setHibernateProperty(final String name,
                                    final String value) {
-    getConf().setHibernateProperty(name, value);
+    getConf().setOrmProperty(name, value);
   }
 
   /*
