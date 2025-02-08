@@ -40,11 +40,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.bedework.database</groupId>
-      <artifactId>bw-hibernate</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-util-http</artifactId>
     </dependency>
@@ -94,11 +89,6 @@
 		<dependency>
       <groupId>${ical4j.groupId}</groupId>
       <artifactId>${ical4j.artifactId}</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
 		</dependency>
 
 		<dependency>

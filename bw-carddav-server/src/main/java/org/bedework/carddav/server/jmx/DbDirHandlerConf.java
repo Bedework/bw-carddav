@@ -20,9 +20,6 @@ package org.bedework.carddav.server.jmx;
 
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.util.config.ConfigurationStore;
-import org.bedework.database.hibernate.HibConfig;
-import org.bedework.database.hibernate.SchemaThread;
-import org.bedework.util.jmx.ConfBase;
 
 import java.util.List;
 
@@ -36,6 +33,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   private String schemaOutFile;
 
+  /*
   private class SchemaBuilder extends SchemaThread {
 
     SchemaBuilder(final String outFile,
@@ -60,6 +58,7 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
   }
 
   private SchemaBuilder buildSchema;
+   */
 
   public DbDirHandlerConf(final String serviceName,
                           final ConfigurationStore store,
@@ -131,6 +130,8 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
   @Override
   public String schema() {
+    return "Unimplemented";
+    /*
     try {
       buildSchema = new SchemaBuilder(
               getSchemaOutFile(),
@@ -146,11 +147,12 @@ public class DbDirHandlerConf extends DirHandlerConf implements DbDirHandlerConf
 
       return "Exception: " + t.getLocalizedMessage();
     }
+     */
   }
 
   @Override
   public synchronized List<String> schemaStatus() {
-    return buildSchema.infoLines;
+    return null;//return buildSchema.infoLines;
   }
 
   @Override

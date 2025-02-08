@@ -35,7 +35,8 @@ import org.bedework.carddav.common.filter.Filter;
 import org.bedework.carddav.common.vcard.Card;
 import org.bedework.carddav.server.config.DbDirHandlerConfig;
 import org.bedework.database.db.DbSession;
-import org.bedework.database.hibernate.HibSessionImpl;
+import org.bedework.database.db.DbSessionFactoryProvider;
+import org.bedework.database.db.DbSessionFactoryProviderImpl;
 import org.bedework.webdav.servlet.access.AccessHelper;
 import org.bedework.webdav.servlet.access.AccessHelperI;
 import org.bedework.webdav.servlet.access.SharedEntity;
@@ -43,17 +44,12 @@ import org.bedework.webdav.servlet.shared.UrlHandler;
 import org.bedework.webdav.servlet.shared.WebdavException;
 import org.bedework.webdav.servlet.shared.WebdavForbidden;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-import java.io.StringReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -71,22 +67,13 @@ public abstract class DbDirHandler extends AbstractDirHandler
   /** When we were created for debugging */
   protected Timestamp objTimestamp;
 
-  /** Current hibernate session - exists only across one user interaction
+  /** Current orm session - exists only across one user interaction
    */
   protected DbSession sess;
 
-  /** We make this static for this implementation so that there is only one
-   * SessionFactory per server for the card server.
-   *
-   * <p>static fields used this way are illegal in the j2ee specification
-   * though we might get away with it here as the session factory only
-   * contains parsed mappings for the card configuration. This should
-   * be the same for any machine in a cluster so it might work OK.
-   *
-   * <p>It might be better to find some other approach for the j2ee world.
+  /* Factory used to obtain a session
    */
-  private static SessionFactory sessionFactory;
-  //private static Statistics dbStats;
+  private static DbSessionFactoryProvider factoryProvider;
 
   /** For evaluating access control
    */
@@ -625,27 +612,34 @@ public abstract class DbDirHandler extends AbstractDirHandler
       throw new WebdavException("Already open");
     }
 
-    open = true;
 
-    if (sess != null) {
-      warn("Session is not null. Will close");
-      try {
-        close();
-      } finally {
+    try {
+      if (factoryProvider == null) {
+        factoryProvider =
+                new DbSessionFactoryProviderImpl()
+                        .init(dbConfig.getOrmProperties());
       }
-    }
 
-    if (sess == null) {
-      if (debug()) {
-        debug("New hibernate session for " + objTimestamp);
+      open = true;
+
+      if (sess != null) {
+        warn("Session is not null. Will close");
+        try {
+          close();
+        } catch (final Throwable ignored) {
+        }
       }
-      sess = new HibSessionImpl();
-      try {
-        sess.init(getSessionFactory());
-      } catch (final BedeworkException e) {
-        throw new WebdavException(e);
+
+      if (sess == null) {
+        if (debug()) {
+          debug("New orm session for " + objTimestamp);
+        }
+        sess = factoryProvider.getNewSession();
+
+        debug("Open session for " + objTimestamp);
       }
-      debug("Open session for " + objTimestamp);
+    } catch (final BedeworkException e) {
+      throw new WebdavException(e);
     }
 
     beginTransaction();
@@ -766,62 +760,5 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
 
     return ent;
-  }
-
-  /* ==============================================================
-   *                   private methods
-   * ============================================================== */
-
-  private SessionFactory getSessionFactory() {
-    if (sessionFactory != null) {
-      return sessionFactory;
-    }
-
-    synchronized (this) {
-      if (sessionFactory != null) {
-        return sessionFactory;
-      }
-
-      /* Get a new hibernate session factory. This is configured from an
-       * application resource hibernate.cfg.xml together with some run time values
-       */
-      try {
-        final Configuration conf = new Configuration();
-
-        /*
-        if (props != null) {
-          String cachePrefix = props.getProperty("cachePrefix");
-          if (cachePrefix != null) {
-            conf.setProperty("hibernate.cache.use_second_level_cache",
-                             props.getProperty("cachingOn"));
-            conf.setProperty("hibernate.cache.region_prefix",
-                             cachePrefix);
-          }
-        }
-        */
-
-        final StringBuilder sb = new StringBuilder();
-
-        final List<String> ps = dbConfig.getOrmProperties();
-
-        for (final String p: ps) {
-          sb.append(p);
-          sb.append("\n");
-        }
-
-        final Properties hprops = new Properties();
-        hprops.load(new StringReader(sb.toString()));
-
-        conf.addProperties(hprops).configure();
-
-        sessionFactory = conf.buildSessionFactory();
-
-        return sessionFactory;
-      } catch (final Throwable t) {
-        // Always bad.
-        error(t);
-        throw new WebdavException(t);
-      }
-    }
   }
 }
