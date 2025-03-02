@@ -224,16 +224,16 @@ ul.topMenu li:hover ul {
   white-space: nowrap;
 }
 .bwAddrBookTable thead tr .header {
-  background-image: url("jquery/tablesorter/bg.png");
+  background-image: url("/javascript/jquery/tablesorter/bg.png");
   background-repeat: no-repeat;
   background-position: center right;
   cursor: pointer;
 }
 .bwAddrBookTable thead tr .headerSortUp {
-  background-image: url("jquery/tablesorter/asc.png");
+  background-image: url("/javascript/jquery/tablesorter/asc.png");
 }
 .bwAddrBookTable thead tr .headerSortDown {
-  background-image: url("jquery/tablesorter/desc.png");
+  background-image: url("/javascript/jquery/tablesorter/desc.png");
 }
 .bwAddrBookTable thead tr .headerSortDown, 
 .bwAddrBookTable thead tr .headerSortUp {
