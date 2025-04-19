@@ -62,7 +62,7 @@ public class CarddavResourceContent
   // CALWRAPPER
   /** Get the object's collection
    *
-   * @return BwCalendar   the object's collection
+   * @return the object's collection
    */
   public CarddavColNode getParent() {
     return collection;
