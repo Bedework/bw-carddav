@@ -69,7 +69,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   /** Current orm session - exists only across one user interaction
    */
-  protected DbSession sess;
+  private DbSession dbSession;
 
   /* Factory used to obtain a session
    */
@@ -167,8 +167,9 @@ public abstract class DbDirHandler extends AbstractDirHandler
     openSession();
     open = true;
 
-    access.setAuthPrincipal(getPrincipal(makePrincipalHref(account,
-                                                           WhoDefs.whoTypeUser)));
+    access.setAuthPrincipal(
+            getPrincipal(makePrincipalHref(account,
+                                           WhoDefs.whoTypeUser)));
   }
 
   @Override
@@ -213,6 +214,14 @@ public abstract class DbDirHandler extends AbstractDirHandler
     return makeVcard(card);
   }
 
+  public DbSession getSess() {
+    return dbSession;
+  }
+
+  public DbSession createQuery(final String query) {
+    return getSess().createQuery(query);
+  }
+
   private final static String queryGetCards =
           "select card from DbCard card " +
                   "join card.properties props " +
@@ -232,16 +241,14 @@ public abstract class DbDirHandler extends AbstractDirHandler
     fltr.makeFilter(filter);
 
     try {
-      sess.createQuery(sb.toString());
-      sess.setString("path", ensureSlashAtEnd(path));
-
-      fltr.parReplace(sess);
+      fltr.parReplace(createQuery(sb.toString())
+                              .setString("path", ensureSlashAtEnd(path)));
 
       /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
        * distinct with a set
        */
       final Set<DbCard> cardSet =
-              new TreeSet<>((List<DbCard>)sess.getList());
+              new TreeSet<>((List<DbCard>)getSess().getList());
 
       final GetResult res = new GetResult();
 
@@ -294,15 +301,16 @@ public abstract class DbDirHandler extends AbstractDirHandler
     verifyPath(path);
 
     try {
-      sess.createQuery(queryGetCardNames);
-      sess.setString("path", ensureSlashAtEnd(path));
 
       final CardIterator ci = new CardIterator();
+
       ci.parentPath = path;
       //noinspection unchecked
-      ci.names = (List<String>)sess.getList();
+      ci.names = (List<String>)createQuery(queryGetCardNames)
+              .setString("path", ensureSlashAtEnd(path))
+              .getList();
       ci.it = ci.names.iterator();
-      ci.sess = sess;
+      ci.sess = getSess();
 
       return ci;
     } catch (final BedeworkException e) {
@@ -329,16 +337,16 @@ public abstract class DbDirHandler extends AbstractDirHandler
                   "where col.parentPath=:path";
 
   @Override
-  @SuppressWarnings("unchecked")
   public GetResult getCollections(final String path,
                                   final GetLimits limits) {
     verifyPath(path);
 
     try {
-      sess.createQuery(queryGetCollections);
-      sess.setString("path", ensureSlashAtEnd(path));
-
-      final List<DbCollection> l = (List<DbCollection>)sess.getList();
+      //noinspection unchecked
+      final List<DbCollection> l =
+              (List<DbCollection>)createQuery(queryGetCollections)
+                      .setString("path", ensureSlashAtEnd(path))
+                      .getList();
 
       final GetResult res = new GetResult();
 
@@ -392,15 +400,15 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
   protected void updateCollection(final DbCollection col) {
     try {
-      sess.update(col);
+      getSess().update(col);
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
   }
 
-  /* ====================================================================
+  /* ============================================================
    *  Protected methods.
-   * ==================================================================== */
+   * ============================================================ */
 
   private static final String queryGetCardByName =
           "select card from DbCard card " +
@@ -419,11 +427,10 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
 
     try {
-      sess.createQuery(queryGetCardByName);
-      sess.setString("path", ensureEndSlash(parentPath));
-      sess.setString("name", name);
-
-      return (DbCard)sess.getUnique();
+      return (DbCard)createQuery(queryGetCardByName)
+              .setString("path", ensureEndSlash(parentPath))
+              .setString("name", name)
+              .getUnique();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -439,11 +446,10 @@ public abstract class DbDirHandler extends AbstractDirHandler
     verifyPath(parentPath);
 
     try {
-      sess.createQuery(queryGetCardByUid);
-      sess.setString("path", ensureEndSlash(parentPath));
-      sess.setString("uid", uid);
-
-      return (DbCard)sess.getUnique();
+      return (DbCard)createQuery(queryGetCardByUid)
+              .setString("path", ensureEndSlash(parentPath))
+              .setString("uid", uid)
+              .getUnique();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -457,10 +463,9 @@ public abstract class DbDirHandler extends AbstractDirHandler
     verifyPath(path);
 
     try {
-      sess.createQuery(queryGetCard);
-      sess.setString("path", path);
-
-      return (DbCard)sess.getUnique();
+      return (DbCard)createQuery(queryGetCard)
+              .setString("path", path)
+              .getUnique();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -523,10 +528,9 @@ public abstract class DbDirHandler extends AbstractDirHandler
     verifyPath(path);
 
     try {
-      sess.createQuery(queryGetCollection);
-      sess.setString("path", ensureEndSlash(path));
-
-      return (DbCollection)sess.getUnique();
+      return (DbCollection)createQuery(queryGetCollection)
+              .setString("path", ensureEndSlash(path))
+              .getUnique();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -551,23 +555,24 @@ public abstract class DbDirHandler extends AbstractDirHandler
     verifyPath(path);
 
     try {
-      sess.createQuery(queryGetColCards);
-      sess.setString("path", ensureEndSlash(path));
-
       /* We couldn't use DISTINCT in the query (it's a CLOB) so make it
        * distinct with a set
        */
+      //noinspection unchecked
       final var cardSet =
-              new TreeSet<>((List<DbCard>)sess.getList());
+              new TreeSet<>(
+                      (List<DbCard>)createQuery(queryGetColCards)
+                              .setString("path", ensureEndSlash(path))
+                              .getList());
 
       for (final DbCard cd: cardSet) {
         deleteDbCard(cd);
       }
 
-      sess.createQuery(queryDeleteCollection);
-      sess.setString("path", ensureEndSlash(path));
-
-      return cardSet.size() + sess.executeUpdate();
+      return cardSet.size() +
+              createQuery(queryDeleteCollection)
+                      .setString("path", ensureEndSlash(path))
+                      .executeUpdate();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -591,15 +596,15 @@ public abstract class DbDirHandler extends AbstractDirHandler
    */
   protected void deleteDbCard(final DbCard dbcard) {
     try {
-      sess.delete(dbcard);
+      getSess().delete(dbcard);
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
   }
 
-  /* ==============================================================
+  /* ============================================================
    *                   Session methods
-   * ============================================================== */
+   * ============================================================ */
 
   protected void checkOpen() {
     if (!isOpen()) {
@@ -622,7 +627,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
 
       open = true;
 
-      if (sess != null) {
+      if (dbSession != null) {
         warn("Session is not null. Will close");
         try {
           close();
@@ -630,11 +635,11 @@ public abstract class DbDirHandler extends AbstractDirHandler
         }
       }
 
-      if (sess == null) {
+      if (dbSession == null) {
         if (debug()) {
           debug("New orm session for " + objTimestamp);
         }
-        sess = factoryProvider.getNewSession();
+        dbSession = factoryProvider.getNewSession();
 
         debug("Open session for " + objTimestamp);
       }
@@ -658,24 +663,24 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
 
     try {
-      if (sess != null) {
-        if (sess.rolledback()) {
-          sess = null;
+      if (getSess() != null) {
+        if (getSess().rolledback()) {
+          dbSession = null;
           return;
         }
 
-        if (sess.transactionStarted()) {
-          sess.rollback();
+        if (getSess().transactionStarted()) {
+          getSess().rollback();
         }
 
-        sess.close();
-        sess = null;
+        getSess().close();
+        dbSession = null;
       }
     } catch (final Throwable t) {
       try {
-        sess.close();
+        getSess().close();
       } catch (final Throwable ignored) {}
-      sess = null; // Discard on error
+      dbSession = null; // Discard on error
     } finally {
       open = false;
     }
@@ -688,7 +693,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
       debug("Begin transaction for " + objTimestamp);
     }
     try {
-      sess.beginTransaction();
+      getSess().beginTransaction();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -702,8 +707,8 @@ public abstract class DbDirHandler extends AbstractDirHandler
     }
 
     try {
-      if (!sess.rolledback()) {
-        sess.commit();
+      if (!getSess().rolledback()) {
+        getSess().commit();
       }
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
@@ -713,7 +718,7 @@ public abstract class DbDirHandler extends AbstractDirHandler
   protected void rollbackTransaction() {
     try {
       checkOpen();
-      sess.rollback();
+      getSess().rollback();
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     } finally {

@@ -253,7 +253,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     dc.output();
 
     try {
-      sess.update(dc);
+      getSess().update(dc);
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
@@ -293,13 +293,12 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     try {
       /* If home ensure the user root exists */
       if (home) {
-        sess.createQuery(queryGetUserRootName);
-
         final String rootName =
                 userHomeRoot.substring(1, userHomeRoot.length() - 1);
-        sess.setString("name", rootName);
 
-        final Collection<?> res = sess.getList();
+        final var res = createQuery(queryGetUserRootName)
+                .setString("name", rootName)
+                .getList();
 
         if (res.isEmpty()) {
           /* Create user root */
@@ -318,18 +317,15 @@ public class DbAddrBookDirHandler extends DbDirHandler {
           root.setLastmod(new LastModified(dt).getValue());
           root.setCreated(new Created(dt).getValue());
 
-          sess.add(root);
-          sess.flush();
+          getSess().add(root).flush();
         }
       }
 
       /* Ensure doesn't exist */
-      sess.createQuery(queryGetCollectionName);
-
-      sess.setString("name", col.getName());
-      sess.setString("pp", ensureSlashAtEnd(parentPath));
-
-      final Collection<?> res = sess.getList();
+      final var res = createQuery(queryGetCollectionName)
+              .setString("name", col.getName())
+              .setString("pp", ensureSlashAtEnd(parentPath))
+              .getList();
       if (!res.isEmpty()) {
         return DirHandler.statusDuplicate;
       }
@@ -367,10 +363,10 @@ public class DbAddrBookDirHandler extends DbDirHandler {
         dbc.setCreated(col.getCreated());
       }
 
-      sess.add(dbc);
+      getSess().add(dbc);
 
       if (home) {
-        sess.flush();
+        getSess().flush();
       }
 
       return DirHandler.statusCreated;
@@ -409,7 +405,7 @@ public class DbAddrBookDirHandler extends DbDirHandler {
     card.output(); // Ensure string form exists
 
     try {
-      sess.add(card);
+      getSess().add(card);
     } catch (final BedeworkException e) {
       throw new WebdavException(e);
     }
