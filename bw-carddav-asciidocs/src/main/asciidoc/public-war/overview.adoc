@@ -1,0 +1,4 @@
+[[public-war]]
+== public-war
+Provides an unauthenticated carddav service. Deployed by carddav galleon layers.
+

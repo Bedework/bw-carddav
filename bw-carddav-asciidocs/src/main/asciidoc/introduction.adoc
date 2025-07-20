@@ -1,0 +1,6 @@
+[[introduction]]
+== Introduction
+This project provides a carddav server which provides a gateway to a number of directories using
+directory handler classes selected by resource path prefixes.
+
+This documentation is mostly a place-holder.

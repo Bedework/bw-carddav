@@ -1,0 +1,47 @@
+= Bedework CLI modules.
+:title: The Bedework CLI modules.
+:safe-mode-unsafe:
+:docinfo: shared
+:docinfodir: ./docinfo
+:docinfo2:
+:scriptsdir: ./tocbot-3.0.2
+:imagesdir: ./resources/
+:toc: left
+:toclevels: 4
+:sectnumlevels: 4
+//
+:reports-dir: reports/
+:cli-bwcmd-dir: cli-bwcmd
+:cli-dbtools-dir: cli-dbtools
+:cli-jmx-dir: cli-jmx
+:cli-jolokia-dir: cli-jolokia
+:cli-shell-dir: cli-shell
+:cli-toolcmd-dir: cli-toolcmd
+//
+:sectnums!:
+
+include::introduction.adoc[]
+
+:sectnums:
+
+include::{cli-bwcmd-dir}/overview.adoc[]
+include::{cli-bwcmd-dir}/using.adoc[]
+
+include::{cli-dbtools-dir}/overview.adoc[]
+include::{cli-dbtools-dir}/using.adoc[]
+
+include::{cli-jmx-dir}/overview.adoc[]
+include::{cli-jmx-dir}/using.adoc[]
+
+include::{cli-jolokia-dir}/overview.adoc[]
+include::{cli-jolokia-dir}/using.adoc[]
+
+include::{cli-shell-dir}/overview.adoc[]
+include::{cli-shell-dir}/using.adoc[]
+
+include::{cli-toolcmd-dir}/overview.adoc[]
+include::{cli-toolcmd-dir}/using.adoc[]
+
+[[reports]]
+== Reports
+link:reports/dependency-check-report.html[Dependency check]

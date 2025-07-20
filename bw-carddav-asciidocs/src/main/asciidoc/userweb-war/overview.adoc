@@ -1,0 +1,4 @@
+[[userweb-war]]
+== userweb-war
+Provides an authenticated web interface to carddav. Deployed by carddav galleon layers.
+

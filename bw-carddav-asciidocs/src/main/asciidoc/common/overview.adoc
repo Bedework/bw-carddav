@@ -1,0 +1,4 @@
+[[cli-bwcmd]]
+== cli-bwcmd
+Provides generic utility classes for CLI support.
+

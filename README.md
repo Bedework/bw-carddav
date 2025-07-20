@@ -5,40 +5,8 @@ directory handler classes selected by resource path prefixes.
 
 ## Requirements
 
-1. JDK 17
+1. JDK 21
 2. Maven 3
-
-## Building Locally
-
-> mvn clean install
-
-## Releasing
-
-Releases of this fork are published to Maven Central via Sonatype.
-
-To create a release, you must have:
-
-1. Permissions to publish to the `org.bedework` groupId.
-2. `gpg` installed with a published key (release artifacts are signed).
-
-To perform a new release use the release script:
-
-> ./bedework/build/quickstart/linux/util-scripts/release.sh <module-name> "<release-version>" "<new-version>-SNAPSHOT"
-
-When prompted, indicate all updates are committed
-
-For full details, see [Sonatype's documentation for using Maven to publish releases](http://central.sonatype.org/pages/apache-maven.html).
-
-## Deploying
-
-To deploy into an application server requires a deploy.properties. The
-path to such  file can be set in your profile by defining the property
-
- org.bedework.deployment.properties
-
-Then:
-* cd bw-carddav-ear
-* mvn org.bedework:bw-deploy-maven-plugin:4.0.4:deploy-ears
 
 ## Release Notes
 ### 1.0.3

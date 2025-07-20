@@ -1,0 +1,4 @@
+[[user-war]]
+== user-war
+Provides an authenticated carddav service. Deployed by carddav galleon layers.
+
