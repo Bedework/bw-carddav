@@ -11,4 +11,18 @@
   <artifactId>bw-addrbook-client</artifactId>
   <packaging>war</packaging>
   <name>Bedework: CardDAV gateway server: web client</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-maven-deploy</artifactId>
+
+        <configuration>
+          <warName>${project.artifactId}</warName>
+          <baseDirPath>${project.basedir}/../..</baseDirPath>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
