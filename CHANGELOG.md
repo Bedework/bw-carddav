@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [6.0.0] - 2025-07-19
 * First jakarta release
 
-## [5.0.7] - 2024-02-06
+## [5.0.7] - 2025-02-06
 * Update library versions
 * Preparing for jakarta...
   Update carddav and self-registration for jcache
