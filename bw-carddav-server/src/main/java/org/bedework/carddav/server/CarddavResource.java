@@ -22,10 +22,11 @@ import org.bedework.access.AccessPrincipal;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.util.timezones.DateTimeUtil;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
 
 /** Represent a resource stored within the system, e.g an attachment or an
  * image. The actual content is stored in a BwResourceContent object to allow us
@@ -74,8 +75,8 @@ public class CarddavResource
     super();
 
     final Date dt = new Date();
-    setLastmod(DateTimeUtil.isoDateTimeUTC(dt));
-    setCreated(DateTimeUtil.isoDateTimeUTC(dt));
+    setLastmod(icalDateTimeUTCFormat.fromDate(dt));
+    setCreated(icalDateTimeUTCFormat.fromDate(dt));
   }
 
   /* ==============================================================
@@ -225,7 +226,7 @@ public class CarddavResource
   /** Update last mod fields
    */
   public void updateLastmod() {
-    setLastmod(DateTimeUtil.isoDateTimeUTC(new Date()));
+    setLastmod(icalDateTimeUTCFormat.fromDate(new Date()));
     setSequence(getSequence() + 1);
   }
 

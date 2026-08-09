@@ -23,7 +23,6 @@ import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.carddav.common.CarddavCollection;
 import org.bedework.base.ToString;
-import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.xml.XmlEmit;
 import org.bedework.webdav.servlet.shared.WebdavException;
 
@@ -34,6 +33,8 @@ import java.io.InputStream;
 import java.io.Writer;
 
 import javax.xml.namespace.QName;
+
+import static org.bedework.util.dates.DateFormatter.fromICalDateTimeUTCtoHttp;
 
 /** Class to represent a resource such as a file.
  *
@@ -334,7 +335,7 @@ public class CarddavResourceNode extends CarddavNode {
     }
 
     try {
-      return DateTimeUtil.fromISODateTimeUTCtoRfc822(resource.getLastmod());
+      return fromICalDateTimeUTCtoHttp(resource.getLastmod());
     } catch (final Throwable t) {
       throw new WebdavException(t);
     }

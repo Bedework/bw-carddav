@@ -240,7 +240,7 @@ public class CarddavColNode extends CarddavNode {
     }
 
     try {
-      //return DateTimeUtil.fromISODateTimeUTCtoRfc822(col.getLastmod());
+      //return fromICalDateTimeUTCtoHttp(col.getLastmod());
       return col.getLastmod();
     } catch (final Throwable t) {
       throw new WebdavException(t);

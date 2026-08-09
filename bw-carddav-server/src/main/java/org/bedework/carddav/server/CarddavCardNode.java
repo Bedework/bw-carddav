@@ -350,7 +350,7 @@ public boolean generatePropertyValue(final QName tag,
     }
 
     try {
-      // return DateTimeUtil.fromISODateTimeUTCtoRfc822(card.getLastmod());
+      // return fromICalDateTimeUTCtoHttp(card.getLastmod());
       return card.getLastmod();
     } catch (final Throwable t) {
       throw new WebdavException(t);

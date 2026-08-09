@@ -602,12 +602,12 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     try {
       card = new Card();
 
-      card.setCreated(makeIsoDatetime(stringAttr(attrs, "createTimestamp")));
+      card.setCreated(makeIcalDatetime(stringAttr(attrs, "createTimestamp")));
 
       final String lastMod = stringAttr(attrs, "modifyTimestamp");
 
       if (lastMod != null) {
-        card.setLastmod(makeIsoDatetime(lastMod));
+        card.setLastmod(makeIcalDatetime(lastMod));
       } else {
         card.setLastmod(card.getCreated());
       }
@@ -861,7 +861,7 @@ public abstract class LdapDirHandler extends AbstractDirHandler {
     }
   }
 
-  private String makeIsoDatetime(final String val) {
+  private String makeIcalDatetime(final String val) {
     if (val == null) {
       return null;
     }
